@@ -1,0 +1,42 @@
+server:
+  shutdown: immediate
+  port: 8080
+
+#api:
+#  base:
+#    url:
+#      oauth1: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+
+management.endpoint:
+  health.cache.time-to-live: 0
+  info.cache.time-to-live: 0
+spring:
+  devtools:
+    add-properties: true
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/job-board?sslmode=prefer'
+    username: job-board
+    password: job-board
+    hikari:
+      pool-name: Hmpps-Jobs-Board
+      connectionTimeout: 1000
+      validationTimeout: 500
+
+  flyway:
+    initOnMigrate: true
+    baselineOnMigrate: true
+    validateMigrationNaming: true
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/job-board?sslmode=prefer
+    user: job-board
+    password: job-board
