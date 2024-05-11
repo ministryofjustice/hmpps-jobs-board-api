@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.unit.repositories
+package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.unit.repositories
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,13 +10,13 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
-import uk.gov.justice.digital.hmpps.jobsboard.api.config.DpsPrincipal
-import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobsBoardProfileRepository
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.DpsPrincipal
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.repository.JobEmployerRepository
 
 @DataJpaTest
 @ActiveProfiles("test")
 class RepositoriesTests @Autowired constructor(
-  val jbRepository: JobsBoardProfileRepository,
+  val jbRepository: JobEmployerRepository,
 
 ) {
   @Mock

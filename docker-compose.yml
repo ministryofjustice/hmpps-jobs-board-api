@@ -3,7 +3,8 @@ services:
   hmpps-jobs-board-api:
     build:
       context: .
-    network_mode: "host"
+    networks:
+      - hmpps
     container_name: hmpps-jobs-board-api
     ports:
       - "8081:8080"
@@ -11,7 +12,18 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
     environment:
       - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=developer
+
+  job-board-db:
+    image: postgres
+    container_name: job-board-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=job-board
+      - POSTGRES_USER=job-board
+      - POSTGRES_DB=job-board
 
 networks:
   hmpps:

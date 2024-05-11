@@ -1,23 +1,20 @@
 package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
-import jakarta.persistence.Entity
+import jakarta.persistence.Embeddable
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
-import java.time.LocalDateTime
+import java.time.Instant
 
-@Entity
-@Table(name = "job_employers")
-class JobEmployer(
+@Embeddable
+class JobEmployerId(
   @Id
   @Column(name = "employer_id", nullable = false)
   var id: Long?,
 
-  @Column(name = "employer_name")
+  @Column(name = "employer_name", nullable = false)
   var employerName: String?,
 
   @Column(name = "employer_bio")
@@ -27,23 +24,23 @@ class JobEmployer(
   var createdBy: String?,
 
   @Column(name = "created_date_time")
-  var createdDateTime: LocalDateTime,
+  var createdDateTime: Instant?,
 
   @Column(name = "modified_by")
   var modifiedBy: String?,
 
   @Column(name = "modified_date_time")
-  var modifiedDateTime: LocalDateTime,
+  var modifiedDateTime: Instant?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "sector_id", nullable = false)
   var sector: EmployerWorkSector?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "partner_id", nullable = false)
   var partner: EmployerPartner?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "image_id", nullable = false)
   var image: JobImage?,
 

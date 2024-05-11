@@ -1,34 +1,40 @@
 package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 import java.time.Instant
 
 @Entity
 @Table(name = "job_charity")
-class JobCharity (
+class JobCharity(
   @Id
   @Column(name = "charity_id", nullable = false)
-  var id: Long? ,
+  var id: Long?,
 
   @Column(name = "charity_name_name")
-  var charityNameName: String? ,
+  var charityNameName: String?,
 
   @Column(name = "charity_bio")
-  var charityBio: String? ,
+  var charityBio: String?,
 
   @Column(name = "created_by")
-  var createdBy: String? ,
+  var createdBy: String?,
 
   @Column(name = "created_date_time")
-  var createdDateTime: Instant? ,
+  var createdDateTime: Instant?,
 
   @Column(name = "modified_by")
-  var modifiedBy: String? ,
+  var modifiedBy: String?,
 
   @Column(name = "modified_date_time")
-  var modifiedDateTime: Instant? ,
+  var modifiedDateTime: Instant?,
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "image_id", nullable = false)
-  var image: JobImage? ,
+  var image: JobImage?,
 )
