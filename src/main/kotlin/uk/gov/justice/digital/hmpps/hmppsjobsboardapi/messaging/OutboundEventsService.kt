@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.messaging
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.CapturedSpringConfigValues
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobsBoardProfile
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployer
 import java.time.Instant
 import java.time.ZoneOffset
 
@@ -11,33 +11,33 @@ class OutboundEventsService(
   var outboundEventsPublisher: OutboundEventsPublisher?,
 ) {
 
-  fun createAndPublishEventMessage(jobsBoardProfile: JobsBoardProfile, eventType: EventType) {
-    val outboundEvent = createValidJobsBoardEvent(
-      jobsBoardProfile.offenderId,
-      jobsBoardProfile.prisonId,
-      eventType,
-      jobsBoardProfile.modifiedDateTime?.toInstant(
-        ZoneOffset.UTC,
-      )!!,
-    )
-    outboundEventsPublisher?.publishToTopic(outboundEvent)
+  fun createAndPublishEventMessage(jobEmployer: JobEmployer, eventType: EventType) {
+    val outboundEvent = jobEmployer.employerName?.let {
+      createValidJobsBoardEvent(
+        it,
+        eventType,
+        jobEmployer.modifiedDateTime?.toInstant(
+          ZoneOffset.UTC,
+        )!!,
+      )
+    }
+    outboundEvent?.let { outboundEventsPublisher?.publishToTopic(it) }
   }
   fun createValidJobsBoardEvent(
-    reference: String,
-    prisonName: String?,
+    employerName: String,
     eventType: EventType,
     instant: Instant,
   ): OutboundEvent =
     OutboundEvent(
       eventType = eventType,
-      personReference = PersonReference(listOf(Identifier("NOMS", reference))),
+      personReference = EmployerReference(listOf(Identifier("NOMS", employerName))),
       additionalInformation = AdditionalInformation(
-        reference = reference,
-        prisonId = prisonName,
+        reference = employerName,
+        Id = employerName,
         userId = CapturedSpringConfigValues.getDPSPrincipal().name,
         userDisplayName = CapturedSpringConfigValues.getDPSPrincipal().displayName,
       ),
       occurredAt = instant,
-      version = 1,
+      1,
     )
 }

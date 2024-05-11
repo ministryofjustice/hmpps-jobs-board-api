@@ -7,14 +7,14 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "job_image")
-class JobImage (
+class JobImage(
   @Id
   @Column(name = "image_id", nullable = false)
-  var id: Long? ,
+  var id: Long?,
 
   @Column(name = "mn_id", nullable = false)
-  var mnId: Long? ,
+  var mnId: Long?,
 
   @Column(name = "image_path", nullable = false)
-  var imagePath: String?
+  var imagePath: String?,
 )

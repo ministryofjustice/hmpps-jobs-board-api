@@ -7,17 +7,17 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "salary_period")
-class SalaryPeriod (
+class SalaryPeriod(
   @Id
   @Column(name = "salary_period_id", nullable = false)
-  var id: Long? ,
+  var id: Long?,
 
   @Column(name = "mn_id", nullable = false)
-  var mnId: Long? ,
+  var mnId: Long?,
 
   @Column(name = "mn_identifier", nullable = false)
-  var mnIdentifier: String? ,
+  var mnIdentifier: String?,
 
   @Column(name = "mn_salary_period_name", nullable = false)
-  var mnSalaryPeriodName: String?){
-}
+  var mnSalaryPeriodName: String?,
+)

@@ -7,17 +7,17 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "job_source")
-class JobSource (
+class JobSource(
   @Id
   @Column(name = "job_source_id", nullable = false)
-  var id: Long? ,
+  var id: Long?,
 
   @Column(name = "mn_id", nullable = false)
-  var mnId: Long? ,
+  var mnId: Long?,
 
   @Column(name = "mn_identifier", nullable = false)
-  var mnIdentifier: String? ,
+  var mnIdentifier: String?,
 
   @Column(name = "mn_job_source_name", nullable = false)
-  var mnJobSourceName: String? ,
+  var mnJobSourceName: String?,
 )

@@ -19,5 +19,5 @@ data class WorkPattern(
   var mnIdentifier: String?,
 
   @Column(name = "mn_work_pattern_name", nullable = false)
-  var mnWorkPatternName: String?){
-}
+  var mnWorkPatternName: String?,
+)

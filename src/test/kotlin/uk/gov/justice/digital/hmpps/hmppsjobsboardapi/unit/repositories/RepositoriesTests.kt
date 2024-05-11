@@ -11,12 +11,12 @@ import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.DpsPrincipal
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.repository.JobsBoardProfileRepository
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.repository.JobEmployerRepository
 
 @DataJpaTest
 @ActiveProfiles("test")
 class RepositoriesTests @Autowired constructor(
-  val jbRepository: JobsBoardProfileRepository,
+  val jbRepository: JobEmployerRepository,
 
 ) {
   @Mock

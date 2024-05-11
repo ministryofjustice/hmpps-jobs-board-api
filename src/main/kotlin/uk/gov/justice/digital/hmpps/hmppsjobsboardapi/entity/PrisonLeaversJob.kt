@@ -1,11 +1,18 @@
 package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 import java.time.Instant
 
 @Entity
 @Table(name = "prison_leavers_job")
-class PrisonLeaversJob (
+class   PrisonLeaversJob(
   @Id
   @Column(name = "job_id", nullable = false)
   var id: Long?,
@@ -13,52 +20,52 @@ class PrisonLeaversJob (
   @Column(name = "mn_job_id", nullable = false)
   var mnJobId: Long?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "salary_period_id", nullable = false)
   var salaryPeriod: SalaryPeriod?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "work_pattern_id", nullable = false)
   var workPattern: WorkPattern?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "hours_type_id", nullable = false)
   var hoursType: HoursType?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "job_contract_type_id", nullable = false)
   var jobContractType: JobContractType?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   var offencesTypeList: OffencesTypeList?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   var jobSourceList: JobSourceList?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "job_source1_id", nullable = false)
   var jobSource1: JobSource?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "job_type_id", nullable = false)
   var jobType: JobType?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "base_location_id", nullable = false)
   var baseLocation: BaseLocation?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "charity_id", nullable = false)
   var charity: JobCharity?,
 
   @Column(name = "job_contract_id", nullable = false)
   var jobContractId: Long?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "employer_id", nullable = false)
   var employer: JobEmployer?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "employer_sector_id", nullable = false)
   var employerSector: EmployerWorkSector?,
 
@@ -129,5 +136,5 @@ class PrisonLeaversJob (
   var salaryFrom: String?,
 
   @Column(name = "salary_to")
-  var salaryTo: String?,){
-}
+  var salaryTo: String?,
+)
