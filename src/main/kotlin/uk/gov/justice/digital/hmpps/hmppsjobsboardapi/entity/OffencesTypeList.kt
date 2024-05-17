@@ -1,21 +1,31 @@
 package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 
-import jakarta.persistence.CascadeType
+import jakarta.persistence.AttributeOverride
+import jakarta.persistence.AttributeOverrides
+import jakarta.persistence.Column
 import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MapsId
 import jakarta.persistence.Table
 @Entity
 @Table(name = "offences_type_list")
 class OffencesTypeList(
   @EmbeddedId
+  @AttributeOverrides(
+    *arrayOf(
+      AttributeOverride(
+        name = "offencesTypeListId",
+        column = Column(name = "offences_type_list_id"),
+      ),
+      AttributeOverride(
+        name = "OffencesType",
+        column = Column(name = "offences_id"),
+      ),
+      AttributeOverride(
+        name = "offencesOther",
+        column = Column(name = "offences_other"),
+      ),
+    ),
+  )
   var id: OffencesTypeListId?,
 
-  @MapsId("offencesId")
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "offences_id", nullable = false)
-  var offences: OffencesType?,
 )

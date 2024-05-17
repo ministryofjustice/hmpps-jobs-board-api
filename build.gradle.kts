@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.10.1"
-  kotlin("plugin.spring") version "1.9.21"
-  kotlin("plugin.jpa") version "1.9.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.6"
+  kotlin("plugin.spring") version "1.9.23"
+  kotlin("plugin.jpa") version "1.9.23"
   id("name.remal.integration-tests") version "4.0.2"
   id("jvm-test-suite")
   id("jacoco")
@@ -64,7 +64,6 @@ dependencies {
   implementation("com.zaxxer:HikariCP:5.1.0")
   implementation("com.oracle.database.jdbc:ojdbc10:19.21.0.0")
   implementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
-  implementation("org.hibernate.orm:hibernate-community-dialects")
 
 // Database dependencies
   implementation("org.flywaydb:flyway-core")
@@ -123,7 +122,7 @@ tasks {
       doFirst {
         delete(
           fileTree(project.layout.buildDirectory.get())
-            .include("libs/*-plain.jar")
+            .include("libs/*-plain.jar"),
         )
       }
     }

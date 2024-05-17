@@ -10,26 +10,23 @@ import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.EmployerPartner
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.EmployerPartnerGrade
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.EmployerWorkSector
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployer
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployerDTO
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobImage
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service.JobEmployerService
-import java.time.Instant
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.PrisonLeaversJobSort
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service.PrisonLeaversJobService
 
 @Validated
 @RestController
-@RequestMapping("/job-board/employer", produces = [MediaType.APPLICATION_JSON_VALUE])
-class JobsEmployerResourceController(
-  private val jobEmployerService: JobEmployerService,
+@RequestMapping("/prison-leavers-job", produces = [MediaType.APPLICATION_JSON_VALUE])
+class PrisonLeaversJobResourceController(
+  private val prisonLeaversJobService: PrisonLeaversJobService,
 ) {
   @PreAuthorize("hasRole('WORK_READINESS_EDIT')")
   @PostMapping
@@ -59,16 +56,16 @@ class JobsEmployerResourceController(
       ),
     ],
   )
-  fun createEmployer(
+  fun createPrisonLeaversJob(
     @Valid
     @RequestBody
-    requestDTO: JobEmployerDTO,
-  ): JobEmployerDTO {
-    return jobEmployerService.createEmployer(requestDTO)
+    requestDTO: PrisonLeaversJob,
+  ): PrisonLeaversJob {
+    return prisonLeaversJobService.createJob(requestDTO)
   }
 
   @PreAuthorize("hasRole('WORK_READINESS_EDIT')")
-  @GetMapping("/test")
+  @GetMapping("/{prisonerLeaversJobId}")
   @Operation(
     summary = "Create a job employer ",
     description = "Create a job employer. Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>",
@@ -95,24 +92,15 @@ class JobsEmployerResourceController(
       ),
     ],
   )
-  fun getEmployer(): JobEmployerDTO {
-    return JobEmployerDTO(
-      1,
-      "test",
-      "asdad",
-      "sacintha",
-      Instant.now(),
-      "test",
-      Instant.now(),
-      EmployerWorkSector(1L, 1L, "test", "test"),
-      EmployerPartner(1L, EmployerPartnerGrade(1L, 1L, "test", "test"), 1L, "test", "test1"),
-      JobImage(1L, 1L, "ett"),
-      "eh26 0hq",
-    )
+  fun getPrisonLeaversJob(
+    @PathVariable
+    prisonerLeaversJobId: Long,
+  ): PrisonLeaversJob? {
+    return prisonLeaversJobService.getPrisonersLeaversJob(prisonerLeaversJobId)
   }
 
   @PreAuthorize("hasRole('WORK_READINESS_EDIT')")
-  @GetMapping("/test/list")
+  @GetMapping("/list")
   @Operation(
     summary = "Create a job employer ",
     description = "Create a job employer. Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>",
@@ -139,17 +127,16 @@ class JobsEmployerResourceController(
       ),
     ],
   )
-  fun getEmployerlist(
+  fun getPrisonLeaversJob(
+    @RequestParam
+    mode: PrisonLeaversJobSort,
     @RequestParam
     @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
     pageNo: Int,
     @RequestParam
     @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
     pageSize: Int,
-    @RequestParam
-    @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
-    sortBy: String,
-  ): MutableList<JobEmployer>? {
-    return jobEmployerService.getPagingList(pageNo, pageSize, sortBy)
+  ): MutableList<PrisonLeaversJob>? {
+    return prisonLeaversJobService.getPagingList(pageNo, pageSize, mode)
   }
 }
