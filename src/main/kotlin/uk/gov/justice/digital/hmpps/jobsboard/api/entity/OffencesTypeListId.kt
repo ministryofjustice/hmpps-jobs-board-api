@@ -1,17 +1,22 @@
 package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
+import jakarta.persistence.FetchType
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import java.io.Serializable
 
 @Embeddable
 class OffencesTypeListId(
-  @Column(name = "offences_type_list_id", nullable = false)
+  @Column(nullable = false)
   var offencesTypeListId: Long?,
 
-  @Column(name = "offences_id", nullable = false)
-  var offencesId: Long?,
+  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(nullable = false)
+  var offences: OffencesType?,
 
-  @Column(name = "offences_other", nullable = false)
+  @Column(nullable = false)
   var offencesOther: String?,
 ) : Serializable

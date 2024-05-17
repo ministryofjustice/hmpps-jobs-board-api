@@ -10,7 +10,7 @@ import jakarta.persistence.Table
 class JobSource(
   @Id
   @Column(name = "job_source_id", nullable = false)
-  var id: Long?,
+  var jobSource: Long?,
 
   @Column(name = "mn_id", nullable = false)
   var mnId: Long?,

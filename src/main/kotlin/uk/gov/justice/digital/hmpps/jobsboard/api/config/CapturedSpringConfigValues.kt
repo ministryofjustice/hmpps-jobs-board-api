@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.config
+package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 @Configuration
 class CapturedSpringConfigValues {
   companion object {
-    var objectMapper: ObjectMapper = configObjectMapper()
+    var oBJECTMAPPER: ObjectMapper = configObjectMapper()
     fun getDPSPrincipal(): DpsPrincipal {
       return SecurityContextHolder.getContext().authentication.principal as DpsPrincipal
     }

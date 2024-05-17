@@ -92,6 +92,7 @@ CREATE TABLE
     sector_id          BIGINT NOT NULL,
     partner_id         BIGINT NOT NULL,
     image_id           BIGINT NOT NULL,
+    post_code      VARCHAR(255),
     PRIMARY KEY (employer_id),
     CONSTRAINT fk_employer_sector FOREIGN KEY(sector_id) REFERENCES employer_work_sector
 (sector_id),

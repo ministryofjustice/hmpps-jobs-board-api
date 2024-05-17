@@ -7,17 +7,17 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "base_location")
-class BaseLocation {
+class BaseLocation(
   @Id
   @Column(name = "base_location_id", nullable = false)
-  var id: Long? = null
+  var id: Long? = null,
 
   @Column(name = "mn_id", nullable = false)
-  var mnId: Long? = null
+  var mnId: Long? = null,
 
   @Column(name = "mn_identifier", nullable = false)
-  var mnIdentifier: String? = null
+  var mnIdentifier: String? = null,
 
   @Column(name = "mn_sector_name", nullable = false)
-  var mnSectorName: String? = null
-}
+  var mnSectorName: String? = null,
+)

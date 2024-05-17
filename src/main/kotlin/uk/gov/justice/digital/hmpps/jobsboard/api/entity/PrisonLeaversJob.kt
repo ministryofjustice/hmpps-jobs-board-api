@@ -3,16 +3,19 @@ package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
 import java.time.Instant
 
 @Entity
 @Table(name = "prison_leavers_job")
-class   PrisonLeaversJob(
+class PrisonLeaversJob(
   @Id
   @Column(name = "job_id", nullable = false)
   var id: Long?,
@@ -37,26 +40,12 @@ class   PrisonLeaversJob(
   var jobContractType: JobContractType?,
 
   @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  var offencesTypeList: OffencesTypeList?,
-
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  var jobSourceList: JobSourceList?,
-
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "job_source1_id", nullable = false)
-  var jobSource1: JobSource?,
-
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "job_type_id", nullable = false)
   var jobType: JobType?,
 
   @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "base_location_id", nullable = false)
   var baseLocation: BaseLocation?,
-
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "charity_id", nullable = false)
-  var charity: JobCharity?,
 
   @Column(name = "job_contract_id", nullable = false)
   var jobContractId: Long?,
@@ -137,4 +126,11 @@ class   PrisonLeaversJob(
 
   @Column(name = "salary_to")
   var salaryTo: String?,
+
+  @Column(name = "type_of_work")
+  @Enumerated(EnumType.STRING)
+  var typeOfWork: TypeOfWork?,
+
+  @Transient
+  var distance: Long,
 )

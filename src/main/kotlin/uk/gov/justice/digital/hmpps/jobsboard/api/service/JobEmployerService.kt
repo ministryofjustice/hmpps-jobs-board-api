@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployer
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployerDTO
@@ -14,6 +18,18 @@ class JobEmployerService(
   private val outboundEventsService: OutboundEventsService,
   private val telemetryService: TelemetryService,
 ) {
+
+  fun getPagingList(pageNo: Int, pageSize: Int, sortBy: String): MutableList<JobEmployer>? {
+    val paging: Pageable = PageRequest.of(pageNo.toInt(), pageSize.toInt(), Sort.by(sortBy))
+
+    val pagedResult: Page<JobEmployer> = jobEmployerRepository.findAll(paging)
+
+    if (pagedResult.hasContent()) {
+      return pagedResult.getContent()
+    } else {
+      return ArrayList<JobEmployer>()
+    }
+  }
   fun createEmployer(
     jobsProfileDTO: JobEmployerDTO,
   ): JobEmployerDTO {
