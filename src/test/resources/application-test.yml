@@ -29,6 +29,7 @@ spring:
     baselineOnMigrate: true
     validateMigrationNaming: true
     enabled: true
+    locations: db/dummy
     url: ${spring.datasource.url}
     user: create_vary
     password: dummy
