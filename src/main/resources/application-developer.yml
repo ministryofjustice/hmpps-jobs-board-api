@@ -33,9 +33,9 @@ spring:
       validationTimeout: 500
 
   flyway:
-    initOnMigrate: false
-    baselineOnMigrate: false
-    validateMigrationNaming: false
+    initOnMigrate: true
+    baselineOnMigrate: true
+    validateMigrationNaming: true
     enabled: true
     url: jdbc:postgresql://localhost:5432/job-board?sslmode=prefer
     user: job-board
