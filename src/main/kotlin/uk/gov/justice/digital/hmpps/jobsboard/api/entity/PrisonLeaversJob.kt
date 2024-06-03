@@ -1,22 +1,41 @@
 package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import lombok.AllArgsConstructor
+import lombok.Builder
+import lombok.Data
+import lombok.EqualsAndHashCode
+import lombok.NoArgsConstructor
+import org.springframework.hateoas.server.core.Relation
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
 import java.time.Instant
+import kotlin.jvm.Transient
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@Relation(collectionRelation = "jobs", itemRelation = "job")
+@JsonInclude(Include.NON_NULL)
 @Entity
 @Table(name = "prison_leavers_job")
 class PrisonLeaversJob(
-  @Id
+
+  @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @Column(name = "job_id", nullable = false)
   var id: Long?,
 

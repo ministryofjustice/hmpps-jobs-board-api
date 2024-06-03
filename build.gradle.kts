@@ -5,6 +5,7 @@ plugins {
   id("name.remal.integration-tests") version "4.0.2"
   id("jvm-test-suite")
   id("jacoco")
+  id("io.freefair.lombok") version "8.6"
 }
 
 configurations {
@@ -14,7 +15,6 @@ configurations {
   }
   testImplementation { exclude(group = "org.junit.vintage") }
 }
-
 testing {
   suites {
     val test by getting(JvmTestSuite::class) {
@@ -41,6 +41,7 @@ dependencies {
   testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
 
   implementation("org.springframework.boot:spring-boot-starter-aop")
+  implementation("org.springframework.boot:spring-boot-starter-hateoas")
   implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.springframework.boot:spring-boot-starter-jdbc")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -48,7 +49,6 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:2.1.1")
   implementation("com.google.code.gson:gson:2.10.1")
-  developmentOnly("org.springframework.boot:spring-boot-devtools")
 
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 

@@ -97,7 +97,7 @@ class JobsEmployerResourceController(
   )
   fun getEmployer(): JobEmployerDTO {
     return JobEmployerDTO(
-      1,
+      1L,
       "test",
       "asdad",
       "sacintha",

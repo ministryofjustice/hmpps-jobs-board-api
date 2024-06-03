@@ -5,8 +5,11 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.assemblers.EmployerJobModelAssembler
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.PrisonLeaversJobSort
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobListPageDTO
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversPagingDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.messaging.OutboundEventsService
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.telemetry.TelemetryService
@@ -16,32 +19,38 @@ class PrisonLeaversJobService(
   private val prisonLeaversRepository: PrisonLeaversJobRepository,
   private val outboundEventsService: OutboundEventsService,
   private val telemetryService: TelemetryService,
+  private val employerJobModelAssembler: EmployerJobModelAssembler,
 ) {
 
-  fun getPagingList(pageNo: Int, pageSize: Int, sortBy: PrisonLeaversJobSort): MutableList<PrisonLeaversJob>? {
+  fun getPagingList(requestDTO: PrisonLeaversPagingDTO): PrisonLeaversJobListPageDTO {
     var sortByParam = Sort.unsorted()
-    if (sortBy.equals(PrisonLeaversJobSort.ALL)) {
-      when (sortBy) {
-        PrisonLeaversJobSort.ALL -> sortByParam = Sort.by("typeOfWork").and(Sort.by("postCode"))
-        PrisonLeaversJobSort.LOCATION_AND_TYPE_OF_WORK -> sortByParam = Sort.by("typeOfWork").and(Sort.by("postCode"))
-        PrisonLeaversJobSort.TYPE_OF_WORK -> sortByParam = Sort.by("typeOfWork")
-        else -> {
-          sortByParam = Sort.unsorted()
-        }
+    val postCode = requestDTO.postCode
+    val typeOfWork = requestDTO.typeOfWork
+    when (requestDTO.mode) {
+      PrisonLeaversJobSort.ALL -> sortByParam = Sort.by("typeOfWork").and(Sort.by("postCode"))
+      PrisonLeaversJobSort.LOCATION_AND_TYPE_OF_WORK -> sortByParam = Sort.by("typeOfWork").and(Sort.by("postCode"))
+      PrisonLeaversJobSort.TYPE_OF_WORK -> sortByParam = Sort.by("typeOfWork")
+      else -> {
+        sortByParam = Sort.unsorted()
       }
     }
+
     val paging: Pageable = PageRequest.of(
-      pageNo.toInt(),
-      pageSize.toInt(),
+      requestDTO.pageNo.toInt(),
+      requestDTO.pageSize.toInt(),
       sortByParam,
     )
 
-    val pagedResult: Page<PrisonLeaversJob> = prisonLeaversRepository.findAll(paging)
-    if (pagedResult.hasContent()) {
-      return pagedResult.getContent()
-    } else {
-      return ArrayList<PrisonLeaversJob>()
-    }
+    val pagedResult: Page<PrisonLeaversJob>? =
+      when {
+        typeOfWork != null && !postCode.isNullOrEmpty() -> prisonLeaversRepository.findPrisonLeaversJobsByTypeOfWorkAndEmployerPostCode(typeOfWork, postCode, paging)
+        typeOfWork != null -> prisonLeaversRepository.findPrisonLeaversJobsByTypeOfWork(typeOfWork, paging)
+        !postCode.isNullOrEmpty() -> prisonLeaversRepository.findPrisonLeaversJobsByEmployerPostCode(postCode, paging)
+        else -> prisonLeaversRepository.findAll(paging)
+      }
+
+    val pagedModel: PrisonLeaversJobListPageDTO? = pagedResult?.let { employerJobModelAssembler.toCollectionModelList(it) }
+    return pagedModel!!
   }
 
   fun createJob(

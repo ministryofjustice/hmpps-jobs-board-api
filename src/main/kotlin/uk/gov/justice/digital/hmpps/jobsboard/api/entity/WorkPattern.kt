@@ -2,13 +2,15 @@ package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
 @Table(name = "work_pattern")
 data class WorkPattern(
-  @Id
+  @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @Column(name = "work_pattern_id", nullable = false)
   var id: Long?,
 

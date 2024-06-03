@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
@@ -10,7 +12,7 @@ import java.time.Instant
 
 @Embeddable
 class JobEmployerId(
-  @Id
+  @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @Column(name = "employer_id", nullable = false)
   var id: Long?,
 
