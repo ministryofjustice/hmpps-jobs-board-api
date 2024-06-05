@@ -2,10 +2,13 @@ package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.ContractHours
 
 @Entity
 @Table(name = "work_pattern")
@@ -21,5 +24,6 @@ data class WorkPattern(
   var mnIdentifier: String?,
 
   @Column(name = "mn_work_pattern_name", nullable = false)
-  var mnWorkPatternName: String?,
+  @Enumerated(EnumType.STRING)
+  var mnWorkPatternName: ContractHours?,
 )

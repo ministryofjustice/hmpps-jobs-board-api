@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
-import org.springframework.data.web.PagedResourcesAssembler
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.assemblers.EmployerJobModelAssembler
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
@@ -26,11 +24,9 @@ import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service.PrisonLeaversJobSe
 
 @Validated
 @RestController
-@RequestMapping("/prison-leavers-job", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping("/candidate-matching/job", produces = [MediaType.APPLICATION_JSON_VALUE])
 class PrisonLeaversJobResourceController(
   private val prisonLeaversJobService: PrisonLeaversJobService,
-  private val pagedResourcesAssembler: PagedResourcesAssembler<PrisonLeaversJobDTO>,
-  private val employerJobModelAssembler: EmployerJobModelAssembler,
 ) {
   @PreAuthorize("hasRole('WORK_READINESS_EDIT')")
   @PostMapping
@@ -100,11 +96,11 @@ class PrisonLeaversJobResourceController(
     @PathVariable
     prisonerLeaversJobId: Long,
   ): PrisonLeaversJobDTO? {
-    return PrisonLeaversJobDTO(prisonLeaversJobService.getPrisonersLeaversJob(prisonerLeaversJobId), null)
+    return PrisonLeaversJobDTO(prisonLeaversJobService.getPrisonersLeaversJob(prisonerLeaversJobId))
   }
 
   @PreAuthorize("hasRole('WORK_READINESS_EDIT')")
-  @PostMapping("/list")
+  @PostMapping("/search")
   @Operation(
     summary = "Create a job employer ",
     description = "Create a job employer. Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>",

@@ -75,7 +75,10 @@ dependencies {
   testImplementation("io.mockk:mockk:1.13.9")
   testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.0")
   testImplementation("org.junit.jupiter:junit-jupiter")
-  testImplementation("org.testcontainers:localstack")
+  testImplementation("org.testcontainers:localstack:1.19.7")
+  testImplementation ("org.testcontainers:postgresql:1.19.7")
+  testImplementation("org.testcontainers:testcontainers:1.19.7")
+
 
   testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
   testImplementation("io.kotest:kotest-assertions-core:5.8.0")
