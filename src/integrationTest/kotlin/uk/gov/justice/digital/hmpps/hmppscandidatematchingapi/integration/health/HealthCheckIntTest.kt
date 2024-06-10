@@ -26,7 +26,7 @@ class HealthCheckIntTest : IntegrationTestBase() {
     assert(result != null)
     assert(result.hasBody())
     assert(result.statusCode.is2xxSuccessful)
-    var stringcompanion = CapturedSpringConfigValues.OBJECT_MAPPER.readTree(result.body?.toString())
+    var stringcompanion = CapturedSpringConfigValues.objectMapper.readTree(result.body?.toString())
     var version = stringcompanion.get("components").get("healthInfo").get("details").get("version")
     assertThat(version.asText().equals("1_0_0") || version.asText().startsWith(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)))
   }
@@ -37,7 +37,7 @@ class HealthCheckIntTest : IntegrationTestBase() {
     assert(result != null)
     assert(result.hasBody())
     assert(result.statusCode.is2xxSuccessful)
-    var stringcompanion = CapturedSpringConfigValues.OBJECT_MAPPER.readTree(result.body?.toString() ?: "")
+    var stringcompanion = CapturedSpringConfigValues.objectMapper.readTree(result.body?.toString() ?: "")
     var status = stringcompanion.get("status")
     assertThat(status.asText().toString()).isEqualTo("UP")
   }
@@ -48,7 +48,7 @@ class HealthCheckIntTest : IntegrationTestBase() {
     assert(result != null)
     assert(result.hasBody())
     assert(result.statusCode.is2xxSuccessful)
-    var stringcompanion = CapturedSpringConfigValues.OBJECT_MAPPER.readTree(result.body?.toString() ?: "")
+    var stringcompanion = CapturedSpringConfigValues.objectMapper.readTree(result.body?.toString() ?: "")
     var status = stringcompanion.get("status")
     assertThat(status.asText().toString()).isEqualTo("UP")
   }
@@ -59,7 +59,7 @@ class HealthCheckIntTest : IntegrationTestBase() {
     assert(result != null)
     assert(result.hasBody())
     assert(result.statusCode.is2xxSuccessful)
-    var stringcompanion = CapturedSpringConfigValues.OBJECT_MAPPER.readTree(result.body?.toString() ?: "")
+    var stringcompanion = CapturedSpringConfigValues.objectMapper.readTree(result.body?.toString() ?: "")
     var status = stringcompanion.get("status")
     assertThat(status.asText().toString()).isEqualTo("UP")
   }

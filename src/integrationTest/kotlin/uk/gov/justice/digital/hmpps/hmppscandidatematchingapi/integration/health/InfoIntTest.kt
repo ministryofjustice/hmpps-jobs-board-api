@@ -19,7 +19,7 @@ class InfoIntTest : IntegrationTestBase() {
     assert(result != null)
     assert(result.hasBody())
     assert(result.statusCode.is2xxSuccessful)
-    var stringcompanion = CapturedSpringConfigValues.OBJECT_MAPPER.readTree(result.body?.toString())
+    var stringcompanion = CapturedSpringConfigValues.objectMapper.readTree(result.body?.toString())
     var name = stringcompanion.get("build").get("name")
     Assertions.assertThat(name.asText().toString()).isEqualTo("hmpps-jobs-board-api")
   }
@@ -30,7 +30,7 @@ class InfoIntTest : IntegrationTestBase() {
     assert(result != null)
     assert(result.hasBody())
     assert(result.statusCode.is2xxSuccessful)
-    var stringcompanion = CapturedSpringConfigValues.OBJECT_MAPPER.readTree(result.body?.toString())
+    var stringcompanion = CapturedSpringConfigValues.objectMapper.readTree(result.body?.toString())
     var version = stringcompanion.get("build").get("version")
     Assertions.assertThat(
       version?.asText().equals("1_0_0") || version.asText().startsWith(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)),
