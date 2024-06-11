@@ -12,10 +12,10 @@ class TelemetryService(
 ) {
 
   fun createAndPublishTelemetryEventMessage(jobsBoardProfile: JobsBoardProfile, eventType: EventType) {
-    val logMap = createTelemetryEventMap_job_created_updated(jobsBoardProfile)
+    val logMap = createTelemetryEventMapJobCreatedUpdated(jobsBoardProfile)
   }
 
-  fun createTelemetryEventMap_job_created_updated(jobsBoardProfile: JobsBoardProfile): MutableMap<String, String> {
+  fun createTelemetryEventMapJobCreatedUpdated(jobsBoardProfile: JobsBoardProfile): MutableMap<String, String> {
     val logMap: MutableMap<String, String> = HashMap()
     logMap["prisonId"] = jobsBoardProfile.prisonId.toString()
     logMap["userId"] = jobsBoardProfile.modifiedBy.toString()
