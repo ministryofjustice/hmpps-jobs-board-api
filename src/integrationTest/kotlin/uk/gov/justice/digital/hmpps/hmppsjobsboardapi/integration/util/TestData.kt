@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.integration.util
+package uk.gov.justice.digital.hmpps.jobsboard.api.integration.util
 
 import java.io.File
 

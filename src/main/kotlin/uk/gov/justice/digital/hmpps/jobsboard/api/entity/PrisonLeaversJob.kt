@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
@@ -15,7 +15,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.springframework.hateoas.server.core.Relation
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
 import java.time.Instant
 import kotlin.jvm.Transient
 

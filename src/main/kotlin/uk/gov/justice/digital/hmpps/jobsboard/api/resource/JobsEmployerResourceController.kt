@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.resource
+package uk.gov.justice.digital.hmpps.jobsboard.api.resource
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.EmployerPartner
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.EmployerPartnerGrade
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.EmployerWorkSector
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployer
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployerDTO
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobImage
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service.JobEmployerService
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartner
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartnerGrade
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerWorkSector
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployerDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobImage
+import uk.gov.justice.digital.hmpps.jobsboard.api.service.JobEmployerService
 import java.time.Instant
 
 @Validated

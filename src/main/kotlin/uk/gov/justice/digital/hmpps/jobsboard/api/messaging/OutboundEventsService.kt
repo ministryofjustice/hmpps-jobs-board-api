@@ -1,8 +1,8 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.messaging
+package uk.gov.justice.digital.hmpps.jobsboard.api.messaging
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.CapturedSpringConfigValues
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployer
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.CapturedSpringConfigValues
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
 import java.time.Instant
 import java.time.ZoneOffset
 

@@ -1,12 +1,12 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile
+package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
 import org.springframework.hateoas.RepresentationModel
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.ContractHours
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.ExcludingOffences
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.Hours
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.SalaryPeriod
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.ContractHours
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.ExcludingOffences
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.Hours
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.SalaryPeriod
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
 
 open class PrisonLeaversJobDetailDTO(
 

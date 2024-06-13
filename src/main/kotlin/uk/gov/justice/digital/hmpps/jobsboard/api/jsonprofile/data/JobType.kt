@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.data
+package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.data
 
 data class JobType(
   var id: Long?,

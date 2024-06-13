@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums
+package uk.gov.justice.digital.hmpps.jobsboard.api.enums
 
 enum class ContractHours {
   ANNUALISED_HOURS,

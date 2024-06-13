@@ -1,9 +1,9 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.telemetry
+package uk.gov.justice.digital.hmpps.jobsboard.api.telemetry
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployer
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.messaging.EventType
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
+import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.EventType
 import java.time.ZoneOffset
 
 @Component

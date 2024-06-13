@@ -1,19 +1,19 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service
+package uk.gov.justice.digital.hmpps.jobsboard.api.service
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.assemblers.EmployerJobModelAssembler
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.PrisonLeaversJobSort
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobDetailDTO
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobListPageDTO
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversPagingDTO
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.messaging.OutboundEventsService
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.repository.PrisonLeaversJobRepository
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.jobsboard.api.assemblers.EmployerJobModelAssembler
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.PrisonLeaversJobSort
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobDetailDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobListPageDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversPagingDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.OutboundEventsService
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.telemetry.TelemetryService
 
 @Service
 class PrisonLeaversJobService(

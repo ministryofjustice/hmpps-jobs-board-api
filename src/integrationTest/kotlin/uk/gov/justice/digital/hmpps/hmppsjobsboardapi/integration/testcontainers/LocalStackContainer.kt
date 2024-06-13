@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.integration.testcontainers
+package uk.gov.justice.digital.hmpps.jobsboard.api.integration.testcontainers
 
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.testcontainers.containers.localstack.LocalStackContainer

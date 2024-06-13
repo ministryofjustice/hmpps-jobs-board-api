@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity

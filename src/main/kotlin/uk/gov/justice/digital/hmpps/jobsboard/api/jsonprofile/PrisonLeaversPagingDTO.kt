@@ -1,7 +1,7 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile
+package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.PrisonLeaversJobSort
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.PrisonLeaversJobSort
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
 
 data class PrisonLeaversPagingDTO(
 

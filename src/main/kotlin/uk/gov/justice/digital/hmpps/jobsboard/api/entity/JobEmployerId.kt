@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable

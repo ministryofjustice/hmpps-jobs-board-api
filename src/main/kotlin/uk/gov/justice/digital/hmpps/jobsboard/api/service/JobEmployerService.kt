@@ -1,15 +1,15 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service
+package uk.gov.justice.digital.hmpps.jobsboard.api.service
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployer
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployerDTO
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.messaging.OutboundEventsService
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.repository.JobEmployerRepository
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployerDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.OutboundEventsService
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.telemetry.TelemetryService
 import java.time.LocalDateTime
 
 @Service

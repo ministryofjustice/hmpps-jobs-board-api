@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.Hours
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.Hours
 
 @Entity
 @Table(name = "hours_type")

@@ -1,13 +1,13 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.assemblers
+package uk.gov.justice.digital.hmpps.jobsboard.api.assemblers
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Page
 import org.springframework.hateoas.server.RepresentationModelAssembler
 import org.springframework.hateoas.server.mvc.linkTo
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobDTO
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobListPageDTO
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.resource.PrisonLeaversJobResourceController
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobListPageDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.resource.PrisonLeaversJobResourceController
 
 @Configuration
 class EmployerJobModelAssembler :

@@ -1,9 +1,9 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile
+package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
 import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
 
 @Relation(collectionRelation = "prisonLeaversJobDTO")
 open class PrisonLeaversJobDTO(

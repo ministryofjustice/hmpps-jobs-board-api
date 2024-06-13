@@ -1,13 +1,13 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.unit.service
+package uk.gov.justice.digital.hmpps.jobsboard.api.unit.service
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.assemblers.EmployerJobModelAssembler
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.messaging.OutboundEventsService
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.repository.PrisonLeaversJobRepository
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service.PrisonLeaversJobService
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.jobsboard.api.assemblers.EmployerJobModelAssembler
+import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.OutboundEventsService
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.service.PrisonLeaversJobService
+import uk.gov.justice.digital.hmpps.jobsboard.api.telemetry.TelemetryService
 
 class PrisonLeaversJobServiceTest {
   private val prisonLeaversJobRepository: PrisonLeaversJobRepository = mock()

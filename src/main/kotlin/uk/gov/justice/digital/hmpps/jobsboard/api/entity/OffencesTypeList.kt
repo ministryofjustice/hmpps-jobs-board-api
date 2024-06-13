@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import jakarta.persistence.AttributeOverride
 import jakarta.persistence.AttributeOverrides

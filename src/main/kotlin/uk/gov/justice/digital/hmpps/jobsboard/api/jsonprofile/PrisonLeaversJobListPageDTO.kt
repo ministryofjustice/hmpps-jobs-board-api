@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile
+package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
 import org.springframework.hateoas.RepresentationModel
 

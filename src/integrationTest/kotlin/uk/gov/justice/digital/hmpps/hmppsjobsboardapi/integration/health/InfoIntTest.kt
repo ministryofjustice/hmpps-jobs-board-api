@@ -1,12 +1,12 @@
-package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.integration.health
+package uk.gov.justice.digital.hmpps.jobsboard.api.integration.health
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.CapturedSpringConfigValues
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.CapturedSpringConfigValues
+import uk.gov.justice.digital.hmpps.jobsboard.api.integration.IntegrationTestBase
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
