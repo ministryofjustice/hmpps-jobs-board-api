@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobDTO
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobDetailDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobListPageDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversPagingDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.service.PrisonLeaversJobService
@@ -95,8 +95,8 @@ class PrisonLeaversJobResourceController(
   fun getPrisonLeaversJob(
     @PathVariable
     prisonerLeaversJobId: Long,
-  ): PrisonLeaversJobDTO? {
-    return PrisonLeaversJobDTO(prisonLeaversJobService.getPrisonersLeaversJob(prisonerLeaversJobId))
+  ): PrisonLeaversJobDetailDTO {
+    return prisonLeaversJobService.getPrisonersLeaversJob(prisonerLeaversJobId)
   }
 
   @PreAuthorize("hasRole('WORK_READINESS_EDIT')")

@@ -1,11 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="HmppsJobsBoardApi" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="developer" />
+    <option name="ACTIVE_PROFILES" value="integrationtest,developer,integrationtest" />
     <option name="ALTERNATIVE_JRE_PATH" value="corretto-21" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <envs>
       <env name="API_BASE_URL_OAUTH" value="https://sign-in-dev.hmpps.service.justice.gov.uk/auth" />
-      <env name="DATABASE_ENDPOINT" value="localhost:5431" />
+      <env name="DATABASE_ENDPOINT" value="localhost:5433" />
+      <env name="DATABASE_ENDPOINT1" value="localhost:5432" />
+      <env name="DB_NAME" value="job-board" />
+      <env name="skip.tests" value="true" />
     </envs>
     <module name="hmpps-jobs-board-api.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.hmppsjobsboardapi.HmppsJobsBoardApi" />

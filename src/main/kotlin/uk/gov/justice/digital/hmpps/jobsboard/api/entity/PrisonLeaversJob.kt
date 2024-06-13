@@ -14,21 +14,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import lombok.AllArgsConstructor
-import lombok.Builder
-import lombok.Data
-import lombok.EqualsAndHashCode
-import lombok.NoArgsConstructor
 import org.springframework.hateoas.server.core.Relation
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
 import java.time.Instant
 import kotlin.jvm.Transient
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @Relation(collectionRelation = "jobs", itemRelation = "job")
 @JsonInclude(Include.NON_NULL)
 @Entity

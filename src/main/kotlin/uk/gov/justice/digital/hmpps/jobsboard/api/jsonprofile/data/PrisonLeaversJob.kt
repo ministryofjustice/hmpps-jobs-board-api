@@ -2,21 +2,11 @@ package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.data
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
-import lombok.AllArgsConstructor
-import lombok.Builder
-import lombok.Data
-import lombok.EqualsAndHashCode
-import lombok.NoArgsConstructor
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
 import java.time.Instant
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @Relation(collectionRelation = "jobs", itemRelation = "job")
 @JsonInclude(Include.NON_NULL)
 class PrisonLeaversJob(

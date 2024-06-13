@@ -2,10 +2,10 @@ package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile
 
 import org.springframework.hateoas.RepresentationModel
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
-import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.SalaryPeriod
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.ContractHours
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.ExcludingOffences
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.Hours
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.SalaryPeriod
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
 
 open class PrisonLeaversJobDetailDTO(
@@ -39,7 +39,7 @@ open class PrisonLeaversJobDetailDTO(
     typeOfWork = prisonLeaversJob.typeOfWork,
     salaryFrom = prisonLeaversJob.salaryFrom,
     salaryTo = prisonLeaversJob.salaryTo,
-    salaryPeriod = prisonLeaversJob.salaryPeriod,
+    salaryPeriod = prisonLeaversJob.salaryPeriod?.mnSalaryPeriodName,
     offenceExclusions = null,
     essentialCriteria = prisonLeaversJob.essentialJobCriteria,
     jobDescription = null,

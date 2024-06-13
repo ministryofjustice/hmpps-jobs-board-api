@@ -1,13 +1,13 @@
-package uk.gov.justice.digital.hmpps.hmppscandidatematchingapi.integration
+package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.integration.testcontainers
 
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.testcontainers.containers.localstack.LocalStackContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.DockerImageName
+import uk.gov.justice.hmpps.sqs.HmppsQueueFactory.Companion.log
 import java.io.IOException
 import java.net.ServerSocket
-import uk.gov.justice.hmpps.sqs.HmppsQueueFactory.Companion.log
 
 object LocalStackContainer {
   val instance by lazy { startLocalstackIfNotRunning() }

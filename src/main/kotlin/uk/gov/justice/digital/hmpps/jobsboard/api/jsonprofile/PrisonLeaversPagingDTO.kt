@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.TypeOfWork
 
 data class PrisonLeaversPagingDTO(
 
-  var mode: PrisonLeaversJobSort,
+  var sort: PrisonLeaversJobSort,
   var pageNo: Int,
   var pageSize: Int,
   var typeOfWork: TypeOfWork?,

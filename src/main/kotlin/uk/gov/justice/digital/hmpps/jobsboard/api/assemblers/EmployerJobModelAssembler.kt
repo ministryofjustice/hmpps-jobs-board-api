@@ -28,7 +28,7 @@ class EmployerJobModelAssembler :
     while (entityIterator?.hasNext() == true) {
       entityIterator?.next()?.let { prisonLeaversJobDTOList.add(toModel(it)) }
     }
-    var prisonLeaversJobListPageDTO: PrisonLeaversJobListPageDTO = PrisonLeaversJobListPageDTO(prisonLeaversJobDTOList, entities.totalPages, entities.pageable)
+    var prisonLeaversJobListPageDTO: PrisonLeaversJobListPageDTO = PrisonLeaversJobListPageDTO(prisonLeaversJobDTOList, entities.totalPages)
     return prisonLeaversJobListPageDTO
   }
 }

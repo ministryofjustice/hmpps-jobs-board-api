@@ -8,4 +8,5 @@ enum class PrisonLeaversJobSort {
   LOCATION_AND_TYPE_OF_WORK,
   TYPE_OF_WORK_AND_DISTANCE,
   ALL,
+  NONE,
 }

@@ -19,7 +19,7 @@ services:
     container_name: job-board-db
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_PASSWORD=job-board
       - POSTGRES_USER=job-board

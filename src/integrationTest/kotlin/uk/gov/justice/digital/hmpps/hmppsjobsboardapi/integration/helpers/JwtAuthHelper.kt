@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.helpers
+package uk.gov.justice.digital.hmpps.hmppsjobsboardapi.integration.helpers
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.Jwts.SIG.RS256

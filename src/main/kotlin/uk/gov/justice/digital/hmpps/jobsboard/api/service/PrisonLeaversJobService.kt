@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.assemblers.EmployerJobModelAssembler
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.entity.PrisonLeaversJob
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.enums.PrisonLeaversJobSort
+import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobDetailDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversJobListPageDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.jsonprofile.PrisonLeaversPagingDTO
 import uk.gov.justice.digital.hmpps.hmppsjobsboardapi.messaging.OutboundEventsService
@@ -26,7 +27,7 @@ class PrisonLeaversJobService(
     var sortByParam = Sort.unsorted()
     val postCode = requestDTO.postCode
     val typeOfWork = requestDTO.typeOfWork
-    when (requestDTO.mode) {
+    when (requestDTO.sort) {
       PrisonLeaversJobSort.ALL -> sortByParam = Sort.by("typeOfWork").and(Sort.by("postCode"))
       PrisonLeaversJobSort.LOCATION_AND_TYPE_OF_WORK -> sortByParam = Sort.by("typeOfWork").and(Sort.by("postCode"))
       PrisonLeaversJobSort.TYPE_OF_WORK -> sortByParam = Sort.by("typeOfWork")
@@ -56,15 +57,10 @@ class PrisonLeaversJobService(
   fun createJob(
     prisonLeaversJob: PrisonLeaversJob,
   ): PrisonLeaversJob {
-    /*  var jobEmployer: JobEmployer = prisonLeaversRepository.save(
-
-    )*/
-    /*jobsProfileDTO.id = jobEmployer.id
-    return jobsProfileDTO*/
     return prisonLeaversRepository.save(prisonLeaversJob)
   }
 
-  fun getPrisonersLeaversJob(prisonerLeaversJobId: Long): PrisonLeaversJob {
-    return prisonLeaversRepository.getReferenceById(prisonerLeaversJobId)
+  fun getPrisonersLeaversJob(prisonerLeaversJobId: Long): PrisonLeaversJobDetailDTO {
+    return PrisonLeaversJobDetailDTO(prisonLeaversRepository.findById(prisonerLeaversJobId).get())
   }
 }
