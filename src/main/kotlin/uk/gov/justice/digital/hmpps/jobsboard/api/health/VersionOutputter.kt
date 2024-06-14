@@ -12,7 +12,7 @@ class VersionOutputter(buildProperties: BuildProperties) {
 
   @EventListener(ApplicationReadyEvent::class)
   fun logVersionOnStartup() {
-    uk.gov.justice.digital.hmpps.jobsboard.api.health.VersionOutputter.Companion.log.info("Version {} started", version)
+    log.info("Version {} started", version)
   }
 
   private companion object {
