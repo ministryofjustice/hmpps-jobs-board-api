@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.unit.messaging
 
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
@@ -31,6 +32,7 @@ class OutboundEventsServiceTest {
     outboundEventsService = OutboundEventsService(outboundEventsPublisher!!)
   }
 
+  @Disabled("Empty test")
   @Test
   fun should_Publish_Event_ForJobCreationAndUpdate() {
   }

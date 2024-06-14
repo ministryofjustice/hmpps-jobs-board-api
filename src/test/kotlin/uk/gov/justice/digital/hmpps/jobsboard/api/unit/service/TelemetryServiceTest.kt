@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.unit.service
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import uk.gov.justice.digital.hmpps.jobsboard.api.telemetry.TelemetryService
 
@@ -18,11 +17,13 @@ class TelemetryServiceTest {
     )
   }
 
-  @Test
-  fun `makes a call to the telemetryclient  when a job is created`() {
-  }
+//  @Disabled("Empty test")
+//  @Test
+//  fun `makes a call to the telemetryclient when a job is created`() {
+//  }
 
-  @Test
-  fun `makes a call to the telemetryclient  when a job is updated`() {
-  }
+//  @Disabled("Empty test")
+//  @Test
+//  fun `makes a call to the telemetryclient when a job is updated`() {
+//  }
 }

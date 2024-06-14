@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.unit.messaging
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
@@ -39,14 +40,17 @@ class OutboundEventsPublisherTest {
     outboundEventsPublisher = OutboundEventsPublisher(objectMapper!!, hmppsQueueService!!)
   }
 
+  @Disabled("Empty test")
   @Test
   fun shouldEmit_DomainEvent_ForJobCreationAndUpdate() {
   }
 
+  @Disabled("Empty test")
   @Test
   fun shouldThrow_PublishEventException_For_Publish_Errors() {
   }
 
+  @Disabled("Empty test")
   @Test
   fun shouldThrow_PublishEventException_For_TOPIC_NOT_FOUND() {
   }
