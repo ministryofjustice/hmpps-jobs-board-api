@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.unit.repositories
 
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,14 +26,15 @@ class RepositoriesTests @Autowired constructor(
 
   @BeforeEach
   fun beforeClass() {
-    var dpsPrincipal: DpsPrincipal = DpsPrincipal("test_td", "test_id")
+    val dpsPrincipal = DpsPrincipal("test_td", "test_id")
     whenever(authentication?.principal).thenReturn(dpsPrincipal)
     whenever(securityContext?.authentication).thenReturn(authentication)
     SecurityContextHolder.setContext(securityContext)
     jbRepository.deleteAll()
   }
 
-  @Test
-  fun `When Job Profile is created with education and qualification`() {
-  }
+//  @Disabled("Empty test")
+//  @Test
+//  fun `When Job Profile is created with education and qualification`() {
+//  }
 }
