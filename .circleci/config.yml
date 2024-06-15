@@ -30,37 +30,7 @@ executors:
 
 jobs:
   validate:
-    executor: integration-test-environment
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - gradle-{{ checksum "build.gradle.kts" }}
-            - gradle-
-      - run:
-          command: ./gradlew --daemon check
-      - run:
-          command: ./gradlew --daemon combineJacocoReports
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: gradle-{{ checksum "build.gradle.kts" }}
-      - store_test_results:
-          path: build/test-results
-      - store_test_results:
-          path: domain/goal/build/test-results
-      - store_test_results:
-          path: domain/timeline/build/test-results
-      - run:
-          name: Compress Build Reports Artifacts
-          command: |
-            tar -cvzf build-reports.tar \
-            build/reports/tests \
-            build/reports/jacoco \
-
-      - store_artifacts:
-          path: build-reports.tar
-  executor:
+    executor:
       name: hmpps/java
       tag: "21.0"
   steps:
