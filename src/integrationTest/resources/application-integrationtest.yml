@@ -19,6 +19,3 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
-
-  datasource:
-    url: 'jdbc:postgresql://${DATABASE_ENDPOINT1}/${DB_NAME}?sslmode=disable'

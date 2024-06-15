@@ -75,7 +75,13 @@
     "mnId": 2,
     "mnIdentifier": "test1",
     "mnSectorName": "test2"
-  },
+  },"prisonLeavers": [{
+
+    "id": 2,
+    "createdBy": "sacintha",
+    "modifiedBy": "test",
+    "jobs": []
+  }],
   "additionalSalaryInformation": null,
   "desirableJobCriteria": null,
   "essentialJobCriteria": null,

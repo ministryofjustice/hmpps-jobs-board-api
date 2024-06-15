@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.springframework.hateoas.server.core.Relation
@@ -140,6 +141,8 @@ class PrisonLeaversJob(
   @Enumerated(EnumType.STRING)
   var typeOfWork: TypeOfWork?,
 
+  @ManyToMany(mappedBy = "jobs")
+  var prisonLeavers: Set<PrisonLeaversProfile>?,
   @Transient
   var distance: Long,
 )
