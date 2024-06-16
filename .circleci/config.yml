@@ -32,6 +32,7 @@ jobs:
     executor:
       name: hmpps/java_postgres
       jdk_tag: "21.0"
+      localstack_tag: "0.14.0"
       postgres_tag: "15.5"
       postgres_username: "job-board"
       postgres_password: "job-board"
