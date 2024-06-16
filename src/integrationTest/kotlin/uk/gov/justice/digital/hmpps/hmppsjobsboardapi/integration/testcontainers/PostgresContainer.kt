@@ -21,7 +21,7 @@ object PostgresContainer {
 
   private fun startPostgresqlContainer(): PostgreSQLContainer<Nothing>? =
     if (checkPostgresRunning().not()) {
-      PostgreSQLContainer<Nothing>(DockerImageName.parse("circleci/postgres:9.5.15-postgis").asCompatibleSubstituteFor("postgres")).apply {
+      PostgreSQLContainer<Nothing>(DockerImageName.parse("cimg/postgres:15.5").asCompatibleSubstituteFor("postgres")).apply {
         withEnv("HOSTNAME_EXTERNAL", "localhost")
         withExposedPorts(5432)
         withDatabaseName("job-board")
