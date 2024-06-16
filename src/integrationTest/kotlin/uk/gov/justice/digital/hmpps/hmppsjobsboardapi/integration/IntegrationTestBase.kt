@@ -23,7 +23,7 @@ abstract class IntegrationTestBase internal constructor() {
 
   companion object {
 
-    private val postgresContainer = PostgresContainer.instance
+  /* private val postgresContainer = PostgresContainer.instance
 
     @JvmStatic
     @DynamicPropertySource
@@ -38,7 +38,7 @@ abstract class IntegrationTestBase internal constructor() {
         registry.add("spring.flyway.user", postgresContainer::getUsername)
         registry.add("spring.flyway.password", postgresContainer::getPassword)
       }
-    }
+    }*/
   }
 
   @Autowired
