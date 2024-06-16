@@ -25,8 +25,8 @@ services:
       - POSTGRES_USER=job-board
       - POSTGRES_DB=job-board
 
-  job-board-integration-db:
-    image: postgres:15.5
+  tests:
+    image: cimg/postgres:15.5
     container_name: job-board-db
     restart: unless-stopped
     ports:
