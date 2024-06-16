@@ -7,6 +7,7 @@ import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.api.model.Ports
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.utility.DockerImageName
 import java.io.IOException
 import java.net.ServerSocket
 import java.util.function.Consumer
@@ -20,7 +21,7 @@ object PostgresContainer {
 
   private fun startPostgresqlContainer(): PostgreSQLContainer<Nothing>? =
     if (checkPostgresRunning().not()) {
-      PostgreSQLContainer<Nothing>("postgres:15.5").apply {
+      PostgreSQLContainer<Nothing>(DockerImageName.parse("circleci/postgres:9.5.15-postgis").asCompatibleSubstituteFor("postgres")).apply {
         withEnv("HOSTNAME_EXTERNAL", "localhost")
         withExposedPorts(5432)
         withDatabaseName("job-board")

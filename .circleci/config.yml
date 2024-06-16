@@ -14,8 +14,8 @@ parameters:
 executors:
   integration-test-environment:
     docker:
-      - image: openjdk:21.0
-      - image: postgres:15.5
+      - image: circleci/openjdk:21.0
+      - image: circleci/postgres:9.5.15-postgis
         environment:
           POSTGRES_PASSWORD: admin_password
           POSTGRES_USER: admin
