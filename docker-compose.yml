@@ -27,7 +27,7 @@ services:
 
   tests:
     image: cimg/postgres:15.5
-    container_name: job-board-db
+    container_name: job-board-db1
     restart: unless-stopped
     ports:
       - "5433:5432"

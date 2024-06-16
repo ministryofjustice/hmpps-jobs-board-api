@@ -29,7 +29,12 @@ executors:
     working_directory: ~/app
 jobs:
   validate:
-    executor: integration-test-environment
+    executor:
+      name: hmpps/java_postgres
+      jdk_tag: "21.0"
+      postgres_tag: "15.5"
+      postgres_username: "job-board"
+      postgres_password: "job-board"
     steps:
       - checkout
       - restore_cache:
