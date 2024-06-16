@@ -24,7 +24,7 @@ spring:
       ddl-auto: none
 
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/job-board?sslmode=prefer'
+    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=prefer'
     username: job-board
     password: job-board
     hikari:
@@ -37,6 +37,6 @@ spring:
     baselineOnMigrate: true
     validateMigrationNaming: true
     enabled: true
-    url: jdbc:postgresql://localhost:5432/job-board?sslmode=prefer
+    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=prefer'
     user: job-board
     password: job-board

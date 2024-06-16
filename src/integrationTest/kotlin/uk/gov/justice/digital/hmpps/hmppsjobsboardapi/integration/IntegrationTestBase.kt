@@ -6,9 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
-import uk.gov.justice.digital.hmpps.educationandworkplanapi.app.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.HmppsJobsBoardApi
 import uk.gov.justice.digital.hmpps.jobsboard.api.integration.helpers.JwtAuthHelper
 
@@ -18,7 +15,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.integration.helpers.JwtAuthHel
     HmppsJobsBoardApi::class,
   ),
 )
-@ActiveProfiles("integrationtest")
+@ActiveProfiles("integration-test")
 abstract class IntegrationTestBase internal constructor() {
 
   companion object {
