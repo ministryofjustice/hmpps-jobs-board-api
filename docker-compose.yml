@@ -1,17 +1,36 @@
-version: "3"
 services:
   hmpps-jobs-board-api:
     build:
       context: .
-    network_mode: "host"
+    networks:
+      - hmpps
     container_name: hmpps-jobs-board-api
     ports:
       - "8081:8080"
+    depends_on:
+      - job-board-db
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
     environment:
       - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=dev
+      - DATABASE_ENDPOINT=job-board-db
+      - DATABASE_NAME=job-board
+      - DATABASE_USERNAME=job-board
+      - DATABASE_PASSWORD=job-board
+      - API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+
+  job-board-db:
+    image: postgres
+    container_name: job-board-db
+    restart: unless-stopped
+    networks:
+      - hmpps
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=job-board
+      - POSTGRES_USER=job-board
+      - POSTGRES_DB=job-board
 
 networks:
   hmpps:
