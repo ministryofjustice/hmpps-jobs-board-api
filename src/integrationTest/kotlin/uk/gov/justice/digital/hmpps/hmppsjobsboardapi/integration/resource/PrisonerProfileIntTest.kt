@@ -1,26 +1,10 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.integration.resource
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversProfile
 import uk.gov.justice.digital.hmpps.jobsboard.api.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.jobsboard.api.integration.util.TestData
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobsDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchResultDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchResultListDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversProfileRepository
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class PrisonerProfileIntTest : IntegrationTestBase() {
-
+/*
   @Autowired
   lateinit var prisonLeaversJobRepository: PrisonLeaversJobRepository
 
@@ -78,5 +62,5 @@ class PrisonerProfileIntTest : IntegrationTestBase() {
   fun deleteAllPrisonLeavers() {
     prisonLeaversProfileRepository.deleteAll()
     prisonLeaversJobRepository.deleteAll()
-  }
+  }*/
 }

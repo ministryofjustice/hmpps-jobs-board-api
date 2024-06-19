@@ -19,9 +19,10 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartner
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartnerGrade
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerWorkSector
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobImage
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployer
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.JobEmployerService
 import java.time.Instant
 
@@ -62,8 +63,8 @@ class JobsEmployerResourceController(
   fun createEmployer(
     @Valid
     @RequestBody
-    requestDTO: JobEmployerDTO,
-  ): JobEmployerDTO {
+    requestDTO: SimplifiedJobEmployerDTO,
+  ): SimplifiedJobEmployerDTO {
     return jobEmployerService.createEmployer(requestDTO)
   }
 
@@ -149,7 +150,7 @@ class JobsEmployerResourceController(
     @RequestParam
     @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
     sortBy: String,
-  ): MutableList<JobEmployer>? {
+  ): MutableList<SimplifiedJobEmployer>? {
     return jobEmployerService.getPagingList(pageNo, pageSize, sortBy)
   }
 }

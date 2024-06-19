@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
 import org.springframework.hateoas.RepresentationModel
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedPrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.ContractHours
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.ExcludingOffences
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.Hours
@@ -30,7 +30,7 @@ open class PrisonLeaversJobDetailDTO(
   var hours: Hours?,
 
 ) : RepresentationModel<PrisonLeaversJobDetailDTO>() {
-  constructor(prisonLeaversJob: PrisonLeaversJob) : this(
+  constructor(prisonLeaversJob: SimplifiedPrisonLeaversJob) : this(
     employerName = prisonLeaversJob.employer?.employerName,
     jobTitle = prisonLeaversJob.jobTitle,
     closingDate = prisonLeaversJob.closingDate,
@@ -40,13 +40,13 @@ open class PrisonLeaversJobDetailDTO(
     typeOfWork = prisonLeaversJob.typeOfWork,
     salaryFrom = prisonLeaversJob.salaryFrom,
     salaryTo = prisonLeaversJob.salaryTo,
-    salaryPeriod = prisonLeaversJob.salaryPeriod?.mnSalaryPeriodName,
+    salaryPeriod = prisonLeaversJob.salaryPeriodName,
     offenceExclusions = null,
     essentialCriteria = prisonLeaversJob.essentialJobCriteria,
     jobDescription = null,
-    workPattern = prisonLeaversJob.workPattern?.mnWorkPatternName,
+    workPattern = prisonLeaversJob.workPatternName,
     additionalSalaryInformation = prisonLeaversJob.additionalSalaryInformation,
     desirableCriteria = prisonLeaversJob.desirableJobCriteria,
-    hours = prisonLeaversJob.hoursType?.mnHoursName,
+    hours = prisonLeaversJob.hoursName,
   )
 }

@@ -1,41 +1,10 @@
 [{
   "mnJobId": 2,
-  "salaryPeriod": {
-
-    "mnId": 2,
-    "mnIdentifier": "test",
-    "mnSalaryPeriodName": "PER_DAY"
-  },
-  "workPattern": {
-
-    "mnId": 2,
-    "mnIdentifier": "test1",
-    "mnWorkPatternName": "ANNUALISED_HOURS"
-  },
-  "hoursType": {
-
-    "mnId": 2,
-    "mnIdentifier": "test1",
-    "mnHoursName": "FULL_TIME"
-  },
-  "jobContractType": {
-
-    "mnId": 2,
-    "mnIdentifier": "testt3",
-    "mnJobContractName": "testt5"
-  },
-  "jobType": {
-
-    "mnId": 2,
-    "mnIdentifier": "test4",
-    "mnJobTypeName": "testt6"
-  },
-  "baseLocation": {
-
-    "mnId": 2,
-    "mnIdentifier": "test4",
-    "mnSectorName": "testt6"
-  },
+  "salaryPeriodName":  "PER_DAY",
+  "workPattern": "ANNUALISED_HOURS",
+  "hoursName": "FULL_TIME",
+  "jobContractName": "testt5",
+  "jobTypeName": "testt6",
   "jobContractId": 1,
   "employer": {
 
@@ -45,37 +14,12 @@
     "createdDateTime": "2024-05-16T11:15:04.915205",
     "modifiedBy": "test",
     "modifiedDateTime": "2024-05-16T11:15:04.915219",
-    "sector": {
-
-      "mnId": 1,
-      "mnIdentifier": "test",
-      "mnSectorName": "test"
-    },
-    "partner": {
-
-      "partnerGrade": {
-
-        "mnId": 1,
-        "mnIdentifier": "test",
-        "mnGrade": "test"
-      },
-      "mnId": 1,
-      "mnIdentifier": "test",
-      "mnPartnerName": "test1"
-    },
-    "image": {
-
-      "mnId": 1,
-      "imagePath": "ett"
-    },
+    "sectorName":"sector name",
+    "partnerName": "partner name",
+    "imagePath": "image path",
     "postCode": "eh26 0hq"
   },
-  "employerSector": {
-
-    "mnId": 2,
-    "mnIdentifier": "test1",
-    "mnSectorName": "test2"
-  },
+  "sectorName": "sector name",
   "additionalSalaryInformation": null,
   "desirableJobCriteria": null,
   "essentialJobCriteria": null,
@@ -100,251 +44,13 @@
   "salaryFrom": null,
   "salaryTo": null,
   "typeOfWork": "CONSTRUCTION"
-},
-  {
-    "mnJobId": 2,
-    "salaryPeriod": {
-
-      "mnId": 2,
-      "mnIdentifier": "test",
-      "mnSalaryPeriodName": "PER_DAY"
-    },
-    "workPattern": {
-
-      "mnId": 2,
-      "mnIdentifier": "test1",
-      "mnWorkPatternName": "ANNUALISED_HOURS"
-    },
-    "hoursType": {
-
-      "mnId": 2,
-      "mnIdentifier": "test1",
-      "mnHoursName": "FULL_TIME"
-    },
-    "jobContractType": {
-
-      "mnId": 2,
-      "mnIdentifier": "testt3",
-      "mnJobContractName": "testt5"
-    },
-    "jobType": {
-
-      "mnId": 2,
-      "mnIdentifier": "test4",
-      "mnJobTypeName": "testt6"
-    },
-    "baseLocation": {
-
-      "mnId": 2,
-      "mnIdentifier": "test4",
-      "mnSectorName": "testt6"
-    },
-    "jobContractId": 1,
-    "employer": {
-
-      "employerName": "test",
-      "employerBio": "asdad",
-      "createdBy": "sacintha",
-      "createdDateTime": "2024-05-16T11:15:04.915205",
-      "modifiedBy": "test",
-      "modifiedDateTime": "2024-05-16T11:15:04.915219",
-      "sector": {
-
-        "mnId": 1,
-        "mnIdentifier": "test",
-        "mnSectorName": "test"
-      },
-      "partner": {
-
-        "partnerGrade": {
-
-          "mnId": 1,
-          "mnIdentifier": "test",
-          "mnGrade": "test"
-        },
-        "mnId": 1,
-        "mnIdentifier": "test",
-        "mnPartnerName": "test1"
-      },
-      "image": {
-
-        "mnId": 1,
-        "imagePath": "ett"
-      },
-      "postCode": "eh26 1hq"
-    },
-    "employerSector": {
-
-      "mnId": 2,
-      "mnIdentifier": "test1",
-      "mnSectorName": "test2"
-    },
-    "additionalSalaryInformation": null,
-    "desirableJobCriteria": null,
-    "essentialJobCriteria": null,
-    "closingDate": "2024-06-18T11:45:25.619164",
-    "howToApply": null,
-    "jobTitle": "jobtitle1",
-    "mnCreatedById": 21,
-    "createdBy": null,
-    "createdDateTime": null,
-    "postingDate": null,
-    "mnDeletedById": 4,
-    "deletedBy": null,
-    "deletedDateTime": null,
-    "modifiedBy": null,
-    "modifiedDateTime": null,
-    "nationalMinimumWage": null,
-    "postCode": null,
-    "ringFencedJob": null,
-    "rollingJobOppurtunity": null,
-    "activeJob": null,
-    "deletedJob": null,
-    "salaryFrom": null,
-    "salaryTo": null,
-    "typeOfWork": "CONSTRUCTION"
-  },
-  {
-    "mnJobId": 2,
-    "salaryPeriod": {
-
-      "mnId": 2,
-      "mnIdentifier": "test",
-      "mnSalaryPeriodName": "PER_DAY"
-    },
-    "workPattern": {
-
-      "mnId": 2,
-      "mnIdentifier": "test1",
-      "mnWorkPatternName": "ANNUALISED_HOURS"
-    },
-    "hoursType": {
-
-      "mnId": 2,
-      "mnIdentifier": "test1",
-      "mnHoursName": "FULL_TIME"
-    },
-    "jobContractType": {
-
-      "mnId": 2,
-      "mnIdentifier": "testt3",
-      "mnJobContractName": "testt5"
-    },
-    "jobType": {
-
-      "mnId": 2,
-      "mnIdentifier": "test4",
-      "mnJobTypeName": "testt6"
-    },
-    "baseLocation": {
-
-      "mnId": 2,
-      "mnIdentifier": "test4",
-      "mnSectorName": "testt6"
-    },
-    "jobContractId": 1,
-    "employer": {
-
-      "employerName": "test",
-      "employerBio": "asdad",
-      "createdBy": "sacintha",
-      "createdDateTime": "2024-05-16T11:15:04.915205",
-      "modifiedBy": "test",
-      "modifiedDateTime": "2024-05-16T11:15:04.915219",
-      "sector": {
-
-        "mnId": 1,
-        "mnIdentifier": "test",
-        "mnSectorName": "test"
-      },
-      "partner": {
-
-        "partnerGrade": {
-
-          "mnId": 1,
-          "mnIdentifier": "test",
-          "mnGrade": "test"
-        },
-        "mnId": 1,
-        "mnIdentifier": "test",
-        "mnPartnerName": "test1"
-      },
-      "image": {
-
-        "mnId": 1,
-        "imagePath": "ett"
-      },
-      "postCode": "eh26 1hq"
-    },
-    "employerSector": {
-
-      "mnId": 2,
-      "mnIdentifier": "test1",
-      "mnSectorName": "test2"
-    },
-    "additionalSalaryInformation": null,
-    "desirableJobCriteria": null,
-    "essentialJobCriteria": null,
-    "closingDate": "2024-06-18T11:45:25.619164",
-    "howToApply": null,
-    "jobTitle": "jobtitle1",
-    "mnCreatedById": 21,
-    "createdBy": null,
-    "createdDateTime": null,
-    "postingDate": null,
-    "mnDeletedById": 4,
-    "deletedBy": null,
-    "deletedDateTime": null,
-    "modifiedBy": null,
-    "modifiedDateTime": null,
-    "nationalMinimumWage": null,
-    "postCode": null,
-    "ringFencedJob": null,
-    "rollingJobOppurtunity": null,
-    "activeJob": null,
-    "deletedJob": null,
-    "salaryFrom": null,
-    "salaryTo": null,
-    "typeOfWork": "BEAUTY"
-  },
-  {
+},{
   "mnJobId": 2,
-  "salaryPeriod": {
-
-    "mnId": 2,
-    "mnIdentifier": "test",
-    "mnSalaryPeriodName": "PER_DAY"
-  },
-  "workPattern": {
-
-    "mnId": 2,
-    "mnIdentifier": "test1",
-    "mnWorkPatternName": "ANNUALISED_HOURS"
-  },
-  "hoursType": {
-
-    "mnId": 2,
-    "mnIdentifier": "test1",
-    "mnHoursName": "FULL_TIME"
-  },
-  "jobContractType": {
-
-    "mnId": 2,
-    "mnIdentifier": "testt3",
-    "mnJobContractName": "testt5"
-  },
-  "jobType": {
-
-    "mnId": 2,
-    "mnIdentifier": "test4",
-    "mnJobTypeName": "testt6"
-  },
-  "baseLocation": {
-
-    "mnId": 2,
-    "mnIdentifier": "test4",
-    "mnSectorName": "testt6"
-  },
+  "salaryPeriodName":  "PER_DAY",
+  "workPattern": "ANNUALISED_HOURS",
+  "hoursName": "FULL_TIME",
+  "jobContractName": "testt5",
+  "jobTypeName": "testt6",
   "jobContractId": 1,
   "employer": {
 
@@ -354,37 +60,242 @@
     "createdDateTime": "2024-05-16T11:15:04.915205",
     "modifiedBy": "test",
     "modifiedDateTime": "2024-05-16T11:15:04.915219",
-    "sector": {
-
-      "mnId": 1,
-      "mnIdentifier": "test",
-      "mnSectorName": "test"
-    },
-    "partner": {
-
-      "partnerGrade": {
-
-        "mnId": 1,
-        "mnIdentifier": "test",
-        "mnGrade": "test"
-      },
-      "mnId": 1,
-      "mnIdentifier": "test",
-      "mnPartnerName": "test1"
-    },
-    "image": {
-
-      "mnId": 1,
-      "imagePath": "ett"
-    },
-    "postCode": "eh26 1hq"
+    "sectorName":"sector name",
+    "partnerName": "partner name",
+    "imagePath": "image path",
+    "postCode": "eh26 0hq"
   },
-  "employerSector": {
+  "sectorName": "sector name",
+  "additionalSalaryInformation": null,
+  "desirableJobCriteria": null,
+  "essentialJobCriteria": null,
+  "closingDate": "2024-06-18T11:45:25.619164",
+  "howToApply": null,
+  "jobTitle": "jobtitle1",
+  "mnCreatedById": 21,
+  "createdBy": null,
+  "createdDateTime": null,
+  "postingDate": null,
+  "mnDeletedById": 4,
+  "deletedBy": null,
+  "deletedDateTime": null,
+  "modifiedBy": null,
+  "modifiedDateTime": null,
+  "nationalMinimumWage": null,
+  "postCode": null,
+  "ringFencedJob": null,
+  "rollingJobOppurtunity": null,
+  "activeJob": null,
+  "deletedJob": null,
+  "salaryFrom": null,
+  "salaryTo": null,
+  "typeOfWork": "CONSTRUCTION"
+},{
+  "mnJobId": 2,
+  "salaryPeriodName":  "PER_DAY",
+  "workPattern": "ANNUALISED_HOURS",
+  "hoursName": "FULL_TIME",
+  "jobContractName": "testt5",
+  "jobTypeName": "testt6",
+  "jobContractId": 1,
+  "employer": {
 
-    "mnId": 2,
-    "mnIdentifier": "test1",
-    "mnSectorName": "test2"
+    "employerName": "test",
+    "employerBio": "asdad",
+    "createdBy": "sacintha",
+    "createdDateTime": "2024-05-16T11:15:04.915205",
+    "modifiedBy": "test",
+    "modifiedDateTime": "2024-05-16T11:15:04.915219",
+    "sectorName":"sector name",
+    "partnerName": "partner name",
+    "imagePath": "image path",
+    "postCode": "eh26 0hq"
   },
+  "sectorName": "sector name",
+  "additionalSalaryInformation": null,
+  "desirableJobCriteria": null,
+  "essentialJobCriteria": null,
+  "closingDate": "2024-06-18T11:45:25.619164",
+  "howToApply": null,
+  "jobTitle": "jobtitle1",
+  "mnCreatedById": 21,
+  "createdBy": null,
+  "createdDateTime": null,
+  "postingDate": null,
+  "mnDeletedById": 4,
+  "deletedBy": null,
+  "deletedDateTime": null,
+  "modifiedBy": null,
+  "modifiedDateTime": null,
+  "nationalMinimumWage": null,
+  "postCode": null,
+  "ringFencedJob": null,
+  "rollingJobOppurtunity": null,
+  "activeJob": null,
+  "deletedJob": null,
+  "salaryFrom": null,
+  "salaryTo": null,
+  "typeOfWork": "CONSTRUCTION"
+},{
+  "mnJobId": 2,
+  "salaryPeriodName":  "PER_DAY",
+  "workPattern": "ANNUALISED_HOURS",
+  "hoursName": "FULL_TIME",
+  "jobContractName": "testt5",
+  "jobTypeName": "testt6",
+  "jobContractId": 1,
+  "employer": {
+
+    "employerName": "test",
+    "employerBio": "asdad",
+    "createdBy": "sacintha",
+    "createdDateTime": "2024-05-16T11:15:04.915205",
+    "modifiedBy": "test",
+    "modifiedDateTime": "2024-05-16T11:15:04.915219",
+    "sectorName":"sector name",
+    "partnerName": "partner name",
+    "imagePath": "image path",
+    "postCode": "eh26 0hq"
+  },
+  "sectorName": "sector name",
+  "additionalSalaryInformation": null,
+  "desirableJobCriteria": null,
+  "essentialJobCriteria": null,
+  "closingDate": "2024-06-18T11:45:25.619164",
+  "howToApply": null,
+  "jobTitle": "jobtitle1",
+  "mnCreatedById": 21,
+  "createdBy": null,
+  "createdDateTime": null,
+  "postingDate": null,
+  "mnDeletedById": 4,
+  "deletedBy": null,
+  "deletedDateTime": null,
+  "modifiedBy": null,
+  "modifiedDateTime": null,
+  "nationalMinimumWage": null,
+  "postCode": null,
+  "ringFencedJob": null,
+  "rollingJobOppurtunity": null,
+  "activeJob": null,
+  "deletedJob": null,
+  "salaryFrom": null,
+  "salaryTo": null,
+  "typeOfWork": "BEAUTY"
+},{
+  "mnJobId": 2,
+  "salaryPeriodName":  "PER_DAY",
+  "workPattern": "ANNUALISED_HOURS",
+  "hoursName": "FULL_TIME",
+  "jobContractName": "testt5",
+  "jobTypeName": "testt6",
+  "jobContractId": 1,
+  "employer": {
+
+    "employerName": "test",
+    "employerBio": "asdad",
+    "createdBy": "sacintha",
+    "createdDateTime": "2024-05-16T11:15:04.915205",
+    "modifiedBy": "test",
+    "modifiedDateTime": "2024-05-16T11:15:04.915219",
+    "sectorName":"sector name",
+    "partnerName": "partner name",
+    "imagePath": "image path",
+    "postCode": "eh26 0hq"
+  },
+  "sectorName": "sector name",
+  "additionalSalaryInformation": null,
+  "desirableJobCriteria": null,
+  "essentialJobCriteria": null,
+  "closingDate": "2024-06-18T11:45:25.619164",
+  "howToApply": null,
+  "jobTitle": "jobtitle1",
+  "mnCreatedById": 21,
+  "createdBy": null,
+  "createdDateTime": null,
+  "postingDate": null,
+  "mnDeletedById": 4,
+  "deletedBy": null,
+  "deletedDateTime": null,
+  "modifiedBy": null,
+  "modifiedDateTime": null,
+  "nationalMinimumWage": null,
+  "postCode": null,
+  "ringFencedJob": null,
+  "rollingJobOppurtunity": null,
+  "activeJob": null,
+  "deletedJob": null,
+  "salaryFrom": null,
+  "salaryTo": null,
+  "typeOfWork": "CONSTRUCTION"
+},{
+  "mnJobId": 2,
+  "salaryPeriodName":  "PER_DAY",
+  "workPattern": "ANNUALISED_HOURS",
+  "hoursName": "FULL_TIME",
+  "jobContractName": "testt5",
+  "jobTypeName": "testt6",
+  "jobContractId": 1,
+  "employer": {
+
+    "employerName": "test",
+    "employerBio": "asdad",
+    "createdBy": "sacintha",
+    "createdDateTime": "2024-05-16T11:15:04.915205",
+    "modifiedBy": "test",
+    "modifiedDateTime": "2024-05-16T11:15:04.915219",
+    "sectorName":"sector name",
+    "partnerName": "partner name",
+    "imagePath": "image path",
+    "postCode": "eh26 3hq"
+  },
+  "sectorName": "sector name",
+  "additionalSalaryInformation": null,
+  "desirableJobCriteria": null,
+  "essentialJobCriteria": null,
+  "closingDate": "2024-06-18T11:45:25.619164",
+  "howToApply": null,
+  "jobTitle": "jobtitle1",
+  "mnCreatedById": 21,
+  "createdBy": null,
+  "createdDateTime": null,
+  "postingDate": null,
+  "mnDeletedById": 4,
+  "deletedBy": null,
+  "deletedDateTime": null,
+  "modifiedBy": null,
+  "modifiedDateTime": null,
+  "nationalMinimumWage": null,
+  "postCode": null,
+  "ringFencedJob": null,
+  "rollingJobOppurtunity": null,
+  "activeJob": null,
+  "deletedJob": null,
+  "salaryFrom": null,
+  "salaryTo": null,
+  "typeOfWork": "CONSTRUCTION"
+},{
+  "mnJobId": 2,
+  "salaryPeriodName":  "PER_DAY",
+  "workPattern": "ANNUALISED_HOURS",
+  "hoursName": "FULL_TIME",
+  "jobContractName": "testt5",
+  "jobTypeName": "testt6",
+  "jobContractId": 1,
+  "employer": {
+
+    "employerName": "test",
+    "employerBio": "asdad",
+    "createdBy": "sacintha",
+    "createdDateTime": "2024-05-16T11:15:04.915205",
+    "modifiedBy": "test",
+    "modifiedDateTime": "2024-05-16T11:15:04.915219",
+    "sectorName":"sector name",
+    "partnerName": "partner name",
+    "imagePath": "image path",
+    "postCode": "eh26 0hq"
+  },
+  "sectorName": "sector name",
   "additionalSalaryInformation": null,
   "desirableJobCriteria": null,
   "essentialJobCriteria": null,

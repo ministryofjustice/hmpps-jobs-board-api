@@ -97,7 +97,7 @@ class MatchedJobsResourceController(
     requestDTO: PrisonLeaversSearchDTO,
   ): PrisonLeaversSearchResultListDTO? {
     var plist = prisonLeaversProfileService.searchPrisonLeaversProfile(requestDTO)
-   var prisonLeaversSearchResultListDTO= PrisonLeaversSearchResultListDTO(plist)
+    var prisonLeaversSearchResultListDTO = PrisonLeaversSearchResultListDTO(plist)
     return prisonLeaversSearchResultListDTO
   }
 }

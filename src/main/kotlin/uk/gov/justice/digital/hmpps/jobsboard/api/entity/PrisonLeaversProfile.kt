@@ -72,5 +72,5 @@ class PrisonLeaversProfile(
     joinColumns = arrayOf(JoinColumn(name = "prison_leaver_id")),
     inverseJoinColumns = arrayOf(JoinColumn(name = "prisonLeaversJob_id")),
   )
-  var jobs: MutableList<PrisonLeaversJob?>,
+  var jobs: MutableList<SimplifiedPrisonLeaversJob?>,
 )

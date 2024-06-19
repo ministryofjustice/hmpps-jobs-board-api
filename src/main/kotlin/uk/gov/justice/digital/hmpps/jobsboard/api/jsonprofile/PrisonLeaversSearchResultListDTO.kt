@@ -4,4 +4,4 @@ open class PrisonLeaversSearchResultListDTO(
 
   var jobsForPrisonLeavers: MutableList<PrisonLeaversSearchResultDTO>?,
 
-  )
+)

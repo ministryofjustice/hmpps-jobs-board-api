@@ -6,18 +6,20 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.assemblers.EmployerJobModelAssembler
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedPrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.PrisonLeaversJobSort
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobDetailDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobListPageDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversPagingDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.OutboundEventsService
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.telemetry.TelemetryService
 
 @Service
 class PrisonLeaversJobService(
   private val prisonLeaversRepository: PrisonLeaversJobRepository,
+  private val jobEmployerRepository: JobEmployerRepository,
   private val outboundEventsService: OutboundEventsService,
   private val telemetryService: TelemetryService,
   private val employerJobModelAssembler: EmployerJobModelAssembler,
@@ -42,7 +44,7 @@ class PrisonLeaversJobService(
       sortByParam,
     )
 
-    val pagedResult: Page<PrisonLeaversJob>? =
+    val pagedResult: Page<SimplifiedPrisonLeaversJob>? =
       when {
         typeOfWork != null && !postCode.isNullOrEmpty() -> prisonLeaversRepository.findPrisonLeaversJobsByTypeOfWorkAndEmployerPostCode(typeOfWork, postCode, paging)
         typeOfWork != null -> prisonLeaversRepository.findPrisonLeaversJobsByTypeOfWork(typeOfWork, paging)
@@ -55,9 +57,11 @@ class PrisonLeaversJobService(
   }
 
   fun createJob(
-    prisonLeaversJob: PrisonLeaversJob,
-  ): PrisonLeaversJob {
-    return prisonLeaversRepository.save(prisonLeaversJob)
+    prisonLeaversJob: SimplifiedPrisonLeaversJob,
+  ): SimplifiedPrisonLeaversJob {
+    val employer = prisonLeaversJob.employer?.let { jobEmployerRepository.save(it) }
+    prisonLeaversJob.employer = employer
+    return prisonLeaversRepository.saveAndFlush(prisonLeaversJob)
   }
 
   fun getPrisonersLeaversJob(prisonerLeaversJobId: Long): PrisonLeaversJobDetailDTO {

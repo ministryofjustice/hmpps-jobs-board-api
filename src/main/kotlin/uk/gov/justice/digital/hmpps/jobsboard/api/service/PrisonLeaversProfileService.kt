@@ -3,13 +3,13 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.CapturedSpringConfigValues
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversProfile
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobsDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchResultDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversProfileRepository
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobsDTO
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -44,7 +44,7 @@ class PrisonLeaversProfileService(
     var prisonLeaversProfile = prisonLeaversSearchDTO.offenderId?.let {
       prisonLeaversProfileRepository.findMatchingJobsbyClosingDate(
         it,
-        prisonLeaversSearchDTO.typeofWorkList.map { it->it.name },
+        prisonLeaversSearchDTO.typeofWorkList.map { it -> it.name },
         prisonLeaversSearchDTO.count,
       )
     }

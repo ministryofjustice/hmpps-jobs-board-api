@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import uk.gov.justice.digital.hmpps.jobsboard.api.assemblers.EmployerJobModelAssembler
 import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.OutboundEventsService
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.PrisonLeaversJobService
 import uk.gov.justice.digital.hmpps.jobsboard.api.telemetry.TelemetryService
 
 class PrisonLeaversJobServiceTest {
   private val prisonLeaversJobRepository: PrisonLeaversJobRepository = mock()
+  private val jobEmployerRepository: JobEmployerRepository = mock()
   private val outboundEventsService: OutboundEventsService = mock()
   private val telemetryService: TelemetryService = mock()
   private val employerJobModelAssembler: EmployerJobModelAssembler = mock()
@@ -21,6 +23,7 @@ class PrisonLeaversJobServiceTest {
   fun beforeEach() {
     prisonLeaversJobService = PrisonLeaversJobService(
       prisonLeaversJobRepository,
+      jobEmployerRepository,
       outboundEventsService,
       telemetryService,
       employerJobModelAssembler,

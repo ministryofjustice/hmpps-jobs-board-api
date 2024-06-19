@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployerDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedPrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobDetailDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobListPageDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversPagingDTO
@@ -59,8 +59,8 @@ class PrisonLeaversJobResourceController(
   fun createPrisonLeaversJob(
     @Valid
     @RequestBody
-    requestDTO: PrisonLeaversJob,
-  ): PrisonLeaversJob {
+    requestDTO: SimplifiedPrisonLeaversJob,
+  ): SimplifiedPrisonLeaversJob {
     return prisonLeaversJobService.createJob(requestDTO)
   }
 

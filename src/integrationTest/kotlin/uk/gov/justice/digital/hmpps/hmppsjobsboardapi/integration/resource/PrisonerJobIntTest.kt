@@ -7,23 +7,26 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedPrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
 import uk.gov.justice.digital.hmpps.jobsboard.api.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.jobsboard.api.integration.util.TestData
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobListPageDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversPagingDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversProfileRepository
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class PrisonerJobIntTest : IntegrationTestBase() {
-
   @Autowired
   lateinit var prisonLeaversJobRepository: PrisonLeaversJobRepository
 
   @Autowired
   lateinit var prisonLeaversProfileRepository: PrisonLeaversProfileRepository
+
+  @Autowired
+  lateinit var jobEmployerRepository: JobEmployerRepository
 
   @Autowired
   lateinit var objectMapper: ObjectMapper
@@ -32,7 +35,7 @@ class PrisonerJobIntTest : IntegrationTestBase() {
   fun `Post jobs for prison leavers`() {
     val prisonJobList = objectMapper.readValue(
       TestData.createPrisonerJob,
-      object : TypeReference<List<PrisonLeaversJob>>() {},
+      object : TypeReference<List<SimplifiedPrisonLeaversJob>>() {},
     )
     val listIterator = prisonJobList.listIterator()
     while (listIterator.hasNext()) {
@@ -40,11 +43,11 @@ class PrisonerJobIntTest : IntegrationTestBase() {
       val result = restTemplate.exchange(
         "/candidate-matching/job",
         HttpMethod.POST,
-        HttpEntity<PrisonLeaversJob>(
+        HttpEntity<SimplifiedPrisonLeaversJob>(
           prisonLeaversJob,
           setAuthorisation(roles = listOf("ROLE_WORK_READINESS_EDIT", "ROLE_WORK_READINESS_VIEW")),
         ),
-        PrisonLeaversJob::class.java,
+        SimplifiedPrisonLeaversJob::class.java,
       )
       assertThat(result).isNotNull
     }
@@ -219,25 +222,28 @@ class PrisonerJobIntTest : IntegrationTestBase() {
   fun postJobs() {
     val prisonJobList = objectMapper.readValue(
       TestData.createPrisonerJob,
-      object : TypeReference<List<PrisonLeaversJob>>() {},
+      object : TypeReference<List<SimplifiedPrisonLeaversJob>>() {},
     )
+    var employer = prisonJobList[0].employer
     val listIterator = prisonJobList.listIterator()
     while (listIterator.hasNext()) {
       val prisonLeaversJob = listIterator.next()
       val result = restTemplate.exchange(
         "/candidate-matching/job",
         HttpMethod.POST,
-        HttpEntity<PrisonLeaversJob>(
+        HttpEntity<SimplifiedPrisonLeaversJob>(
           prisonLeaversJob,
           setAuthorisation(roles = listOf("ROLE_WORK_READINESS_EDIT", "ROLE_WORK_READINESS_VIEW")),
         ),
-        PrisonLeaversJob::class.java,
+        SimplifiedPrisonLeaversJob::class.java,
       )
+
       assertThat(result).isNotNull
     }
   }
   fun deleteAllJobs() {
     prisonLeaversProfileRepository.deleteAll()
     prisonLeaversJobRepository.deleteAll()
+    jobEmployerRepository.deleteAll()
   }
 }

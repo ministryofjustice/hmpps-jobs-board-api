@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
 import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedPrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
 import java.time.LocalDateTime
 
@@ -17,7 +17,7 @@ open class PrisonLeaversJobDTO(
   var postcode: String?,
   var typeOfWork: TypeOfWork?,
 ) : RepresentationModel<PrisonLeaversJobDTO>() {
-  constructor(prisonLeaversJob: PrisonLeaversJob) : this(
+  constructor(prisonLeaversJob: SimplifiedPrisonLeaversJob) : this(
     employerName = prisonLeaversJob.employer?.employerName,
     jobTitle = prisonLeaversJob.jobTitle,
     closingDate = prisonLeaversJob.closingDate,

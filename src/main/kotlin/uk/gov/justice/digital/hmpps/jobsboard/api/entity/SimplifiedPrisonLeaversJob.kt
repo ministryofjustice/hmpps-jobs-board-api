@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -15,6 +14,9 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.springframework.hateoas.server.core.Relation
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.ContractHours
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.Hours
+import uk.gov.justice.digital.hmpps.jobsboard.api.enums.SalaryPeriod
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
 import java.time.Instant
 import java.time.LocalDateTime
@@ -23,50 +25,40 @@ import kotlin.jvm.Transient
 @Relation(collectionRelation = "jobs", itemRelation = "job")
 @JsonInclude(Include.NON_NULL)
 @Entity
-@Table(name = "prison_leavers_job")
-class PrisonLeaversJob(
+@Table(name = "simple_prison_leavers_job")
+class SimplifiedPrisonLeaversJob(
 
   @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @Column(name = "job_id", nullable = false)
   var id: Long?,
 
-  @Column(name = "mn_job_id", nullable = false)
-  var mnJobId: Long?,
+  @Column(name = "salary_period_name", nullable = false)
+  @Enumerated(EnumType.STRING)
+  var salaryPeriodName: SalaryPeriod?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "salary_period_id", nullable = false)
-  var salaryPeriod: SalaryPeriod?,
+  @Column(name = "work_pattern_name", nullable = false)
+  @Enumerated(EnumType.STRING)
+  var workPatternName: ContractHours?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "work_pattern_id", nullable = false)
-  var workPattern: WorkPattern?,
+  @Column(name = "hours_name", nullable = false)
+  @Enumerated(EnumType.STRING)
+  var hoursName: Hours?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "hours_type_id", nullable = false)
-  var hoursType: HoursType?,
+  @Column(name = "job_contract_name", nullable = false)
+  var jobContractName: String?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "job_contract_type_id", nullable = false)
-  var jobContractType: JobContractType?,
+  @Column(name = "job_type_name", nullable = true)
+  var jobTypeName: String?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "job_type_id", nullable = false)
-  var jobType: JobType?,
-
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "base_location_id", nullable = false)
-  var baseLocation: BaseLocation?,
-
-  @Column(name = "job_contract_id", nullable = false)
+  @Column(name = "job_contract_id", nullable = true)
   var jobContractId: Long?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "employer_id", nullable = false)
-  var employer: JobEmployer?,
+  var employer: SimplifiedJobEmployer?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "employer_sector_id", nullable = false)
-  var employerSector: EmployerWorkSector?,
+  @Column(name = "mn_sector_name", nullable = true)
+  var sectorName: String?,
 
   @Column(name = "additional_salary_information")
   var additionalSalaryInformation: String?,
@@ -86,7 +78,7 @@ class PrisonLeaversJob(
   @Column(name = "job_title")
   var jobTitle: String?,
 
-  @Column(name = "mn_created_by_id", nullable = false)
+  @Column(name = "mn_created_by_id", nullable = true)
   var mnCreatedById: Long?,
 
   @Column(name = "created_by")

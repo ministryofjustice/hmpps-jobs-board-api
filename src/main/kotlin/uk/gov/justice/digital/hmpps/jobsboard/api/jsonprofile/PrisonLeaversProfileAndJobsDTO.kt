@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversProfile
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedPrisonLeaversJob
 import java.time.LocalDateTime
 
 class PrisonLeaversProfileAndJobsDTO(
@@ -16,7 +16,7 @@ class PrisonLeaversProfileAndJobsDTO(
 
   var modifiedDateTime: LocalDateTime?,
 
-  var jobs: MutableList<PrisonLeaversJob?>,
+  var jobs: MutableList<SimplifiedPrisonLeaversJob?>,
 ) {
   constructor(prisonLeaversProfile: PrisonLeaversProfile) : this(
     id = prisonLeaversProfile.id,
@@ -25,5 +25,5 @@ class PrisonLeaversProfileAndJobsDTO(
     modifiedBy = prisonLeaversProfile.modifiedBy,
     jobs = prisonLeaversProfile.jobs.toMutableList(),
     modifiedDateTime = prisonLeaversProfile.modifiedDateTime,
-   )
+  )
 }
