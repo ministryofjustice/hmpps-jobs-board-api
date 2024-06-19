@@ -14,12 +14,16 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.integration.util.TestData
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobListPageDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversPagingDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversProfileRepository
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class PrisonerJobIntTest : IntegrationTestBase() {
 
   @Autowired
   lateinit var prisonLeaversJobRepository: PrisonLeaversJobRepository
+
+  @Autowired
+  lateinit var prisonLeaversProfileRepository: PrisonLeaversProfileRepository
 
   @Autowired
   lateinit var objectMapper: ObjectMapper
@@ -233,6 +237,7 @@ class PrisonerJobIntTest : IntegrationTestBase() {
     }
   }
   fun deleteAllJobs() {
+    prisonLeaversProfileRepository.deleteAll()
     prisonLeaversJobRepository.deleteAll()
   }
 }

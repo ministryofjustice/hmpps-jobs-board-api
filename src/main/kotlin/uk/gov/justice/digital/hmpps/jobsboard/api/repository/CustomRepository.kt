@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.repository
 
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobsBoardProfile
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchResultDTO
 
 interface CustomRepository {
-  fun findJobsBoardProfileByEntityGraph(offenderId: String): JobsBoardProfile?
+  fun findMatchingJobsbyClosingDate(prisonLeaversId: String, typeOfWorkList: List<String>, noOfRecords: Long): MutableList<PrisonLeaversSearchResultDTO>?
 }

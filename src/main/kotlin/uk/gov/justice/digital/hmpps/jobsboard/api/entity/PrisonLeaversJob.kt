@@ -18,6 +18,8 @@ import jakarta.persistence.Table
 import org.springframework.hateoas.server.core.Relation
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
 import java.time.Instant
+import java.time.LocalDateTime
+import org.hibernate.annotations.Fetch
 import kotlin.jvm.Transient
 
 @Relation(collectionRelation = "jobs", itemRelation = "job")
@@ -78,7 +80,7 @@ class PrisonLeaversJob(
   var essentialJobCriteria: String?,
 
   @Column(name = "closing_date")
-  var closingDate: String?,
+  var closingDate: LocalDateTime?,
 
   @Column(name = "how_to_apply")
   var howToApply: String?,
@@ -141,8 +143,7 @@ class PrisonLeaversJob(
   @Enumerated(EnumType.STRING)
   var typeOfWork: TypeOfWork?,
 
-  @ManyToMany(mappedBy = "jobs")
-  var prisonLeavers: Set<PrisonLeaversProfile>?,
+
   @Transient
   var distance: Long,
 )

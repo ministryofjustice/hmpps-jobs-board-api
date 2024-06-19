@@ -6,4 +6,4 @@ import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversProfile
 
 @Repository
-interface PrisonLeaversRepository : JpaRepository<PrisonLeaversProfile, String>, PagingAndSortingRepository<PrisonLeaversProfile, String>
+interface PrisonLeaversProfileRepository : JpaRepository<PrisonLeaversProfile, String>, PagingAndSortingRepository<PrisonLeaversProfile, String>, CustomRepository

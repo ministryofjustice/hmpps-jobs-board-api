@@ -7,12 +7,13 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.enums.ExcludingOffences
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.Hours
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.SalaryPeriod
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
+import java.time.LocalDateTime
 
 open class PrisonLeaversJobDetailDTO(
 
   var employerName: String?,
   var jobTitle: String?,
-  var closingDate: String?,
+  var closingDate: LocalDateTime?,
   var distance: Long?,
   var city: String?,
   var postcode: String?,
