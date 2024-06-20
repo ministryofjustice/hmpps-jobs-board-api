@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
-import java.time.Instant
+import java.time.LocalDateTime
 
 class SimplifiedJobEmployerDTO(
 
@@ -12,11 +12,11 @@ class SimplifiedJobEmployerDTO(
 
   var createdBy: String?,
 
-  var createdDateTime: Instant?,
+  var createdDateTime: LocalDateTime?,
 
   var modifiedBy: String?,
 
-  var modifiedDateTime: Instant?,
+  var modifiedDateTime: LocalDateTime?,
 
   var sector: String?,
 

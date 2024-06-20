@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -18,6 +19,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.enums.ContractHours
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.Hours
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.SalaryPeriod
 import uk.gov.justice.digital.hmpps.jobsboard.api.enums.TypeOfWork
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.SimplifiedPrisonLeaversJobDTO
 import java.time.Instant
 import java.time.LocalDateTime
 import kotlin.jvm.Transient
@@ -31,6 +33,10 @@ class SimplifiedPrisonLeaversJob(
   @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @Column(name = "job_id", nullable = false)
   var id: Long?,
+
+  @ManyToOne(cascade = [CascadeType.REMOVE], fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "employer_id", nullable = false, updatable = false)
+  var employer: SimplifiedJobEmployer?,
 
   @Column(name = "salary_period_name", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -53,11 +59,7 @@ class SimplifiedPrisonLeaversJob(
   @Column(name = "job_contract_id", nullable = true)
   var jobContractId: Long?,
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "employer_id", nullable = false, updatable = false)
-  var employer: SimplifiedJobEmployer?,
-
-  @Column(name = "mn_sector_name", nullable = true)
+  @Column(name = "sector_name", nullable = true)
   var sectorName: String?,
 
   @Column(name = "additional_salary_information")
@@ -78,9 +80,6 @@ class SimplifiedPrisonLeaversJob(
   @Column(name = "job_title")
   var jobTitle: String?,
 
-  @Column(name = "mn_created_by_id", nullable = true)
-  var mnCreatedById: Long?,
-
   @Column(name = "created_by")
   var createdBy: String?,
 
@@ -89,9 +88,6 @@ class SimplifiedPrisonLeaversJob(
 
   @Column(name = "posting_date")
   var postingDate: String?,
-
-  @Column(name = "mn_deleted_by_id", nullable = false)
-  var mnDeletedById: Long?,
 
   @Column(name = "deleted_by")
   var deletedBy: String?,
@@ -135,4 +131,39 @@ class SimplifiedPrisonLeaversJob(
 
   @Transient
   var distance: Long,
-)
+) {
+  constructor(simplifiedPrisonLeaversJobDTO: SimplifiedPrisonLeaversJobDTO, simplifiedJobEmployer: SimplifiedJobEmployer) : this(
+    id = simplifiedPrisonLeaversJobDTO.id,
+    employer = simplifiedJobEmployer,
+    salaryPeriodName = simplifiedPrisonLeaversJobDTO.salaryPeriodName,
+    workPatternName = simplifiedPrisonLeaversJobDTO.workPatternName,
+    hoursName = simplifiedPrisonLeaversJobDTO.hoursName,
+    jobContractName = simplifiedPrisonLeaversJobDTO.jobContractName,
+    jobTypeName = simplifiedPrisonLeaversJobDTO.jobTypeName,
+    jobContractId = simplifiedPrisonLeaversJobDTO.jobContractId,
+    sectorName = simplifiedPrisonLeaversJobDTO.sectorName,
+    additionalSalaryInformation = simplifiedPrisonLeaversJobDTO.additionalSalaryInformation,
+    desirableJobCriteria = simplifiedPrisonLeaversJobDTO.desirableJobCriteria,
+    essentialJobCriteria = simplifiedPrisonLeaversJobDTO.essentialJobCriteria,
+    closingDate = simplifiedPrisonLeaversJobDTO.closingDate,
+    howToApply = simplifiedPrisonLeaversJobDTO.howToApply,
+    jobTitle = simplifiedPrisonLeaversJobDTO.jobTitle,
+    createdBy = simplifiedPrisonLeaversJobDTO.createdBy,
+    createdDateTime = simplifiedPrisonLeaversJobDTO.createdDateTime,
+    postingDate = simplifiedPrisonLeaversJobDTO.postingDate,
+    deletedBy = simplifiedPrisonLeaversJobDTO.deletedBy,
+    deletedDateTime = simplifiedPrisonLeaversJobDTO.deletedDateTime,
+    modifiedBy = simplifiedPrisonLeaversJobDTO.modifiedBy,
+    modifiedDateTime = simplifiedPrisonLeaversJobDTO.modifiedDateTime,
+    nationalMinimumWage = simplifiedPrisonLeaversJobDTO.nationalMinimumWage,
+    postCode = simplifiedPrisonLeaversJobDTO.postCode,
+    ringFencedJob = simplifiedPrisonLeaversJobDTO.ringFencedJob,
+    rollingJobOppurtunity = simplifiedPrisonLeaversJobDTO.rollingJobOppurtunity,
+    activeJob = simplifiedPrisonLeaversJobDTO.activeJob,
+    deletedJob = simplifiedPrisonLeaversJobDTO.deletedJob,
+    salaryFrom = simplifiedPrisonLeaversJobDTO.salaryFrom,
+    salaryTo = simplifiedPrisonLeaversJobDTO.salaryTo,
+    typeOfWork = simplifiedPrisonLeaversJobDTO.typeOfWork,
+    distance = 0,
+  )
+}

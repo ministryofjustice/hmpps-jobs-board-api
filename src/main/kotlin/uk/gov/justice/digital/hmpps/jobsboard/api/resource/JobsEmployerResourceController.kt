@@ -24,7 +24,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobImage
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.JobEmployerService
-import java.time.Instant
+import java.time.LocalDateTime
 
 @Validated
 @RestController
@@ -102,9 +102,9 @@ class JobsEmployerResourceController(
       "test",
       "asdad",
       "sacintha",
-      Instant.now(),
+      LocalDateTime.now(),
       "test",
-      Instant.now(),
+      LocalDateTime.now(),
       EmployerWorkSector(1L, 1L, "test", "test"),
       EmployerPartner(1L, EmployerPartnerGrade(1L, 1L, "test", "test"), 1L, "test", "test1"),
       JobImage(1L, 1L, "ett"),

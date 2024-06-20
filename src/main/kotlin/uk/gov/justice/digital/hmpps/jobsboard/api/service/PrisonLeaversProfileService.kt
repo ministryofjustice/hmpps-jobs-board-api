@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.service
 
+import jakarta.validation.ValidationException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.CapturedSpringConfigValues
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversProfile
@@ -26,21 +27,23 @@ class PrisonLeaversProfileService(
   ): PrisonLeaversProfileAndJobsDTO {
     var prisonLeaversProfileOptional = prisonLeaversProfileRepository.findById(prisonLeaversProfileDto.offenderId)
     var prisonLeaversProfile: PrisonLeaversProfile? = prisonLeaversProfileOptional.getOrNull()
+    var job = prisonLeaversProfileDto.prisonLeaversJobId?.let { prisonLeaversJobRepository.findById(prisonLeaversProfileDto.prisonLeaversJobId) }
+
+    if (job?.isEmpty == true) {
+      throw ValidationException("Employer not for found for job id " + prisonLeaversProfileDto.prisonLeaversJobId)
+    }
 
     if (prisonLeaversProfile != null) {
-      var job = prisonLeaversProfileDto.prisonLeaversJob?.id?.let { prisonLeaversJobRepository.findById(prisonLeaversProfileDto.prisonLeaversJob?.id) }
       if (job?.isPresent == true) {
-//        prisonLeaversProfile.jobs.add(job.get())
-      } else {
-        var newJob = prisonLeaversProfileDto.prisonLeaversJob?.let { prisonLeaversJobService.createJob(it) }
-        prisonLeaversProfile.jobs.add(newJob)
+        if (job != null && !prisonLeaversProfile.jobs.contains(job.get())) {
+          prisonLeaversProfile.jobs.add(job.get())
+        }
       }
 
       prisonLeaversProfile?.modifiedBy = CapturedSpringConfigValues.getDPSPrincipal().displayName
       prisonLeaversProfile?.modifiedDateTime = LocalDateTime.now()
       return PrisonLeaversProfileAndJobsDTO(prisonLeaversProfileRepository.saveAndFlush(prisonLeaversProfile))
     } else {
-      var job = prisonLeaversProfileDto.prisonLeaversJob?.id?.let { prisonLeaversJobRepository.findById(prisonLeaversProfileDto.prisonLeaversJob?.id) }
       var newPrisonLeaversProfile = prisonLeaversProfileDto.offenderId?.let {
         PrisonLeaversProfile(
           it,
@@ -48,16 +51,11 @@ class PrisonLeaversProfileService(
           LocalDateTime.now(),
           "sacintha",
           LocalDateTime.now(),
-          mutableListOf(),
+          mutableListOf(job?.get()),
         )
       }
-      if (job?.isPresent == true) {
-        newPrisonLeaversProfile?.jobs?.add(job.get())
-      } else {
-        var newJob = prisonLeaversProfileDto.prisonLeaversJob?.let { prisonLeaversJobService.createJob(it) }
-        newPrisonLeaversProfile?.jobs?.add(newJob)
-      }
-      return prisonLeaversProfileRepository.save(newPrisonLeaversProfile)?.let { PrisonLeaversProfileAndJobsDTO(it) }!!
+
+      return prisonLeaversProfileRepository.saveAndFlush(newPrisonLeaversProfile)?.let { PrisonLeaversProfileAndJobsDTO(it) }!!
     }
   }
 

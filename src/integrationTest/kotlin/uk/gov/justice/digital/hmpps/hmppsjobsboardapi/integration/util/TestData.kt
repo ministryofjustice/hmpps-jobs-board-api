@@ -18,5 +18,6 @@ class TestData {
     val prisonSearchByUnAvailablePostCode = File("src/integrationTest/resources/testdata/PrisonSearchByUnAvailablePostCode.json").inputStream().readBytes().toString(Charsets.UTF_8)
     val prisonerProfileToCreate = File("src/integrationTest/resources/testdata/PrisonerProfileToCreate.json").inputStream().readBytes().toString(Charsets.UTF_8)
     val prisonLeaversJobsClosingSoonSearch = File("src/integrationTest/resources/testdata/PrisonLeaversJobsClosingSoonSearch.json").inputStream().readBytes().toString(Charsets.UTF_8)
+    val employerListToCreate = File("src/integrationTest/resources/testdata/EmployerListToCreate.json").inputStream().readBytes().toString(Charsets.UTF_8)
   }
 }

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.service
 
+import jakarta.validation.ValidationException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -11,6 +12,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.enums.PrisonLeaversJobSort
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobDetailDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobListPageDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversPagingDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.SimplifiedPrisonLeaversJobDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.OutboundEventsService
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
@@ -57,11 +59,14 @@ class PrisonLeaversJobService(
   }
 
   fun createJob(
-    prisonLeaversJob: SimplifiedPrisonLeaversJob,
+    prisonLeaversJob: SimplifiedPrisonLeaversJobDTO,
   ): SimplifiedPrisonLeaversJob {
-    val employer = prisonLeaversJob.employer?.let { jobEmployerRepository.save(it) }
-    prisonLeaversJob.employer = employer
-    return prisonLeaversRepository.saveAndFlush(prisonLeaversJob)
+    val employer = jobEmployerRepository.findById(prisonLeaversJob.employerId)
+    if (employer.isPresent == true) {
+      var simplifiedPrisonLeaversJob = SimplifiedPrisonLeaversJob(prisonLeaversJob, employer.get())
+      return prisonLeaversRepository.saveAndFlush(simplifiedPrisonLeaversJob)
+    }
+    throw ValidationException("Employer not for found ofr employerId " + prisonLeaversJob.employerId)
   }
 
   fun getPrisonersLeaversJob(prisonerLeaversJobId: Long): PrisonLeaversJobDetailDTO {

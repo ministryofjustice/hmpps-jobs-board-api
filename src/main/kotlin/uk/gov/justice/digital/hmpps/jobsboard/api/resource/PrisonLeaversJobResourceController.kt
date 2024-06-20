@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedPrisonLeavers
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobDetailDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobListPageDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversPagingDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.SimplifiedPrisonLeaversJobDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.PrisonLeaversJobService
 
 @Validated
@@ -59,7 +60,7 @@ class PrisonLeaversJobResourceController(
   fun createPrisonLeaversJob(
     @Valid
     @RequestBody
-    requestDTO: SimplifiedPrisonLeaversJob,
+    requestDTO: SimplifiedPrisonLeaversJobDTO,
   ): SimplifiedPrisonLeaversJob {
     return prisonLeaversJobService.createJob(requestDTO)
   }

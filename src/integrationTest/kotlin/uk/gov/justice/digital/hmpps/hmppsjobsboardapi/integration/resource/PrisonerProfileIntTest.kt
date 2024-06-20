@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedPrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.jobsboard.api.integration.util.TestData
@@ -14,6 +15,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfi
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchResultListDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.SimplifiedPrisonLeaversJobDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversProfileRepository
@@ -31,6 +33,8 @@ class PrisonerProfileIntTest : IntegrationTestBase() {
 
   @Autowired
   lateinit var objectMapper: ObjectMapper
+
+  var offenderId = "a123456"
 
   @Test
   fun `Post prison leavers profile`() {
@@ -57,39 +61,60 @@ class PrisonerProfileIntTest : IntegrationTestBase() {
     Assertions.assertThat(result).isNotNull
     deleteAllPrisonLeavers()
   }
+
   fun postPrisonLeavers() {
-    val prisonLeaverList = objectMapper.readValue(
-      TestData.prisonerProfileToCreate,
-      object : TypeReference<List<PrisonLeaversProfileDTO>>() {},
+    var employer1 = objectMapper.readValue(
+      TestData.employerListToCreate,
+      object : TypeReference<SimplifiedJobEmployer>() {},
     )
-    val listIterator = prisonLeaverList.listIterator()
+    var employer2 = objectMapper.readValue(
+      TestData.employerListToCreate,
+      object : TypeReference<SimplifiedJobEmployer>() {},
+    )
+    val savedEmployer1 = jobEmployerRepository.save(employer1)
+    employer2.postCode = "eh26 0hq"
+    val savedEmployer2 = jobEmployerRepository.saveAndFlush(employer2)
+
+    val prisonJobList = objectMapper.readValue(
+      TestData.createPrisonerJob,
+      object : TypeReference<List<SimplifiedPrisonLeaversJobDTO>>() {},
+    )
+
+    val listIterator = prisonJobList.listIterator()
     while (listIterator.hasNext()) {
-      val prisonLeavers = listIterator.next()
-      val result1 = restTemplate.exchange(
+      val prisonLeaversJob = listIterator.next()
+      if (listIterator.hasNext()) {
+        prisonLeaversJob.employerId = savedEmployer1.id
+      } else {
+        prisonLeaversJob.employerId = savedEmployer2.id
+      }
+      val result = restTemplate.exchange(
         "/candidate-matching/job",
         HttpMethod.POST,
-        HttpEntity<SimplifiedPrisonLeaversJob>(
-          prisonLeavers.prisonLeaversJob,
+        HttpEntity<SimplifiedPrisonLeaversJobDTO>(
+          prisonLeaversJob,
           setAuthorisation(roles = listOf("ROLE_WORK_READINESS_EDIT", "ROLE_WORK_READINESS_VIEW")),
         ),
         SimplifiedPrisonLeaversJob::class.java,
       )
-      prisonLeavers.prisonLeaversJob = result1.body
-      val result = restTemplate.exchange(
+      Assertions.assertThat(result).isNotNull
+      var prisonLeaversProfileDTO = PrisonLeaversProfileDTO(offenderId, result.body.id)
+      val resultLeaver = restTemplate.exchange(
         "/candidate-matching/matched-jobs",
         HttpMethod.POST,
         HttpEntity<PrisonLeaversProfileDTO>(
-          prisonLeavers,
+          prisonLeaversProfileDTO,
           setAuthorisation(roles = listOf("ROLE_WORK_READINESS_EDIT", "ROLE_WORK_READINESS_VIEW")),
         ),
         PrisonLeaversProfileAndJobsDTO::class.java,
       )
-      Assertions.assertThat(result).isNotNull
+      Assertions.assertThat(resultLeaver).isNotNull
     }
   }
+
   fun deleteAllPrisonLeavers() {
-    prisonLeaversJobRepository.deleteAll()
-    prisonLeaversProfileRepository.deleteAll()
     jobEmployerRepository.deleteAll()
+    prisonLeaversProfileRepository.deleteAll()
+    prisonLeaversJobRepository.deleteAll()
   }
 }
