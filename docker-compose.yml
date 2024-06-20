@@ -6,7 +6,7 @@ services:
       - hmpps
     container_name: hmpps-jobs-board-api
     ports:
-      - "8081:8080"
+      - "8080:8080"
     depends_on:
       - job-board-db
     healthcheck:
@@ -26,7 +26,7 @@ services:
     networks:
       - hmpps
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=job-board
       - POSTGRES_USER=job-board
