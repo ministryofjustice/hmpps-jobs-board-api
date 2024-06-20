@@ -1,5 +1,8 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartner
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerWorkSector
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobImage
 import java.time.LocalDateTime
 
 class JobEmployerDTO(

@@ -19,10 +19,10 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartner
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartnerGrade
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerWorkSector
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobImage
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployerDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.JobEmployerService
 import java.time.LocalDateTime
 
