@@ -67,7 +67,7 @@ class PrisonLeaversProfile(
   @Column(name = "modified_date_time")
   var modifiedDateTime: LocalDateTime?,
 
-  @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+  @ManyToMany(cascade = [CascadeType.MERGE, CascadeType.REMOVE], fetch = FetchType.EAGER)
   @JoinTable(
     name = "Prison_Leaver_Job_Table",
     joinColumns = arrayOf(JoinColumn(name = "prison_leaver_id")),

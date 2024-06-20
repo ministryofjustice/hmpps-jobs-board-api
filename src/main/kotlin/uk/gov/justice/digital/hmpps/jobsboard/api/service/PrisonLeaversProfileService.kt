@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfi
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversSearchResultDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversProfileRepository
 import java.time.LocalDateTime
@@ -15,7 +16,9 @@ import kotlin.jvm.optionals.getOrNull
 @Service
 class PrisonLeaversProfileService(
   private val prisonLeaversProfileRepository: PrisonLeaversProfileRepository,
+  private val prisonLeaversJobService: PrisonLeaversJobService,
   private val prisonLeaversJobRepository: PrisonLeaversJobRepository,
+  private val jobEmployerRepository: JobEmployerRepository,
 ) {
 
   fun createOrUpdatePrisonLeaversProfile(
@@ -25,17 +28,20 @@ class PrisonLeaversProfileService(
     var prisonLeaversProfile: PrisonLeaversProfile? = prisonLeaversProfileOptional.getOrNull()
 
     if (prisonLeaversProfile != null) {
-      var job = prisonLeaversJobRepository.save(prisonLeaversProfileDto.prisonLeaversJob)
+      var job = prisonLeaversProfileDto.prisonLeaversJob?.let { prisonLeaversJobService.createJob(it) }
       prisonLeaversProfile.jobs.add(job)
       prisonLeaversProfile?.modifiedBy = CapturedSpringConfigValues.getDPSPrincipal().displayName
       prisonLeaversProfile?.modifiedDateTime = LocalDateTime.now()
+      return PrisonLeaversProfileAndJobsDTO(prisonLeaversProfileRepository.saveAndFlush(prisonLeaversProfile))
     } else {
-      var job = prisonLeaversJobRepository.save(prisonLeaversProfileDto.prisonLeaversJob)
-      var jobList = mutableListOf(job)
+//      var job = prisonLeaversProfileDto.prisonLeaversJob?.let { prisonLeaversJobService.createJob(it) }
+      val employer = prisonLeaversProfileDto.prisonLeaversJob?.employer?.let { jobEmployerRepository.save(it) }
+      prisonLeaversProfileDto.prisonLeaversJob?.employer = employer
+      prisonLeaversJobRepository.save(prisonLeaversProfileDto.prisonLeaversJob)
+      var jobList = mutableListOf(prisonLeaversProfileDto.prisonLeaversJob)
       prisonLeaversProfile = PrisonLeaversProfile(prisonLeaversProfileDto.offenderId!!, CapturedSpringConfigValues.getDPSPrincipal().displayName, LocalDateTime.now(), CapturedSpringConfigValues.getDPSPrincipal().displayName, LocalDateTime.now(), jobList)
+      return PrisonLeaversProfileAndJobsDTO(prisonLeaversProfileRepository.saveAndFlush(prisonLeaversProfile))
     }
-
-    return PrisonLeaversProfileAndJobsDTO(prisonLeaversProfileRepository.save(prisonLeaversProfile))
   }
 
   fun searchPrisonLeaversProfile(

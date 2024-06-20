@@ -242,8 +242,8 @@ class PrisonerJobIntTest : IntegrationTestBase() {
     }
   }
   fun deleteAllJobs() {
-    prisonLeaversProfileRepository.deleteAll()
     prisonLeaversJobRepository.deleteAll()
+    prisonLeaversProfileRepository.deleteAll()
     jobEmployerRepository.deleteAll()
   }
 }

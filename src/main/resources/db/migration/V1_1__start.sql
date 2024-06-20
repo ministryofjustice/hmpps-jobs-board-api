@@ -34,6 +34,6 @@ ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_hours_type FOREIGN KEY (hours_t
 ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_base_location FOREIGN KEY (base_location_id) REFERENCES base_location (base_location_id);
 ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_job_employers FOREIGN KEY (employer_id) REFERENCES job_employers (employer_id);
 ALTER TABLE employer_partner ADD CONSTRAINT fk_employer_partner_grades FOREIGN KEY (partner_grade_id) REFERENCES employer_partner_grades(partner_grade_id);
-ALTER TABLE if exists prison_leaver_job_table add constraint fk_prison_leaver_job_table_prison_leavers_job foreign key (prison_leavers_job_id) references prison_leavers_job;
-ALTER TABLE if exists prison_leaver_job_table add constraint fk_prison_leavers_job_prison_leavers_profile foreign key (prison_leaver_id) references prison_leavers_profile;
-alter table if exists simple_prison_leavers_job add constraint FKqsghxa6urbm1sb05alhg2v776 foreign key (employer_id) references simple_job_employers;
+ALTER TABLE if exists prison_leaver_job_table add constraint fk_prison_leaver_job_table_prison_leavers_job foreign key (prison_leavers_job_id) references simple_prison_leavers_job ON DELETE CASCADE;
+ALTER TABLE if exists prison_leaver_job_table add constraint fk_prison_leavers_job_prison_leavers_profile foreign key (prison_leaver_id) references prison_leavers_profile ON DELETE CASCADE;
+alter table if exists simple_prison_leavers_job add constraint FKqsghxa6urbm1sb05alhg2v776 foreign key (employer_id) references simple_job_employers  ON DELETE CASCADE;
