@@ -24,7 +24,8 @@ import java.time.LocalDateTime
   name = "PrisonLeaversProfile.findMatchingJobsClosingSoon",
   query = "select pljt.prison_leaver_id as prisonLeaverId,plj.job_id as jobId,plj.type_of_work as typeOfWork ,plj.closing_date as closingDate,plj.job_title as jobTitle ,je.employer_name as employerName" +
     " from prison_leaver_job_table pljt " +
-    "inner Join  prison_leavers_job plj on pljt.prison_leavers_job_id=plj.job_id " +
+    "inner Join  simple_" +
+    "prison_leavers_job plj on pljt.prison_leavers_job_id=plj.job_id " +
     " inner join job_employers je on je.employer_id = plj.employer_id where  pljt.prison_leaver_id=:prisonLeaversId and plj.type_of_work in :typeOfWorkList order by plj.closing_date asc Limit :noOfRecords",
   resultSetMapping = "Mapping.PrisonLeaversSearchResultDTO",
 )

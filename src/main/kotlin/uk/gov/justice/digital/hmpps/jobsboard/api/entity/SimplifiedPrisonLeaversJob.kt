@@ -54,7 +54,7 @@ class SimplifiedPrisonLeaversJob(
   var jobContractId: Long?,
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "employer_id", nullable = false)
+  @JoinColumn(name = "employer_id", nullable = false , insertable = false, updatable = false)
   var employer: SimplifiedJobEmployer?,
 
   @Column(name = "mn_sector_name", nullable = true)
