@@ -28,19 +28,36 @@ class PrisonLeaversProfileService(
     var prisonLeaversProfile: PrisonLeaversProfile? = prisonLeaversProfileOptional.getOrNull()
 
     if (prisonLeaversProfile != null) {
-      var job = prisonLeaversProfileDto.prisonLeaversJob?.let { prisonLeaversJobService.createJob(it) }
-      prisonLeaversProfile.jobs.add(job)
+      var job = prisonLeaversProfileDto.prisonLeaversJob?.id?.let { prisonLeaversJobRepository.findById(prisonLeaversProfileDto.prisonLeaversJob?.id) }
+      if (job?.isPresent == true) {
+//        prisonLeaversProfile.jobs.add(job.get())
+      } else {
+        var newJob = prisonLeaversProfileDto.prisonLeaversJob?.let { prisonLeaversJobService.createJob(it) }
+        prisonLeaversProfile.jobs.add(newJob)
+      }
+
       prisonLeaversProfile?.modifiedBy = CapturedSpringConfigValues.getDPSPrincipal().displayName
       prisonLeaversProfile?.modifiedDateTime = LocalDateTime.now()
       return PrisonLeaversProfileAndJobsDTO(prisonLeaversProfileRepository.saveAndFlush(prisonLeaversProfile))
     } else {
-//      var job = prisonLeaversProfileDto.prisonLeaversJob?.let { prisonLeaversJobService.createJob(it) }
-      val employer = prisonLeaversProfileDto.prisonLeaversJob?.employer?.let { jobEmployerRepository.save(it) }
-      prisonLeaversProfileDto.prisonLeaversJob?.employer = employer
-      prisonLeaversJobRepository.save(prisonLeaversProfileDto.prisonLeaversJob)
-      var jobList = mutableListOf(prisonLeaversProfileDto.prisonLeaversJob)
-      prisonLeaversProfile = PrisonLeaversProfile(prisonLeaversProfileDto.offenderId!!, CapturedSpringConfigValues.getDPSPrincipal().displayName, LocalDateTime.now(), CapturedSpringConfigValues.getDPSPrincipal().displayName, LocalDateTime.now(), jobList)
-      return PrisonLeaversProfileAndJobsDTO(prisonLeaversProfileRepository.saveAndFlush(prisonLeaversProfile))
+      var job = prisonLeaversProfileDto.prisonLeaversJob?.id?.let { prisonLeaversJobRepository.findById(prisonLeaversProfileDto.prisonLeaversJob?.id) }
+      var newPrisonLeaversProfile = prisonLeaversProfileDto.offenderId?.let {
+        PrisonLeaversProfile(
+          it,
+          "sacintha",
+          LocalDateTime.now(),
+          "sacintha",
+          LocalDateTime.now(),
+          mutableListOf(),
+        )
+      }
+      if (job?.isPresent == true) {
+        newPrisonLeaversProfile?.jobs?.add(job.get())
+      } else {
+        var newJob = prisonLeaversProfileDto.prisonLeaversJob?.let { prisonLeaversJobService.createJob(it) }
+        newPrisonLeaversProfile?.jobs?.add(newJob)
+      }
+      return prisonLeaversProfileRepository.save(newPrisonLeaversProfile)?.let { PrisonLeaversProfileAndJobsDTO(it) }!!
     }
   }
 
