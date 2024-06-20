@@ -16,3 +16,5 @@ create sequence IF NOT EXISTS offences_type_list_seq start with 1 increment by 5
 create sequence IF NOT EXISTS prison_leavers_job_seq start with 1 increment by 50;
 create sequence IF NOT EXISTS salary_period_seq start with 1 increment by 50;
 create sequence IF NOT EXISTS work_pattern_seq start with 1 increment by 50;
+create sequence IF NOT EXISTS simple_prison_leavers_job_seq start with 1 increment by 50;
+create sequence IF NOT EXISTS simple_job_employers_seq start with 1 increment by 50;
