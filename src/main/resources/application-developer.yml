@@ -2,10 +2,10 @@ server:
   shutdown: immediate
   port: 8080
 
-#api:
-#  base:
-#    url:
-#      oauth1: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+api:
+  base:
+    url:
+      oauth: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
 
 management.endpoint:
   health.cache.time-to-live: 0
@@ -33,7 +33,6 @@ spring:
       validationTimeout: 500
 
   flyway:
-    initOnMigrate: true
     baselineOnMigrate: true
     validateMigrationNaming: true
     enabled: true
