@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartner
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerWorkSector
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobImage
-import java.time.Instant
+import java.time.LocalDateTime
 
 class JobEmployerDTO(
 
@@ -15,11 +15,11 @@ class JobEmployerDTO(
 
   var createdBy: String?,
 
-  var createdDateTime: Instant?,
+  var createdDateTime: LocalDateTime?,
 
   var modifiedBy: String?,
 
-  var modifiedDateTime: Instant?,
+  var modifiedDateTime: LocalDateTime?,
 
   var sector: EmployerWorkSector?,
 
