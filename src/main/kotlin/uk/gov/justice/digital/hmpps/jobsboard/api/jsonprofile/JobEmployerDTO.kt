@@ -1,8 +1,5 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
+package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartner
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerWorkSector
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobImage
 import java.time.LocalDateTime
 
 class JobEmployerDTO(
@@ -21,11 +18,25 @@ class JobEmployerDTO(
 
   var modifiedDateTime: LocalDateTime?,
 
-  var sector: EmployerWorkSector?,
+  var sector: String?,
 
-  var partner: EmployerPartner?,
+  var partner: String?,
+  var partnerGrade: String?,
 
-  var image: JobImage?,
+  var image: String?,
 
   var postCode: String?,
-)
+) {
+  constructor(jobEmployer:JobEmployer):this( id =jobEmployer.id,
+    employerName =jobEmployer.employerName,
+    employerBio =jobEmployer.employerBio,
+    createdBy =jobEmployer.createdBy,
+    createdDateTime =jobEmployer.createdDateTime,
+    modifiedBy =jobEmployer.modifiedBy,
+    modifiedDateTime =jobEmployer.modifiedDateTime,
+    sector=jobEmployer.sectorName,
+    partnerGrade=jobEmployer.grade,
+    partner=jobEmployer.partnerName,
+    image=jobEmployer.imagePath,
+    postCode=jobEmployer.postCode)
+}

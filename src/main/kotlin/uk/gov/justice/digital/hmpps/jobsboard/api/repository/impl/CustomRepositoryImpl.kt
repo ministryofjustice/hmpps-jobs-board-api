@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.repository.impl
 
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobsBoardProfile
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.CustomRepository
 
 class CustomRepositoryImpl : CustomRepository {

@@ -1,21 +1,17 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
+import jakarta.persistence.GenerationType.SEQUENCE
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "job_employers")
 class JobEmployer(
-  @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @Id @GeneratedValue(strategy = SEQUENCE)
   @Column(name = "employer_id", nullable = false)
   var id: Long?,
 
@@ -29,26 +25,41 @@ class JobEmployer(
   var createdBy: String?,
 
   @Column(name = "created_date_time")
-  var createdDateTime: LocalDateTime,
+  var createdDateTime: LocalDateTime?,
 
   @Column(name = "modified_by")
   var modifiedBy: String?,
 
   @Column(name = "modified_date_time")
-  var modifiedDateTime: LocalDateTime,
+  var modifiedDateTime: LocalDateTime?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "sector_id", nullable = false)
-  var sector: EmployerWorkSector?,
+  @Column(name = "sector_name", nullable = true)
+  var sectorName: String?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "partner_id", nullable = false)
-  var partner: EmployerPartner?,
+  @Column(name = "grade", nullable = true)
+  var grade: String?,
 
-  @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "image_id", nullable = false)
-  var image: JobImage?,
+  @Column(name = "partner_name", nullable = true)
+  var partnerName: String?,
+
+  @Column(name = "image_path", nullable = true)
+  var imagePath: String?,
 
   @Column(name = "post_code", length = 8)
   var postCode: String?,
-)
+){
+  constructor(jobEmployerDTO:JobEmployerDTO):this(
+    id =jobEmployerDTO.id,
+    employerName =jobEmployerDTO.employerName,
+    employerBio =jobEmployerDTO.employerBio,
+    createdBy =jobEmployerDTO.createdBy,
+    createdDateTime =jobEmployerDTO.createdDateTime,
+    modifiedBy =jobEmployerDTO.modifiedBy,
+    modifiedDateTime =jobEmployerDTO.modifiedDateTime,
+    sectorName=jobEmployerDTO.sector,
+    grade=jobEmployerDTO.partnerGrade,
+    partnerName=jobEmployerDTO.partner,
+    imagePath=jobEmployerDTO.image,
+    postCode=jobEmployerDTO.postCode
+  )
+}
