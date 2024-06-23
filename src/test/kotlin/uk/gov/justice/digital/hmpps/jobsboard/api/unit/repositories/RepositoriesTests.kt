@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobsBoardProfileRep
 @DataJpaTest
 @ActiveProfiles("test")
 class RepositoriesTests @Autowired constructor(
-  val jbRepository: JobsBoardProfileRepository,
+  val jbRepository: JobEmployerRepository,
 
 ) {
   @Mock

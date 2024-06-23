@@ -1,7 +1,7 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
 import java.time.LocalDateTime
-
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
 class JobEmployerDTO(
 
   var id: Long?,

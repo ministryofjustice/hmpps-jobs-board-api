@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType.SEQUENCE
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
 
 @Entity
 @Table(name = "job_employers")

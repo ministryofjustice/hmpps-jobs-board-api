@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.messaging
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.CapturedSpringConfigValues
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
 import java.time.Instant
 import java.time.ZoneOffset
 
@@ -10,12 +11,12 @@ class OutboundEventsService(
   var outboundEventsPublisher: OutboundEventsPublisher?,
 ) {
 
-  fun createAndPublishEventMessage(jobsBoardProfile: JobsBoardProfile, eventType: EventType) {
+  fun createAndPublishEventMessage(jobEmployerDTO: JobEmployerDTO, eventType: EventType) {
     val outboundEvent = createValidJobsBoardEvent(
-      jobsBoardProfile.offenderId,
-      jobsBoardProfile.prisonId,
+      jobEmployerDTO.employerName,
+      jobEmployerDTO.id,
       eventType,
-      jobsBoardProfile.modifiedDateTime?.toInstant(
+      jobEmployerDTO.modifiedDateTime?.toInstant(
         ZoneOffset.UTC,
       )!!,
     )
