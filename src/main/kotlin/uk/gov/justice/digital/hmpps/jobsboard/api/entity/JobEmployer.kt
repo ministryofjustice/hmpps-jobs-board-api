@@ -6,8 +6,8 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType.SEQUENCE
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "job_employers")
@@ -48,19 +48,19 @@ class JobEmployer(
 
   @Column(name = "post_code", length = 8)
   var postCode: String?,
-){
-  constructor(jobEmployerDTO:JobEmployerDTO):this(
-    id =jobEmployerDTO.id,
-    employerName =jobEmployerDTO.employerName,
-    employerBio =jobEmployerDTO.employerBio,
-    createdBy =jobEmployerDTO.createdBy,
-    createdDateTime =jobEmployerDTO.createdDateTime,
-    modifiedBy =jobEmployerDTO.modifiedBy,
-    modifiedDateTime =jobEmployerDTO.modifiedDateTime,
-    sectorName=jobEmployerDTO.sector,
-    grade=jobEmployerDTO.partnerGrade,
-    partnerName=jobEmployerDTO.partner,
-    imagePath=jobEmployerDTO.image,
-    postCode=jobEmployerDTO.postCode
+) {
+  constructor(jobEmployerDTO: JobEmployerDTO) : this(
+    id = jobEmployerDTO.id,
+    employerName = jobEmployerDTO.employerName,
+    employerBio = jobEmployerDTO.employerBio,
+    createdBy = jobEmployerDTO.createdBy,
+    createdDateTime = jobEmployerDTO.createdDateTime,
+    modifiedBy = jobEmployerDTO.modifiedBy,
+    modifiedDateTime = jobEmployerDTO.modifiedDateTime,
+    sectorName = jobEmployerDTO.sector,
+    grade = jobEmployerDTO.partnerGrade,
+    partnerName = jobEmployerDTO.partner,
+    imagePath = jobEmployerDTO.image,
+    postCode = jobEmployerDTO.postCode,
   )
 }

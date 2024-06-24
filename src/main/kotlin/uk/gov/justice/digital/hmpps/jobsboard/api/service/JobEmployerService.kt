@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployerDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.OutboundEventsService
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.telemetry.TelemetryService
@@ -45,11 +45,10 @@ class JobEmployerService(
     employerId: Long,
   ): JobEmployerDTO {
     var jobEmployer: Optional<JobEmployer> = jobEmployerRepository.findById(employerId)
-    if(jobEmployer.isPresent ==true) {
+    if (jobEmployer.isPresent == true) {
       return JobEmployerDTO(jobEmployer.get())
     } else {
-      throw ValidationException("Employer not found for employer id"+employerId)
+      throw ValidationException("Employer not found for employer id" + employerId)
     }
-
   }
 }

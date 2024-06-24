@@ -13,8 +13,8 @@ class OutboundEventsService(
 
   fun createAndPublishEventMessage(jobEmployerDTO: JobEmployerDTO, eventType: EventType) {
     val outboundEvent = createValidJobsBoardEvent(
+      jobEmployerDTO.employerBio!!,
       jobEmployerDTO.employerName,
-      jobEmployerDTO.id,
       eventType,
       jobEmployerDTO.modifiedDateTime?.toInstant(
         ZoneOffset.UTC,

@@ -10,6 +10,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployerDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.JobEmployerService
-import org.springframework.web.bind.annotation.PathVariable
 
 @Validated
 @RestController
@@ -91,8 +91,10 @@ class JobsEmployerResourceController(
       ),
     ],
   )
-  fun getEmployer( @PathVariable
-                   employerId: Long,): JobEmployerDTO {
+  fun getEmployer(
+    @PathVariable
+    employerId: Long,
+  ): JobEmployerDTO {
     return jobEmployerService.getEmployer(employerId)
   }
 

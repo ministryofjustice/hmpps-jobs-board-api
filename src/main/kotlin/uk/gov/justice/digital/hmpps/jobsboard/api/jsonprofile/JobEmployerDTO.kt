@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
-import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobEmployer
+import java.time.LocalDateTime
 class JobEmployerDTO(
 
   var id: Long?,
@@ -27,16 +27,18 @@ class JobEmployerDTO(
 
   var postCode: String?,
 ) {
-  constructor(jobEmployer:JobEmployer):this( id =jobEmployer.id,
-    employerName =jobEmployer.employerName,
-    employerBio =jobEmployer.employerBio,
-    createdBy =jobEmployer.createdBy,
-    createdDateTime =jobEmployer.createdDateTime,
-    modifiedBy =jobEmployer.modifiedBy,
-    modifiedDateTime =jobEmployer.modifiedDateTime,
-    sector=jobEmployer.sectorName,
-    partnerGrade=jobEmployer.grade,
-    partner=jobEmployer.partnerName,
-    image=jobEmployer.imagePath,
-    postCode=jobEmployer.postCode)
+  constructor(jobEmployer: JobEmployer) : this(
+    id = jobEmployer.id,
+    employerName = jobEmployer.employerName,
+    employerBio = jobEmployer.employerBio,
+    createdBy = jobEmployer.createdBy,
+    createdDateTime = jobEmployer.createdDateTime,
+    modifiedBy = jobEmployer.modifiedBy,
+    modifiedDateTime = jobEmployer.modifiedDateTime,
+    sector = jobEmployer.sectorName,
+    partnerGrade = jobEmployer.grade,
+    partner = jobEmployer.partnerName,
+    image = jobEmployer.imagePath,
+    postCode = jobEmployer.postCode,
+  )
 }
