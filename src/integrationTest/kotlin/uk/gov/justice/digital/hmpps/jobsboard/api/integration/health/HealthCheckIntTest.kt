@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.health
+package uk.gov.justice.digital.hmpps.jobsboard.api.integration.health
 
 import uk.gov.justice.digital.hmpps.jobsboard.api.IntegrationTestBase
 
