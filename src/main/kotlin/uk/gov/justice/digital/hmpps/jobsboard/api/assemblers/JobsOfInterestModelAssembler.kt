@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobSu
 import uk.gov.justice.digital.hmpps.jobsboard.api.resource.PrisonLeaversJobResourceController
 
 @Configuration
-class EmployerJobModelAssembler :
+class JobsOfInterestModelAssembler :
   RepresentationModelAssembler<PrisonLeaversJob, PrisonLeaversJobSummaryDTO> {
   override fun toModel(entity: PrisonLeaversJob): PrisonLeaversJobSummaryDTO {
     var prisonLeaversJobDTO: PrisonLeaversJobSummaryDTO = PrisonLeaversJobSummaryDTO(entity)

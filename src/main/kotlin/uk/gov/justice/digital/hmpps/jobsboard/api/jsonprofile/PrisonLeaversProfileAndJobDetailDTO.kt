@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
 
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversProfile
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
 
 class PrisonLeaversProfileAndJobDetailDTO(
 

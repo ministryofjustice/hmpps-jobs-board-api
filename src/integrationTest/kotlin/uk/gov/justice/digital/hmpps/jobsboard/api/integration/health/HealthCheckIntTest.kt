@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.integration.health
 
-import uk.gov.justice.digital.hmpps.jobsboard.api.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.jobsboard.api.integration.IntegrationTestBase
 
 class HealthCheckIntTest : IntegrationTestBase() {
 

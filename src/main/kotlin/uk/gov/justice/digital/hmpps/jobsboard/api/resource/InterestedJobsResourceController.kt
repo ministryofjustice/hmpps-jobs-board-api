@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PLIntrestedJobsClosingSoonListDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversCommonSearchDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDetailDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.PrisonLeaversProfileService
@@ -97,7 +96,7 @@ class InterestedJobsResourceController(
     @RequestParam
     @Parameter(description = "The offenderId", required = true)
     offenderId: String,
-    ): PLIntrestedJobsClosingSoonListDTO? {
+  ): PLIntrestedJobsClosingSoonListDTO? {
     var plist = prisonLeaversProfileService.searchPrisonLeaversJobInterest(offenderId)
     var prisonLeaversSearchResultListDTO = PLIntrestedJobsClosingSoonListDTO(plist)
     return prisonLeaversSearchResultListDTO

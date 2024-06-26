@@ -10,7 +10,7 @@ class CustomRepositoryImpl : CustomRepository {
   @PersistenceContext
   private val entityManager: EntityManager? = null
 
-  override fun findIntrestedJobsbyClosingDate(@Param("prisonLeaversId") prisonLeaversId: String, ): MutableList<PLIntrestedJobsClosingSoonDTO>? {
+  override fun findIntrestedJobsbyClosingDate(@Param("prisonLeaversId") prisonLeaversId: String): MutableList<PLIntrestedJobsClosingSoonDTO>? {
     val query = entityManager?.createNamedQuery("PrisonLeaversProfile.findIntrestedJobsClosingSoon", PLIntrestedJobsClosingSoonDTO::class.java)
     query?.setParameter("prisonLeaversId", prisonLeaversId)
     return query?.getResultList()

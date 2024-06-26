@@ -4,14 +4,12 @@ import jakarta.validation.ValidationException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.CapturedSpringConfigValues
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversProfile
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PLIntrestedJobsClosingSoonDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDetailDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversProfileRepository
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PLIntrestedJobsClosingSoonDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PLIntrestedJobsClosingSoonListDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversCommonSearchDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDetailDTO
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -62,7 +60,7 @@ class PrisonLeaversProfileService(
   ): MutableList<PLIntrestedJobsClosingSoonDTO>? {
     var prisonLeaversProfile = offenderId?.let {
       prisonLeaversProfileRepository.findIntrestedJobsbyClosingDate(
-        it
+        it,
       )
     }
 

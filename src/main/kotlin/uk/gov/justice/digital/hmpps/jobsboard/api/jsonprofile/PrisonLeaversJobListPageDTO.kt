@@ -4,6 +4,6 @@ import org.springframework.hateoas.RepresentationModel
 
 open class PrisonLeaversJobListPageDTO(
 
-  var prisonLeaversJobList: MutableList<PrisonLeaversJobDTO>,
+  var prisonLeaversJobList: MutableList<PrisonLeaversJobSummaryDTO>,
   var total: Int,
 ) : RepresentationModel<PrisonLeaversJobListPageDTO>()

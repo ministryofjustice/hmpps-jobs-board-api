@@ -11,11 +11,11 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.PrisonLeaversJob
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployer
 import uk.gov.justice.digital.hmpps.jobsboard.api.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.jobsboard.api.integration.util.TestData
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDetailDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PLIntrestedJobsClosingSoonListDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversCommonSearchDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversJobDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PLIntrestedJobsClosingSoonListDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.PrisonLeaversProfileAndJobDetailDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobEmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.PrisonLeaversProfileRepository
@@ -98,12 +98,12 @@ class PrisonerProfileIntTest : IntegrationTestBase() {
         PrisonLeaversJob::class.java,
       )
       Assertions.assertThat(result).isNotNull
-      var PrisonLeaversProfileAndJobDTO = PrisonLeaversProfileAndJobDTO(offenderId, result.body.id)
+      var prisonLeaversProfileAndJobDTO = PrisonLeaversProfileAndJobDTO(offenderId, result.body.id)
       val resultLeaver = restTemplate.exchange(
-         "/candidate-matching/matched-jobs",
+        "/candidate-matching/matched-jobs",
         HttpMethod.POST,
         HttpEntity<PrisonLeaversProfileAndJobDTO>(
-          PrisonLeaversProfileAndJobDTO,
+          prisonLeaversProfileAndJobDTO,
           setAuthorisation(roles = listOf("ROLE_WORK_READINESS_EDIT", "ROLE_WORK_READINESS_VIEW")),
         ),
         PrisonLeaversProfileAndJobDetailDTO::class.java,
