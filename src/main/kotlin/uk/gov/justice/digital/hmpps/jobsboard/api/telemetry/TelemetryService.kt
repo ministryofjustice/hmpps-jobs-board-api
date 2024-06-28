@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.telemetry
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobsBoardProfile
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.messaging.EventType
 import java.time.ZoneOffset
 
@@ -11,15 +11,15 @@ class TelemetryService(
   private val telemetryClient: TelemetryClient,
 ) {
 
-  fun createAndPublishTelemetryEventMessage(jobsBoardProfile: JobsBoardProfile, eventType: EventType) {
-    val logMap = createTelemetryEventMapJobCreatedUpdated(jobsBoardProfile)
+  fun createAndPublishTelemetryEventMessage(JobEmployerDTO: JobEmployerDTO, eventType: EventType) {
+    val logMap = createTelemetryEventMapJobCreatedUpdated(JobEmployerDTO)
   }
 
-  fun createTelemetryEventMapJobCreatedUpdated(jobsBoardProfile: JobsBoardProfile): MutableMap<String, String> {
+  fun createTelemetryEventMapJobCreatedUpdated(jobEmployerDTO: JobEmployerDTO): MutableMap<String, String> {
     val logMap: MutableMap<String, String> = HashMap()
-    logMap["prisonId"] = jobsBoardProfile.prisonId.toString()
-    logMap["userId"] = jobsBoardProfile.modifiedBy.toString()
-    logMap["timestamp"] = jobsBoardProfile.modifiedDateTime?.toInstant(
+    logMap["employerName"] = jobEmployerDTO.employerName.toString()
+    logMap["userId"] = jobEmployerDTO.modifiedBy.toString()
+    logMap["timestamp"] = jobEmployerDTO.modifiedDateTime?.toInstant(
       ZoneOffset.UTC,
     )!!.toString()
     return logMap
