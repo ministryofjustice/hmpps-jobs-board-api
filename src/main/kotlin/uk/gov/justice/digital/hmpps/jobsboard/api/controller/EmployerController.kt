@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.resource
+package uk.gov.justice.digital.hmpps.jobsboard.api.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -7,46 +7,38 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartner
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerPartnerGrade
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EmployerWorkSector
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobImage
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployer
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.SimplifiedJobEmployerDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.CreateEmployerRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.service.JobEmployerService
-import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.jobsboard.api.service.EmployerService
 
 @Validated
 @RestController
-@RequestMapping("/job-board/employer", produces = [MediaType.APPLICATION_JSON_VALUE])
-class JobsEmployerResourceController(
-  private val jobEmployerService: JobEmployerService,
+@RequestMapping("/employers", produces = [MediaType.APPLICATION_JSON_VALUE])
+class EmployerController(
+  private val jobEmployerService: EmployerService,
 ) {
-  @PreAuthorize("hasRole('WORK_READINESS_EDIT') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
-  @PostMapping
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PutMapping("/{id}")
   @Operation(
-    summary = "Create a job employer ",
-    description = "Create a job employer. Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>",
+    summary = "Create an Employer ",
+    description = "Create a Jobs Board Employer. Currently requires role <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b>",
     responses = [
       ApiResponse(
-        responseCode = "200",
-        description = "Job Employer  created",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = JobEmployerDTO::class),
-          ),
-        ],
+        responseCode = "201",
+        description = "Employer created",
       ),
       ApiResponse(
         responseCode = "401",
@@ -61,28 +53,39 @@ class JobsEmployerResourceController(
     ],
   )
   fun createEmployer(
-    @Valid
-    @RequestBody
-    requestDTO: SimplifiedJobEmployerDTO,
-  ): SimplifiedJobEmployerDTO {
-    return jobEmployerService.createEmployer(requestDTO)
+    @PathVariable id: String,
+    @Valid @RequestBody createEmployerRequest: CreateEmployerRequest,
+  ): ResponseEntity<String> {
+    jobEmployerService.createEmployer(createEmployerRequest.copy(id = id))
+    return ResponseEntity.created(
+      ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(id)
+        .toUri(),
+    ).build()
   }
 
-  @PreAuthorize("hasRole('WORK_READINESS_EDIT') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
-  @GetMapping("/test")
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("/{id}")
   @Operation(
-    summary = "Create a job employer ",
-    description = "Create a job employer. Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>",
+    summary = "Retrieve an Employer ",
+    description = "Retrieve a Jobs Board Employer. Currently requires roles <b>ROLE_EDUCATION_WORK_PLAN_VIEW</b> or <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b>",
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Job Employer  created",
+        description = "Employer exists",
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = JobEmployerDTO::class),
+            schema = Schema(implementation = CreateEmployerRequest::class),
           ),
         ],
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Employer not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "401",
@@ -96,19 +99,22 @@ class JobsEmployerResourceController(
       ),
     ],
   )
-  fun getEmployer(): JobEmployerDTO {
-    return JobEmployerDTO(
-      1L,
-      "test",
-      "asdad",
-      "sacintha",
-      LocalDateTime.now(),
-      "test",
-      LocalDateTime.now(),
-      EmployerWorkSector(1L, 1L, "test", "test"),
-      EmployerPartner(1L, EmployerPartnerGrade(1L, 1L, "test", "test"), 1L, "test", "test1"),
-      JobImage(1L, 1L, "ett"),
-      "eh26 0hq",
+  fun retrieveEmployer(
+    @PathVariable id: String,
+  ): ResponseEntity<CreateEmployerRequest> {
+    val employer: Employer = jobEmployerService.retrieveEmployer(id)
+    return ResponseEntity.ok(
+      CreateEmployerRequest.from(
+        id = employer.id.toString(),
+        name = employer.name,
+        description = employer.description,
+        createdBy = employer.createdBy,
+        createdWhen = employer.createdWhen,
+        modifiedBy = employer.modifiedBy,
+        modifiedWhen = employer.modifiedWhen,
+        sector = employer.sector,
+        status = employer.status,
+      ),
     )
   }
 
@@ -150,7 +156,7 @@ class JobsEmployerResourceController(
     @RequestParam
     @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
     sortBy: String,
-  ): MutableList<SimplifiedJobEmployer>? {
+  ): MutableList<Employer>? {
     return jobEmployerService.getPagingList(pageNo, pageSize, sortBy)
   }
 }

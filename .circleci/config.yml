@@ -10,20 +10,36 @@ parameters:
   releases-slack-channel:
     type: string
     default: education-skills-work-employment-dev
+  java-version:
+    type: string
+    default: "21.0"
+  postgres-version:
+    type: string
+    default: "16.2"
 
 jobs:
   validate:
     executor:
-      name: hmpps/java
-      tag: "21.0"
+      name: hmpps/java_postgres
+      jdk_tag: << pipeline.parameters.java-version >>
+      postgres_tag: << pipeline.parameters.postgres-version >>
+      postgres_db: "job-board"
+      postgres_username: "job-board"
+      postgres_password: "job-board"
+    environment:
+      DATABASE_ENDPOINT: localhost
+      DATABASE_NAME: job-board
+      DATABASE_USERNAME: job-board
+      DATABASE_PASSWORD: job-board
     steps:
       - checkout
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
+      - hmpps/wait_till_ready_postgres
       - run:
-          command: ./gradlew check
+          command: ./gradlew --daemon check
       - save_cache:
           paths:
             - ~/.gradle
@@ -112,7 +128,7 @@ workflows:
                 - main
     jobs:
       - hmpps/gradle_owasp_dependency_check:
-          cache_key: "v2_0"
+          cache_key: "v3_0"
           jdk_tag: "21.0"
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
