@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.1"
   kotlin("plugin.spring") version "2.0.0"
@@ -19,8 +17,10 @@ dependencies {
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+  testImplementation("org.springframework.boot:spring-boot-testcontainers")
+  testImplementation("org.testcontainers:postgresql")
+  testImplementation("org.testcontainers:junit-jupiter")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-  testImplementation("com.h2database:h2")
 }
 
 testing {
@@ -29,7 +29,8 @@ testing {
       useJUnitJupiter()
     }
 
-    register<JvmTestSuite>("integrationTest") {
+    val integrationTest by registering(JvmTestSuite::class) {
+      useJUnitJupiter()
       dependencies {
         testType.set(TestSuiteType.INTEGRATION_TEST)
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
@@ -39,12 +40,15 @@ testing {
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
         implementation("com.zaxxer:HikariCP:5.1.0")
         implementation("com.h2database:h2")
+        implementation("org.springframework.boot:spring-boot-testcontainers")
+        implementation("org.testcontainers:postgresql")
+        implementation("org.testcontainers:junit-jupiter")
       }
 
       targets {
         all {
           testTask.configure {
-            shouldRunAfter(test)
+            shouldRunAfter(tasks.named("test"))
           }
         }
       }
@@ -53,31 +57,31 @@ testing {
 }
 
 tasks {
-  withType<KotlinCompile> {
-    named("check") {
-      dependsOn(testing.suites.named("integrationTest"))
-    }
+  named("check") {
+    dependsOn(named("test"), named("integrationTest"))
+  }
 
-    named("compileIntegrationTestKotlin") {
-      dependsOn(named("copyAgent"))
-    }
+  named("test") {
+    finalizedBy("jacocoTestReport")
+  }
 
-    named<JacocoReport>("jacocoTestReport") {
-      dependsOn(named("check"))
-      reports {
-        html.required.set(true)
-        xml.required.set(true)
-      }
-    }
+  named("integrationTest") {
+    mustRunAfter(named("test"))
+  }
 
-    finalizedBy(named("jacocoTestReport"))
-    named("assemble") {
-      doFirst {
-        delete(
-          fileTree(project.layout.buildDirectory.get())
-            .include("libs/*-plain.jar"),
-        )
-      }
+  named<JacocoReport>("jacocoTestReport") {
+    reports {
+      html.required.set(true)
+      xml.required.set(true)
+    }
+  }
+
+  named("assemble") {
+    doFirst {
+      delete(
+        fileTree(project.layout.buildDirectory.get())
+          .include("libs/*-plain.jar"),
+      )
     }
   }
 }

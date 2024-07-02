@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.health
 
-import uk.gov.justice.digital.hmpps.jobsboard.api.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
 
-class HealthCheckIntTest : IntegrationTestBase() {
+class HealthCheckIntTest : ApplicationTestCase() {
 
 //  @Test
 //  fun `Health page reports ok`() {

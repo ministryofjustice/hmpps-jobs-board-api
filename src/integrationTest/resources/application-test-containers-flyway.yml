@@ -1,6 +1,5 @@
 server:
   shutdown: immediate
-  port: 8080
 
 api:
   base:
@@ -12,5 +11,7 @@ management.endpoint:
   info.cache.time-to-live: 0
 
 spring:
+  jpa:
+    show-sql: true
   datasource:
     url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=disable'

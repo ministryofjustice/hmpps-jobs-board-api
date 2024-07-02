@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component
  * Adds version data to the /health endpoint. This is called by the UI to display API details
  */
 @Component
-class HealthInfo(buildProperties: BuildProperties) : HealthIndicator {
-  private val version: String = buildProperties.version
+class HealthInfo(private val buildProperties: BuildProperties) : HealthIndicator {
 
-  override fun health(): Health = Health.up().withDetail("version", version).build()
+  override fun health(): Health = Health.up().withDetail("version", buildProperties.version).build()
 }
