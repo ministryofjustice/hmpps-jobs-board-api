@@ -13,4 +13,4 @@ management.endpoint:
 
 spring:
   datasource:
-    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=disable'
+    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=prefer'
