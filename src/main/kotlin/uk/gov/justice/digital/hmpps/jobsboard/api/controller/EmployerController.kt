@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.CreateEmployerRequest
+import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.GetEmployerResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.JobEmployerDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.EmployerService
 
@@ -101,21 +102,9 @@ class EmployerController(
   )
   fun retrieveEmployer(
     @PathVariable id: String,
-  ): ResponseEntity<CreateEmployerRequest> {
+  ): ResponseEntity<GetEmployerResponse> {
     val employer: Employer = jobEmployerService.retrieveEmployer(id)
-    return ResponseEntity.ok(
-      CreateEmployerRequest.from(
-        id = employer.id.toString(),
-        name = employer.name,
-        description = employer.description,
-        createdBy = employer.createdBy,
-        createdWhen = employer.createdWhen,
-        modifiedBy = employer.modifiedBy,
-        modifiedWhen = employer.modifiedWhen,
-        sector = employer.sector,
-        status = employer.status,
-      ),
-    )
+    return ResponseEntity.ok().body(GetEmployerResponse.from(employer))
   }
 
   @PreAuthorize("hasRole('WORK_READINESS_EDIT') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")

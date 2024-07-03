@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.CreateEmployerRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.service.EmployerService
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -37,12 +36,9 @@ class EmployerServiceShould {
         id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
         name = "Sainsbury's",
         description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
-        createdBy = "Sacintha",
-        createdWhen = LocalDateTime.parse("2024-05-16T11:15:04.915205"),
-        modifiedBy = "Javier",
-        modifiedWhen = LocalDateTime.parse("2024-05-16T11:16:04.915205"),
         sector = "sector",
         status = "status",
+        createdAt = null,
       )
   }
 
@@ -52,10 +48,6 @@ class EmployerServiceShould {
       id = "eaf7e96e-e45f-461d-bbcb-fd4cedf0499c",
       name = "Sainsbury's",
       description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
-      createdBy = "Sacintha",
-      createdWhen = LocalDateTime.parse("2024-05-16T11:15:04.915205"),
-      modifiedBy = "Javier",
-      modifiedWhen = LocalDateTime.parse("2024-05-16T11:16:04.915205"),
       sector = "sector",
       status = "status",
     )
