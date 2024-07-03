@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -25,6 +26,21 @@ class EmployerRepositoryShould {
   @Autowired
   lateinit var jobEmployerRepository: EmployerRepository
 
+  private lateinit var employer: Employer
+
+  @BeforeEach
+  fun setUp() {
+    employer =
+      Employer(
+        id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
+        name = "Sainsbury's",
+        description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
+        sector = "sector",
+        status = "status",
+        createdAt = LocalDateTime.parse("2024-05-16T11:15:04.915205"),
+      )
+  }
+
   companion object {
     private val postgresContainer = PostgresContainer.instance
 
@@ -41,35 +57,11 @@ class EmployerRepositoryShould {
 
   @Test
   fun `save an Employer`() {
-    val employer = Employer(
-      id = EntityId("be756fdd-8258-4561-88db-6fbd84295410"),
-      name = "Sainsbury's",
-      description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
-      createdBy = "Sacintha",
-      createdWhen = LocalDateTime.parse("2024-05-16T11:15:04.915205"),
-      modifiedBy = "Javier",
-      modifiedWhen = LocalDateTime.parse("2024-05-16T11:16:04.915205"),
-      sector = "sector",
-      status = "status",
-    )
-
     jobEmployerRepository.save(employer)
   }
 
   @Test
   fun `find an existing Employer`() {
-    val employer = Employer(
-      id = EntityId("be756fdd-8258-4561-88db-6fbd84295410"),
-      name = "Sainsbury's",
-      description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
-      createdBy = "Sacintha",
-      createdWhen = LocalDateTime.parse("2024-05-16T11:15:04.915205"),
-      modifiedBy = "Javier",
-      modifiedWhen = LocalDateTime.parse("2024-05-16T11:16:04.915205"),
-      sector = "sector",
-      status = "status",
-    )
-
     jobEmployerRepository.save(employer)
 
     assertEquals(

@@ -19,21 +19,12 @@ data class Employer(
   @Column(name = "description", length = 500, nullable = false)
   var description: String,
 
-  @Column(name = "created_by", nullable = true)
-  var createdBy: String?,
-
-  @Column(name = "created_when", nullable = true)
-  var createdWhen: LocalDateTime?,
-
-  @Column(name = "modified_by", nullable = true)
-  var modifiedBy: String?,
-
-  @Column(name = "modified_when", nullable = true)
-  var modifiedWhen: LocalDateTime?,
-
   @Column(name = "sector", nullable = false)
   var sector: String,
 
   @Column(name = "status", nullable = false)
   val status: String,
+
+  @Column(name = "createdAt", nullable = true)
+  var createdAt: LocalDateTime?,
 )
