@@ -25,6 +25,6 @@ data class Employer(
   @Column(name = "status", nullable = false)
   val status: String,
 
-  @Column(name = "createdAt", nullable = true)
-  var createdAt: LocalDateTime?,
+  @Column(name = "createdAt", nullable = false)
+  var createdAt: LocalDateTime,
 )
