@@ -9,10 +9,12 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.CreateEmployerRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.EmployerRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 
 @Service
 class EmployerService(
   private val jobEmployerRepository: EmployerRepository,
+  private val timeProvider: TimeProvider,
 ) {
 
   fun createEmployer(
@@ -23,9 +25,9 @@ class EmployerService(
         id = EntityId(request.id),
         name = request.name,
         description = request.description,
-        createdAt = null,
         sector = request.sector,
         status = request.status,
+        createdAt = timeProvider.now(),
       ),
     )
   }
