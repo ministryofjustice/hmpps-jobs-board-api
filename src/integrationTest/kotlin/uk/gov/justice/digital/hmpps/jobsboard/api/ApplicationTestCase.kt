@@ -15,7 +15,7 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.request
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import software.amazon.awssdk.core.internal.waiters.ResponseOrException.response
@@ -84,20 +84,17 @@ abstract class ApplicationTestCase {
   ) {
     val httpHeaders: HttpHeaders =
       this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
-    mockMvc.request(method, endpoint) {
-      contentType = APPLICATION_JSON
-      accept = APPLICATION_JSON
-      content = body
-      headers {
-        httpHeaders.forEach { (name, values) ->
-          values.forEach { value ->
-            header(name, value)
-          }
-        }
+    mockMvc.perform(
+      request(method, endpoint)
+        .contentType(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+        .content(body)
+        .headers(httpHeaders),
+    )
+      .andExpect {
+        content().contentType(APPLICATION_JSON)
+        status().`is`(expectedStatus.value())
       }
-    }.andExpect {
-      status().`is`(expectedStatus.value())
-    }
   }
 
   @Throws(Exception::class)
@@ -129,5 +126,26 @@ abstract class ApplicationTestCase {
         response(matchedResponse)
       }
     }
+  }
+
+  fun assertErrorRequestWithBody(
+    method: HttpMethod,
+    endpoint: String,
+    body: String,
+    expectedStatus: HttpStatus,
+    expectedErrorResponse: String,
+  ) {
+    val httpHeaders: HttpHeaders =
+      this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
+    mockMvc.perform(
+      request(method, endpoint)
+        .contentType(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+        .content(body)
+        .headers(httpHeaders),
+    )
+      .andExpect(status().`is`(expectedStatus.value()))
+      .andExpect(content().contentType(APPLICATION_JSON))
+      .andExpect(content().json(expectedErrorResponse))
   }
 }
