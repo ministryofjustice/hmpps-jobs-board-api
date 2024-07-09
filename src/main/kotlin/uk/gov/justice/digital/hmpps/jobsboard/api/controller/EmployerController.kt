@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
+import jakarta.validation.constraints.Pattern
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -54,7 +55,12 @@ class EmployerController(
     ],
   )
   fun createEmployer(
-    @PathVariable id: String,
+    @PathVariable
+    @Pattern(
+      regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      message = "Invalid UUID format",
+    )
+    id: String,
     @Valid @RequestBody createEmployerRequest: CreateEmployerRequest,
   ): ResponseEntity<String> {
     jobEmployerService.createEmployer(createEmployerRequest.copy(id = id))

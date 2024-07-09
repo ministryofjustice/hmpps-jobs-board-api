@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod.PUT
+import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.MediaType.APPLICATION_JSON
@@ -18,6 +19,25 @@ class EmployerControllerShould : ApplicationTestCase() {
       endpoint = "/employers/1a553b0e-9d0b-46b2-bd78-3fa24b7232da",
       body = sainsburysBody,
       expectedStatus = CREATED,
+    )
+  }
+
+  @Test
+  fun `not create an Employer with invalid UUID`() {
+    assertErrorRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/invalid-uuid",
+      body = tescoBody,
+      expectedStatus = BAD_REQUEST,
+      expectedErrorResponse = """
+        {
+          "status":400,
+          "errorCode":null,
+          "userMessage":"Validation failure: createEmployer.id: Invalid UUID format",
+          "developerMessage":"createEmployer.id: Invalid UUID format",
+          "moreInfo":null
+        }
+      """.trimIndent(),
     )
   }
 
