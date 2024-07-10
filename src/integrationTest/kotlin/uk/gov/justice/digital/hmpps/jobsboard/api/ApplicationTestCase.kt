@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import software.amazon.awssdk.core.internal.waiters.ResponseOrException.response
+import org.springframework.test.web.servlet.result.isEqualTo
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
@@ -82,33 +82,23 @@ abstract class ApplicationTestCase {
     body: String,
     expectedStatus: HttpStatus,
   ) {
-    val httpHeaders: HttpHeaders =
-      this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
+    val httpHeaders: HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
     mockMvc.perform(
       request(method, endpoint)
         .contentType(APPLICATION_JSON)
         .accept(APPLICATION_JSON)
         .content(body)
         .headers(httpHeaders),
-    )
-      .andExpect {
-        content().contentType(APPLICATION_JSON)
-        status().`is`(expectedStatus.value())
-      }
+    ).andExpect(status().isEqualTo(expectedStatus.value()))
   }
 
   @Throws(Exception::class)
   fun assertResponse(
     endpoint: String,
     expectedStatus: HttpStatus,
-    expectedResponse: String? = null,
+    expectedResponse: String,
   ) {
-    val matchedResponse = expectedResponse?.let {
-      content().json(it)
-    } ?: content().string("")
-
-    val httpHeaders: HttpHeaders =
-      this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_VIEW"))
+    val httpHeaders: HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_VIEW"))
     mockMvc.get(endpoint) {
       contentType = APPLICATION_JSON
       accept = APPLICATION_JSON
@@ -120,10 +110,10 @@ abstract class ApplicationTestCase {
         }
       }
     }.andExpect {
-      status().`is`(expectedStatus.value())
+      status { isEqualTo(expectedStatus.value()) }
       content {
         contentType(APPLICATION_JSON)
-        response(matchedResponse)
+        json(expectedResponse)
       }
     }
   }
@@ -135,16 +125,14 @@ abstract class ApplicationTestCase {
     expectedStatus: HttpStatus,
     expectedErrorResponse: String,
   ) {
-    val httpHeaders: HttpHeaders =
-      this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
+    val httpHeaders: HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
     mockMvc.perform(
       request(method, endpoint)
         .contentType(APPLICATION_JSON)
         .accept(APPLICATION_JSON)
         .content(body)
         .headers(httpHeaders),
-    )
-      .andExpect(status().`is`(expectedStatus.value()))
+    ).andExpect(status().isEqualTo(expectedStatus.value()))
       .andExpect(content().contentType(APPLICATION_JSON))
       .andExpect(content().json(expectedErrorResponse))
   }

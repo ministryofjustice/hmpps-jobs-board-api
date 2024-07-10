@@ -33,11 +33,34 @@ class EmployerControllerShould : ApplicationTestCase() {
         {
           "status":400,
           "errorCode":null,
-          "userMessage":"Validation failure: createEmployer.id: Invalid UUID format",
-          "developerMessage":"createEmployer.id: Invalid UUID format",
+          "userMessage":"Validation failure: save.id: Invalid UUID format",
+          "developerMessage":"save.id: Invalid UUID format",
           "moreInfo":null
         }
       """.trimIndent(),
+    )
+  }
+
+  @Test
+  fun `update an existing Employer`() {
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      body = sainsburysBody,
+      expectedStatus = OK,
+    )
+
+    assertResponse(
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      expectedStatus = OK,
+      expectedResponse = sainsburysBody,
     )
   }
 

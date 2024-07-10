@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.CreateEmployerRequest
@@ -24,6 +25,8 @@ import java.time.Month.JULY
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @ExtendWith(MockitoExtension::class)
 class EmployerServiceShould {
@@ -59,7 +62,7 @@ class EmployerServiceShould {
 
   @Test
   fun `create an Employer with valid details`() {
-    employerService.createEmployer(createEmployerRequest)
+    employerService.save(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
     verify(employerRepository).save(employerCaptor.capture())
@@ -74,7 +77,7 @@ class EmployerServiceShould {
 
   @Test
   fun `create an Employer with current time`() {
-    employerService.createEmployer(createEmployerRequest)
+    employerService.save(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
     verify(employerRepository).save(employerCaptor.capture())
@@ -94,7 +97,7 @@ class EmployerServiceShould {
     )
 
     val exception = assertThrows<IllegalArgumentException> {
-      employerService.createEmployer(createEmployerRequest)
+      employerService.save(createEmployerRequest)
     }
 
     assertEquals("Invalid UUID format: {${createEmployerRequest.id}}", exception.message)
@@ -112,7 +115,7 @@ class EmployerServiceShould {
     )
 
     val exception = assertThrows<IllegalArgumentException> {
-      employerService.createEmployer(createEmployerRequest)
+      employerService.save(createEmployerRequest)
     }
 
     assertEquals("EntityId cannot be empty", exception.message)
@@ -130,11 +133,27 @@ class EmployerServiceShould {
     )
 
     val exception = assertThrows<IllegalArgumentException> {
-      employerService.createEmployer(createEmployerRequest)
+      employerService.save(createEmployerRequest)
     }
 
     assertEquals("EntityId cannot be null: {${createEmployerRequest.id}}", exception.message)
     verify(employerRepository, never()).save(any(Employer::class.java))
+  }
+
+  @Test
+  fun `return true when employer exists`() {
+    val employerId = UUID.randomUUID().toString()
+    whenever(employerRepository.existsById(EntityId(employerId))).thenReturn(true)
+
+    assertTrue(employerService.existsById(employerId))
+  }
+
+  @Test
+  fun `return false when employer does not exist`() {
+    val employerId = UUID.randomUUID().toString()
+    whenever(employerRepository.existsById(EntityId(employerId))).thenReturn(false)
+
+    assertFalse(employerService.existsById(employerId))
   }
 
   @Test
@@ -145,7 +164,7 @@ class EmployerServiceShould {
       ),
     )
 
-    val actualEmployer: Employer = employerService.retrieveEmployer("1db79c55-cc88-4a1d-94fa-7a21c590c713")
+    val actualEmployer: Employer = employerService.retrieve("1db79c55-cc88-4a1d-94fa-7a21c590c713")
 
     assertEquals(expectedEmployer, actualEmployer)
     verify(employerRepository, times(1)).findById(EntityId("1db79c55-cc88-4a1d-94fa-7a21c590c713"))
@@ -156,7 +175,7 @@ class EmployerServiceShould {
     `when`(employerRepository.findById(EntityId("39683af0-eb4c-4fd4-b6a5-34a26d6b9039"))).thenReturn(Optional.empty())
 
     val exception = assertThrows<RuntimeException> {
-      employerService.retrieveEmployer("39683af0-eb4c-4fd4-b6a5-34a26d6b9039")
+      employerService.retrieve("39683af0-eb4c-4fd4-b6a5-34a26d6b9039")
     }
 
     assertEquals("Employer not found", exception.message)
