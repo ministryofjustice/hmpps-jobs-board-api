@@ -30,7 +30,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.service.EmployerService
 @RestController
 @RequestMapping("/employers", produces = [MediaType.APPLICATION_JSON_VALUE])
 class EmployerController(
-  private val jobEmployerService: EmployerService,
+  private val employerService: EmployerService,
 ) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @PutMapping("/{id}")
@@ -54,7 +54,7 @@ class EmployerController(
       ),
     ],
   )
-  fun createEmployer(
+  fun save(
     @PathVariable
     @Pattern(
       regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
@@ -62,15 +62,21 @@ class EmployerController(
     )
     id: String,
     @Valid @RequestBody createEmployerRequest: CreateEmployerRequest,
-  ): ResponseEntity<String> {
-    jobEmployerService.createEmployer(createEmployerRequest.copy(id = id))
-    return ResponseEntity.created(
-      ServletUriComponentsBuilder
-        .fromCurrentRequest()
-        .path("/{id}")
-        .buildAndExpand(id)
-        .toUri(),
-    ).build()
+  ): ResponseEntity<Void> {
+    val employerExists = employerService.existsById(id)
+    employerService.save(createEmployerRequest.copy(id = id))
+
+    return if (employerExists) {
+      ResponseEntity.ok().build()
+    } else {
+      ResponseEntity.created(
+        ServletUriComponentsBuilder
+          .fromCurrentRequest()
+          .path("/{id}")
+          .buildAndExpand(id)
+          .toUri(),
+      ).build()
+    }
   }
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
@@ -106,10 +112,10 @@ class EmployerController(
       ),
     ],
   )
-  fun retrieveEmployer(
+  fun retrieve(
     @PathVariable id: String,
   ): ResponseEntity<GetEmployerResponse> {
-    val employer: Employer = jobEmployerService.retrieveEmployer(id)
+    val employer: Employer = employerService.retrieve(id)
     return ResponseEntity.ok().body(GetEmployerResponse.from(employer))
   }
 
@@ -152,6 +158,6 @@ class EmployerController(
     @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
     sortBy: String,
   ): MutableList<Employer>? {
-    return jobEmployerService.getPagingList(pageNo, pageSize, sortBy)
+    return employerService.getPagingList(pageNo, pageSize, sortBy)
   }
 }
