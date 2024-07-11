@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
@@ -119,8 +117,8 @@ class EmployerController(
     return ResponseEntity.ok().body(GetEmployerResponse.from(employer))
   }
 
-  @PreAuthorize("hasRole('WORK_READINESS_EDIT') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
-  @GetMapping("/test/list")
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("")
   @Operation(
     summary = "Create a job employer ",
     description = "Create a job employer. Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>",
@@ -147,17 +145,11 @@ class EmployerController(
       ),
     ],
   )
-  fun getEmployerlist(
-    @RequestParam
-    @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
-    pageNo: Int,
-    @RequestParam
-    @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
-    pageSize: Int,
-    @RequestParam
-    @Parameter(description = "The identifier of the establishment(prison) to get the active bookings for", required = true)
-    sortBy: String,
-  ): MutableList<Employer>? {
-    return employerService.getPagingList(pageNo, pageSize, sortBy)
+  fun retrieveAll(): ResponseEntity<List<GetEmployerResponse>>? {
+    val employerList = employerService.getEmployers()
+    val response = employerList.map { it.toResponse() }
+    return ResponseEntity.ok(response)
   }
 }
+
+fun Employer.toResponse() = GetEmployerResponse(id.id, name, description, sector, status, createdAt)

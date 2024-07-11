@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.unit.service
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,8 +26,6 @@ import java.time.Month.JULY
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @ExtendWith(MockitoExtension::class)
 class EmployerServiceShould {
@@ -39,20 +38,31 @@ class EmployerServiceShould {
   private lateinit var employerService: EmployerService
 
   private val fixedTime = LocalDateTime.of(2024, JULY, 20, 22, 6)
-  private val expectedEmployer = Employer(
+  private val tescoEmployer = Employer(
+    id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
+    name = "Tesco",
+    description = "Tesco plc is a British multinational groceries and general merchandise retailer headquartered in Welwyn Garden City, England. The company was founded by Jack Cohen in Hackney, London in 1919.",
+    sector = "RETAIL",
+    status = "SILVER",
+    createdAt = fixedTime,
+  )
+
+  private val sainsburysEmployer = Employer(
     id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
     name = "Sainsbury's",
     description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
-    sector = "sector",
-    status = "status",
+    sector = "RETAIL",
+    status = "GOLD",
     createdAt = fixedTime,
   )
+
+  private val expectedEmployer = sainsburysEmployer
   private val createEmployerRequest = CreateEmployerRequest.from(
     id = "eaf7e96e-e45f-461d-bbcb-fd4cedf0499c",
     name = "Sainsbury's",
     description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
-    sector = "sector",
-    status = "status",
+    sector = "RETAIL",
+    status = "GOLD",
   )
 
   @BeforeEach
@@ -61,29 +71,29 @@ class EmployerServiceShould {
   }
 
   @Test
-  fun `create an Employer with valid details`() {
+  fun `save an Employer with valid details`() {
     employerService.save(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
     verify(employerRepository).save(employerCaptor.capture())
     val actualEmployer = employerCaptor.firstValue
 
-    assertEquals(expectedEmployer.id, actualEmployer.id)
-    assertEquals(expectedEmployer.name, actualEmployer.name)
-    assertEquals(expectedEmployer.description, actualEmployer.description)
-    assertEquals(expectedEmployer.sector, actualEmployer.sector)
-    assertEquals(expectedEmployer.status, actualEmployer.status)
+    assertThat(expectedEmployer.id).isEqualTo(actualEmployer.id)
+    assertThat(expectedEmployer.name).isEqualTo(actualEmployer.name)
+    assertThat(expectedEmployer.description).isEqualTo(actualEmployer.description)
+    assertThat(expectedEmployer.sector).isEqualTo(actualEmployer.sector)
+    assertThat(expectedEmployer.status).isEqualTo(actualEmployer.status)
   }
 
   @Test
-  fun `create an Employer with current time`() {
+  fun `save an Employer with current time`() {
     employerService.save(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
     verify(employerRepository).save(employerCaptor.capture())
     val actualEmployer = employerCaptor.firstValue
 
-    assertEquals(expectedEmployer.createdAt, actualEmployer.createdAt)
+    assertThat(expectedEmployer.createdAt).isEqualTo(actualEmployer.createdAt)
   }
 
   @Test
@@ -100,7 +110,7 @@ class EmployerServiceShould {
       employerService.save(createEmployerRequest)
     }
 
-    assertEquals("Invalid UUID format: {${createEmployerRequest.id}}", exception.message)
+    assertThat("Invalid UUID format: {${createEmployerRequest.id}}").isEqualTo(exception.message)
     verify(employerRepository, never()).save(any(Employer::class.java))
   }
 
@@ -118,7 +128,7 @@ class EmployerServiceShould {
       employerService.save(createEmployerRequest)
     }
 
-    assertEquals("EntityId cannot be empty", exception.message)
+    assertThat("EntityId cannot be empty").isEqualTo(exception.message)
     verify(employerRepository, never()).save(any(Employer::class.java))
   }
 
@@ -136,7 +146,7 @@ class EmployerServiceShould {
       employerService.save(createEmployerRequest)
     }
 
-    assertEquals("EntityId cannot be null: {${createEmployerRequest.id}}", exception.message)
+    assertThat("EntityId cannot be null: {${createEmployerRequest.id}}").isEqualTo(exception.message)
     verify(employerRepository, never()).save(any(Employer::class.java))
   }
 
@@ -145,7 +155,7 @@ class EmployerServiceShould {
     val employerId = UUID.randomUUID().toString()
     whenever(employerRepository.existsById(EntityId(employerId))).thenReturn(true)
 
-    assertTrue(employerService.existsById(employerId))
+    assertThat(employerService.existsById(employerId)).isTrue()
   }
 
   @Test
@@ -153,11 +163,11 @@ class EmployerServiceShould {
     val employerId = UUID.randomUUID().toString()
     whenever(employerRepository.existsById(EntityId(employerId))).thenReturn(false)
 
-    assertFalse(employerService.existsById(employerId))
+    assertThat(employerService.existsById(employerId)).isFalse()
   }
 
   @Test
-  fun `retrieve an Employer when found`() {
+  fun `return an Employer when found`() {
     `when`(employerRepository.findById(EntityId("1db79c55-cc88-4a1d-94fa-7a21c590c713"))).thenReturn(
       Optional.of(
         expectedEmployer,
@@ -180,5 +190,16 @@ class EmployerServiceShould {
 
     assertEquals("Employer not found", exception.message)
     verify(employerRepository, times(1)).findById(EntityId("39683af0-eb4c-4fd4-b6a5-34a26d6b9039"))
+  }
+
+  @Test
+  fun `return all employers`() {
+    val employers = listOf(tescoEmployer, sainsburysEmployer)
+    whenever(employerRepository.findAll()).thenReturn(employers)
+
+    val result = employerService.getEmployers()
+
+    assertThat(result).hasSize(2)
+    assertThat(result).isEqualTo(employers)
   }
 }
