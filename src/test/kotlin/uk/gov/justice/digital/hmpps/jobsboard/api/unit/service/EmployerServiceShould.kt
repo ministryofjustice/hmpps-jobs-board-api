@@ -15,6 +15,9 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.CreateEmployerRequest
@@ -193,13 +196,18 @@ class EmployerServiceShould {
   }
 
   @Test
-  fun `return all employers`() {
+  fun `return a paginated list of employers`() {
     val employers = listOf(tescoEmployer, sainsburysEmployer)
-    whenever(employerRepository.findAll()).thenReturn(employers)
+    val pageNumber = 0
+    val pageSize = 2
+    val pageRequest = PageRequest.of(pageNumber, pageSize)
+    val pagedResult: Page<Employer> = PageImpl(employers, pageRequest, employers.size.toLong())
+    whenever(employerRepository.findAll(pageRequest)).thenReturn(pagedResult)
 
-    val result = employerService.getEmployers()
+    val result = employerService.getAllEmployers(pageNumber, pageSize)
 
-    assertThat(result).hasSize(2)
-    assertThat(result).isEqualTo(employers)
+    val expected = pagedResult.map { it }
+    assertThat(result).hasSize(pageSize)
+    assertThat(result.content).isEqualTo(expected.content)
   }
 }
