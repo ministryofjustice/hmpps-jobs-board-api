@@ -77,16 +77,26 @@ class EmployerControllerShould : ApplicationTestCase() {
   }
 
   @Test
-  fun `retrieve an empty list of Employers`() {
+  fun `retrieve paginated empty list of all Employers`() {
     assertResponse(
       endpoint = "/employers",
       expectedStatus = OK,
-      expectedResponse = "[]",
+      expectedResponse = """
+        {
+          "content": [ ],
+          "page": {
+            "size": 10,
+            "number": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          }
+        }
+      """.trimIndent(),
     )
   }
 
   @Test
-  fun `retrieve all Employers`() {
+  fun `retrieve the second page of paginated list of all Employers`() {
     assertRequestWithBody(
       method = PUT,
       endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
@@ -102,9 +112,19 @@ class EmployerControllerShould : ApplicationTestCase() {
     )
 
     assertResponse(
-      endpoint = "/employers",
+      endpoint = "/employers?page=1&size=1",
       expectedStatus = OK,
-      expectedResponse = "[ $tescoBody, $sainsburysBody ]",
+      expectedResponse = """
+          {
+            "content": [ $sainsburysBody ],
+            "page": {
+              "size": 1,
+              "number": 1,
+              "totalElements": 2,
+              "totalPages": 2
+            }
+        }
+      """.trimIndent(),
     )
   }
 

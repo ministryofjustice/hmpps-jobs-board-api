@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
+import org.springframework.data.domain.Page
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
@@ -145,8 +147,13 @@ class EmployerController(
       ),
     ],
   )
-  fun retrieveAll(): ResponseEntity<List<GetEmployerResponse>>? {
-    val employerList = employerService.getEmployers()
+  fun retrieveAll(
+    @RequestParam(defaultValue = "0")
+    page: Int,
+    @RequestParam(defaultValue = "10")
+    size: Int,
+  ): ResponseEntity<Page<GetEmployerResponse>>? {
+    val employerList = employerService.getAllEmployers(page, size)
     val response = employerList.map { it.toResponse() }
     return ResponseEntity.ok(response)
   }
