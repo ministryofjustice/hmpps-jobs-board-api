@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api
 
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.http.HttpStatus.BAD_REQUEST
