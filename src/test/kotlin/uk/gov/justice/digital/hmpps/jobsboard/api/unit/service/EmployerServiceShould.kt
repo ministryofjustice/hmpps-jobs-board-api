@@ -17,7 +17,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile.CreateEmployerRequest
@@ -113,8 +113,8 @@ class EmployerServiceShould {
       employerService.save(createEmployerRequest)
     }
 
-    assertThat("Invalid UUID format: {${createEmployerRequest.id}}").isEqualTo(exception.message)
     verify(employerRepository, never()).save(any(Employer::class.java))
+    assertThat("Invalid UUID format: {${createEmployerRequest.id}}").isEqualTo(exception.message)
   }
 
   @Test
@@ -131,8 +131,8 @@ class EmployerServiceShould {
       employerService.save(createEmployerRequest)
     }
 
-    assertThat("EntityId cannot be empty").isEqualTo(exception.message)
     verify(employerRepository, never()).save(any(Employer::class.java))
+    assertThat("EntityId cannot be empty").isEqualTo(exception.message)
   }
 
   @Test
@@ -149,8 +149,8 @@ class EmployerServiceShould {
       employerService.save(createEmployerRequest)
     }
 
-    assertThat("EntityId cannot be null: {${createEmployerRequest.id}}").isEqualTo(exception.message)
     verify(employerRepository, never()).save(any(Employer::class.java))
+    assertThat("EntityId cannot be null: {${createEmployerRequest.id}}").isEqualTo(exception.message)
   }
 
   @Test
@@ -179,8 +179,8 @@ class EmployerServiceShould {
 
     val actualEmployer: Employer = employerService.retrieve("1db79c55-cc88-4a1d-94fa-7a21c590c713")
 
-    assertEquals(expectedEmployer, actualEmployer)
     verify(employerRepository, times(1)).findById(EntityId("1db79c55-cc88-4a1d-94fa-7a21c590c713"))
+    assertEquals(expectedEmployer, actualEmployer)
   }
 
   @Test
@@ -191,23 +191,75 @@ class EmployerServiceShould {
       employerService.retrieve("39683af0-eb4c-4fd4-b6a5-34a26d6b9039")
     }
 
-    assertEquals("Employer not found", exception.message)
     verify(employerRepository, times(1)).findById(EntityId("39683af0-eb4c-4fd4-b6a5-34a26d6b9039"))
+    assertEquals("Employer not found", exception.message)
   }
 
   @Test
-  fun `return a paginated list of employers`() {
+  fun `return a paginated list of all employers when filters are null`() {
     val employers = listOf(tescoEmployer, sainsburysEmployer)
+    val name = null
+    val sector = null
     val pageNumber = 0
     val pageSize = 2
-    val pageRequest = PageRequest.of(pageNumber, pageSize)
-    val pagedResult: Page<Employer> = PageImpl(employers, pageRequest, employers.size.toLong())
-    whenever(employerRepository.findAll(pageRequest)).thenReturn(pagedResult)
+    val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
+    val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
+    whenever(employerRepository.findAll(pageable)).thenReturn(pagedResult)
 
-    val result = employerService.getAllEmployers(pageNumber, pageSize)
+    val result = employerService.getAllEmployers(name, sector, pageable)
 
-    val expected = pagedResult.map { it }
-    assertThat(result).hasSize(pageSize)
-    assertThat(result.content).isEqualTo(expected.content)
+    verify(employerRepository, times(1)).findAll(pageable)
+    assertThat(result.content).isEqualTo(pagedResult.content)
+  }
+
+  @Test
+  fun `return a paginated list of employers filtered by name`() {
+    val employers = listOf(tescoEmployer)
+    val name = "Tesco"
+    val sector = null
+    val pageNumber = 0
+    val pageSize = 10
+    val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
+    val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
+    whenever(employerRepository.findByName(name, pageable)).thenReturn(pagedResult)
+
+    val result = employerService.getAllEmployers(name, sector, pageable)
+
+    verify(employerRepository, times(1)).findByName(name, pageable)
+    assertThat(result.content).isEqualTo(pagedResult.content)
+  }
+
+  @Test
+  fun `return a paginated list of employers filtered by sector`() {
+    val employers = listOf(tescoEmployer)
+    val name = null
+    val sector = "RETAIL"
+    val pageNumber = 0
+    val pageSize = 10
+    val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
+    val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
+    whenever(employerRepository.findBySector(sector, pageable)).thenReturn(pagedResult)
+
+    val result = employerService.getAllEmployers(name, sector, pageable)
+
+    verify(employerRepository, times(1)).findBySector(sector, pageable)
+    assertThat(result.content).isEqualTo(pagedResult.content)
+  }
+
+  @Test
+  fun `return a paginated list of employers filtered by name AND sector`() {
+    val employers = listOf(tescoEmployer)
+    val name = "Tesco"
+    val sector = "RETAIL"
+    val pageNumber = 0
+    val pageSize = 10
+    val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
+    val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
+    whenever(employerRepository.findByNameAndSector(name, sector, pageable)).thenReturn(pagedResult)
+
+    val result = employerService.getAllEmployers(name, sector, pageable)
+
+    verify(employerRepository, times(1)).findByNameAndSector(name, sector, pageable)
+    assertThat(result.content).isEqualTo(pagedResult.content)
   }
 }
