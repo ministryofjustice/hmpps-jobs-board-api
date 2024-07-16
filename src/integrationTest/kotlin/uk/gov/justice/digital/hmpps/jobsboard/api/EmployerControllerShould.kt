@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api
 
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.whenever
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
+import java.time.LocalDateTime
 
 class EmployerControllerShould : ApplicationTestCase() {
 
@@ -96,7 +98,7 @@ class EmployerControllerShould : ApplicationTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated list of all Employers when no filter or pagination applied`() {
+  fun `retrieve a default paginated Employers list`() {
     assertRequestWithBody(
       method = PUT,
       endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
@@ -129,7 +131,7 @@ class EmployerControllerShould : ApplicationTestCase() {
   }
 
   @Test
-  fun `retrieve specific page of paginated list of Employers when page and size are informed`() {
+  fun `retrieve second page of paginated list of Employers when page and size are informed`() {
     assertRequestWithBody(
       method = PUT,
       endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
@@ -149,7 +151,7 @@ class EmployerControllerShould : ApplicationTestCase() {
       expectedStatus = OK,
       expectedResponse = """
           {
-            "content": [ $sainsburysBody ],
+            "content": [ $tescoBody ],
             "page": {
               "size": 1,
               "number": 1,
@@ -398,6 +400,108 @@ class EmployerControllerShould : ApplicationTestCase() {
             }
         }
       """.trimIndent(),
+    )
+  }
+
+  @Test
+  fun `retrieve a default sorted by name in ascendent order Employers list`() {
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/e82fd9e6-ffcf-410c-a7c8-ffeb50da3f18",
+      body = sainsburysBody,
+      expectedStatus = CREATED,
+    )
+
+    assertSortedByNameResponse(
+      endpoint = "/employers",
+      expectedStatus = OK,
+      expectedOrderedContentNames = listOf("Sainsbury's", "Tesco"),
+    )
+  }
+
+  @Test
+  fun `retrieve an Employers list sorted by name in descendent order when sorting applied`() {
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/e82fd9e6-ffcf-410c-a7c8-ffeb50da3f18",
+      body = sainsburysBody,
+      expectedStatus = CREATED,
+    )
+
+    assertSortedByNameResponse(
+      endpoint = "/employers?sortBy=name&sortOrder=desc",
+      expectedStatus = OK,
+      expectedOrderedContentNames = listOf("Tesco", "Sainsbury's"),
+    )
+  }
+
+  @Test
+  fun `retrieve an Employers list sorted by date added in default ascendent order when sort-by applied`() {
+    val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
+    whenever(timeProvider.now())
+      .thenReturn(fixedTime)
+      .thenReturn(fixedTime.plusDays(1))
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/e82fd9e6-ffcf-410c-a7c8-ffeb50da3f18",
+      body = sainsburysBody,
+      expectedStatus = CREATED,
+    )
+
+    assertSortedByDateResponse(
+      endpoint = "/employers?sortBy=createdAt",
+      expectedStatus = OK,
+      expectedOrderedContentDates = listOf("2024-07-01T01:00:00", "2024-07-02T01:00:00"),
+    )
+  }
+
+  @Test
+  fun `retrieve an Employers list sorted by date added in descendent order when sort-by and sort-order applied`() {
+    val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
+    whenever(timeProvider.now())
+      .thenReturn(fixedTime)
+      .thenReturn(fixedTime.plusDays(1))
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/e82fd9e6-ffcf-410c-a7c8-ffeb50da3f18",
+      body = sainsburysBody,
+      expectedStatus = CREATED,
+    )
+
+    assertSortedByDateResponse(
+      endpoint = "/employers?sortBy=createdAt&sortOrder=desc",
+      expectedStatus = OK,
+      expectedOrderedContentDates = listOf("2024-07-02T01:00:00", "2024-07-01T01:00:00"),
     )
   }
 

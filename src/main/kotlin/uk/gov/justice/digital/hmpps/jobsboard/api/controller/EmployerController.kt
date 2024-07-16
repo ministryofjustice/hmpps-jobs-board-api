@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -153,12 +155,17 @@ class EmployerController(
     name: String?,
     @RequestParam(required = false)
     sector: String?,
+    @RequestParam(defaultValue = "name", required = false)
+    sortBy: String?,
+    @RequestParam(defaultValue = "asc", required = false)
+    sortOrder: String?,
     @RequestParam(defaultValue = "0")
     page: Int,
     @RequestParam(defaultValue = "10")
     size: Int,
   ): ResponseEntity<Page<GetEmployerResponse>>? {
-    val pageable: Pageable = Pageable.ofSize(size).withPage(page)
+    val direction = if (sortOrder.equals("desc", ignoreCase = true)) Sort.Direction.DESC else Sort.Direction.ASC
+    val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortBy))
     val employerList = employerService.getAllEmployers(name, sector, pageable)
     val response = employerList.map { it.toResponse() }
     return ResponseEntity.ok(response)
