@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 
 @Repository
 interface EmployerRepository : JpaRepository<Employer, EntityId> {
-  fun findByName(name: String?, pageable: Pageable): Page<Employer>
-  fun findBySector(sector: String?, pageable: Pageable): Page<Employer>
-  fun findByNameAndSector(name: String?, sector: String?, pageable: Pageable): Page<Employer>
+  fun findByNameIgnoringCase(name: String?, pageable: Pageable): Page<Employer>
+  fun findBySectorIgnoringCase(sector: String?, pageable: Pageable): Page<Employer>
+  fun findByNameAndSectorAllIgnoringCase(name: String?, sector: String?, pageable: Pageable): Page<Employer>
 }

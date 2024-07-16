@@ -178,7 +178,7 @@ class EmployerControllerShould : ApplicationTestCase() {
     )
 
     assertResponse(
-      endpoint = "/employers?name=Tesco",
+      endpoint = "/employers?name=tesco",
       expectedStatus = OK,
       expectedResponse = """
           {
@@ -211,7 +211,7 @@ class EmployerControllerShould : ApplicationTestCase() {
     )
 
     assertResponse(
-      endpoint = "/employers?sector=LOGISTICS",
+      endpoint = "/employers?sector=logistics",
       expectedStatus = OK,
       expectedResponse = """
           {
@@ -263,6 +263,53 @@ class EmployerControllerShould : ApplicationTestCase() {
       expectedResponse = """
           {
             "content": [ $tescoLogisticsBody ],
+            "page": {
+              "size": 10,
+              "number": 0,
+              "totalElements": 1,
+              "totalPages": 1
+            }
+        }
+      """.trimIndent(),
+    )
+  }
+
+  @Test
+  fun `retrieve a list of Employers filtered by name AND sector when filters are applied with mixed cases`() {
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/2aff5cfe-ffdd-4a52-b672-26638e7be060",
+      body = tescoLogisticsBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0f9d76ab-55e9-411c-8def-24eeb734c83f",
+      body = sainsburysBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/e82fd9e6-ffcf-410c-a7c8-ffeb50da3f18",
+      body = amazonBody,
+      expectedStatus = CREATED,
+    )
+
+    assertResponse(
+      endpoint = "/employers?name=sAINSBURY'S&sector=retail",
+      expectedStatus = OK,
+      expectedResponse = """
+          {
+            "content": [ $sainsburysBody ],
             "page": {
               "size": 10,
               "number": 0,

@@ -221,11 +221,11 @@ class EmployerServiceShould {
     val pageSize = 10
     val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
     val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
-    whenever(employerRepository.findByName(name, pageable)).thenReturn(pagedResult)
+    whenever(employerRepository.findByNameIgnoringCase(name, pageable)).thenReturn(pagedResult)
 
     val result = employerService.getAllEmployers(name, sector, pageable)
 
-    verify(employerRepository, times(1)).findByName(name, pageable)
+    verify(employerRepository, times(1)).findByNameIgnoringCase(name, pageable)
     assertThat(result.content).isEqualTo(pagedResult.content)
   }
 
@@ -238,11 +238,11 @@ class EmployerServiceShould {
     val pageSize = 10
     val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
     val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
-    whenever(employerRepository.findBySector(sector, pageable)).thenReturn(pagedResult)
+    whenever(employerRepository.findBySectorIgnoringCase(sector, pageable)).thenReturn(pagedResult)
 
     val result = employerService.getAllEmployers(name, sector, pageable)
 
-    verify(employerRepository, times(1)).findBySector(sector, pageable)
+    verify(employerRepository, times(1)).findBySectorIgnoringCase(sector, pageable)
     assertThat(result.content).isEqualTo(pagedResult.content)
   }
 
@@ -255,11 +255,11 @@ class EmployerServiceShould {
     val pageSize = 10
     val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
     val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
-    whenever(employerRepository.findByNameAndSector(name, sector, pageable)).thenReturn(pagedResult)
+    whenever(employerRepository.findByNameAndSectorAllIgnoringCase(name, sector, pageable)).thenReturn(pagedResult)
 
     val result = employerService.getAllEmployers(name, sector, pageable)
 
-    verify(employerRepository, times(1)).findByNameAndSector(name, sector, pageable)
+    verify(employerRepository, times(1)).findByNameAndSectorAllIgnoringCase(name, sector, pageable)
     assertThat(result.content).isEqualTo(pagedResult.content)
   }
 }

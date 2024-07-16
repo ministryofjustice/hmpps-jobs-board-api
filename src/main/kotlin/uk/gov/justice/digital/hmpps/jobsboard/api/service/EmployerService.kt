@@ -40,9 +40,9 @@ class EmployerService(
 
   fun getAllEmployers(name: String?, sector: String?, pageable: Pageable): Page<Employer> {
     return when {
-      !name.isNullOrEmpty() && sector.isNullOrEmpty() -> employerRepository.findByName(name, pageable)
-      name.isNullOrEmpty() && !sector.isNullOrEmpty() -> employerRepository.findBySector(sector, pageable)
-      !name.isNullOrEmpty() && !sector.isNullOrEmpty() -> employerRepository.findByNameAndSector(name, sector, pageable)
+      !name.isNullOrEmpty() && sector.isNullOrEmpty() -> employerRepository.findByNameIgnoringCase(name, pageable)
+      name.isNullOrEmpty() && !sector.isNullOrEmpty() -> employerRepository.findBySectorIgnoringCase(sector, pageable)
+      !name.isNullOrEmpty() && !sector.isNullOrEmpty() -> employerRepository.findByNameAndSectorAllIgnoringCase(name, sector, pageable)
       else -> employerRepository.findAll(pageable)
     }
   }
