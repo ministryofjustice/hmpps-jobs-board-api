@@ -1,6 +1,10 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.unit.service
 
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -23,11 +27,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 import java.time.LocalDateTime
 import java.time.Month.JULY
 import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
-
 @ExtendWith(MockitoExtension::class)
 class EmployerServiceShould {
 
