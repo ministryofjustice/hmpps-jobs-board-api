@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.service
 
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
@@ -38,9 +38,12 @@ class EmployerService(
     return employerRepository.findById(EntityId(id)).orElseThrow { RuntimeException("Employer not found") }
   }
 
-  fun getAllEmployers(page: Int, size: Int): Page<Employer> {
-    val pageable = PageRequest.of(page, size)
-    val employers = employerRepository.findAll(pageable)
-    return employers.map { it }
+  fun getAllEmployers(name: String?, sector: String?, pageable: Pageable): Page<Employer> {
+    return when {
+      !name.isNullOrEmpty() && sector.isNullOrEmpty() -> employerRepository.findByName(name, pageable)
+      name.isNullOrEmpty() && !sector.isNullOrEmpty() -> employerRepository.findBySector(sector, pageable)
+      !name.isNullOrEmpty() && !sector.isNullOrEmpty() -> employerRepository.findByNameAndSector(name, sector, pageable)
+      else -> employerRepository.findAll(pageable)
+    }
   }
 }
