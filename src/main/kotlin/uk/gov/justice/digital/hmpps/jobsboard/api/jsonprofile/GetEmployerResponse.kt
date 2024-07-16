@@ -1,5 +1,4 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
-
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
 import java.time.LocalDateTime
 
