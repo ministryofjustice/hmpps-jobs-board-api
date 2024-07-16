@@ -195,6 +195,39 @@ class EmployerControllerShould : ApplicationTestCase() {
   }
 
   @Test
+  fun `retrieve a default paginated list of Employers filtered by incomplete name when filtered is applied`() {
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/employers/e82fd9e6-ffcf-410c-a7c8-ffeb50da3f18",
+      body = sainsburysBody,
+      expectedStatus = CREATED,
+    )
+
+    assertResponse(
+      endpoint = "/employers?name=tes",
+      expectedStatus = OK,
+      expectedResponse = """
+          {
+            "content": [ $tescoBody ],
+            "page": {
+              "size": 10,
+              "number": 0,
+              "totalElements": 1,
+              "totalPages": 1
+            }
+        }
+      """.trimIndent(),
+    )
+  }
+
+  @Test
   fun `retrieve a default paginated list of Employers filtered by sector when filtered is applied`() {
     assertRequestWithBody(
       method = PUT,
@@ -275,7 +308,7 @@ class EmployerControllerShould : ApplicationTestCase() {
   }
 
   @Test
-  fun `retrieve a list of Employers filtered by name AND sector when filters are applied with mixed cases`() {
+  fun `retrieve a list of Employers filtered by incomplete name AND sector when filters are applied with mixed cases`() {
     assertRequestWithBody(
       method = PUT,
       endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
@@ -305,7 +338,7 @@ class EmployerControllerShould : ApplicationTestCase() {
     )
 
     assertResponse(
-      endpoint = "/employers?name=sAINSBURY'S&sector=retail",
+      endpoint = "/employers?name=sAINS&sector=retail",
       expectedStatus = OK,
       expectedResponse = """
           {
