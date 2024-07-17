@@ -35,6 +35,7 @@ testing {
         testType.set(TestSuiteType.INTEGRATION_TEST)
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
         implementation("org.springframework.boot:spring-boot-starter-test")
+        implementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
         implementation("io.jsonwebtoken:jjwt-impl:0.12.5")
         implementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
