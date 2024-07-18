@@ -22,11 +22,11 @@ import kotlin.jvm.Transient
 
 @JsonInclude(Include.NON_NULL)
 @Entity
-@Table(name = "prison_leavers_job")
+@Table(name = "jobs")
 class Job(
 
   @Id
-  @Column(name = "job_id", nullable = false)
+  @Column(name = "id", nullable = false)
   var id: EntityId?,
 
   @ManyToOne(cascade = [REMOVE], fetch = LAZY, optional = false)
@@ -44,6 +44,9 @@ class Job(
   @Column(name = "hours_name", nullable = false)
   @Enumerated(STRING)
   var hoursName: Hours?,
+
+  @Column(name = "sector_name", nullable = true)
+  var sectorName: String?,
 
   @Column(name = "additional_salary_information")
   var additionalSalaryInformation: String?,
@@ -122,6 +125,7 @@ class Job(
   constructor(jobRequest: CreateJobRequest, Employer: Employer) : this(
     id = EntityId(jobRequest.id!!),
     employer = Employer,
+    sectorName =jobRequest.sectorName,
     salaryPeriodName = jobRequest.salaryPeriodName,
     workPatternName = jobRequest.workPatternName,
     hoursName = jobRequest.hoursName,
