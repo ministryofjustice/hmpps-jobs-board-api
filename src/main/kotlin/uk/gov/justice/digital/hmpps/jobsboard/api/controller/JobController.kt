@@ -25,7 +25,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.service.JobService
 
 @Validated
 @RestController
-@RequestMapping("/job", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping("/candidate-matching/job", produces = [MediaType.APPLICATION_JSON_VALUE])
 class JobController(
   private val jobService: JobService,
 ) {

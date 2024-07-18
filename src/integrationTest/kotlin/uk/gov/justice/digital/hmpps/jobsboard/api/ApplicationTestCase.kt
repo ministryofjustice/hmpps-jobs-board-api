@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.repository.EmployerRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.repository.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.SECONDS
@@ -35,6 +36,9 @@ abstract class ApplicationTestCase {
 
   @Autowired
   private lateinit var employerRepository: EmployerRepository
+
+  @Autowired
+  private lateinit var jobRepository: JobRepository
 
   @Autowired
   lateinit var mockMvc: MockMvc
