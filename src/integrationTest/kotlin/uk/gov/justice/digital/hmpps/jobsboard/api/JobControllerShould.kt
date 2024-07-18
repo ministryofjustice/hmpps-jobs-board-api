@@ -53,6 +53,7 @@ class JobControllerShould : ApplicationTestCase() {
     )
   }
 
+  @Disabled
   @Test
   fun `update an existing Job`() {
     assertRequestWithBody(

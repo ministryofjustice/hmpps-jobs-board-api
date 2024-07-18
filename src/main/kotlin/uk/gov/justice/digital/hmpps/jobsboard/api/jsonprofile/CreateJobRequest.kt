@@ -13,7 +13,7 @@ data class CreateJobRequest internal constructor(
   var employerId: String,
 
   var salaryPeriodName: SalaryPeriod?,
-  var sectorName:String?,
+  var sectorName: String?,
 
   var workPatternName: ContractHours?,
 

@@ -53,7 +53,7 @@ class JobRepositoryShould {
       employer = employer,
       salaryPeriodName = PER_DAY,
       workPatternName = JOB_SHARE,
-      sectorName="food industry",
+      sectorName = "food industry",
       hoursName = ZERO_HOURS,
       additionalSalaryInformation = "Salary will be credited at the end of each shift",
       desirableJobCriteria = "Candidate should be proactive and prgmatic",

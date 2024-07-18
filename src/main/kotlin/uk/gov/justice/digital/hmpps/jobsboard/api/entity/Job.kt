@@ -125,7 +125,7 @@ class Job(
   constructor(jobRequest: CreateJobRequest, Employer: Employer) : this(
     id = EntityId(jobRequest.id!!),
     employer = Employer,
-    sectorName =jobRequest.sectorName,
+    sectorName = jobRequest.sectorName,
     salaryPeriodName = jobRequest.salaryPeriodName,
     workPatternName = jobRequest.workPatternName,
     hoursName = jobRequest.hoursName,

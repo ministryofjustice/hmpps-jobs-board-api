@@ -17,7 +17,7 @@ data class GetJobResponse internal constructor(
   var workPatternName: ContractHours?,
 
   var hoursName: Hours?,
-var sectorName:String?,
+  var sectorName: String?,
   var additionalSalaryInformation: String?,
 
   var desirableJobCriteria: String?,
