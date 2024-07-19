@@ -47,7 +47,7 @@ abstract class ApplicationTestCase {
   protected lateinit var timeProvider: DefaultTimeProvider
 
   @Autowired
-  private lateinit var mockMvc: MockMvc
+  protected lateinit var mockMvc: MockMvc
 
   @Autowired
   private lateinit var jwtAuthHelper: JwtAuthHelper
