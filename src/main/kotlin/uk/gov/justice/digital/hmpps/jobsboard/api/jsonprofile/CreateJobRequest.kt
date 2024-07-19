@@ -31,19 +31,7 @@ data class CreateJobRequest internal constructor(
 
   var jobTitle: String?,
 
-  var createdBy: String?,
-
-  var createdDateTime: LocalDateTime?,
-
   var postingDate: String?,
-
-  var deletedBy: String?,
-
-  var deletedDateTime: LocalDateTime?,
-
-  var modifiedBy: String?,
-
-  var modifiedDateTime: LocalDateTime?,
 
   var nationalMinimumWage: Boolean?,
 
@@ -80,13 +68,7 @@ data class CreateJobRequest internal constructor(
         closingDate = job.closingDate,
         howToApply = job.howToApply,
         jobTitle = job.jobTitle,
-        createdBy = job.createdBy,
-        createdDateTime = job.createdDateTime,
         postingDate = job.postingDate,
-        deletedBy = job.deletedBy,
-        deletedDateTime = job.deletedDateTime,
-        modifiedBy = job.modifiedBy,
-        modifiedDateTime = job.modifiedDateTime,
         nationalMinimumWage = job.nationalMinimumWage,
         postCode = job.postCode,
         city = job.city,

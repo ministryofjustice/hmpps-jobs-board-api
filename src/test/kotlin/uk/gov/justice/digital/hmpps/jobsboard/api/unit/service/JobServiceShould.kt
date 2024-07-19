@@ -89,8 +89,31 @@ class JobServiceShould {
     typeOfWork = BEAUTY,
     distance = 0,
   )
-  private val createJobRequest = CreateJobRequest.from(
-    expectedjob,
+  private val createJobRequest = CreateJobRequest(
+    id = "eaf7e96e-e45f-461d-bbcb-fd4cedf0499c",
+    employerId = expectedEmployer.id.toString(),
+    salaryPeriodName = SalaryPeriod.PER_DAY,
+    workPatternName = ContractHours.JOB_SHARE,
+    hoursName = Hours.ZERO_HOURS,
+    sectorName = "food industry",
+    additionalSalaryInformation = "Salary will be credited at the end of each shift",
+    desirableJobCriteria = "Candidate should be proactive and prgmatic",
+    essentialJobCriteria = "Need some one with techincal abilities at a beginer level in computer",
+    closingDate = LocalDateTime.now().plusDays(20),
+    howToApply = "Apply through Website",
+    jobTitle = "Java developer",
+    postingDate = LocalDateTime.now().plusDays(5).toString(),
+    nationalMinimumWage = true,
+    postCode = "EH7 5HH",
+    city = "Edinburgh",
+    ringFencedJob = true,
+    rollingJobOppurtunity = true,
+    activeJob = true,
+    deletedJob = false,
+    salaryFrom = "10£",
+    salaryTo = "15£",
+    typeOfWork = BEAUTY,
+
   )
 
   @BeforeEach
@@ -114,19 +137,6 @@ class JobServiceShould {
   }
 
   @Test
-  fun `create an job with current time`() {
-    whenever(employerRepository.findById(EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"))).thenReturn(Optional.of(expectedEmployer))
-
-    jobService.save(createJobRequest)
-
-    val jobCaptor = argumentCaptor<Job>()
-    verify(jobRepository).save(jobCaptor.capture())
-    val actualjob = jobCaptor.firstValue
-
-    assertEquals(expectedjob.createdDateTime, actualjob.createdDateTime)
-  }
-
-  @Test
   fun `throw exception for invalid UUID`() {
     whenever(employerRepository.findById(EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"))).thenReturn(Optional.of(expectedEmployer))
 
@@ -143,13 +153,7 @@ class JobServiceShould {
       closingDate = LocalDateTime.now().plusDays(20),
       howToApply = "Apply through Website",
       jobTitle = "Java developer",
-      createdBy = "Sacintha",
-      createdDateTime = LocalDateTime.now(),
       postingDate = LocalDateTime.now().plusDays(5).toString(),
-      deletedBy = "Sacintha",
-      deletedDateTime = LocalDateTime.now().plusDays(5),
-      modifiedBy = "Sacintha",
-      modifiedDateTime = LocalDateTime.now(),
       nationalMinimumWage = true,
       postCode = "EH7 5HH",
       city = "Edinburgh",
@@ -187,13 +191,7 @@ class JobServiceShould {
       closingDate = LocalDateTime.now().plusDays(20),
       howToApply = "Apply through Website",
       jobTitle = "Java developer",
-      createdBy = "Sacintha",
-      createdDateTime = LocalDateTime.now(),
       postingDate = LocalDateTime.now().plusDays(5).toString(),
-      deletedBy = "Sacintha",
-      deletedDateTime = LocalDateTime.now().plusDays(5),
-      modifiedBy = "Sacintha",
-      modifiedDateTime = LocalDateTime.now(),
       nationalMinimumWage = true,
       postCode = "EH7 5HH",
       city = "Edinburgh",
@@ -231,13 +229,7 @@ class JobServiceShould {
       howToApply = "Apply through Website",
       sectorName = "food industry",
       jobTitle = "Java developer",
-      createdBy = "Sacintha",
-      createdDateTime = LocalDateTime.now(),
       postingDate = LocalDateTime.now().plusDays(5).toString(),
-      deletedBy = "Sacintha",
-      deletedDateTime = LocalDateTime.now().plusDays(5),
-      modifiedBy = "Sacintha",
-      modifiedDateTime = LocalDateTime.now(),
       nationalMinimumWage = true,
       postCode = "EH7 5HH",
       city = "Edinburgh",

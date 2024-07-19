@@ -53,7 +53,6 @@ class JobControllerShould : ApplicationTestCase() {
     )
   }
 
-  @Disabled
   @Test
   fun `update an existing Job`() {
     assertRequestWithBody(
@@ -86,15 +85,20 @@ class JobControllerShould : ApplicationTestCase() {
   fun `retrieve an existing job`() {
     assertRequestWithBody(
       method = PUT,
-      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
-      body = tescoBody,
+      endpoint = "/employers/1a553b0e-9d0b-46b2-bd78-3fa24b7232da",
+      body = sainsburysBody,
       expectedStatus = CREATED,
     )
-
-    assertResponse(
-      endpoint = "/employers/0fec6332-0839-4a4a-9c15-b86c06e1ca03",
+    assertRequestWithBody(
+      method = PUT,
+      endpoint = "/candidate-matching/job/2a553b0e-9d0b-46b2-bd78-3fa24b7232da",
+      body = tescoJobBody,
       expectedStatus = OK,
-      expectedResponse = tescoBody,
+    )
+    assertResponse(
+      endpoint = "/candidate-matching/job/2a553b0e-9d0b-46b2-bd78-3fa24b7232da",
+      expectedStatus = OK,
+      expectedResponse = tescoJobBody,
     )
   }
 
