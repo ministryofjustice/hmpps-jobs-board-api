@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
+import org.springframework.http.HttpMethod.PUT
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ActiveProfiles
@@ -47,7 +47,7 @@ abstract class ApplicationTestCase {
   protected lateinit var timeProvider: DefaultTimeProvider
 
   @Autowired
-  private lateinit var mockMvc: MockMvc
+  protected lateinit var mockMvc: MockMvc
 
   @Autowired
   private lateinit var jwtAuthHelper: JwtAuthHelper
@@ -87,34 +87,39 @@ abstract class ApplicationTestCase {
     return jwtAuthHelper.setAuthorisationForUnitTests(user, roles)
   }
 
-  fun assertRequestWithBody(
-    method: HttpMethod,
-    endpoint: String,
+  private fun httpHeaders(): HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
+
+  protected fun assertRequestWithBody(
+    url: String,
     body: String,
     expectedStatus: HttpStatus,
+    expectedResponse: String? = null,
   ) {
-    val httpHeaders: HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
-    mockMvc.perform(
-      request(method, endpoint)
+    val resultActions = mockMvc.perform(
+      request(PUT, url)
         .contentType(APPLICATION_JSON)
         .accept(APPLICATION_JSON)
         .content(body)
-        .headers(httpHeaders),
+        .headers(httpHeaders()),
     ).andExpect(status().isEqualTo(expectedStatus.value()))
+    expectedResponse?.let {
+      resultActions.andExpect(content().contentType(APPLICATION_JSON))
+        .andExpect(content().json(it))
+    }
   }
 
-  @Throws(Exception::class)
-  fun assertResponse(
-    endpoint: String,
+  protected fun assertResponse(
+    url: String,
     expectedStatus: HttpStatus,
-    expectedResponse: String,
+    expectedResponse: String? = null,
+    expectedNameSortedList: List<String>? = null,
+    expectedDateSortedList: List<String>? = null,
   ) {
-    val httpHeaders: HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_VIEW"))
-    mockMvc.get(endpoint) {
+    val resultActions = mockMvc.get(url) {
       contentType = APPLICATION_JSON
       accept = APPLICATION_JSON
       headers {
-        httpHeaders.forEach { (name, values) ->
+        httpHeaders().forEach { (name, values) ->
           values.forEach { value ->
             header(name, value)
           }
@@ -124,81 +129,18 @@ abstract class ApplicationTestCase {
       status { isEqualTo(expectedStatus.value()) }
       content {
         contentType(APPLICATION_JSON)
-        json(expectedResponse)
-      }
-    }
-  }
-
-  @Throws(Exception::class)
-  fun assertSortedByNameResponse(
-    endpoint: String,
-    expectedStatus: HttpStatus,
-    expectedOrderedContentNames: List<String>,
-  ) {
-    val httpHeaders: HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_VIEW"))
-    mockMvc.get(endpoint) {
-      contentType = APPLICATION_JSON
-      accept = APPLICATION_JSON
-      headers {
-        httpHeaders.forEach { (name, values) ->
-          values.forEach { value ->
-            header(name, value)
-          }
+        expectedResponse?.let {
+          json(expectedResponse)
+        }
+        expectedNameSortedList?.let {
+          jsonPath("$.content[0].name", equalTo(it[0]))
+          jsonPath("$.content[1].name", equalTo(it[1]))
+        }
+        expectedDateSortedList?.let {
+          jsonPath("$.content[0].createdAt", equalTo(it[0]))
+          jsonPath("$.content[1].createdAt", equalTo(it[1]))
         }
       }
-    }.andExpect {
-      status { isEqualTo(expectedStatus.value()) }
-      content {
-        contentType(APPLICATION_JSON)
-        jsonPath("$.content[0].name", equalTo(expectedOrderedContentNames[0]))
-        jsonPath("$.content[1].name", equalTo(expectedOrderedContentNames[1]))
-      }
     }
-  }
-
-  @Throws(Exception::class)
-  fun assertSortedByDateResponse(
-    endpoint: String,
-    expectedStatus: HttpStatus,
-    expectedOrderedContentDates: List<String>,
-  ) {
-    val httpHeaders: HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_VIEW"))
-    mockMvc.get(endpoint) {
-      contentType = APPLICATION_JSON
-      accept = APPLICATION_JSON
-      headers {
-        httpHeaders.forEach { (name, values) ->
-          values.forEach { value ->
-            header(name, value)
-          }
-        }
-      }
-    }.andExpect {
-      status { isEqualTo(expectedStatus.value()) }
-      content {
-        contentType(APPLICATION_JSON)
-        jsonPath("$.content[0].createdAt", equalTo(expectedOrderedContentDates[0]))
-        jsonPath("$.content[1].createdAt", equalTo(expectedOrderedContentDates[1]))
-      }
-    }
-  }
-
-  fun assertErrorRequestWithBody(
-    method: HttpMethod,
-    endpoint: String,
-    body: String,
-    expectedStatus: HttpStatus,
-    expectedErrorResponse: String,
-  ) {
-    val httpHeaders: HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
-    mockMvc.perform(
-      request(method, endpoint)
-        .contentType(APPLICATION_JSON)
-        .accept(APPLICATION_JSON)
-        .content(body)
-        .headers(httpHeaders),
-    ).andExpect(status().isEqualTo(expectedStatus.value()))
-      .andExpect(content().contentType(APPLICATION_JSON))
-      .andExpect(content().json(expectedErrorResponse))
   }
 }
