@@ -1,16 +1,19 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "employers")
 data class Employer(
   @Id
-  @Column(name = "id", nullable = false)
   var id: EntityId,
 
   @Column(name = "name", nullable = false)
@@ -27,4 +30,7 @@ data class Employer(
 
   @Column(name = "createdAt", nullable = false)
   var createdAt: LocalDateTime,
+
+  @OneToMany(mappedBy = "employer", cascade = [CascadeType.ALL], orphanRemoval = true)
+  val jobs: List<Job> = mutableListOf(),
 )

@@ -7,7 +7,9 @@ import java.io.IOException
 import java.net.ServerSocket
 
 object PostgresContainer {
-  val instance: PostgreSQLContainer<Nothing>? by lazy { startPostgresqlContainer() }
+  val flywayContainer: PostgreSQLContainer<Nothing>? by lazy { startPostgresqlContainer() }
+  val repositoryContainer: PostgreSQLContainer<Nothing>? by lazy { startPostgresqlContainer() }
+
   private fun startPostgresqlContainer(): PostgreSQLContainer<Nothing>? {
     if (isPostgresRunning()) {
       log.warn("Using existing PostgreSQL database")
@@ -22,7 +24,7 @@ object PostgresContainer {
       withUsername("job-board")
       withPassword("job-board")
       setWaitStrategy(Wait.forListeningPort())
-      withReuse(true)
+      withReuse(false)
       start()
     }
   }

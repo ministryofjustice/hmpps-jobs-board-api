@@ -1,39 +1,46 @@
-CREATE TABLE base_location (base_location_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_sector_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (base_location_id));
-CREATE TABLE employer_partner (partner_id BIGINT NOT NULL, partner_grade_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_partner_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (partner_id));
-CREATE TABLE employer_partner_grades (partner_grade_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_grade CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (partner_grade_id));
-CREATE TABLE employer_work_sector (sector_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_sector_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (sector_id));
-CREATE TABLE hours_type (hours_type_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_hours_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (hours_type_id));
-CREATE TABLE job_charity (charity_id BIGINT NOT NULL, charity_name_name CHARACTER VARYING(255), charity_bio CHARACTER VARYING(255), created_by CHARACTER VARYING(255), created_date_time TIMESTAMP(6) WITHOUT TIME ZONE, modified_by CHARACTER VARYING(255), modified_date_time TIMESTAMP(6) WITHOUT TIME ZONE, image_id BIGINT NOT NULL, PRIMARY KEY (charity_id));
-CREATE TABLE job_contract_type (job_contract_type_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_job_contract_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (job_contract_type_id));
-CREATE TABLE job_employers (employer_id BIGINT NOT NULL, employer_name CHARACTER VARYING(255), employer_bio CHARACTER VARYING(255), created_by CHARACTER VARYING(255), created_date_time TIMESTAMP(6) WITHOUT TIME ZONE, modified_by CHARACTER VARYING(255), modified_date_time TIMESTAMP(6) WITHOUT TIME ZONE, sector_id BIGINT NOT NULL, partner_id BIGINT NOT NULL, image_id BIGINT NOT NULL, post_code CHARACTER VARYING(255), PRIMARY KEY (employer_id));
-CREATE TABLE job_image (image_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, image_path CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (image_id));
-CREATE TABLE job_source (job_source_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_job_source_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (job_source_id));
-CREATE TABLE job_source_list (id BIGINT NOT NULL, job_source_id BIGINT NOT NULL, PRIMARY KEY (id, job_source_id));
-CREATE TABLE job_type (job_type_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_job_type_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (job_type_id));
-CREATE TABLE offences_type (offences_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_offences_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (offences_id));
-CREATE TABLE offences_type_list (offences_type_list_id BIGINT NOT NULL, offences_type_list_offences_id BIGINT NOT NULL, offences_other CHARACTER VARYING(255) NOT NULL, offences_type BIGINT NOT NULL, offences_offences_id BIGINT, PRIMARY KEY (offences_type_list_id, offences_type_list_offences_id, offences_other));
-CREATE TABLE prison_leavers_job (job_id BIGINT NOT NULL, mn_job_id BIGINT NOT NULL, salary_period_id BIGINT NOT NULL, work_pattern_id BIGINT NOT NULL, hours_type_id BIGINT NOT NULL, job_contract_type_id BIGINT NOT NULL, job_type_id BIGINT NOT NULL, base_location_id BIGINT NOT NULL, job_contract_id BIGINT NOT NULL, employer_id BIGINT NOT NULL, employer_sector_id BIGINT NOT NULL, additional_salary_information CHARACTER VARYING(255), desirable_job_criteria CHARACTER VARYING(255), essential_job_criteria CHARACTER VARYING(255), closing_date TIMESTAMP(6) WITHOUT TIME ZONE, how_to_apply CHARACTER VARYING(255), job_title CHARACTER VARYING(255), mn_created_by_id BIGINT NOT NULL, created_by CHARACTER VARYING(255), created_date_time TIMESTAMP(6) WITHOUT TIME ZONE, posting_date CHARACTER VARYING(255), mn_deleted_by_id BIGINT NOT NULL, deleted_by CHARACTER VARYING(255), deleted_date_time TIMESTAMP(6) WITHOUT TIME ZONE, modified_by CHARACTER VARYING(255), modified_date_time TIMESTAMP(6) WITHOUT TIME ZONE, national_minimum_wage BOOLEAN, post_code CHARACTER VARYING(255), ring_fenced_job BOOLEAN, rolling_job_oppurtunity BOOLEAN, active_job BOOLEAN, deleted_job BOOLEAN, salary_from CHARACTER VARYING(255), salary_to CHARACTER VARYING(255), type_of_work CHARACTER VARYING(255), PRIMARY KEY (job_id));
-CREATE TABLE prison_leavers_profile (prison_leaver_id  varchar(7) PRIMARY KEY   not null, created_by varchar(255), created_date_time TIMESTAMP(6) WITHOUT TIME ZONE, modified_by varchar(255), modified_date_time TIMESTAMP(6) WITHOUT TIME ZONE);
-CREATE TABLE prison_leaver_job_table (prison_leaver_id varchar(7) not null, prison_leavers_job_id bigint not null, primary key (prison_leaver_id, prison_leavers_job_id));
-CREATE TABLE salary_period (salary_period_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_salary_period_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (salary_period_id));
-CREATE TABLE work_pattern (work_pattern_id BIGINT NOT NULL, mn_id BIGINT NOT NULL, mn_identifier CHARACTER VARYING(255) NOT NULL, mn_work_pattern_name CHARACTER VARYING(255) NOT NULL, PRIMARY KEY (work_pattern_id));
-create table simple_prison_leavers_job (job_id bigint not null, active_job boolean, additional_salary_information varchar(255), closing_date timestamp(6), created_by varchar(255), created_date_time timestamp(6) with time zone, deleted_by varchar(255), deleted_date_time timestamp(6) with time zone, deleted_job boolean, desirable_job_criteria varchar(255), essential_job_criteria varchar(255), hours_name varchar(255), how_to_apply varchar(255), job_contract_id bigint , job_contract_name varchar(255) , job_title varchar(255), job_type_name varchar(255) , sector_name varchar(255) , modified_by varchar(255), modified_date_time timestamp(6) with time zone, national_minimum_wage boolean, post_code varchar(255), posting_date varchar(255), ring_fenced_job boolean, rolling_job_oppurtunity boolean, salary_from varchar(255), salary_period_name varchar(255), salary_to varchar(255), type_of_work varchar(255), work_pattern_name varchar(255), employer_id varchar(36) not null, primary key (job_id));
-create table employers (id varchar(36) primary key, name varchar(255) NOT NULL, description varchar(500) NOT NULL, sector varchar(255) NOT NULL, status varchar(255) NOT NULL, created_at timestamp(6) NOT NULL);
-ALTER TABLE job_charity ADD CONSTRAINT fk_employer_image FOREIGN KEY (image_id) REFERENCES job_image(image_id);
-ALTER TABLE job_employers ADD CONSTRAINT fk_employers_sector FOREIGN KEY (sector_id) REFERENCES employer_work_sector (sector_id);
-ALTER TABLE job_employers ADD CONSTRAINT fk_employer_partner FOREIGN KEY (partner_id) REFERENCES employer_partner (partner_id);
-ALTER TABLE job_employers ADD CONSTRAINT fk_employers_image FOREIGN KEY (image_id) REFERENCES job_image(image_id);
-ALTER TABLE job_source_list ADD CONSTRAINT fk_job_source FOREIGN KEY (job_source_id) REFERENCES job_source (job_source_id);
-ALTER TABLE  offences_type_list ADD CONSTRAINT fk_offences_type FOREIGN KEY (offences_type_list_offences_id) REFERENCES  offences_type (offences_id);
-ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_prison_leavers_sector FOREIGN KEY (employer_sector_id) REFERENCES employer_work_sector (sector_id);
-ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_work_pattern FOREIGN KEY (work_pattern_id) REFERENCES work_pattern (work_pattern_id);
-ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_salary_period FOREIGN KEY (salary_period_id) REFERENCES  salary_period (salary_period_id);
-ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_job_type FOREIGN KEY (job_type_id) REFERENCES job_type (job_type_id);
-ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_job_contract_type FOREIGN KEY (job_contract_type_id) REFERENCES job_contract_type (job_contract_type_id);
-ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_hours_type FOREIGN KEY (hours_type_id) REFERENCES hours_type (hours_type_id);
-ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_base_location FOREIGN KEY (base_location_id) REFERENCES base_location (base_location_id);
-ALTER TABLE prison_leavers_job ADD CONSTRAINT fk_job_employers FOREIGN KEY (employer_id) REFERENCES job_employers (employer_id);
-ALTER TABLE employer_partner ADD CONSTRAINT fk_employer_partner_grades FOREIGN KEY (partner_grade_id) REFERENCES employer_partner_grades(partner_grade_id);
-ALTER TABLE if exists prison_leaver_job_table add constraint fk_prison_leaver_job_table_prison_leavers_job foreign key (prison_leavers_job_id) references simple_prison_leavers_job ON DELETE CASCADE;
-ALTER TABLE if exists prison_leaver_job_table add constraint fk_prison_leavers_job_prison_leavers_profile foreign key (prison_leaver_id) references prison_leavers_profile ON DELETE CASCADE;
-alter table if exists simple_prison_leavers_job add constraint FKqsghxa6urbm1sb05alhg2v776 foreign key (employer_id) references employers ON DELETE CASCADE;
+create table employers (
+    id varchar(36) primary key,
+    name varchar(255) NOT NULL,
+    description varchar(500) NOT NULL,
+    sector varchar(255) NOT NULL,
+    status varchar(255) NOT NULL,
+    created_at timestamp(6) NOT NULL
+);
+
+create table jobs(
+    id varchar(36) primary key,
+    employer_id varchar(36) not null,
+    title varchar(50) not null,
+    sector varchar(255) not null,
+    industry_sector varchar(255) not null,
+    number_of_vacancies varchar(3) not null,
+    source_primary varchar(255) not null,
+    source_secondary varchar(255),
+    charity_name varchar(100) not null,
+    post_code varchar(255) not null,
+    salary_from varchar(255) not null,
+    salary_to varchar(255),
+    salary_period varchar(255) not null,
+    additional_salary_information varchar(100),
+    is_paying_at_least_national_minimum_wage boolean not null,
+    work_pattern varchar(255) not null,
+    hours_per_week varchar(255) not null,
+    contract_type varchar(255) not null,
+    base_location varchar(255) not null,
+    essential_criteria varchar(1000) not null,
+    desirable_criteria varchar(1000),
+    description varchar(3000) not null,
+    offence_exclusions varchar(355) not null,
+    is_rolling_opportunity boolean not null,
+    closing_date date,
+    is_only_for_prison_leavers boolean not null,
+    start_date date,
+    how_to_apply varchar(1000) not null,
+    supporting_documentation_required varchar(255),
+    supporting_documentation_details varchar(200),
+
+    CONSTRAINT fk_employer
+        FOREIGN KEY(employer_id)
+        REFERENCES Employers(id)
+        ON DELETE CASCADE
+);

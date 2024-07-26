@@ -1,51 +1,17 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api
+package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import java.time.LocalDateTime
 
-class EmployerControllerShould : EmployerTestCase() {
-
-  @Test
-  fun `create a valid Employer`() {
-    assertAddEmployerIsOk(body = sainsburysBody)
-  }
-
-  @Test
-  fun `not create an Employer with invalid UUID`() {
-    assertAddEmployerThrowsValidationError(
-      employerId = "invalid-uuid",
-      body = tescoBody,
-      expectedResponse = """
-        {
-          "status":400,
-          "errorCode":null,
-          "userMessage":"Validation failure: save.id: Invalid UUID format",
-          "developerMessage":"save.id: Invalid UUID format",
-          "moreInfo":null
-        }
-      """.trimIndent(),
-    )
-  }
-
+class EmployersGetShould : EmployerTestCase() {
   @Test
   fun `retrieve an existing Employer`() {
-    val userId = assertAddEmployerIsOk(body = tescoBody)
+    val employerId = assertAddEmployerIsOk(body = tescoBody)
 
     assertGetEmployerIsOK(
-      userId = userId,
+      employerId = employerId,
       expectedResponse = tescoBody,
-    )
-  }
-
-  @Test
-  fun `update an existing Employer`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    val uuid = assertAddEmployerIsOk(body = sainsburysBody)
-
-    assertGetEmployerIsOK(
-      userId = uuid,
-      expectedResponse = sainsburysBody,
     )
   }
 

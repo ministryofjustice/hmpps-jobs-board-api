@@ -15,3 +15,6 @@ spring:
     show-sql: true
   datasource:
     url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=disable'
+  flyway:
+    baseline-on-migrate: true
+    clean-disabled: false

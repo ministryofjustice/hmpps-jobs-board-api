@@ -1,6 +1,6 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
+package uk.gov.justice.digital.hmpps.jobsboard.api.employers.application
 
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.Employer
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import java.time.LocalDateTime
 
 data class GetEmployerResponse(
