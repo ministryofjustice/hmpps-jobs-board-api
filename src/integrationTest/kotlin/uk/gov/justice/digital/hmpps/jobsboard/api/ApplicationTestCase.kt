@@ -1,11 +1,16 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api
 
 import org.awaitility.Awaitility
+import org.flywaydb.core.Flyway
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -24,10 +29,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.reque
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EMPLOYERS_ENDPOINT
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
-import uk.gov.justice.digital.hmpps.jobsboard.api.repository.EmployerRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
+import java.util.UUID.randomUUID
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.SECONDS
 
@@ -36,12 +45,21 @@ import java.util.concurrent.TimeUnit.SECONDS
   webEnvironment = RANDOM_PORT,
   classes = [HmppsJobsBoardApi::class, TestConfig::class],
 )
+@AutoConfigureTestDatabase(replace = NONE)
 @AutoConfigureMockMvc
+@Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test-containers-flyway")
 abstract class ApplicationTestCase {
 
   @Autowired
+  private lateinit var flyway: Flyway
+
+  @Autowired
   private lateinit var employerRepository: EmployerRepository
+
+  @Autowired
+  private lateinit var jobRepository: JobRepository
 
   @MockBean
   protected lateinit var timeProvider: DefaultTimeProvider
@@ -53,7 +71,7 @@ abstract class ApplicationTestCase {
   private lateinit var jwtAuthHelper: JwtAuthHelper
 
   companion object {
-    private val postgresContainer = PostgresContainer.instance
+    private val postgresContainer = PostgresContainer.flywayContainer
 
     @JvmStatic
     @DynamicPropertySource
@@ -74,8 +92,15 @@ abstract class ApplicationTestCase {
     Awaitility.setDefaultTimeout(3, SECONDS)
   }
 
+  @BeforeAll
+  fun beforeAll() {
+    flyway.clean()
+    flyway.migrate()
+  }
+
   @BeforeEach
   fun setup() {
+    jobRepository.deleteAll()
     employerRepository.deleteAll()
     whenever(timeProvider.now()).thenCallRealMethod()
   }
@@ -88,6 +113,59 @@ abstract class ApplicationTestCase {
   }
 
   private fun httpHeaders(): HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
+
+  protected fun newEmployerBody(name: String, description: String, sector: String, status: String): String = """
+        {
+          "name": "$name",
+          "description": "$description",
+          "sector": "$sector",
+          "status": "$status"
+        }
+  """.trimIndent()
+
+  val tescoBody: String = newEmployerBody(
+    name = "Tesco",
+    description = "Tesco plc is a British multinational groceries and general merchandise retailer headquartered in Welwyn Garden City, England. The company was founded by Jack Cohen in Hackney, London in 1919.",
+    sector = "RETAIL",
+    status = "SILVER",
+  )
+
+  val tescoLogisticsBody: String = newEmployerBody(
+    name = "Tesco",
+    description = "This is another Tesco employer that provides logistic services.",
+    sector = "LOGISTICS",
+    status = "GOLD",
+  )
+
+  val sainsburysBody: String = newEmployerBody(
+    name = "Sainsbury's",
+    description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century.",
+    sector = "RETAIL",
+    status = "GOLD",
+  )
+
+  val amazonBody: String = newEmployerBody(
+    name = "Amazon",
+    description = "Amazon.com, Inc., doing business as Amazon, is an American multinational technology company, engaged in e-commerce, cloud computing, online advertising, digital streaming, and artificial intelligence.",
+    sector = "LOGISTICS",
+    status = "KEY_PARTNER",
+  )
+
+  protected fun assertAddEmployer(
+    id: String? = null,
+    body: String,
+    expectedStatus: HttpStatus,
+    expectedResponse: String? = null,
+  ): String {
+    val employerId = id ?: randomUUID().toString()
+    assertRequestWithBody(
+      url = "$EMPLOYERS_ENDPOINT/$employerId",
+      body = body,
+      expectedStatus = expectedStatus,
+      expectedResponse = expectedResponse,
+    )
+    return employerId
+  }
 
   protected fun assertRequestWithBody(
     url: String,

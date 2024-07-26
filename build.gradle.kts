@@ -38,6 +38,7 @@ testing {
         implementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
         implementation("io.jsonwebtoken:jjwt-impl:0.12.5")
         implementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
+        implementation("org.flywaydb:flyway-core")
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
         implementation("com.zaxxer:HikariCP:5.1.0")
         implementation("com.h2database:h2")

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jsonprofile
+package uk.gov.justice.digital.hmpps.jobsboard.api.employers.application
 
 data class CreateEmployerRequest internal constructor(
   val id: String = "",

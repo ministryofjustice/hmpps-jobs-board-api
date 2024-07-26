@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.unit.entity
+package uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain
 
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
