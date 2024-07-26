@@ -1,4 +1,4 @@
-create table employers (
+create table if not exists employers (
     id varchar(36) primary key,
     name varchar(255) NOT NULL,
     description varchar(500) NOT NULL,
@@ -7,7 +7,7 @@ create table employers (
     created_at timestamp(6) NOT NULL
 );
 
-create table jobs(
+create table if not exists jobs(
     id varchar(36) primary key,
     employer_id varchar(36) not null,
     title varchar(50) not null,
