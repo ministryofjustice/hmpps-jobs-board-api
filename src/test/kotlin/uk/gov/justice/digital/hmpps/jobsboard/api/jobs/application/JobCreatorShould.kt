@@ -23,7 +23,7 @@ class JobCreatorShould : TestBase() {
   private val amazonForkliftOperatorJobRequest = CreateJobRequest.from(
     id = "fe5d5175-5a21-4cec-a30b-fd87a5f76ce7",
     employerId = "eaf7e96e-e45f-461d-bbcb-fd4cedf0499c",
-    title = "Forklift operator",
+    jobTitle = "Forklift operator",
     sector = "WAREHOUSING",
     industrySector = "LOGISTICS",
     numberOfVacancies = "2",

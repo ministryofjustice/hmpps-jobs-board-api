@@ -11,7 +11,7 @@ class JobsGetShould : JobsTestCase() {
       body = amazonBody,
       expectedStatus = CREATED,
     )
-    val jobId = assertAddJobIsOk(body = amazonForkliftOperatorJobBody)
+    val jobId = assertAddJobIsCreated(body = amazonForkliftOperatorJobBody)
 
     assertGetJobIsOK(
       jobId = jobId,

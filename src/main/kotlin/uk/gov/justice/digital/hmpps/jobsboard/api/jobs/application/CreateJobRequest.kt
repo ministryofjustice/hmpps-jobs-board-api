@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 data class CreateJobRequest internal constructor(
   val id: String = "",
   val employerId: String,
-  val title: String,
+  val jobTitle: String,
   val sector: String,
   val industrySector: String,
   val numberOfVacancies: String,
@@ -36,7 +36,7 @@ data class CreateJobRequest internal constructor(
     fun from(
       id: String,
       employerId: String,
-      title: String,
+      jobTitle: String,
       sector: String,
       industrySector: String,
       numberOfVacancies: String,
@@ -68,7 +68,7 @@ data class CreateJobRequest internal constructor(
       return CreateJobRequest(
         id,
         employerId,
-        title,
+        jobTitle,
         sector,
         industrySector,
         numberOfVacancies,

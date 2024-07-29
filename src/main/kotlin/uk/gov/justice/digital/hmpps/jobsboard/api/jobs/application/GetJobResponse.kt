@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 data class GetJobResponse(
   val id: String,
   val employerId: String,
-  val title: String,
+  val jobTitle: String,
   val sector: String,
   val industrySector: String,
   val numberOfVacancies: String,
@@ -39,7 +39,7 @@ data class GetJobResponse(
       return GetJobResponse(
         id = job.id.toString(),
         employerId = job.employer.id.id,
-        title = job.title,
+        jobTitle = job.title,
         sector = job.sector,
         industrySector = job.industrySector,
         numberOfVacancies = job.numberOfVacancies,

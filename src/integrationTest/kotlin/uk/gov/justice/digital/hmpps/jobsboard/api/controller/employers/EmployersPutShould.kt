@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 class EmployersPutShould : EmployerTestCase() {
   @Test
   fun `create a valid Employer`() {
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
   }
 
   @Test
@@ -27,8 +27,8 @@ class EmployersPutShould : EmployerTestCase() {
 
   @Test
   fun `update an existing Employer`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    val uuid = assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    val uuid = assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployerIsOK(
       employerId = uuid,
