@@ -11,7 +11,7 @@ class JobsPutShould : JobsTestCase() {
       body = amazonBody,
       expectedStatus = CREATED,
     )
-    assertAddJobIsOk(body = amazonForkliftOperatorJobBody)
+    assertAddJobIsCreated(body = amazonForkliftOperatorJobBody)
   }
 
   @Test

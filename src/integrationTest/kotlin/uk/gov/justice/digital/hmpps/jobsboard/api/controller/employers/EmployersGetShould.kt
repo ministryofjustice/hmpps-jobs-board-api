@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 class EmployersGetShould : EmployerTestCase() {
   @Test
   fun `retrieve an existing Employer`() {
-    val employerId = assertAddEmployerIsOk(body = tescoBody)
+    val employerId = assertAddEmployerIsCreated(body = tescoBody)
 
     assertGetEmployerIsOK(
       employerId = employerId,
@@ -24,8 +24,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated Employers list`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployerIsOK(
       expectedResponse = expectedResponseListOf(tescoBody, sainsburysBody),
@@ -34,8 +34,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve second page of paginated list of Employers when page and size are informed`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
 
     this.assertGetEmployerIsOK(
       parameters = "page=1&size=1",
@@ -45,8 +45,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated list of Employers filtered by name when filtered is applied`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployerIsOK(
       parameters = "name=tesco",
@@ -56,8 +56,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated list of Employers filtered by incomplete name when filtered is applied`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployerIsOK(
       parameters = "name=tes",
@@ -67,8 +67,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated list of Employers filtered by sector when filtered is applied`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = amazonBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = amazonBody)
 
     assertGetEmployerIsOK(
       parameters = "sector=logistics",
@@ -78,10 +78,10 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated list of Employers filtered by name AND sector when filters are applied`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = tescoLogisticsBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
-    assertAddEmployerIsOk(body = amazonBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = tescoLogisticsBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = amazonBody)
 
     assertGetEmployerIsOK(
       parameters = "name=Tesco&sector=LOGISTICS",
@@ -91,10 +91,10 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a list of Employers filtered by incomplete name AND sector when filters are applied with mixed cases`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = tescoLogisticsBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
-    assertAddEmployerIsOk(body = amazonBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = tescoLogisticsBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = amazonBody)
 
     assertGetEmployerIsOK(
       parameters = "name=sAINS&sector=retail",
@@ -104,10 +104,10 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve second page of Employers list filtered by name AND sector when filters and custom pagination are applied`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = tescoLogisticsBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
-    assertAddEmployerIsOk(body = amazonBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = tescoLogisticsBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = amazonBody)
 
     assertGetEmployerIsOK(
       parameters = "name=Sainsbury's&sector=RETAIL&page=0&size=1",
@@ -117,8 +117,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default sorted by name in ascendent order Employers list`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOKAndSortedByName(
       expectedNamesSorted = listOf("Sainsbury's", "Tesco"),
@@ -127,8 +127,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve an Employers list sorted by name in descendent order when sorting applied`() {
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOKAndSortedByName(
       parameters = "sortBy=name&sortOrder=desc",
@@ -143,8 +143,8 @@ class EmployersGetShould : EmployerTestCase() {
       .thenReturn(fixedTime)
       .thenReturn(fixedTime.plusDays(1))
 
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt",
@@ -159,8 +159,8 @@ class EmployersGetShould : EmployerTestCase() {
       .thenReturn(fixedTime)
       .thenReturn(fixedTime.plusDays(1))
 
-    assertAddEmployerIsOk(body = tescoBody)
-    assertAddEmployerIsOk(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt&sortOrder=desc",

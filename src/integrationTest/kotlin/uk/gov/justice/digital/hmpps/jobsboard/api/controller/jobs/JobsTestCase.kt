@@ -12,7 +12,7 @@ import java.util.UUID.randomUUID
 const val JOBS_ENDPOINT = "/jobs"
 
 class JobsTestCase : ApplicationTestCase() {
-  protected fun assertAddJobIsOk(
+  protected fun assertAddJobIsCreated(
     body: String,
   ): String {
     return assertAddJob(

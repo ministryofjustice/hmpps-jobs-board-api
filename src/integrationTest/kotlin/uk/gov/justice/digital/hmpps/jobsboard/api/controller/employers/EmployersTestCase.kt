@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
 const val EMPLOYERS_ENDPOINT = "/employers"
 
 class EmployerTestCase : ApplicationTestCase() {
-  protected fun assertAddEmployerIsOk(
+  protected fun assertAddEmployerIsCreated(
     body: String,
   ): String {
     return assertAddEmployer(
