@@ -24,7 +24,7 @@ class JobCreator(
     jobRepository.save(
       Job(
         id = EntityId(request.id),
-        title = request.title,
+        title = request.jobTitle,
         sector = request.sector,
         industrySector = request.industrySector,
         numberOfVacancies = request.numberOfVacancies,

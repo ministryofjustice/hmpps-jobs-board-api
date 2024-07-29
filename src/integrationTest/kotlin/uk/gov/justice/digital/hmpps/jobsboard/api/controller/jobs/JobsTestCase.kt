@@ -67,7 +67,7 @@ class JobsTestCase : ApplicationTestCase() {
 
   protected val amazonForkliftOperatorJobBody: String = newJobBody(
     employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
-    title = "Forklift operator",
+    jobTitle = "Forklift operator",
     sector = "WAREHOUSING",
     industrySector = "LOGISTICS",
     numberOfVacancies = "2",
@@ -116,7 +116,7 @@ class JobsTestCase : ApplicationTestCase() {
 
   private fun newJobBody(
     employerId: String,
-    title: String,
+    jobTitle: String,
     sector: String,
     industrySector: String,
     numberOfVacancies: String,
@@ -148,7 +148,7 @@ class JobsTestCase : ApplicationTestCase() {
     return """
         {
           "employerId": "$employerId",
-          "title": "$title",
+          "jobTitle": "$jobTitle",
           "sector": "$sector",
           "industrySector": "$industrySector",
           "numberOfVacancies": "$numberOfVacancies",
