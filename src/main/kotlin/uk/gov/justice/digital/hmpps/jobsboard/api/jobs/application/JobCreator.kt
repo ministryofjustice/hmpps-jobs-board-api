@@ -17,7 +17,7 @@ class JobCreator(
 ) {
 
   @Transactional
-  fun create(request: CreateJobRequest) {
+  fun createOrUpdate(request: CreateJobRequest) {
     val employer = employerRepository.findById(EntityId(request.employerId))
       .orElseThrow { IllegalArgumentException("Employer not found") }
 
@@ -57,7 +57,11 @@ class JobCreator(
     )
   }
 
-  fun String.toLocalDate(): LocalDate? {
+  fun existsById(jobId: String): Boolean {
+    return jobRepository.existsById(EntityId(jobId))
+  }
+
+  private fun String.toLocalDate(): LocalDate? {
     val formatter = DateTimeFormatter.ISO_LOCAL_DATE
     val zonedDateTime = try {
       LocalDate.parse(this, formatter)

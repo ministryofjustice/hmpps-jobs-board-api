@@ -23,7 +23,7 @@ class JobsPut(
 ) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @PutMapping("/{id}")
-  fun create(
+  fun createOrUpdate(
     @PathVariable
     @Pattern(
       regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
@@ -32,14 +32,19 @@ class JobsPut(
     id: String,
     @Valid @RequestBody createJobRequest: CreateJobRequest,
   ): ResponseEntity<Void> {
-    jobCreator.create(createJobRequest.copy(id = id))
+    val jobExists = jobCreator.existsById(id)
+    jobCreator.createOrUpdate(createJobRequest.copy(id = id))
 
-    return ResponseEntity.created(
-      ServletUriComponentsBuilder
-        .fromCurrentRequest()
-        .path("/{id}")
-        .buildAndExpand(id)
-        .toUri(),
-    ).build()
+    return if (jobExists) {
+      ResponseEntity.ok().build()
+    } else {
+      ResponseEntity.created(
+        ServletUriComponentsBuilder
+          .fromCurrentRequest()
+          .path("/{id}")
+          .buildAndExpand(id)
+          .toUri(),
+      ).build()
+    }
   }
 }
