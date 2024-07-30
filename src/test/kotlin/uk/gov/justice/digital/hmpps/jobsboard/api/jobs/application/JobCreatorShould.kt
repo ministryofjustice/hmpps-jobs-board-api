@@ -26,13 +26,13 @@ class JobCreatorShould : TestBase() {
     jobTitle = "Forklift operator",
     sector = "WAREHOUSING",
     industrySector = "LOGISTICS",
-    numberOfVacancies = "2",
+    numberOfVacancies = 2,
     sourcePrimary = "PEL",
     sourceSecondary = "",
     charityName = "",
     postCode = "LS12",
-    salaryFrom = " £11.93",
-    salaryTo = "£15.90",
+    salaryFrom = 11.93f,
+    salaryTo = 15.90f,
     salaryPeriod = "PER_HOUR",
     additionalSalaryInformation = "",
     isPayingAtLeastNationalMinimumWage = false,
@@ -71,11 +71,27 @@ class JobCreatorShould : TestBase() {
   )
 
   @Test
+  fun `return true when Job exists`() {
+    val jobId = EntityId(UUID.randomUUID().toString())
+    whenever(jobRepository.existsById(jobId)).thenReturn(true)
+
+    assertThat(jobCreator.existsById(jobId.id)).isTrue()
+  }
+
+  @Test
+  fun `return false when Job does not exist`() {
+    val jobId = EntityId(UUID.randomUUID().toString())
+    whenever(jobRepository.existsById(jobId)).thenReturn(false)
+
+    assertThat(jobCreator.existsById(jobId.id)).isFalse()
+  }
+
+  @Test
   fun `save a Job with valid details`() {
     whenever(employerRepository.findById(EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c")))
       .thenReturn(Optional.of(amazonEmployer))
 
-    jobCreator.create(amazonForkliftOperatorJobRequest)
+    jobCreator.createOrUpdate(amazonForkliftOperatorJobRequest)
 
     val jobCaptor = argumentCaptor<Job>()
     verify(jobRepository).save(jobCaptor.capture())

@@ -26,7 +26,7 @@ data class Job(
   val industrySector: String,
 
   @Column(name = "number_of_vacancies", nullable = false)
-  val numberOfVacancies: String,
+  val numberOfVacancies: Int,
 
   @Column(name = "source_primary", nullable = false)
   val sourcePrimary: String,
@@ -41,10 +41,10 @@ data class Job(
   val postCode: String,
 
   @Column(name = "salary_from", nullable = false)
-  val salaryFrom: String,
+  val salaryFrom: Float,
 
   @Column(name = "salary_to", nullable = true)
-  val salaryTo: String? = null,
+  val salaryTo: Float? = null,
 
   @Column(name = "salary_period", nullable = false)
   val salaryPeriod: String,

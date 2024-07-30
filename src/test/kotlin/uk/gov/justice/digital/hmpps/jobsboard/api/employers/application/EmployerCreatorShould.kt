@@ -48,19 +48,19 @@ class EmployerCreatorShould : TestBase() {
   private val expectedEmployer = sainsburysEmployer
 
   @Test
-  fun `return true when employer exists`() {
-    val employerId = UUID.randomUUID().toString()
-    whenever(employerRepository.existsById(EntityId(employerId))).thenReturn(true)
+  fun `return true when Employer exists`() {
+    val employerId = EntityId(UUID.randomUUID().toString())
+    whenever(employerRepository.existsById(employerId)).thenReturn(true)
 
-    assertThat(employerCreator.existsById(employerId)).isTrue()
+    assertThat(employerCreator.existsById(employerId.id)).isTrue()
   }
 
   @Test
-  fun `return false when employer does not exist`() {
-    val employerId = UUID.randomUUID().toString()
-    whenever(employerRepository.existsById(EntityId(employerId))).thenReturn(false)
+  fun `return false when Employer does not exist`() {
+    val employerId = EntityId(UUID.randomUUID().toString())
+    whenever(employerRepository.existsById(employerId)).thenReturn(false)
 
-    assertThat(employerCreator.existsById(employerId)).isFalse()
+    assertThat(employerCreator.existsById(employerId.id)).isFalse()
   }
 
   @Test
@@ -92,7 +92,7 @@ class EmployerCreatorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception saving an Employer with an invalid UUID`() {
+  fun `throw exception when saving an Employer with an invalid UUID`() {
     val createEmployerRequest = CreateEmployerRequest.from(
       id = "invalid-uuid",
       name = "Sainsbury's",
@@ -110,7 +110,7 @@ class EmployerCreatorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception for empty UUID`() {
+  fun `throw exception when saving an Employer with an empty UUID`() {
     val createEmployerRequest = CreateEmployerRequest.from(
       id = "",
       name = "Sainsbury's",
@@ -128,7 +128,7 @@ class EmployerCreatorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception for null UUID`() {
+  fun `throw exception when saving an Employer with a null UUID`() {
     val createEmployerRequest = CreateEmployerRequest.from(
       id = "00000000-0000-0000-0000-00000",
       name = "Sainsbury's",
