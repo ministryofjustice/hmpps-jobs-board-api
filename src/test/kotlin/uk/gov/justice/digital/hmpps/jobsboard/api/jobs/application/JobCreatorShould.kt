@@ -11,11 +11,8 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.jobsboard.api.employers.application.CreateEmployerRequest
-import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import java.time.LocalDate
 import java.time.Month.JULY
 import java.util.*
@@ -150,7 +147,7 @@ class JobCreatorShould : TestBase() {
       - Ensuring forklift driving areas are free from spills or obstructions
       - Regularly checking forklift equipment for faults or damages
       - Consolidating partial pallets for incoming goods
-    """.trimIndent(),
+      """.trimIndent(),
       offenceExclusions = listOf("NONE", "DRIVING"),
       isRollingOpportunity = false,
       closingDate = LocalDate.of(2024, JULY, 20).toString(),
@@ -213,7 +210,7 @@ class JobCreatorShould : TestBase() {
       - Ensuring forklift driving areas are free from spills or obstructions
       - Regularly checking forklift equipment for faults or damages
       - Consolidating partial pallets for incoming goods
-    """.trimIndent(),
+      """.trimIndent(),
       offenceExclusions = listOf("NONE", "DRIVING"),
       isRollingOpportunity = false,
       closingDate = LocalDate.of(2024, JULY, 20).toString(),
@@ -276,7 +273,7 @@ class JobCreatorShould : TestBase() {
       - Ensuring forklift driving areas are free from spills or obstructions
       - Regularly checking forklift equipment for faults or damages
       - Consolidating partial pallets for incoming goods
-    """.trimIndent(),
+      """.trimIndent(),
       offenceExclusions = listOf("NONE", "DRIVING"),
       isRollingOpportunity = false,
       closingDate = LocalDate.of(2024, JULY, 20).toString(),
