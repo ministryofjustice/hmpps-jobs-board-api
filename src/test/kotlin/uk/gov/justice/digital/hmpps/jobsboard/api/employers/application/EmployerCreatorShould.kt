@@ -92,7 +92,7 @@ class EmployerCreatorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception when saving an Employer with an invalid UUID`() {
+  fun `throw an exception when saving an Employer with an invalid UUID`() {
     val createEmployerRequest = CreateEmployerRequest.from(
       id = "invalid-uuid",
       name = "Sainsbury's",
@@ -110,7 +110,7 @@ class EmployerCreatorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception when saving an Employer with an empty UUID`() {
+  fun `throw an exception when saving an Employer with an empty UUID`() {
     val createEmployerRequest = CreateEmployerRequest.from(
       id = "",
       name = "Sainsbury's",
@@ -128,7 +128,7 @@ class EmployerCreatorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception when saving an Employer with a null UUID`() {
+  fun `throw an exception when saving an Employer with a null UUID`() {
     val createEmployerRequest = CreateEmployerRequest.from(
       id = "00000000-0000-0000-0000-00000",
       name = "Sainsbury's",
