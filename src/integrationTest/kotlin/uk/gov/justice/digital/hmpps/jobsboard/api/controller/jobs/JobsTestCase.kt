@@ -65,8 +65,6 @@ class JobsTestCase : ApplicationTestCase() {
     )
   }
 
-  // employerId = "0190fd9b-774b-7332-984a-96f4df78774d",
-
   protected val abcConstructionJobBody: String = newJobBody(
     employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
     jobTitle = "Warehouse operator",
@@ -97,6 +95,38 @@ class JobsTestCase : ApplicationTestCase() {
     isOnlyForPrisonLeavers = true,
     supportingDocumentationRequired = listOf("DISCLOSURE_LETTER", "OTHER"),
     supportingDocumentationDetails = "Some text",
+  )
+
+  protected val tescoWarehouseHandlerJobBody: String = newJobBody(
+    employerId = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
+    jobTitle = "Warehouse handler",
+    sector = "WAREHOUSING",
+    industrySector = "LOGISTICS",
+    numberOfVacancies = 1,
+    sourcePrimary = "DWP",
+    sourceSecondary = null,
+    charityName = null,
+    postCode = "NE157LR",
+    salaryFrom = 99f,
+    salaryTo = null,
+    salaryPeriod = "PER_DAY",
+    additionalSalaryInformation = null,
+    isPayingAtLeastNationalMinimumWage = true,
+    workPattern = "FLEXIBLE_SHIFTS",
+    contractType = "TEMPORARY",
+    hoursPerWeek = "FULL_TIME_40_PLUS",
+    baseLocation = "HYBRID",
+    essentialCriteria = "Essential job criteria",
+    desirableCriteria = null,
+    description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
+    offenceExclusions = listOf("CASE_BY_CASE", "OTHER"),
+    howToApply = "How to applyHow to apply",
+    closingDate = null,
+    startDate = null,
+    isRollingOpportunity = false,
+    isOnlyForPrisonLeavers = true,
+    supportingDocumentationRequired = listOf("DISCLOSURE_LETTER", "OTHER"),
+    supportingDocumentationDetails = null,
   )
 
   protected val amazonForkliftOperatorJobBody: String = newJobBody(
@@ -187,29 +217,29 @@ class JobsTestCase : ApplicationTestCase() {
           "industrySector": "$industrySector",
           "numberOfVacancies": $numberOfVacancies,
           "sourcePrimary": "$sourcePrimary",
-          "sourceSecondary": "$sourceSecondary",
-          "charityName": "$charityName",
+          "sourceSecondary": ${sourceSecondary?.asJson()},
+          "charityName": ${charityName?.asJson()},
           "postCode": "$postCode",
           "salaryFrom": $salaryFrom,
           "salaryTo": $salaryTo,
           "salaryPeriod": "$salaryPeriod",
-          "additionalSalaryInformation": "$additionalSalaryInformation",
+          "additionalSalaryInformation": ${additionalSalaryInformation?.asJson()},
           "isPayingAtLeastNationalMinimumWage": $isPayingAtLeastNationalMinimumWage,
           "workPattern": "$workPattern",
           "hoursPerWeek": "$hoursPerWeek",
           "contractType": "$contractType",
           "baseLocation": "$baseLocation",
           "essentialCriteria": "$essentialCriteria",
-          "desirableCriteria": "$desirableCriteria",
+          "desirableCriteria": ${desirableCriteria?.asJson()},
           "description": ${description.asJson()},
           "offenceExclusions": ${offenceExclusions.asJson()},
           "isRollingOpportunity": $isRollingOpportunity,
-          "closingDate": "$closingDate",
+          "closingDate": ${closingDate?.asJson()},
           "isOnlyForPrisonLeavers": $isOnlyForPrisonLeavers,
-          "startDate": "$startDate",
+          "startDate": ${startDate?.asJson()},
           "howToApply": "$howToApply",
           "supportingDocumentationRequired": ${supportingDocumentationRequired.asJson()},
-          "supportingDocumentationDetails": "$supportingDocumentationDetails"
+          "supportingDocumentationDetails": ${supportingDocumentationDetails?.asJson()}
         }
     """.trimIndent()
   }

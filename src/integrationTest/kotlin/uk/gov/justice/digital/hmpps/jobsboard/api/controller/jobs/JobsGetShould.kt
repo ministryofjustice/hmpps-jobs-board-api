@@ -11,11 +11,28 @@ class JobsGetShould : JobsTestCase() {
       body = amazonBody,
       expectedStatus = CREATED,
     )
+
     val jobId = assertAddJobIsCreated(body = amazonForkliftOperatorJobBody)
 
     assertGetJobIsOK(
       jobId = jobId,
       expectedResponse = amazonForkliftOperatorJobBody,
+    )
+  }
+
+  @Test
+  fun `return null on empty optional fields`() {
+    assertAddEmployer(
+      id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    val jobId = assertAddJobIsCreated(body = tescoWarehouseHandlerJobBody)
+
+    assertGetJobIsOK(
+      jobId = jobId,
+      expectedResponse = tescoWarehouseHandlerJobBody,
     )
   }
 }
