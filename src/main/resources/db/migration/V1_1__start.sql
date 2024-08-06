@@ -38,6 +38,7 @@ create table if not exists jobs(
     how_to_apply varchar(1000) not null,
     supporting_documentation_required varchar(255),
     supporting_documentation_details varchar(200),
+    created_at timestamp(6) NOT NULL,
 
     CONSTRAINT fk_employer
         FOREIGN KEY(employer_id)

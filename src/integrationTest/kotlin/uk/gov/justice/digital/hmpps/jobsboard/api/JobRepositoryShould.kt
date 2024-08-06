@@ -1,33 +1,43 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
+package uk.gov.justice.digital.hmpps.jobsboard.api
 
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
-import java.time.Clock
+import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month.JULY
 
-@ExtendWith(MockitoExtension::class)
-abstract class TestBase {
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = NONE)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("test-containers")
+@Transactional
+class JobRepositoryShould {
 
-  @Mock
-  protected lateinit var jobRepository: JobRepository
+  @Autowired
+  private lateinit var employerRepository: EmployerRepository
 
-  @Mock
-  protected lateinit var employerRepository: EmployerRepository
+  @Autowired
+  private lateinit var jobRepository: JobRepository
 
-  @Mock
-  protected lateinit var clock: Clock
+  private val fixedTime = LocalDateTime.of(2024, JULY, 20, 22, 6)
 
-  protected val fixedTime = LocalDateTime.of(2024, JULY, 20, 22, 6)
-
-  protected val amazonEmployer = Employer(
+  private val amazonEmployer = Employer(
     id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
     name = "Amazon",
     description = "Amazon.com, Inc., doing business as Amazon, is an American multinational technology company, engaged in e-commerce, cloud computing, online advertising, digital streaming, and artificial intelligence.",
@@ -86,5 +96,36 @@ abstract class TestBase {
     employer = amazonEmployer,
   )
 
-  protected val expectedJob = amazonForkliftOperatorJob
+  @BeforeEach
+  fun setUp() {
+    jobRepository.deleteAll()
+  }
+
+  companion object {
+    private val postgresContainer = PostgresContainer.repositoryContainer
+
+    @JvmStatic
+    @DynamicPropertySource
+    fun configureTestContainers(registry: DynamicPropertyRegistry) {
+      postgresContainer?.run {
+        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl)
+        registry.add("spring.datasource.username", postgresContainer::getUsername)
+        registry.add("spring.datasource.password", postgresContainer::getPassword)
+      }
+    }
+  }
+
+  @Test
+  fun `save an Job`() {
+    employerRepository.save(amazonEmployer)
+    jobRepository.save(amazonForkliftOperatorJob)
+  }
+
+  @Test
+  fun `correctly set createdAt attribute when saving a Job`() {
+    employerRepository.save(amazonEmployer)
+    val savedJob = jobRepository.save(amazonForkliftOperatorJob)
+
+    assertThat(savedJob.createdAt).isEqualTo(fixedTime)
+  }
 }
