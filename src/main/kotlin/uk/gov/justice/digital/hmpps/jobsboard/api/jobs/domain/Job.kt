@@ -8,7 +8,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
-import java.time.Instant
 import java.time.LocalDate
 
 @Entity
@@ -101,10 +100,7 @@ data class Job(
   @Column(name = "supporting_documentation_details", nullable = true)
   val supportingDocumentationDetails: String? = null,
 
-  @Column(name = "created_at", nullable = false, updatable = false)
-  var createdAt: Instant? = Instant.parse("1986-01-01T00:00:00Z"),
-
   @ManyToOne
   @JoinColumn(name = "employer_id", referencedColumnName = "id")
   val employer: Employer,
-)
+) : Auditable()

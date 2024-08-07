@@ -28,7 +28,7 @@ data class Employer(
   @Column(name = "status", nullable = false)
   val status: String,
 
-  @Column(name = "createdAt", nullable = false)
+  @Column(name = "created_at", nullable = false)
   var createdAt: LocalDateTime,
 
   @OneToMany(mappedBy = "employer", cascade = [CascadeType.ALL], orphanRemoval = true)
