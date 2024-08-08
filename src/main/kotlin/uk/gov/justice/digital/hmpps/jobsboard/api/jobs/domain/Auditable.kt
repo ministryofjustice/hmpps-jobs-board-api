@@ -14,4 +14,7 @@ abstract class Auditable {
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)
   var createdAt: Instant? = null
+
+  @Column(name = "modified_at", nullable = false, updatable = false)
+  var modifiedAt: Instant? = null
 }

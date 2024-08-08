@@ -137,4 +137,12 @@ class JobRepositoryShould {
 
     assertThat(savedJob.createdAt).isEqualTo(fixedDateTimeProvider.now.get())
   }
+
+  @Test
+  fun `correctly set modifiedAt attribute when saving a new Job`() {
+    employerRepository.save(amazonEmployer)
+    val savedJob = jobRepository.save(amazonForkliftOperatorJob)
+
+    assertThat(savedJob.modifiedAt).isEqualTo(fixedDateTimeProvider.now.get())
+  }
 }
