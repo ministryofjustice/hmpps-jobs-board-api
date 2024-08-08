@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestAuditConfig
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.AuditConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
@@ -28,7 +28,7 @@ import java.time.Month.JULY
 
 @DataJpaTest
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
-@Import(TestAuditConfig::class)
+@Import(AuditConfig::class)
 @AutoConfigureTestDatabase(replace = NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test-containers")
@@ -36,7 +36,7 @@ import java.time.Month.JULY
 class JobRepositoryShould {
 
   @Autowired
-  private lateinit var dateTimeProvider: DateTimeProvider
+  private lateinit var fixedDateTimeProvider: DateTimeProvider
 
   @Autowired
   private lateinit var employerRepository: EmployerRepository
@@ -135,6 +135,6 @@ class JobRepositoryShould {
     employerRepository.save(amazonEmployer)
     val savedJob = jobRepository.save(amazonForkliftOperatorJob)
 
-    assertThat(savedJob.createdAt).isEqualTo(dateTimeProvider.now.get())
+    assertThat(savedJob.createdAt).isEqualTo(fixedDateTimeProvider.now.get())
   }
 }
