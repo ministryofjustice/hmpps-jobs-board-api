@@ -125,13 +125,13 @@ class JobRepositoryShould {
   }
 
   @Test
-  fun `save an Job`() {
+  fun `save a new Job`() {
     employerRepository.save(amazonEmployer)
     jobRepository.save(amazonForkliftOperatorJob)
   }
 
   @Test
-  fun `correctly set createdAt attribute when saving a Job`() {
+  fun `correctly set createdAt attribute when saving a new Job`() {
     employerRepository.save(amazonEmployer)
     val savedJob = jobRepository.save(amazonForkliftOperatorJob)
 
