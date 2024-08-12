@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(
   webEnvironment = RANDOM_PORT,
-  classes = [HmppsJobsBoardApi::class, TestConfig::class],
+  classes = [HmppsJobsBoardApi::class],
 )
 @AutoConfigureTestDatabase(replace = NONE)
 @AutoConfigureMockMvc

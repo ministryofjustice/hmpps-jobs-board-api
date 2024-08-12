@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api
+package uk.gov.justice.digital.hmpps.jobsboard.api.config
 
 import org.springframework.boot.info.BuildProperties
 import org.springframework.context.annotation.Bean
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Primary
 import java.util.*
 
 @Configuration
-class TestConfig {
+class BuildPropertiesConfig {
   @Bean
   @Primary
   fun buildProperties(): BuildProperties {

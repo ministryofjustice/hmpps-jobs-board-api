@@ -73,7 +73,7 @@ data class Job(
   @Column(name = "desirable_criteria", nullable = true)
   val desirableCriteria: String? = null,
 
-  @Column(name = "description", nullable = false)
+  @Column(name = "description", length = 3000, nullable = false)
   val description: String,
 
   @Column(name = "offence_exclusions", nullable = false)
@@ -103,4 +103,4 @@ data class Job(
   @ManyToOne
   @JoinColumn(name = "employer_id", referencedColumnName = "id")
   val employer: Employer,
-)
+) : Auditable()
