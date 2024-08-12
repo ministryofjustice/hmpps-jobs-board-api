@@ -4,21 +4,18 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.mockito.Mockito
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.DateTimeProvider
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestJpaConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
@@ -32,8 +29,7 @@ import java.time.Month.JULY
 import java.util.*
 
 @DataJpaTest
-@EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
-@Import(JobRepositoryShould.TestConfig::class)
+@Import(TestJpaConfig::class)
 @AutoConfigureTestDatabase(replace = NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test-containers")
@@ -49,17 +45,9 @@ class JobRepositoryShould {
   @Autowired
   private lateinit var jobRepository: JobRepository
 
-  @TestConfiguration
-  class TestConfig {
-
-    @Bean
-    fun dateTimeProvider(): DateTimeProvider {
-      return Mockito.mock(DateTimeProvider::class.java)
-    }
-  }
-
   private val employerFixedTime = LocalDateTime.of(2024, JULY, 20, 22, 6)
-  private val jobFixedTime = Instant.parse("2024-01-01T00:00:00Z")
+  private val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+  private val jobModificationTime = Instant.parse("2025-02-02T01:00:00Z")
 
   private val amazonEmployer = Employer(
     id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
@@ -123,9 +111,7 @@ class JobRepositoryShould {
   @BeforeEach
   fun setUp() {
     jobRepository.deleteAll()
-
-    whenever(dateTimeProvider.now)
-      .thenReturn(Optional.of(jobFixedTime))
+    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
   }
 
   companion object {
@@ -149,32 +135,29 @@ class JobRepositoryShould {
   }
 
   @Test
-  fun `correctly set createdAt attribute when saving a new Job`() {
+  fun `set createdAt attribute when saving a new Job`() {
     employerRepository.save(amazonEmployer)
     val savedJob = jobRepository.save(amazonForkliftOperatorJob)
 
-    assertThat(savedJob.createdAt).isEqualTo(dateTimeProvider.now.get())
+    assertThat(savedJob.createdAt).isEqualTo(jobCreationTime)
   }
 
   @Test
-  fun `correctly set modifiedAt attribute when saving a new Job`() {
+  fun `set modifiedAt attribute with same value as createdAt when saving a new Job`() {
     employerRepository.save(amazonEmployer)
     val savedJob = jobRepository.save(amazonForkliftOperatorJob)
 
-    assertThat(savedJob.modifiedAt).isEqualTo(dateTimeProvider.now.get())
+    assertThat(savedJob.modifiedAt).isEqualTo(jobCreationTime)
   }
 
   @Test
-  fun `correctly modify modifiedAt attribute when updating an existing Job`() {
+  fun `update modifiedAt attribute with current date and time when updating an existing Job`() {
     employerRepository.save(amazonEmployer)
-    val savedJob = jobRepository.save(amazonForkliftOperatorJob)
-    val savedModifiedAt = savedJob.modifiedAt
+    jobRepository.save(amazonForkliftOperatorJob)
 
-    whenever(dateTimeProvider.getNow())
-      .thenReturn(Optional.of(Instant.parse("2024-01-01T01:00:00Z")))
+    whenever(dateTimeProvider.getNow()).thenReturn(Optional.of(jobModificationTime))
+    val updatedJob = jobRepository.saveAndFlush(amazonForkliftOperatorJob)
 
-    val updatedJob = jobRepository.save(amazonForkliftOperatorJob)
-
-    assertThat(savedModifiedAt).isNotEqualTo(updatedJob.modifiedAt)
+    assertThat(updatedJob.modifiedAt).isEqualTo(jobModificationTime)
   }
 }
