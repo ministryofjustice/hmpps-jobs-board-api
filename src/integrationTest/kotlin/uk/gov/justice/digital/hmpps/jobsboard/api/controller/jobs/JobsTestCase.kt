@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
+import java.time.Instant
 import java.util.UUID.randomUUID
 
 const val JOBS_ENDPOINT = "/jobs"
@@ -95,6 +96,7 @@ class JobsTestCase : ApplicationTestCase() {
     isOnlyForPrisonLeavers = true,
     supportingDocumentationRequired = listOf("DISCLOSURE_LETTER", "OTHER"),
     supportingDocumentationDetails = "Some text",
+    createdAt = Instant.now().toString()
   )
 
   protected val tescoWarehouseHandlerJobBody: String = newJobBody(
@@ -127,6 +129,7 @@ class JobsTestCase : ApplicationTestCase() {
     isOnlyForPrisonLeavers = true,
     supportingDocumentationRequired = listOf("DISCLOSURE_LETTER", "OTHER"),
     supportingDocumentationDetails = null,
+    createdAt = Instant.now().toString()
   )
 
   protected val amazonForkliftOperatorJobBody: String = newJobBody(
@@ -176,6 +179,7 @@ class JobsTestCase : ApplicationTestCase() {
     howToApply = "",
     supportingDocumentationRequired = listOf("CV", "DISCLOSURE_LETTER"),
     supportingDocumentationDetails = "",
+    createdAt = Instant.now().toString()
   )
 
   private fun newJobBody(
@@ -208,6 +212,7 @@ class JobsTestCase : ApplicationTestCase() {
     howToApply: String,
     supportingDocumentationRequired: List<String>,
     supportingDocumentationDetails: String? = null,
+    createdAt: String,
   ): String {
     return """
         {
@@ -239,7 +244,8 @@ class JobsTestCase : ApplicationTestCase() {
           "startDate": ${startDate?.asJson()},
           "howToApply": "$howToApply",
           "supportingDocumentationRequired": ${supportingDocumentationRequired.asJson()},
-          "supportingDocumentationDetails": ${supportingDocumentationDetails?.asJson()}
+          "supportingDocumentationDetails": ${supportingDocumentationDetails?.asJson()},
+          "createdAt": "$createdAt"
         }
     """.trimIndent()
   }

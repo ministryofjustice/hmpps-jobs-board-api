@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.http.HttpStatus
@@ -63,6 +64,9 @@ abstract class ApplicationTestCase {
 
   @MockBean
   protected lateinit var timeProvider: DefaultTimeProvider
+
+  @MockBean
+  protected lateinit var dateTimeProvider: DateTimeProvider
 
   @Autowired
   protected lateinit var mockMvc: MockMvc
