@@ -110,6 +110,7 @@ class JobRepositoryShould {
 
   @BeforeEach
   fun setUp() {
+    employerRepository.deleteAll()
     jobRepository.deleteAll()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
   }
@@ -143,6 +144,17 @@ class JobRepositoryShould {
   }
 
   @Test
+  fun `not update createdAt attribute when updating an existing Job`() {
+    employerRepository.save(amazonEmployer)
+    jobRepository.save(amazonForkliftOperatorJob)
+
+    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobModificationTime))
+    val updatedJob = jobRepository.saveAndFlush(amazonForkliftOperatorJob)
+
+    assertThat(updatedJob.createdAt).isEqualTo(jobCreationTime)
+  }
+
+  @Test
   fun `set modifiedAt attribute with same value as createdAt when saving a new Job`() {
     employerRepository.save(amazonEmployer)
     val savedJob = jobRepository.save(amazonForkliftOperatorJob)
@@ -155,7 +167,7 @@ class JobRepositoryShould {
     employerRepository.save(amazonEmployer)
     jobRepository.save(amazonForkliftOperatorJob)
 
-    whenever(dateTimeProvider.getNow()).thenReturn(Optional.of(jobModificationTime))
+    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobModificationTime))
     val updatedJob = jobRepository.saveAndFlush(amazonForkliftOperatorJob)
 
     assertThat(updatedJob.modifiedAt).isEqualTo(jobModificationTime)
