@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -25,7 +25,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 
 @Validated
 @RestController
-@RequestMapping("/employers", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping("/employers", produces = [APPLICATION_JSON_VALUE])
 class EmployersGet(
   private val employerRetriever: EmployerRetriever,
 ) {
