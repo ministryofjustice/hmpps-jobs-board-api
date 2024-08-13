@@ -15,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.data.auditing.AuditingHandler
 import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod.PUT
@@ -37,6 +39,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
+import java.time.Instant
+import java.util.*
 import java.util.UUID.randomUUID
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.SECONDS
@@ -47,9 +51,9 @@ import java.util.concurrent.TimeUnit.SECONDS
   classes = [HmppsJobsBoardApi::class],
 )
 @AutoConfigureTestDatabase(replace = NONE)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 @Transactional
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test-containers-flyway")
 abstract class ApplicationTestCase {
 
@@ -68,11 +72,16 @@ abstract class ApplicationTestCase {
   @MockBean
   protected lateinit var dateTimeProvider: DateTimeProvider
 
+  @SpyBean
+  protected lateinit var auditingHandler: AuditingHandler
+
   @Autowired
   protected lateinit var mockMvc: MockMvc
 
   @Autowired
   private lateinit var jwtAuthHelper: JwtAuthHelper
+
+  val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
 
   companion object {
     private val postgresContainer = PostgresContainer.flywayContainer
@@ -100,6 +109,8 @@ abstract class ApplicationTestCase {
   fun beforeAll() {
     flyway.clean()
     flyway.migrate()
+    auditingHandler.setDateTimeProvider(dateTimeProvider)
+    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
   }
 
   @BeforeEach

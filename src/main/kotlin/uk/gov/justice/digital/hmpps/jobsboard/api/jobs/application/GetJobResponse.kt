@@ -68,7 +68,7 @@ data class GetJobResponse(
         howToApply = job.howToApply,
         supportingDocumentationRequired = job.supportingDocumentationRequired.asList(),
         supportingDocumentationDetails = job.supportingDocumentationDetails,
-        createdAt = job.createdAt.toString()
+        createdAt = job.createdAt.toString(),
       )
     }
     private fun String.asList(): List<String> {
