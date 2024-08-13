@@ -37,4 +37,11 @@ class JobsGetShould : JobsTestCase() {
       expectedResponse = tescoWarehouseHandlerJobBody,
     )
   }
+
+  @Test
+  fun `retrieve a paginated empty list of Jobs when none registered`() {
+    assertGetJobIsOK(
+      expectedResponse = expectedResponseListOf(),
+    )
+  }
 }

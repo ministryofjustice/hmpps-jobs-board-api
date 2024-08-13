@@ -15,15 +15,18 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 @Validated
 @RestController
 @RequestMapping("/jobs", produces = [APPLICATION_JSON_VALUE])
-class JobsGet(
-  private val jobRetriever: JobRetriever,
-) {
+class JobsGet(private val jobRetriever: JobRetriever) {
+
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/{id}")
-  fun retrieve(
-    @PathVariable id: String,
-  ): ResponseEntity<GetJobResponse> {
+  fun retrieve(@PathVariable id: String): ResponseEntity<GetJobResponse> {
     val job: Job = jobRetriever.retrieve(id)
     return ResponseEntity.ok().body(GetJobResponse.from(job))
+  }
+
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("")
+  fun retrieveAll(): ResponseEntity<Void> {
+    return ResponseEntity.badRequest().build()
   }
 }
