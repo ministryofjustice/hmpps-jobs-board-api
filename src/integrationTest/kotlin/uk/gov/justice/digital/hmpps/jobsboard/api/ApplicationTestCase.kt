@@ -236,4 +236,28 @@ abstract class ApplicationTestCase {
       }
     }
   }
+
+  protected fun expectedResponseListOf(vararg elements: String): String {
+    return expectedResponseListOf(10, 0, elements = elements)
+  }
+
+  protected fun expectedResponseListOf(size: Int, page: Int, vararg elements: String): String {
+    return expectedResponseListOf(size, page, elements.size, *elements)
+  }
+
+  protected fun expectedResponseListOf(size: Int, page: Int, totalElements: Int, vararg elements: String): String {
+    val totalPages = (totalElements + size - 1) / size
+    val expectedResponse = """
+         {
+          "content": [ ${elements.joinToString(separator = ",")}],
+          "page": {
+            "size": $size,
+            "number": $page,
+            "totalElements": $totalElements,
+            "totalPages": $totalPages
+          }
+        }
+    """.trimIndent()
+    return expectedResponse
+  }
 }

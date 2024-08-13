@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -15,15 +18,21 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 @Validated
 @RestController
 @RequestMapping("/jobs", produces = [APPLICATION_JSON_VALUE])
-class JobsGet(
-  private val jobRetriever: JobRetriever,
-) {
+class JobsGet(private val jobRetriever: JobRetriever) {
+
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/{id}")
-  fun retrieve(
-    @PathVariable id: String,
-  ): ResponseEntity<GetJobResponse> {
+  fun retrieve(@PathVariable id: String): ResponseEntity<GetJobResponse> {
     val job: Job = jobRetriever.retrieve(id)
     return ResponseEntity.ok().body(GetJobResponse.from(job))
+  }
+
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("")
+  fun retrieveAll(): ResponseEntity<Page<GetJobResponse>> {
+    val page = 0
+    val size = 10
+    val pageable: Pageable = PageRequest.of(page, size)
+    return ResponseEntity.ok(Page.empty(pageable))
   }
 }
