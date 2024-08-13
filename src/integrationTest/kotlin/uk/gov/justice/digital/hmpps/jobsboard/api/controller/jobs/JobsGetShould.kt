@@ -2,8 +2,10 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
+import java.util.*
 
 class JobsGetShould : JobsTestCase() {
+
   @Test
   fun `retrieve an existing Job`() {
     assertAddEmployer(
@@ -16,7 +18,7 @@ class JobsGetShould : JobsTestCase() {
 
     assertGetJobIsOK(
       jobId = jobId,
-      expectedResponse = amazonForkliftOperatorJobBody,
+      expectedResponse = amazonForkliftOperatorJobResponse(jobCreationTime),
     )
   }
 

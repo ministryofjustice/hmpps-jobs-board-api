@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
+import java.time.Instant
 import java.util.UUID.randomUUID
 
 const val JOBS_ENDPOINT = "/jobs"
@@ -177,6 +178,124 @@ class JobsTestCase : ApplicationTestCase() {
     supportingDocumentationRequired = listOf("CV", "DISCLOSURE_LETTER"),
     supportingDocumentationDetails = "",
   )
+
+  protected fun amazonForkliftOperatorJobResponse(createdAt: Instant): String = newJobResponse(
+    employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
+    jobTitle = "Forklift operator",
+    sector = "WAREHOUSING",
+    industrySector = "LOGISTICS",
+    numberOfVacancies = 2,
+    sourcePrimary = "PEL",
+    sourceSecondary = "",
+    charityName = "",
+    postCode = "LS12",
+    salaryFrom = 11.93f,
+    salaryTo = 15.90f,
+    salaryPeriod = "PER_HOUR",
+    additionalSalaryInformation = "",
+    isPayingAtLeastNationalMinimumWage = false,
+    workPattern = "FLEXIBLE_SHIFTS",
+    hoursPerWeek = "FULL_TIME",
+    contractType = "TEMPORARY",
+    baseLocation = "WORKPLACE",
+    essentialCriteria = "",
+    desirableCriteria = "",
+    description = """
+      What's on offer:
+
+      - 5 days over 7, 05:30 to 15:30
+      - Paid weekly
+      - Immediate starts available
+      - Full training provided
+      
+      Your duties will include:
+
+      - Manoeuvring forklifts safely in busy industrial environments
+      - Safely stacking and unstacking large quantities of goods onto shelves or pallets
+      - Moving goods from storage areas to loading areas for transport
+      - Unloading deliveries and safely relocating the goods to their designated storage areas
+      - Ensuring forklift driving areas are free from spills or obstructions
+      - Regularly checking forklift equipment for faults or damages
+      - Consolidating partial pallets for incoming goods
+    """.trimIndent(),
+    offenceExclusions = listOf("NONE", "DRIVING"),
+    isRollingOpportunity = false,
+    closingDate = "2025-02-01",
+    isOnlyForPrisonLeavers = true,
+    startDate = "2025-05-31",
+    howToApply = "",
+    supportingDocumentationRequired = listOf("CV", "DISCLOSURE_LETTER"),
+    supportingDocumentationDetails = "",
+    createdAt = createdAt.toString(),
+  )
+
+  private fun newJobResponse(
+    employerId: String,
+    jobTitle: String,
+    sector: String,
+    industrySector: String,
+    numberOfVacancies: Int,
+    sourcePrimary: String,
+    sourceSecondary: String? = null,
+    charityName: String? = null,
+    postCode: String,
+    salaryFrom: Float,
+    salaryTo: Float? = null,
+    salaryPeriod: String,
+    additionalSalaryInformation: String? = null,
+    isPayingAtLeastNationalMinimumWage: Boolean,
+    workPattern: String,
+    hoursPerWeek: String,
+    contractType: String,
+    baseLocation: String,
+    essentialCriteria: String,
+    desirableCriteria: String? = null,
+    description: String,
+    offenceExclusions: List<String>,
+    isRollingOpportunity: Boolean,
+    closingDate: String? = null,
+    isOnlyForPrisonLeavers: Boolean,
+    startDate: String? = null,
+    howToApply: String,
+    supportingDocumentationRequired: List<String>,
+    supportingDocumentationDetails: String? = null,
+    createdAt: String,
+  ): String {
+    return """
+        {
+          "employerId": "$employerId",
+          "jobTitle": "$jobTitle",
+          "sector": "$sector",
+          "industrySector": "$industrySector",
+          "numberOfVacancies": $numberOfVacancies,
+          "sourcePrimary": "$sourcePrimary",
+          "sourceSecondary": ${sourceSecondary?.asJson()},
+          "charityName": ${charityName?.asJson()},
+          "postCode": "$postCode",
+          "salaryFrom": $salaryFrom,
+          "salaryTo": $salaryTo,
+          "salaryPeriod": "$salaryPeriod",
+          "additionalSalaryInformation": ${additionalSalaryInformation?.asJson()},
+          "isPayingAtLeastNationalMinimumWage": $isPayingAtLeastNationalMinimumWage,
+          "workPattern": "$workPattern",
+          "hoursPerWeek": "$hoursPerWeek",
+          "contractType": "$contractType",
+          "baseLocation": "$baseLocation",
+          "essentialCriteria": "$essentialCriteria",
+          "desirableCriteria": ${desirableCriteria?.asJson()},
+          "description": ${description.asJson()},
+          "offenceExclusions": ${offenceExclusions.asJson()},
+          "isRollingOpportunity": $isRollingOpportunity,
+          "closingDate": ${closingDate?.asJson()},
+          "isOnlyForPrisonLeavers": $isOnlyForPrisonLeavers,
+          "startDate": ${startDate?.asJson()},
+          "howToApply": "$howToApply",
+          "supportingDocumentationRequired": ${supportingDocumentationRequired.asJson()},
+          "supportingDocumentationDetails": ${supportingDocumentationDetails?.asJson()},
+          "createdAt": "$createdAt"
+        }
+    """.trimIndent()
+  }
 
   private fun newJobBody(
     employerId: String,

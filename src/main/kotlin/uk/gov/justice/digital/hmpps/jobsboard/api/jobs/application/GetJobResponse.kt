@@ -33,6 +33,7 @@ data class GetJobResponse(
   val howToApply: String,
   val supportingDocumentationRequired: List<String>,
   val supportingDocumentationDetails: String? = null,
+  val createdAt: String,
 ) {
   companion object {
     fun from(job: Job): GetJobResponse {
@@ -67,6 +68,7 @@ data class GetJobResponse(
         howToApply = job.howToApply,
         supportingDocumentationRequired = job.supportingDocumentationRequired.asList(),
         supportingDocumentationDetails = job.supportingDocumentationDetails,
+        createdAt = job.createdAt.toString(),
       )
     }
     private fun String.asList(): List<String> {
