@@ -69,7 +69,7 @@ class JobsGetShould : JobsTestCase() {
 
     assertGetJobIsOK(
       parameters = "page=1&size=1",
-      expectedResponse = expectedResponseListOf(size = 1, page = 1, totalElements = 2, tescoBody),
+      expectedResponse = expectedResponseListOf(size = 1, page = 1, totalElements = 2, amazonForkliftOperatorJobBody),
     )
   }
 }
