@@ -20,10 +20,10 @@ class JobRetriever(
     return when {
       !jobTitleOrEmployerName.isNullOrEmpty() ->
         jobRepository
-          .findByTitleOrEmployerNameIgnoringCaseContaining(
+          .findByTitleContainingOrEmployerNameAllIgnoringCase(
             title = jobTitleOrEmployerName,
             employerName = jobTitleOrEmployerName,
-            pageable = pageable
+            pageable = pageable,
           )
       else -> jobRepository.findAll(pageable)
     }
