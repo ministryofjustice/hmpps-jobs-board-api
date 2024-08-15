@@ -110,14 +110,12 @@ abstract class ApplicationTestCase {
     flyway.clean()
     flyway.migrate()
     auditingHandler.setDateTimeProvider(dateTimeProvider)
-    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
   }
 
   @BeforeEach
   fun setup() {
-    jobRepository.deleteAll()
-    employerRepository.deleteAll()
     whenever(timeProvider.now()).thenCallRealMethod()
+    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
   }
 
   internal fun setAuthorisation(

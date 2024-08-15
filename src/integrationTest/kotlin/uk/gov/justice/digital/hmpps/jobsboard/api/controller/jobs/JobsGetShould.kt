@@ -44,4 +44,37 @@ class JobsGetShould : JobsTestCase() {
       expectedResponse = expectedResponseListOf(),
     )
   }
+
+  @Test
+  fun `retrieve a default paginated Jobs list`() {
+    assertAddEmployer(
+      id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertAddEmployer(
+      id = "bf392249-b360-4e3e-81a0-8497047987e8",
+      body = amazonBody,
+      expectedStatus = CREATED,
+    )
+
+    assertAddJobIsCreated(
+      body = tescoWarehouseHandlerJobBody,
+    )
+
+    assertAddJobIsCreated(
+      body = amazonForkliftOperatorJobBody,
+    )
+
+    assertGetJobIsOK(
+      parameters = "page=1&size=1",
+      expectedResponse = expectedResponseListOf(
+        size = 1,
+        page = 1,
+        totalElements = 2,
+        amazonForkliftOperatorJobResponse(jobCreationTime),
+      ),
+    )
+  }
 }

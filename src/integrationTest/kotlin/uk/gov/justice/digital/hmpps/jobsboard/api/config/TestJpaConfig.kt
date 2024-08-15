@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 
 @TestConfiguration
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
-@Profile("test-containers")
+@Profile("test-containers | test-containers-flyway")
 class TestJpaConfig {
   @Primary
   @Bean
