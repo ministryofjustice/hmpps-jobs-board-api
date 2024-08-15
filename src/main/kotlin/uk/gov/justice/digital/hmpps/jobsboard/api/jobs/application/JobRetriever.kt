@@ -18,8 +18,13 @@ class JobRetriever(
 
   fun retrieveAllJobs(jobTitleOrEmployerName: String?, pageable: Pageable): Page<Job> {
     return when {
-      !jobTitleOrEmployerName.isNullOrEmpty() -> jobRepository
-        .findByTitleIgnoringCaseContaining(jobTitleOrEmployerName, pageable)
+      !jobTitleOrEmployerName.isNullOrEmpty() ->
+        jobRepository
+          .findByTitleOrEmployerNameIgnoringCaseContaining(
+            title = jobTitleOrEmployerName,
+            employerName = jobTitleOrEmployerName,
+            pageable = pageable
+          )
       else -> jobRepository.findAll(pageable)
     }
   }

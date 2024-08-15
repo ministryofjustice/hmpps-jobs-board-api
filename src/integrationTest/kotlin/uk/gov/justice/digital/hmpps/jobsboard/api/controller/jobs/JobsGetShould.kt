@@ -80,7 +80,7 @@ class JobsGetShould : JobsTestCase() {
       parameters = "jobTitleOrEmployerName=Forklift operator",
       expectedResponse = expectedResponseListOf(
         amazonForkliftOperatorJobResponse(jobCreationTime),
-      )
+      ),
     )
   }
 
@@ -91,8 +91,8 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Tesco",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobResponse(jobCreationTime),
-      )
+        tescoWarehouseHandlerJobResponse(jobCreationTime),
+      ),
     )
   }
 
