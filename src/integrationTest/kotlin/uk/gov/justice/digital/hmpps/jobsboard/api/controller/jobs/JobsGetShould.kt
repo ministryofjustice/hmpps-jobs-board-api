@@ -72,6 +72,18 @@ class JobsGetShould : JobsTestCase() {
     )
   }
 
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by job title`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "jobTitleOrEmployerName=Forklift operator",
+      expectedResponse = expectedResponseListOf(
+        amazonForkliftOperatorJobResponse(jobCreationTime),
+      )
+    )
+  }
+
   private fun givenTwoJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
