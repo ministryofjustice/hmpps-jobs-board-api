@@ -47,6 +47,17 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      expectedResponse = expectedResponseListOf(
+        amazonForkliftOperatorJobResponse(jobCreationTime),
+        tescoWarehouseHandlerJobResponse(jobCreationTime),
+      ),
+    )
+  }
+
+  private fun givenTwoJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
       body = tescoBody,
@@ -65,16 +76,6 @@ class JobsGetShould : JobsTestCase() {
 
     assertAddJobIsCreated(
       body = amazonForkliftOperatorJobBody,
-    )
-
-    assertGetJobIsOK(
-      parameters = "page=1&size=1",
-      expectedResponse = expectedResponseListOf(
-        size = 1,
-        page = 1,
-        totalElements = 2,
-        amazonForkliftOperatorJobResponse(jobCreationTime),
-      ),
     )
   }
 }
