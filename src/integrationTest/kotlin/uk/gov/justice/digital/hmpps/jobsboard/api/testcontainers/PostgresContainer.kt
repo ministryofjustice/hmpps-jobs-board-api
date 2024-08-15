@@ -24,7 +24,7 @@ object PostgresContainer {
       withUsername("job-board")
       withPassword("job-board")
       setWaitStrategy(Wait.forListeningPort())
-      withReuse(false)
+      withReuse(true)
       start()
     }
   }
