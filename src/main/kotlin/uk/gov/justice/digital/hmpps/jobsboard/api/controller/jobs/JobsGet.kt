@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.JobRetriever
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 
@@ -37,10 +38,10 @@ class JobsGet(private val jobRetriever: JobRetriever) {
     page: Int,
     @RequestParam(defaultValue = "10")
     size: Int,
-  ): ResponseEntity<Page<GetJobResponse>> {
+  ): ResponseEntity<Page<GetJobsResponse>> {
     val pageable: Pageable = PageRequest.of(page, size)
     val jobList = jobRetriever.retrieveAllJobs(jobTitleOrEmployerName, pageable)
-    val response = jobList.map { GetJobResponse.from(it) }
+    val response = jobList.map { GetJobsResponse.from(it) }
     return ResponseEntity.ok(response)
   }
 }
