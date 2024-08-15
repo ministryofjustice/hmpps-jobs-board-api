@@ -163,6 +163,15 @@ class JobsTestCase : ApplicationTestCase() {
     createdAt = createdAt.toString(),
   )
 
+  protected fun tescoWarehouseHandlerJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
+    employerId = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
+    employerName = "Tesco",
+    jobTitle = "Warehouse handler",
+    numberOfVacancies = 1,
+    sector = "WAREHOUSING",
+    createdAt = createdAt.toString(),
+  )
+
   protected val amazonForkliftOperatorJobBody: String = newJobBody(
     employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
     jobTitle = "Forklift operator",
@@ -259,6 +268,15 @@ class JobsTestCase : ApplicationTestCase() {
     howToApply = "",
     supportingDocumentationRequired = listOf("CV", "DISCLOSURE_LETTER"),
     supportingDocumentationDetails = "",
+    createdAt = createdAt.toString(),
+  )
+
+  protected fun amazonForkliftOperatorJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
+    employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
+    employerName = "Amazon",
+    jobTitle = "Forklift operator",
+    numberOfVacancies = 2,
+    sector = "WAREHOUSING",
     createdAt = createdAt.toString(),
   )
 
@@ -392,6 +410,26 @@ class JobsTestCase : ApplicationTestCase() {
           "howToApply": "$howToApply",
           "supportingDocumentationRequired": ${supportingDocumentationRequired.asJson()},
           "supportingDocumentationDetails": ${supportingDocumentationDetails?.asJson()}
+        }
+    """.trimIndent()
+  }
+
+  private fun newJobItemListResponse(
+    employerId: String,
+    employerName: String,
+    jobTitle: String,
+    numberOfVacancies: Int,
+    sector: String,
+    createdAt: String,
+  ): String {
+    return """
+        {
+          "employerId": "$employerId",
+          "employerName": "$employerName",
+          "jobTitle": "$jobTitle",
+          "numberOfVacancies": $numberOfVacancies,
+          "sector": "$sector",
+          "createdAt": "$createdAt"
         }
     """.trimIndent()
   }

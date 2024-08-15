@@ -39,9 +39,9 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated empty Jobs list` () {
+  fun `retrieve a default paginated empty Jobs list`() {
     assertGetJobIsOK(
-      expectedResponse = expectedResponseListOf()
+      expectedResponse = expectedResponseListOf(),
     )
   }
 
@@ -51,8 +51,8 @@ class JobsGetShould : JobsTestCase() {
 
     assertGetJobIsOK(
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobResponse(jobCreationTime),
-        tescoWarehouseHandlerJobResponse(jobCreationTime),
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
       ),
     )
   }
@@ -67,7 +67,7 @@ class JobsGetShould : JobsTestCase() {
         size = 1,
         page = 1,
         totalElements = 2,
-        amazonForkliftOperatorJobResponse(jobCreationTime),
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
       ),
     )
   }
@@ -79,7 +79,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Forklift operator",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobResponse(jobCreationTime),
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
       ),
     )
   }
@@ -91,7 +91,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=operator",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobResponse(jobCreationTime),
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
       ),
     )
   }
@@ -103,7 +103,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Tesco",
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerJobResponse(jobCreationTime),
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
       ),
     )
   }
@@ -115,7 +115,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Tes",
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerJobResponse(jobCreationTime),
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
       ),
     )
   }
