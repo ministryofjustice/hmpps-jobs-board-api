@@ -108,6 +108,18 @@ class JobsGetShould : JobsTestCase() {
     )
   }
 
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by incomplete Employer name`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "jobTitleOrEmployerName=Tes",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandlerJobResponse(jobCreationTime),
+      ),
+    )
+  }
+
   private fun givenTwoJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
