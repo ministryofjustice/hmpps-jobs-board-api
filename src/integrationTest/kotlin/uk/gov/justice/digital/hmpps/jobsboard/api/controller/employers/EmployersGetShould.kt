@@ -33,7 +33,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve second page of paginated list of Employers when page and size are informed`() {
+  fun `retrieve a custom paginated Employers list`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
