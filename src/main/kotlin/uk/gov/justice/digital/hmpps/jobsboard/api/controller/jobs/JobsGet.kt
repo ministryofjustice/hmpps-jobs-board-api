@@ -31,13 +31,15 @@ class JobsGet(private val jobRetriever: JobRetriever) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("")
   fun retrieveAll(
+    @RequestParam(required = false)
+    jobTitleOrEmployerName: String?,
     @RequestParam(defaultValue = "0")
     page: Int,
     @RequestParam(defaultValue = "10")
     size: Int,
   ): ResponseEntity<Page<GetJobResponse>> {
     val pageable: Pageable = PageRequest.of(page, size)
-    val jobList = jobRetriever.retrieveAllJobs(pageable)
+    val jobList = jobRetriever.retrieveAllJobs(jobTitleOrEmployerName, pageable)
     val response = jobList.map { GetJobResponse.from(it) }
     return ResponseEntity.ok(response)
   }
