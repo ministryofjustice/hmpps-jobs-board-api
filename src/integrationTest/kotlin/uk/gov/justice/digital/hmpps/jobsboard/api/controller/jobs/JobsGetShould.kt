@@ -39,7 +39,7 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `retrieve a paginated empty list of Jobs when none registered`() {
+  fun `retrieve a default paginated empty Jobs list`() {
     assertGetJobIsOK(
       expectedResponse = expectedResponseListOf(),
     )
@@ -47,6 +47,80 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      expectedResponse = expectedResponseListOf(
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a custom paginated Jobs list`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "page=1&size=1",
+      expectedResponse = expectedResponseListOf(
+        size = 1,
+        page = 1,
+        totalElements = 2,
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by full Job title`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "jobTitleOrEmployerName=Forklift operator",
+      expectedResponse = expectedResponseListOf(
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by incomplete Job title`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "jobTitleOrEmployerName=operator",
+      expectedResponse = expectedResponseListOf(
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by full Employer name`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "jobTitleOrEmployerName=Tesco",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by incomplete Employer name`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "jobTitleOrEmployerName=Tes",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
+
+  private fun givenTwoJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
       body = tescoBody,
@@ -65,16 +139,6 @@ class JobsGetShould : JobsTestCase() {
 
     assertAddJobIsCreated(
       body = amazonForkliftOperatorJobBody,
-    )
-
-    assertGetJobIsOK(
-      parameters = "page=1&size=1",
-      expectedResponse = expectedResponseListOf(
-        size = 1,
-        page = 1,
-        totalElements = 2,
-        amazonForkliftOperatorJobResponse(jobCreationTime),
-      ),
     )
   }
 }

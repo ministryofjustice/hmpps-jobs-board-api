@@ -16,7 +16,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a paginated empty list of Employers when none registered`() {
+  fun `retrieve a default paginated empty Employers list`() {
     assertGetEmployerIsOK(
       expectedResponse = expectedResponseListOf(),
     )
@@ -33,7 +33,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve second page of paginated list of Employers when page and size are informed`() {
+  fun `retrieve a custom paginated Employers list`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
@@ -44,7 +44,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated list of Employers filtered by name when filtered is applied`() {
+  fun `retrieve a default paginated Employers list filtered by full name`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
@@ -55,7 +55,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated list of Employers filtered by incomplete name when filtered is applied`() {
+  fun `retrieve a default paginated Employers list filtered by incomplete name`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
@@ -66,7 +66,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated list of Employers filtered by sector when filtered is applied`() {
+  fun `retrieve a default paginated Employers list filtered by sector`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = amazonBody)
 
@@ -77,7 +77,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated list of Employers filtered by name AND sector when filters are applied`() {
+  fun `retrieve a default paginated Employers list filtered by name AND sector`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = tescoLogisticsBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
@@ -90,7 +90,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a list of Employers filtered by incomplete name AND sector when filters are applied with mixed cases`() {
+  fun `retrieve a default paginated Employers list filtered by incomplete name AND sector`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = tescoLogisticsBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
@@ -103,7 +103,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve second page of Employers list filtered by name AND sector when filters and custom pagination are applied`() {
+  fun `retrieve a custom paginated Employers list filtered by name AND sector`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = tescoLogisticsBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
@@ -116,7 +116,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default sorted by name in ascendent order Employers list`() {
+  fun `retrieve a default paginated Employers list sorted by name in ascendent order`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
@@ -126,7 +126,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve an Employers list sorted by name in descendent order when sorting applied`() {
+  fun `retrieve a default paginated Employers list sorted by name in descendent order`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
@@ -137,7 +137,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve an Employers list sorted by date added in default ascendent order when sort-by applied`() {
+  fun `retrieve a default paginated Employers list sorted by date added in default ascendent order`() {
     val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
     whenever(timeProvider.now())
       .thenReturn(fixedTime)
@@ -153,7 +153,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve an Employers list sorted by date added in descendent order when sort-by and sort-order applied`() {
+  fun `retrieve a default paginated Employers list sorted by date added in descendent order`() {
     val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
     whenever(timeProvider.now())
       .thenReturn(fixedTime)

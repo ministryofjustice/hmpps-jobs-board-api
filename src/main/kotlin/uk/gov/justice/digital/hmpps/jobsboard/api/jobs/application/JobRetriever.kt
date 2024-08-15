@@ -16,7 +16,16 @@ class JobRetriever(
     return jobRepository.findById(EntityId(id)).orElseThrow()
   }
 
-  fun retrieveAllJobs(pageable: Pageable): Page<Job> {
-    return jobRepository.findAll(pageable)
+  fun retrieveAllJobs(jobTitleOrEmployerName: String?, pageable: Pageable): Page<Job> {
+    return when {
+      !jobTitleOrEmployerName.isNullOrEmpty() ->
+        jobRepository
+          .findByTitleContainingOrEmployerNameContainingAllIgnoringCase(
+            title = jobTitleOrEmployerName,
+            employerName = jobTitleOrEmployerName,
+            pageable = pageable,
+          )
+      else -> jobRepository.findAll(pageable)
+    }
   }
 }
