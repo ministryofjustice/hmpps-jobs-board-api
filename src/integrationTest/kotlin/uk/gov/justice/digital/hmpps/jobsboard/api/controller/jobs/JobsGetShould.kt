@@ -39,9 +39,9 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `retrieve a paginated empty list of Jobs when none registered`() {
+  fun `retrieve a default paginated empty Jobs list` () {
     assertGetJobIsOK(
-      expectedResponse = expectedResponseListOf(),
+      expectedResponse = expectedResponseListOf()
     )
   }
 
