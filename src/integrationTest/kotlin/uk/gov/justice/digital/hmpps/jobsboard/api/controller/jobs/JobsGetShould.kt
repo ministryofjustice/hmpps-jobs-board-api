@@ -57,6 +57,21 @@ class JobsGetShould : JobsTestCase() {
     )
   }
 
+  @Test
+  fun `retrieve a custom paginated Jobs list`() {
+    givenTwoJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "page=1&size=1",
+      expectedResponse = expectedResponseListOf(
+        size = 1,
+        page = 1,
+        totalElements = 2,
+        amazonForkliftOperatorJobResponse(jobCreationTime),
+      ),
+    )
+  }
+
   private fun givenTwoJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
