@@ -22,6 +22,17 @@ class JobsTestCase : ApplicationTestCase() {
     )
   }
 
+  protected fun assertUpdateJobIsOk(
+    jobId: String,
+    body: String,
+  ): String {
+    return assertAddJob(
+      jobId = jobId,
+      body = body,
+      expectedStatus = OK,
+    )
+  }
+
   protected fun assertAddJobThrowsValidationError(
     jobId: String? = null,
     body: String,
@@ -67,11 +78,11 @@ class JobsTestCase : ApplicationTestCase() {
   }
 
   protected val abcConstructionJobBody: String = newJobBody(
-    employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
-    jobTitle = "Warehouse operator",
-    sector = "WAREHOUSING",
+    employerId = "182e9a24-6edb-48a6-a84f-b7061f004a97",
+    jobTitle = "Apprentice plasterer",
+    sector = "CONSTRUCTION",
     industrySector = "CONSTRUCTION",
-    numberOfVacancies = 1,
+    numberOfVacancies = 3,
     sourcePrimary = "DWP",
     sourceSecondary = "DWP",
     charityName = "dadasdads",
@@ -96,6 +107,48 @@ class JobsTestCase : ApplicationTestCase() {
     isOnlyForPrisonLeavers = true,
     supportingDocumentationRequired = listOf("DISCLOSURE_LETTER", "OTHER"),
     supportingDocumentationDetails = "Some text",
+  )
+
+  protected fun abcConstructionJobResponse(createdAt: Instant): String = newJobResponse(
+    employerId = "182e9a24-6edb-48a6-a84f-b7061f004a97",
+    jobTitle = "Apprentice plasterer",
+    sector = "CONSTRUCTION",
+    industrySector = "CONSTRUCTION",
+    numberOfVacancies = 3,
+    sourcePrimary = "DWP",
+    sourceSecondary = "DWP",
+    charityName = "dadasdads",
+    postCode = "NE157LR",
+    salaryFrom = 99f,
+    salaryTo = 260f,
+    salaryPeriod = "PER_DAY",
+    additionalSalaryInformation = "10% Performance bonus",
+    isPayingAtLeastNationalMinimumWage = true,
+    workPattern = "FLEXIBLE_SHIFTS",
+    contractType = "TEMPORARY",
+    hoursPerWeek = "FULL_TIME_40_PLUS",
+    baseLocation = "HYBRID",
+    essentialCriteria = "Essential job criteria",
+    desirableCriteria = "Desirable job criteria (optional)",
+    description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
+    offenceExclusions = listOf("CASE_BY_CASE", "OTHER"),
+    howToApply = "How to applyHow to apply",
+    closingDate = "2025-02-01",
+    startDate = "2025-02-01",
+    isRollingOpportunity = false,
+    isOnlyForPrisonLeavers = true,
+    supportingDocumentationRequired = listOf("DISCLOSURE_LETTER", "OTHER"),
+    supportingDocumentationDetails = "Some text",
+    createdAt = createdAt.toString(),
+  )
+
+  protected fun abcConstructionJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
+    employerId = "182e9a24-6edb-48a6-a84f-b7061f004a97",
+    employerName = "ABC Construction",
+    jobTitle = "Apprentice plasterer",
+    numberOfVacancies = 3,
+    sector = "CONSTRUCTION",
+    createdAt = createdAt.toString(),
   )
 
   protected val tescoWarehouseHandlerJobBody: String = newJobBody(
@@ -175,7 +228,7 @@ class JobsTestCase : ApplicationTestCase() {
   protected val amazonForkliftOperatorJobBody: String = newJobBody(
     employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
     jobTitle = "Forklift operator",
-    sector = "WAREHOUSING",
+    sector = "RETAIL",
     industrySector = "LOGISTICS",
     numberOfVacancies = 2,
     sourcePrimary = "PEL",
@@ -224,7 +277,7 @@ class JobsTestCase : ApplicationTestCase() {
   protected fun amazonForkliftOperatorJobResponse(createdAt: Instant): String = newJobResponse(
     employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
     jobTitle = "Forklift operator",
-    sector = "WAREHOUSING",
+    sector = "RETAIL",
     industrySector = "LOGISTICS",
     numberOfVacancies = 2,
     sourcePrimary = "PEL",
@@ -276,7 +329,7 @@ class JobsTestCase : ApplicationTestCase() {
     employerName = "Amazon",
     jobTitle = "Forklift operator",
     numberOfVacancies = 2,
-    sector = "WAREHOUSING",
+    sector = "RETAIL",
     createdAt = createdAt.toString(),
   )
 

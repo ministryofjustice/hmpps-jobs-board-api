@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 
 @Repository
 interface EmployerRepository : JpaRepository<Employer, EntityId> {
-  fun findByNameIgnoringCaseContaining(name: String?, pageable: Pageable): Page<Employer>
-  fun findBySectorIgnoringCase(sector: String?, pageable: Pageable): Page<Employer>
+  fun findByNameIgnoringCaseContaining(name: String, pageable: Pageable): Page<Employer>
+  fun findBySectorIgnoringCase(sector: String, pageable: Pageable): Page<Employer>
   fun findByNameContainingAndSectorAllIgnoringCase(name: String?, sector: String?, pageable: Pageable): Page<Employer>
 }

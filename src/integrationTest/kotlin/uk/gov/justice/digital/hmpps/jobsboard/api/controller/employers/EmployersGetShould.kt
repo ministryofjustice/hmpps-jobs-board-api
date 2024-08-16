@@ -66,7 +66,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Employers list filtered by sector`() {
+  fun `retrieve a default paginated Employers list filtered by industry sector`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = amazonBody)
 

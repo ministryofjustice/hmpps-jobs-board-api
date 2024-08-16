@@ -34,13 +34,15 @@ class JobsGet(private val jobRetriever: JobRetriever) {
   fun retrieveAll(
     @RequestParam(required = false)
     jobTitleOrEmployerName: String?,
+    @RequestParam(required = false)
+    sector: String?,
     @RequestParam(defaultValue = "0")
     page: Int,
     @RequestParam(defaultValue = "10")
     size: Int,
   ): ResponseEntity<Page<GetJobsResponse>> {
     val pageable: Pageable = PageRequest.of(page, size)
-    val jobList = jobRetriever.retrieveAllJobs(jobTitleOrEmployerName, pageable)
+    val jobList = jobRetriever.retrieveAllJobs(jobTitleOrEmployerName, sector, pageable)
     val response = jobList.map { GetJobsResponse.from(it) }
     return ResponseEntity.ok(response)
   }

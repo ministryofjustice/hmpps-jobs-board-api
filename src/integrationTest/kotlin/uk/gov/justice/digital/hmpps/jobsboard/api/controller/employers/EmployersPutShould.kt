@@ -27,11 +27,15 @@ class EmployersPutShould : EmployerTestCase() {
 
   @Test
   fun `update an existing Employer`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    val uuid = assertAddEmployerIsCreated(body = sainsburysBody)
+    val employerId = assertAddEmployerIsCreated(body = tescoBody)
+
+    assertUpdateEmployerIsOk(
+      employerId = employerId,
+      body = sainsburysBody,
+    )
 
     assertGetEmployerIsOK(
-      employerId = uuid,
+      employerId = employerId,
       expectedResponse = sainsburysBody,
     )
   }
