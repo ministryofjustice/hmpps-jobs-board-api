@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
-import org.springframework.http.HttpStatus.OK
 
 class JobsGetShould : JobsTestCase() {
   @Test
@@ -168,7 +167,7 @@ class JobsGetShould : JobsTestCase() {
         size = 1,
         page = 0,
         totalElements = 2,
-        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
       ),
     )
   }
@@ -181,8 +180,8 @@ class JobsGetShould : JobsTestCase() {
       expectedJobTitlesSorted = listOf(
         "Apprentice plasterer",
         "Forklift operator",
-        "Warehouse handler"
-      )
+        "Warehouse handler",
+      ),
     )
   }
 
@@ -195,8 +194,8 @@ class JobsGetShould : JobsTestCase() {
       expectedJobTitlesSorted = listOf(
         "Warehouse handler",
         "Forklift operator",
-        "Apprentice plasterer"
-      )
+        "Apprentice plasterer",
+      ),
     )
   }
 
