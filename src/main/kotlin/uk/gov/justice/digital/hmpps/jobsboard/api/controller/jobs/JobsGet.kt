@@ -48,8 +48,12 @@ class JobsGet(private val jobRetriever: JobRetriever) {
     @RequestParam(defaultValue = "10")
     size: Int,
   ): ResponseEntity<Page<GetJobsResponse>> {
+    val sortedBy = when (sortBy) {
+      "jobTitle" -> "title"
+      else -> sortBy
+    }
     val direction = if(sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
-    val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortBy))
+    val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortedBy))
     val jobList = jobRetriever.retrieveAllJobs(jobTitleOrEmployerName, sector, pageable)
     val response = jobList.map { GetJobsResponse.from(it) }
     return ResponseEntity.ok(response)
