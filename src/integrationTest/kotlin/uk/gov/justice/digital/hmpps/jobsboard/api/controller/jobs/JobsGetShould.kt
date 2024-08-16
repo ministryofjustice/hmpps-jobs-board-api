@@ -157,6 +157,21 @@ class JobsGetShould : JobsTestCase() {
     )
   }
 
+  @Test
+  fun `retrieve a custom paginated Jobs list filtered by Job title OR Employer name AND job sector`() {
+    givenThreeJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "jobTitleOrEmployerName=Tesco&sector=retail&page=0&size=1",
+      expectedResponse = expectedResponseListOf(
+        size = 1,
+        page = 0,
+        totalElements = 2,
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
+
   private fun givenThreeJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
