@@ -17,6 +17,17 @@ class EmployerTestCase : ApplicationTestCase() {
     )
   }
 
+  protected fun assertUpdateEmployerIsOk(
+    employerId: String,
+    body: String,
+  ): String {
+    return assertAddEmployer(
+      id = employerId,
+      body = body,
+      expectedStatus = OK,
+    )
+  }
+
   protected fun assertAddEmployerThrowsValidationError(
     employerId: String? = null,
     body: String,
