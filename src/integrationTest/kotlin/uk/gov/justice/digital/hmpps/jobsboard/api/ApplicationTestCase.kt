@@ -164,6 +164,13 @@ abstract class ApplicationTestCase {
     status = "KEY_PARTNER",
   )
 
+  val abcConstructionBody: String = newEmployerBody(
+    name = "ABC Construction",
+    description = "This is a description",
+    sector = "CONSTRUCTION",
+    status = "SILVER",
+  )
+
   protected fun assertAddEmployer(
     id: String? = null,
     body: String,

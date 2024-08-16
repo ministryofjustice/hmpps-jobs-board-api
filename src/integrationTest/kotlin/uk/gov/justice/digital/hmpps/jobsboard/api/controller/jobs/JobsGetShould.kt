@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
-import java.util.*
 
 class JobsGetShould : JobsTestCase() {
 
@@ -47,26 +46,27 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list`() {
-    givenTwoJobsAreRegistered()
+    givenThreeJobsAreRegistered()
 
     assertGetJobIsOK(
       expectedResponse = expectedResponseListOf(
         amazonForkliftOperatorJobItemListResponse(jobCreationTime),
         tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+        abcConstructionJobItemListResponse(jobCreationTime),
       ),
     )
   }
 
   @Test
   fun `retrieve a custom paginated Jobs list`() {
-    givenTwoJobsAreRegistered()
+    givenThreeJobsAreRegistered()
 
     assertGetJobIsOK(
       parameters = "page=1&size=1",
       expectedResponse = expectedResponseListOf(
         size = 1,
         page = 1,
-        totalElements = 2,
+        totalElements = 3,
         amazonForkliftOperatorJobItemListResponse(jobCreationTime),
       ),
     )
@@ -74,7 +74,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by full Job title`() {
-    givenTwoJobsAreRegistered()
+    givenThreeJobsAreRegistered()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Forklift operator",
@@ -86,7 +86,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by incomplete Job title`() {
-    givenTwoJobsAreRegistered()
+    givenThreeJobsAreRegistered()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=operator",
@@ -98,7 +98,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by full Employer name`() {
-    givenTwoJobsAreRegistered()
+    givenThreeJobsAreRegistered()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Tesco",
@@ -110,7 +110,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by incomplete Employer name`() {
-    givenTwoJobsAreRegistered()
+    givenThreeJobsAreRegistered()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Tes",
@@ -122,7 +122,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by job sector`() {
-    givenTwoJobsAreRegistered()
+    givenThreeJobsAreRegistered()
 
     assertGetJobIsOK(
       parameters = "sector=retail",
@@ -132,7 +132,20 @@ class JobsGetShould : JobsTestCase() {
     )
   }
 
-  private fun givenTwoJobsAreRegistered() {
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by Job title OR Employer name AND job sector`() {
+    givenThreeJobsAreRegistered()
+
+    assertGetJobIsOK(
+      parameters = "jobTitleOrEmployerName=tesco&sector=retail",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+      )
+    )
+  }
+
+  private fun givenThreeJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
       body = tescoBody,
@@ -145,12 +158,22 @@ class JobsGetShould : JobsTestCase() {
       expectedStatus = CREATED,
     )
 
+    assertAddEmployer(
+      id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
+      body = abcConstructionBody,
+      expectedStatus = CREATED,
+    )
+
     assertAddJobIsCreated(
       body = tescoWarehouseHandlerJobBody,
     )
 
     assertAddJobIsCreated(
       body = amazonForkliftOperatorJobBody,
+    )
+
+    assertAddJobIsCreated(
+      body = abcConstructionJobBody,
     )
   }
 }
