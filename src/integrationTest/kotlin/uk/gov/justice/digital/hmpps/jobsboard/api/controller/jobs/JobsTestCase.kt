@@ -175,7 +175,7 @@ class JobsTestCase : ApplicationTestCase() {
   protected val amazonForkliftOperatorJobBody: String = newJobBody(
     employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
     jobTitle = "Forklift operator",
-    sector = "WAREHOUSING",
+    sector = "RETAIL",
     industrySector = "LOGISTICS",
     numberOfVacancies = 2,
     sourcePrimary = "PEL",
@@ -224,7 +224,7 @@ class JobsTestCase : ApplicationTestCase() {
   protected fun amazonForkliftOperatorJobResponse(createdAt: Instant): String = newJobResponse(
     employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
     jobTitle = "Forklift operator",
-    sector = "WAREHOUSING",
+    sector = "RETAIL",
     industrySector = "LOGISTICS",
     numberOfVacancies = 2,
     sourcePrimary = "PEL",
@@ -276,7 +276,7 @@ class JobsTestCase : ApplicationTestCase() {
     employerName = "Amazon",
     jobTitle = "Forklift operator",
     numberOfVacancies = 2,
-    sector = "WAREHOUSING",
+    sector = "RETAIL",
     createdAt = createdAt.toString(),
   )
 
