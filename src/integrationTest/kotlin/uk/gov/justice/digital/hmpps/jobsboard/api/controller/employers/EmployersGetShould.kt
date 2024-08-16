@@ -116,7 +116,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Employers list sorted by name in ascendent order`() {
+  fun `retrieve a default paginated Employers list sorted by name default ascendent`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
@@ -126,7 +126,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Employers list sorted by name in descendent order`() {
+  fun `retrieve a default paginated Employers list sorted by name custom descendent`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
