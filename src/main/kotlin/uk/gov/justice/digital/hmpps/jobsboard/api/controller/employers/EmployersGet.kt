@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Sort.Direction.ASC
+import org.springframework.data.domain.Sort.Direction.DESC
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -105,7 +107,7 @@ class EmployersGet(
     @RequestParam(defaultValue = "10")
     size: Int,
   ): ResponseEntity<Page<GetEmployerResponse>>? {
-    val direction = if (sortOrder.equals("desc", ignoreCase = true)) Sort.Direction.DESC else Sort.Direction.ASC
+    val direction = if(sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
     val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortBy))
     val employerList = employerRetriever.retrieveAllEmployers(name, sector, pageable)
     val response = employerList.map { GetEmployerResponse.from(it) }
