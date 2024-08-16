@@ -15,4 +15,10 @@ interface JobRepository : JpaRepository<Job, EntityId> {
   ): Page<Job>
 
   fun findBySectorIgnoringCase(sector: String, pageable: Pageable): Page<Job>
+  fun findByTitleContainingOrEmployerNameContainingOrSectorAllIgnoringCase(
+    title: String,
+    employerName: String,
+    sector: String,
+    pageable: Pageable,
+  ): Page<Job>
 }

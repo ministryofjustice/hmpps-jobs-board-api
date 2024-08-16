@@ -30,6 +30,13 @@ class JobRetriever(
           sector = sector,
           pageable = pageable,
         )
+      !jobTitleOrEmployerName.isNullOrEmpty() && !sector.isNullOrEmpty() ->
+        jobRepository.findByTitleContainingOrEmployerNameContainingOrSectorAllIgnoringCase(
+          title = jobTitleOrEmployerName,
+          employerName = jobTitleOrEmployerName,
+          sector = sector,
+          pageable = pageable,
+        )
       else -> jobRepository.findAll(pageable)
     }
   }

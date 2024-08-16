@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
-import org.springframework.http.HttpStatus.OK
+import java.util.*
 
 class JobsPutShould : JobsTestCase() {
   @Test
@@ -43,15 +43,14 @@ class JobsPutShould : JobsTestCase() {
 
     val jobId = assertAddJobIsCreated(body = amazonForkliftOperatorJobBody)
 
-    assertRequestWithBody(
-      url = "$JOBS_ENDPOINT/$jobId",
-      body = abcConstructionJobBody,
-      expectedStatus = OK,
+    assertUpdateJobIsOk(
+      jobId = jobId,
+      body = amazonForkliftOperatorJobBody,
     )
 
     assertGetJobIsOK(
       jobId = jobId,
-      expectedResponse = abcConstructionJobBody,
+      expectedResponse = amazonForkliftOperatorJobBody,
     )
   }
 }

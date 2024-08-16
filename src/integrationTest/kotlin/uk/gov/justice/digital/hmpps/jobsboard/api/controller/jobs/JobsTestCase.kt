@@ -22,6 +22,17 @@ class JobsTestCase : ApplicationTestCase() {
     )
   }
 
+  protected fun assertUpdateJobIsOk(
+    jobId: String,
+    body: String,
+  ): String {
+    return assertAddJob(
+      jobId = jobId,
+      body = body,
+      expectedStatus = OK,
+    )
+  }
+
   protected fun assertAddJobThrowsValidationError(
     jobId: String? = null,
     body: String,

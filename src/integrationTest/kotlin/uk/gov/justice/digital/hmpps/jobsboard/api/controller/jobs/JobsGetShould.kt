@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
 
 class JobsGetShould : JobsTestCase() {
-
   @Test
   fun `retrieve an existing Job`() {
     assertAddEmployer(
@@ -141,7 +140,7 @@ class JobsGetShould : JobsTestCase() {
       expectedResponse = expectedResponseListOf(
         tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
         amazonForkliftOperatorJobItemListResponse(jobCreationTime),
-      )
+      ),
     )
   }
 
