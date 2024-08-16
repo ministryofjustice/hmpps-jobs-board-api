@@ -186,6 +186,20 @@ class JobsGetShould : JobsTestCase() {
     )
   }
 
+  @Test
+  fun `retrieve a default paginated Jobs list sorted by job title custom descendent`() {
+    givenThreeJobsAreRegistered()
+
+    assertGetJobIsOKAndSortedByJobTitle(
+      parameters = "sortBy=jobTitle&sortOrder=desc",
+      expectedJobTitlesSorted = listOf(
+        "Warehouse handler",
+        "Forklift operator",
+        "Apprentice plasterer"
+      )
+    )
+  }
+
   private fun givenThreeJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",

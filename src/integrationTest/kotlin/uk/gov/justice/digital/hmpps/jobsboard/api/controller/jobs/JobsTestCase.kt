@@ -78,10 +78,11 @@ class JobsTestCase : ApplicationTestCase() {
   }
 
   protected fun assertGetJobIsOKAndSortedByJobTitle(
+    parameters: String? = "",
     expectedJobTitlesSorted: List<String>
   ) {
     assertResponse(
-      url = JOBS_ENDPOINT,
+      url = "$JOBS_ENDPOINT?$parameters",
       expectedStatus = OK,
       expectedJobTitleSortedList = expectedJobTitlesSorted,
     )
