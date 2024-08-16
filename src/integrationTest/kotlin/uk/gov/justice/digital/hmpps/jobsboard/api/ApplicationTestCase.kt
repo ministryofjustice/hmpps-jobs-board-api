@@ -210,6 +210,7 @@ abstract class ApplicationTestCase {
     url: String,
     expectedStatus: HttpStatus,
     expectedResponse: String? = null,
+    expectedJobTitleSortedList: List<String>? = null,
     expectedNameSortedList: List<String>? = null,
     expectedDateSortedList: List<String>? = null,
   ) {
@@ -233,6 +234,11 @@ abstract class ApplicationTestCase {
         expectedNameSortedList?.let {
           jsonPath("$.content[0].name", equalTo(it[0]))
           jsonPath("$.content[1].name", equalTo(it[1]))
+        }
+        expectedJobTitleSortedList?.let {
+          jsonPath("$.content[0].jobTitle", equalTo(it[0]))
+          jsonPath("$.content[1].jobTitle", equalTo(it[1]))
+          jsonPath("$.content[2].jobTitle", equalTo(it[2]))
         }
         expectedDateSortedList?.let {
           jsonPath("$.content[0].createdAt", equalTo(it[0]))

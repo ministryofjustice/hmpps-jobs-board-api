@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
+import org.springframework.http.HttpStatus.OK
 
 class JobsGetShould : JobsTestCase() {
   @Test
@@ -169,6 +170,19 @@ class JobsGetShould : JobsTestCase() {
         totalElements = 2,
         tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
       ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list sorted by job title default ascendent`() {
+    givenThreeJobsAreRegistered()
+
+    assertGetJobIsOKAndSortedByJobTitle(
+      expectedJobTitlesSorted = listOf(
+        "Apprentice plasterer",
+        "Forklift operator",
+        "Warehouse handler"
+      )
     )
   }
 
