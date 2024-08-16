@@ -127,8 +127,8 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobIsOK(
       parameters = "sector=retail",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime)
-      )
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+      ),
     )
   }
 
