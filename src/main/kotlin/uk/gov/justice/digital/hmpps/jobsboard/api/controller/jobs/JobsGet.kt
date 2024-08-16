@@ -3,6 +3,9 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Sort.Direction.ASC
+import org.springframework.data.domain.Sort.Direction.DESC
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -36,12 +39,21 @@ class JobsGet(private val jobRetriever: JobRetriever) {
     jobTitleOrEmployerName: String?,
     @RequestParam(required = false)
     sector: String?,
+    @RequestParam(defaultValue = "title", required = false)
+    sortBy: String?,
+    @RequestParam(defaultValue = "asc", required = false)
+    sortOrder: String?,
     @RequestParam(defaultValue = "0")
     page: Int,
     @RequestParam(defaultValue = "10")
     size: Int,
   ): ResponseEntity<Page<GetJobsResponse>> {
-    val pageable: Pageable = PageRequest.of(page, size)
+    val sortedBy = when (sortBy) {
+      "jobTitle" -> "title"
+      else -> sortBy
+    }
+    val direction = if (sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
+    val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortedBy))
     val jobList = jobRetriever.retrieveAllJobs(jobTitleOrEmployerName, sector, pageable)
     val response = jobList.map { GetJobsResponse.from(it) }
     return ResponseEntity.ok(response)

@@ -167,7 +167,34 @@ class JobsGetShould : JobsTestCase() {
         size = 1,
         page = 0,
         totalElements = 2,
-        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list sorted by job title default ascendent`() {
+    givenThreeJobsAreRegistered()
+
+    assertGetJobIsOKAndSortedByJobTitle(
+      expectedJobTitlesSorted = listOf(
+        "Apprentice plasterer",
+        "Forklift operator",
+        "Warehouse handler",
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list sorted by job title custom descendent`() {
+    givenThreeJobsAreRegistered()
+
+    assertGetJobIsOKAndSortedByJobTitle(
+      parameters = "sortBy=jobTitle&sortOrder=desc",
+      expectedJobTitlesSorted = listOf(
+        "Warehouse handler",
+        "Forklift operator",
+        "Apprentice plasterer",
       ),
     )
   }
