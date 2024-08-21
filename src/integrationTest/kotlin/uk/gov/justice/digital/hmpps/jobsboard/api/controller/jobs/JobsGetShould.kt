@@ -47,7 +47,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       expectedResponse = expectedResponseListOf(
@@ -60,7 +60,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a custom paginated Jobs list`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "page=1&size=1",
@@ -75,7 +75,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by full Job title`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Forklift operator",
@@ -87,7 +87,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by incomplete Job title`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=operator",
@@ -99,7 +99,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by full Employer name`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Tesco",
@@ -111,7 +111,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by incomplete Employer name`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Tes",
@@ -123,7 +123,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by job sector`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "sector=retail",
@@ -135,7 +135,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by Job title OR Employer name AND job sector`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=tesco&sector=retail",
@@ -148,7 +148,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list filtered by incomplete Job title OR Employer name AND job sector`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=tEs&sector=retail",
@@ -161,7 +161,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a custom paginated Jobs list filtered by Job title OR Employer name AND job sector`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=Tesco&sector=retail&page=0&size=1",
@@ -176,7 +176,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list sorted by job title default ascendent`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByJobTitle(
       expectedJobTitlesSorted = listOf(
@@ -189,7 +189,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list sorted by job title custom descendent`() {
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByJobTitle(
       parameters = "sortBy=jobTitle&sortOrder=desc",
@@ -203,12 +203,9 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list sorted by date added default ascendent`() {
-    whenever(dateTimeProvider.now)
-      .thenReturn(Optional.of(jobCreationTime))
-      .thenReturn(Optional.of(jobCreationTime.plusSeconds(10)))
-      .thenReturn(Optional.of(jobCreationTime.plusSeconds(20)))
+    givenJobsMustHaveDifferentCreationTimes()
 
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByDate(
       parameters = "sortBy=createdAt",
@@ -222,12 +219,9 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated Jobs list sorted by date added custom descendent`() {
-    whenever(dateTimeProvider.now)
-      .thenReturn(Optional.of(jobCreationTime))
-      .thenReturn(Optional.of(jobCreationTime.plusSeconds(10)))
-      .thenReturn(Optional.of(jobCreationTime.plusSeconds(20)))
+    givenJobsMustHaveDifferentCreationTimes()
 
-    givenThreeJobsAreRegistered()
+    givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByDate(
       parameters = "sortBy=createdAt&sortOrder=desc",
@@ -239,7 +233,14 @@ class JobsGetShould : JobsTestCase() {
     )
   }
 
-  private fun givenThreeJobsAreRegistered() {
+  private fun givenJobsMustHaveDifferentCreationTimes() {
+    whenever(dateTimeProvider.now)
+      .thenReturn(Optional.of(jobCreationTime))
+      .thenReturn(Optional.of(jobCreationTime.plusSeconds(10)))
+      .thenReturn(Optional.of(jobCreationTime.plusSeconds(20)))
+  }
+
+  private fun givenThreeJobsAreCreated() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
       body = tescoBody,
