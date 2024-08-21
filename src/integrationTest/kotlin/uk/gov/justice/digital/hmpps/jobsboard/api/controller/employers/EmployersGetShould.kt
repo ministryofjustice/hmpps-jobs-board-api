@@ -126,6 +126,17 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
+  fun `retrieve a default paginated Employers list sorted by name, in ascending order`() {
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
+
+    assertGetEmployersIsOKAndSortedByName(
+      parameters = "sortBy=name&sortOrder=asc",
+      expectedNamesSorted = listOf("Sainsbury's", "Tesco"),
+    )
+  }
+
+  @Test
   fun `retrieve a default paginated Employers list sorted by name, in descending order`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
@@ -148,6 +159,22 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt",
+      expectedDatesSorted = listOf("2024-07-01T01:00:00", "2024-07-02T01:00:00"),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Employers list sorted by creation date, in ascending order`() {
+    val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
+    whenever(timeProvider.now())
+      .thenReturn(fixedTime)
+      .thenReturn(fixedTime.plusDays(1))
+
+    assertAddEmployerIsCreated(body = tescoBody)
+    assertAddEmployerIsCreated(body = sainsburysBody)
+
+    assertGetEmployersIsOkAndSortedByDate(
+      parameters = "sortBy=createdAt&sortOrder=asc",
       expectedDatesSorted = listOf("2024-07-01T01:00:00", "2024-07-02T01:00:00"),
     )
   }
