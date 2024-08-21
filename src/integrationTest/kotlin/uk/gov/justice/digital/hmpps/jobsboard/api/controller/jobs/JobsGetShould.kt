@@ -188,6 +188,20 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
+  fun `retrieve a default paginated Jobs list sorted by job title, in ascending order`() {
+    givenThreeJobsAreCreated()
+
+    assertGetJobIsOKAndSortedByJobTitle(
+      parameters = "sortBy=jobTitle&sortOrder=asc",
+      expectedJobTitlesSorted = listOf(
+        "Apprentice plasterer",
+        "Forklift operator",
+        "Warehouse handler",
+      ),
+    )
+  }
+
+  @Test
   fun `retrieve a default paginated Jobs list sorted by job title in, descending order`() {
     givenThreeJobsAreCreated()
 
@@ -209,6 +223,22 @@ class JobsGetShould : JobsTestCase() {
 
     assertGetJobIsOKAndSortedByDate(
       parameters = "sortBy=createdAt",
+      expectedDatesSorted = listOf(
+        "2024-01-01T00:00:00Z",
+        "2024-01-01T00:00:10Z",
+        "2024-01-01T00:00:20Z",
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list sorted by creation date, in ascending order`() {
+    givenJobsMustHaveDifferentCreationTimes()
+
+    givenThreeJobsAreCreated()
+
+    assertGetJobIsOKAndSortedByDate(
+      parameters = "sortBy=createdAt&sortOrder=asc",
       expectedDatesSorted = listOf(
         "2024-01-01T00:00:00Z",
         "2024-01-01T00:00:10Z",
