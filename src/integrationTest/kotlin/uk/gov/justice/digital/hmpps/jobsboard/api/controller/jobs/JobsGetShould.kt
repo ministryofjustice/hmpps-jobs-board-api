@@ -23,6 +23,22 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
+  fun `retrieve an existing Job with all optional fields empty`() {
+    assertAddEmployer(
+      id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
+      body = abcConstructionBody,
+      expectedStatus = CREATED,
+    )
+
+    val jobId = assertAddJobIsCreated(body = abcConstructionJobBody)
+
+    assertGetJobIsOK(
+      jobId = jobId,
+      expectedResponse = abcConstructionJobResponse(jobCreationTime),
+    )
+  }
+
+  @Test
   fun `return null on empty optional fields`() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",

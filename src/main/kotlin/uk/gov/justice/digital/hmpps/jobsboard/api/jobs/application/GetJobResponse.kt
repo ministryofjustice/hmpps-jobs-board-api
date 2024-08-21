@@ -21,7 +21,7 @@ data class GetJobResponse(
   val workPattern: String,
   val hoursPerWeek: String,
   val contractType: String,
-  val baseLocation: String,
+  val baseLocation: String? = null,
   val essentialCriteria: String,
   val desirableCriteria: String? = null,
   val description: String,
