@@ -26,7 +26,7 @@ create table if not exists jobs(
     work_pattern varchar(255) not null,
     hours_per_week varchar(255) not null,
     contract_type varchar(255) not null,
-    base_location varchar(255) not null,
+    base_location varchar(255),
     essential_criteria varchar(1000) not null,
     desirable_criteria varchar(1000),
     description varchar(3000) not null,

@@ -16,6 +16,16 @@ class JobsPutShould : JobsTestCase() {
   }
 
   @Test
+  fun `create a valid Job with empty optional attributes`() {
+    assertAddEmployer(
+      id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
+      body = abcConstructionBody,
+      expectedStatus = CREATED,
+    )
+    assertAddJobIsCreated(body = abcConstructionJobBody)
+  }
+
+  @Test
   fun `not create a Job with invalid UUID`() {
     assertAddJobThrowsValidationError(
       jobId = "invalid-uuid",
