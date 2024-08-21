@@ -116,7 +116,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Employers list sorted by name default ascendent`() {
+  fun `retrieve a default paginated Employers list sorted by name, in ascending order, by default`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
@@ -126,7 +126,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Employers list sorted by name custom descendent`() {
+  fun `retrieve a default paginated Employers list sorted by name, in descending order`() {
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
@@ -137,7 +137,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Employers list sorted by date added in default ascendent order`() {
+  fun `retrieve a default paginated Employers list sorted by creation date, in ascending order, by default`() {
     val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
     whenever(timeProvider.now())
       .thenReturn(fixedTime)
@@ -153,7 +153,7 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Employers list sorted by date added in descendent order`() {
+  fun `retrieve a default paginated Employers list sorted by creation date, in descending order`() {
     val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
     whenever(timeProvider.now())
       .thenReturn(fixedTime)
