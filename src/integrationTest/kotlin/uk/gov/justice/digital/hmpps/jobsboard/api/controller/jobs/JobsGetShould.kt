@@ -175,7 +175,7 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Jobs list sorted by job title default ascendent`() {
+  fun `retrieve a default paginated Jobs list sorted by job title, in ascending order, by default`() {
     givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByJobTitle(
@@ -188,7 +188,7 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Jobs list sorted by job title custom descendent`() {
+  fun `retrieve a default paginated Jobs list sorted by job title in, descending order`() {
     givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByJobTitle(
@@ -202,7 +202,7 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Jobs list sorted by date added default ascendent`() {
+  fun `retrieve a default paginated Jobs list sorted by creation date, in ascending order, by default`() {
     givenJobsMustHaveDifferentCreationTimes()
 
     givenThreeJobsAreCreated()
@@ -218,7 +218,7 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Jobs list sorted by date added custom descendent`() {
+  fun `retrieve a default paginated Jobs list sorted by creation date, in descending order`() {
     givenJobsMustHaveDifferentCreationTimes()
 
     givenThreeJobsAreCreated()
