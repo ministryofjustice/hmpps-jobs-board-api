@@ -220,6 +220,25 @@ class JobsGetShould : JobsTestCase() {
     )
   }
 
+  @Test
+  fun `retrieve a default paginated Jobs list sorted by date added custom descendent`() {
+    whenever(dateTimeProvider.now)
+      .thenReturn(Optional.of(jobCreationTime))
+      .thenReturn(Optional.of(jobCreationTime.plusSeconds(10)))
+      .thenReturn(Optional.of(jobCreationTime.plusSeconds(20)))
+
+    givenThreeJobsAreRegistered()
+
+    assertGetJobIsOKAndSortedByDate(
+      parameters = "sortBy=createdAt&sortOrder=desc",
+      expectedDatesSorted = listOf(
+        "2024-01-01T00:00:20Z",
+        "2024-01-01T00:00:10Z",
+        "2024-01-01T00:00:00Z",
+      ),
+    )
+  }
+
   private fun givenThreeJobsAreRegistered() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
