@@ -88,6 +88,17 @@ class JobsTestCase : ApplicationTestCase() {
     )
   }
 
+  protected fun assertGetJobIsOKAndSortedByDate(
+    parameters: String? = null,
+    expectedDatesSorted: List<String>,
+  ) {
+    assertResponse(
+      url = "$JOBS_ENDPOINT?$parameters",
+      expectedStatus = OK,
+      expectedDateSortedList = expectedDatesSorted,
+    )
+  }
+
   protected val abcConstructionJobBody: String = newJobBody(
     employerId = "182e9a24-6edb-48a6-a84f-b7061f004a97",
     jobTitle = "Apprentice plasterer",

@@ -231,18 +231,20 @@ abstract class ApplicationTestCase {
         expectedResponse?.let {
           json(expectedResponse)
         }
-        expectedNameSortedList?.let {
-          jsonPath("$.content[0].name", equalTo(it[0]))
-          jsonPath("$.content[1].name", equalTo(it[1]))
+        expectedNameSortedList?.let { sortedList ->
+          sortedList.forEachIndexed { index, expectedName ->
+            jsonPath("$.content[$index].name", equalTo(expectedName))
+          }
         }
-        expectedJobTitleSortedList?.let {
-          jsonPath("$.content[0].jobTitle", equalTo(it[0]))
-          jsonPath("$.content[1].jobTitle", equalTo(it[1]))
-          jsonPath("$.content[2].jobTitle", equalTo(it[2]))
+        expectedJobTitleSortedList?.let { sortedList ->
+          sortedList.forEachIndexed { index, expectedJobTitle ->
+            jsonPath("$.content[$index].jobTitle", equalTo(expectedJobTitle))
+          }
         }
-        expectedDateSortedList?.let {
-          jsonPath("$.content[0].createdAt", equalTo(it[0]))
-          jsonPath("$.content[1].createdAt", equalTo(it[1]))
+        expectedDateSortedList?.let { sortedList ->
+          sortedList.forEachIndexed { index, expectedDate ->
+            jsonPath("$.content[$index].createdAt", equalTo(expectedDate))
+          }
         }
       }
     }

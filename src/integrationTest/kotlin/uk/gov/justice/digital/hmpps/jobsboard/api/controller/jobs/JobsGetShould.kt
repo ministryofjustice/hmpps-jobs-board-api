@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus.CREATED
+import java.util.*
 
 class JobsGetShould : JobsTestCase() {
   @Test
@@ -195,6 +197,25 @@ class JobsGetShould : JobsTestCase() {
         "Warehouse handler",
         "Forklift operator",
         "Apprentice plasterer",
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list sorted by date added default ascendent`() {
+    whenever(dateTimeProvider.now)
+      .thenReturn(Optional.of(jobCreationTime))
+      .thenReturn(Optional.of(jobCreationTime.plusSeconds(10)))
+      .thenReturn(Optional.of(jobCreationTime.plusSeconds(20)))
+
+    givenThreeJobsAreRegistered()
+
+    assertGetJobIsOKAndSortedByDate(
+      parameters = "sortBy=createdAt",
+      expectedDatesSorted = listOf(
+        "2024-01-01T00:00:00Z",
+        "2024-01-01T00:00:10Z",
+        "2024-01-01T00:00:20Z",
       ),
     )
   }
