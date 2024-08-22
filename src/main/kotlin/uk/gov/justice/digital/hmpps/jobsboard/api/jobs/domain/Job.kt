@@ -64,7 +64,6 @@ data class Job(
   @Column(name = "contract_type", nullable = false)
   val contractType: String,
 
-  // TODO: this field must be optional
   @Column(name = "base_location", nullable = true)
   val baseLocation: String? = null,
 

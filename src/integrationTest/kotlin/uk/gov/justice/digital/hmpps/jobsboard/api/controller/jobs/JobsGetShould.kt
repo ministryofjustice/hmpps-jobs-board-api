@@ -155,10 +155,7 @@ class JobsGetShould : JobsTestCase() {
 
     assertGetJobIsOK(
       parameters = "jobTitleOrEmployerName=tesco&sector=retail",
-      expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
-      ),
+      expectedResponse = expectedResponseListOf(),
     )
   }
 
@@ -167,10 +164,9 @@ class JobsGetShould : JobsTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
-      parameters = "jobTitleOrEmployerName=tEs&sector=retail",
+      parameters = "jobTitleOrEmployerName=er&sector=construction",
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+        abcConstructionJobItemListResponse(jobCreationTime),
       ),
     )
   }
@@ -180,12 +176,12 @@ class JobsGetShould : JobsTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetJobIsOK(
-      parameters = "jobTitleOrEmployerName=Tesco&sector=retail&page=0&size=1",
+      parameters = "jobTitleOrEmployerName=Tesco&sector=warehousing&page=0&size=1",
       expectedResponse = expectedResponseListOf(
         size = 1,
         page = 0,
-        totalElements = 2,
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+        totalElements = 1,
+        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
       ),
     )
   }
