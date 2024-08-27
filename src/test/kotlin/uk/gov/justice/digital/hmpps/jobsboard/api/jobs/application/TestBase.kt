@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepos
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
-import java.time.Clock
 import java.time.LocalDate
 import java.time.Month.JULY
 
@@ -20,9 +19,6 @@ abstract class TestBase {
 
   @Mock
   protected lateinit var employerRepository: EmployerRepository
-
-  @Mock
-  protected lateinit var clock: Clock
 
   protected val amazonEmployer = Employer(
     id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),

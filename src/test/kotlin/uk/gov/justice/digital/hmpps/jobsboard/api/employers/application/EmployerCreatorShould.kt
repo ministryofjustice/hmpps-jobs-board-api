@@ -5,8 +5,6 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
@@ -15,15 +13,11 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.TestBase
-import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 import java.util.*
 import kotlin.test.Test
 
 @ExtendWith(MockitoExtension::class)
 class EmployerCreatorShould : TestBase() {
-
-  @Mock
-  private val timeProvider: TimeProvider = mock(TimeProvider::class.java)
 
   @InjectMocks
   private lateinit var employerCreator: EmployerCreator

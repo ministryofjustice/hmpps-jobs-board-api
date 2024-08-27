@@ -4,12 +4,10 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
-import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 
 @Service
 class EmployerCreator(
   private val employerRepository: EmployerRepository,
-  private val timeProvider: TimeProvider,
 ) {
   fun createOrUpdate(
     request: CreateEmployerRequest,
