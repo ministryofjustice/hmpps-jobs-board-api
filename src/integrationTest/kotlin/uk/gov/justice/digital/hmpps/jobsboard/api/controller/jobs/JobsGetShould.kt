@@ -276,7 +276,11 @@ class JobsGetShould : JobsTestCase() {
   }
 
   private fun givenJobsMustHaveDifferentCreationTimes() {
+    // Each employer creation call it twice (createdAt, modifiedAt); i.e. 3*2=6 times before job creations
     whenever(dateTimeProvider.now)
+      .thenReturn(Optional.of(employerCreationTime), Optional.of(employerCreationTime))
+      .thenReturn(Optional.of(employerCreationTime), Optional.of(employerCreationTime))
+      .thenReturn(Optional.of(employerCreationTime), Optional.of(employerCreationTime))
       .thenReturn(Optional.of(jobCreationTime))
       .thenReturn(Optional.of(jobCreationTime.plusSeconds(10)))
       .thenReturn(Optional.of(jobCreationTime.plusSeconds(20)))
