@@ -21,7 +21,6 @@ class EmployerCreator(
         description = request.description,
         sector = request.sector,
         status = request.status,
-        createdAt = timeProvider.now(),
       ),
     )
   }

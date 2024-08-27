@@ -2,7 +2,8 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
-import java.time.LocalDateTime
+import java.time.Period
+import java.util.*
 
 class EmployersGetShould : EmployerTestCase() {
   @Test
@@ -149,49 +150,46 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated Employers list sorted by creation date, in ascending order, by default`() {
-    val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
-    whenever(timeProvider.now())
-      .thenReturn(fixedTime)
-      .thenReturn(fixedTime.plusDays(1))
+    givenEmployersMustHaveDifferentCreationTimes()
 
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt",
-      expectedDatesSorted = listOf("2024-07-01T01:00:00", "2024-07-02T01:00:00"),
+      expectedDatesSorted = listOf("2024-07-01T01:00:00Z", "2024-07-02T01:00:00Z"),
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list sorted by creation date, in ascending order`() {
-    val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
-    whenever(timeProvider.now())
-      .thenReturn(fixedTime)
-      .thenReturn(fixedTime.plusDays(1))
+    givenEmployersMustHaveDifferentCreationTimes()
 
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt&sortOrder=asc",
-      expectedDatesSorted = listOf("2024-07-01T01:00:00", "2024-07-02T01:00:00"),
+      expectedDatesSorted = listOf("2024-07-01T01:00:00Z", "2024-07-02T01:00:00Z"),
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list sorted by creation date, in descending order`() {
-    val fixedTime = LocalDateTime.of(2024, 7, 1, 1, 0, 0)
-    whenever(timeProvider.now())
-      .thenReturn(fixedTime)
-      .thenReturn(fixedTime.plusDays(1))
+    givenEmployersMustHaveDifferentCreationTimes()
 
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt&sortOrder=desc",
-      expectedDatesSorted = listOf("2024-07-02T01:00:00", "2024-07-01T01:00:00"),
+      expectedDatesSorted = listOf("2024-07-02T01:00:00Z", "2024-07-01T01:00:00Z"),
     )
+  }
+
+  private fun givenEmployersMustHaveDifferentCreationTimes() {
+    whenever(dateTimeProvider.now)
+      .thenReturn(Optional.of(employerCreationTime))
+      .thenReturn(Optional.of(employerCreationTime.plus(Period.ofDays(1))))
   }
 }

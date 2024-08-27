@@ -42,7 +42,6 @@ class EmployerCreatorShould : TestBase() {
     description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
     sector = "RETAIL",
     status = "GOLD",
-    createdAt = fixedTime,
   )
 
   private val expectedEmployer = sainsburysEmployer
@@ -65,7 +64,6 @@ class EmployerCreatorShould : TestBase() {
 
   @Test
   fun `save an Employer with valid details`() {
-    whenever(timeProvider.now()).thenReturn(fixedTime)
     employerCreator.createOrUpdate(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
@@ -81,7 +79,6 @@ class EmployerCreatorShould : TestBase() {
 
   @Test
   fun `save an Employer with current time`() {
-    whenever(timeProvider.now()).thenReturn(fixedTime)
     employerCreator.createOrUpdate(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
@@ -89,6 +86,7 @@ class EmployerCreatorShould : TestBase() {
     val actualEmployer = employerCaptor.firstValue
 
     assertThat(actualEmployer.createdAt).isEqualTo(expectedEmployer.createdAt)
+    assertThat(actualEmployer.modifiedAt).isEqualTo(expectedEmployer.modifiedAt)
   }
 
   @Test

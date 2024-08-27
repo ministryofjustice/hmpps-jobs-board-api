@@ -7,8 +7,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Auditable
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
-import java.time.LocalDateTime
 
 @Entity
 @Table(name = "employers")
@@ -28,9 +28,6 @@ data class Employer(
   @Column(name = "status", nullable = false)
   val status: String,
 
-  @Column(name = "created_at", nullable = false)
-  var createdAt: LocalDateTime,
-
   @OneToMany(mappedBy = "employer", cascade = [CascadeType.ALL], orphanRemoval = true)
   val jobs: List<Job> = mutableListOf(),
-)
+) : Auditable()

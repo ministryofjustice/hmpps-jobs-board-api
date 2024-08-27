@@ -82,6 +82,7 @@ abstract class ApplicationTestCase {
   private lateinit var jwtAuthHelper: JwtAuthHelper
 
   val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+  val employerCreationTime = Instant.parse("2024-07-01T01:00:00Z")
 
   companion object {
     private val postgresContainer = PostgresContainer.flywayContainer

@@ -55,7 +55,6 @@ class JobRepositoryShould {
     description = "Amazon.com, Inc., doing business as Amazon, is an American multinational technology company, engaged in e-commerce, cloud computing, online advertising, digital streaming, and artificial intelligence.",
     sector = "LOGISTICS",
     status = "KEY_PARTNER",
-    createdAt = employerFixedTime,
   )
 
   private val amazonForkliftOperatorJob = Job(
