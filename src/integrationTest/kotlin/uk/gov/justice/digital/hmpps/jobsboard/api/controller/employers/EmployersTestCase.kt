@@ -4,10 +4,13 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
+import java.time.Instant
 
 const val EMPLOYERS_ENDPOINT = "/employers"
 
 class EmployerTestCase : ApplicationTestCase() {
+  val employerCreationTime = Instant.parse("2024-07-01T01:00:00Z")
+
   protected fun assertAddEmployerIsCreated(
     body: String,
   ): String {
@@ -75,6 +78,17 @@ class EmployerTestCase : ApplicationTestCase() {
       url = "$EMPLOYERS_ENDPOINT?$parameters",
       expectedStatus = OK,
       expectedDateSortedList = expectedDatesSorted,
+    )
+  }
+
+  protected fun assertGetEmployersIsOkAndSortedByDate(
+    parameters: String,
+    expectedSortingOrder: String = "asc",
+  ) {
+    assertResponse(
+      url = "$EMPLOYERS_ENDPOINT?$parameters",
+      expectedStatus = OK,
+      expectedDateSortingOrder = expectedSortingOrder,
     )
   }
 }

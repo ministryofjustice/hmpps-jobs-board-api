@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
-import java.time.Period
-import java.util.*
 
 class EmployersGetShould : EmployerTestCase() {
   @Test
@@ -157,39 +154,39 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt",
-      expectedDatesSorted = listOf("2024-07-01T01:00:00Z", "2024-07-02T01:00:00Z"),
+      expectedSortingOrder = "asc",
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list sorted by creation date, in ascending order`() {
+    val sortingOrder = "asc"
     givenEmployersMustHaveDifferentCreationTimes()
 
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOkAndSortedByDate(
-      parameters = "sortBy=createdAt&sortOrder=asc",
-      expectedDatesSorted = listOf("2024-07-01T01:00:00Z", "2024-07-02T01:00:00Z"),
+      parameters = "sortBy=createdAt&sortOrder=$sortingOrder",
+      expectedSortingOrder = sortingOrder,
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list sorted by creation date, in descending order`() {
+    val sortingOrder = "desc"
     givenEmployersMustHaveDifferentCreationTimes()
 
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
 
     assertGetEmployersIsOkAndSortedByDate(
-      parameters = "sortBy=createdAt&sortOrder=desc",
-      expectedDatesSorted = listOf("2024-07-02T01:00:00Z", "2024-07-01T01:00:00Z"),
+      parameters = "sortBy=createdAt&sortOrder=$sortingOrder",
+      expectedSortingOrder = sortingOrder,
     )
   }
 
   private fun givenEmployersMustHaveDifferentCreationTimes() {
-    whenever(dateTimeProvider.now)
-      .thenReturn(Optional.of(employerCreationTime))
-      .thenReturn(Optional.of(employerCreationTime.plus(Period.ofDays(1))))
+    givenCurrentTimeIsStrictlyIncreasingIncrementByDay(employerCreationTime)
   }
 }
