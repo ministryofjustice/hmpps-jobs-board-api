@@ -2,17 +2,28 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.junit.jupiter.api.BeforeEach
+import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
 import java.time.Instant
+import java.util.Optional
 import java.util.UUID.randomUUID
 
 const val JOBS_ENDPOINT = "/jobs"
 
 class JobsTestCase : ApplicationTestCase() {
+  val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+
+  @BeforeEach
+  override fun setup() {
+    super.setup()
+    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
+  }
+
   protected fun assertAddJobIsCreated(
     body: String,
   ): String {
@@ -96,6 +107,17 @@ class JobsTestCase : ApplicationTestCase() {
       url = "$JOBS_ENDPOINT?$parameters",
       expectedStatus = OK,
       expectedDateSortedList = expectedDatesSorted,
+    )
+  }
+
+  protected fun assertGetJobIsOKAndSortedByDate(
+    parameters: String? = null,
+    expectedSortingOrder: String = "asc",
+  ) {
+    assertResponse(
+      url = "$JOBS_ENDPOINT?$parameters",
+      expectedStatus = OK,
+      expectedDateSortingOrder = expectedSortingOrder,
     )
   }
 

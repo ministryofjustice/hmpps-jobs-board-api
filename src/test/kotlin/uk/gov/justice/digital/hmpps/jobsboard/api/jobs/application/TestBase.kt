@@ -8,9 +8,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepos
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
-import java.time.Clock
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.Month.JULY
 
 @ExtendWith(MockitoExtension::class)
@@ -22,18 +20,12 @@ abstract class TestBase {
   @Mock
   protected lateinit var employerRepository: EmployerRepository
 
-  @Mock
-  protected lateinit var clock: Clock
-
-  protected val fixedTime = LocalDateTime.of(2024, JULY, 20, 22, 6)
-
   protected val amazonEmployer = Employer(
     id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
     name = "Amazon",
     description = "Amazon.com, Inc., doing business as Amazon, is an American multinational technology company, engaged in e-commerce, cloud computing, online advertising, digital streaming, and artificial intelligence.",
     sector = "LOGISTICS",
     status = "KEY_PARTNER",
-    createdAt = fixedTime,
   )
 
   private val amazonForkliftOperatorJob = Job(

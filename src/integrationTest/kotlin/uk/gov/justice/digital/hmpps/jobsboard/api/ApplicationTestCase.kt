@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api
 
+import com.jayway.jsonpath.JsonPath
 import org.awaitility.Awaitility
 import org.flywaydb.core.Flyway
+import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -40,6 +42,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
 import java.time.Instant
+import java.time.Period
+import java.time.ZonedDateTime
 import java.util.*
 import java.util.UUID.randomUUID
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -81,7 +85,9 @@ abstract class ApplicationTestCase {
   @Autowired
   private lateinit var jwtAuthHelper: JwtAuthHelper
 
-  val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+  private val countOfGettingCurrentTime = intArrayOf(0)
+
+  val defaultCurrentTime = Instant.parse("2024-01-01T00:00:00Z")
 
   companion object {
     private val postgresContainer = PostgresContainer.flywayContainer
@@ -115,7 +121,8 @@ abstract class ApplicationTestCase {
   @BeforeEach
   fun setup() {
     whenever(timeProvider.now()).thenCallRealMethod()
-    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
+    whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCurrentTime))
+    countOfGettingCurrentTime[0] = 0
   }
 
   internal fun setAuthorisation(
@@ -213,6 +220,7 @@ abstract class ApplicationTestCase {
     expectedJobTitleSortedList: List<String>? = null,
     expectedNameSortedList: List<String>? = null,
     expectedDateSortedList: List<String>? = null,
+    expectedDateSortingOrder: String? = null,
   ) {
     val resultActions = mockMvc.get(url) {
       contentType = APPLICATION_JSON
@@ -224,7 +232,8 @@ abstract class ApplicationTestCase {
           }
         }
       }
-    }.andExpect {
+    }
+    resultActions.andExpect {
       status { isEqualTo(expectedStatus.value()) }
       content {
         contentType(APPLICATION_JSON)
@@ -244,6 +253,28 @@ abstract class ApplicationTestCase {
         expectedDateSortedList?.let { sortedList ->
           sortedList.forEachIndexed { index, expectedDate ->
             jsonPath("$.content[$index].createdAt", equalTo(expectedDate))
+          }
+        }
+        expectedDateSortingOrder?.let { sortingOrder ->
+          val timestamps = (
+            JsonPath.parse(resultActions.andReturn().response.contentAsString)
+              .read("$.content[*].createdAt") as List<String>
+            ).map { timestamp ->
+            ZonedDateTime.parse(timestamp).toInstant()
+          }.run {
+            when (sortingOrder) {
+              "asc" -> this.sorted()
+              "desc" -> this.sortedDescending()
+              else -> this
+            }
+          }.map { instant ->
+            instant.toString()
+          }.toTypedArray()
+
+          resultActions.andExpect {
+            content {
+              jsonPath("$.content[*].createdAt", contains(*timestamps))
+            }
           }
         }
       }
@@ -272,5 +303,15 @@ abstract class ApplicationTestCase {
         }
     """.trimIndent()
     return expectedResponse
+  }
+
+  protected fun givenCurrentTimeIsStrictlyIncreasing(startTime: Instant) {
+    whenever(dateTimeProvider.now)
+      .thenAnswer { Optional.of(startTime.plusSeconds((this.countOfGettingCurrentTime[0]++ * 10).toLong())) }
+  }
+
+  protected fun givenCurrentTimeIsStrictlyIncreasingIncrementByDay(startTime: Instant) {
+    whenever(dateTimeProvider.now)
+      .thenAnswer { Optional.of(startTime.plus(Period.ofDays(this.countOfGettingCurrentTime[0]++))) }
   }
 }

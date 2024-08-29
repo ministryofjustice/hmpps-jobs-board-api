@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus.CREATED
-import java.util.*
 
 class JobsGetShould : JobsTestCase() {
   @Test
@@ -214,7 +212,7 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated Jobs list sorted by job title in, descending order`() {
+  fun `retrieve a default paginated Jobs list sorted by job title, in descending order`() {
     givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByJobTitle(
@@ -235,51 +233,38 @@ class JobsGetShould : JobsTestCase() {
 
     assertGetJobIsOKAndSortedByDate(
       parameters = "sortBy=createdAt",
-      expectedDatesSorted = listOf(
-        "2024-01-01T00:00:00Z",
-        "2024-01-01T00:00:10Z",
-        "2024-01-01T00:00:20Z",
-      ),
+      expectedSortingOrder = "asc",
     )
   }
 
   @Test
   fun `retrieve a default paginated Jobs list sorted by creation date, in ascending order`() {
+    val sortingOrder = "asc"
     givenJobsMustHaveDifferentCreationTimes()
 
     givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByDate(
-      parameters = "sortBy=createdAt&sortOrder=asc",
-      expectedDatesSorted = listOf(
-        "2024-01-01T00:00:00Z",
-        "2024-01-01T00:00:10Z",
-        "2024-01-01T00:00:20Z",
-      ),
+      parameters = "sortBy=createdAt&sortOrder=$sortingOrder",
+      expectedSortingOrder = sortingOrder,
     )
   }
 
   @Test
   fun `retrieve a default paginated Jobs list sorted by creation date, in descending order`() {
+    val sortingOrder = "desc"
     givenJobsMustHaveDifferentCreationTimes()
 
     givenThreeJobsAreCreated()
 
     assertGetJobIsOKAndSortedByDate(
-      parameters = "sortBy=createdAt&sortOrder=desc",
-      expectedDatesSorted = listOf(
-        "2024-01-01T00:00:20Z",
-        "2024-01-01T00:00:10Z",
-        "2024-01-01T00:00:00Z",
-      ),
+      parameters = "sortBy=createdAt&sortOrder=$sortingOrder",
+      expectedSortingOrder = sortingOrder,
     )
   }
 
   private fun givenJobsMustHaveDifferentCreationTimes() {
-    whenever(dateTimeProvider.now)
-      .thenReturn(Optional.of(jobCreationTime))
-      .thenReturn(Optional.of(jobCreationTime.plusSeconds(10)))
-      .thenReturn(Optional.of(jobCreationTime.plusSeconds(20)))
+    givenCurrentTimeIsStrictlyIncreasing(jobCreationTime)
   }
 
   private fun givenThreeJobsAreCreated() {

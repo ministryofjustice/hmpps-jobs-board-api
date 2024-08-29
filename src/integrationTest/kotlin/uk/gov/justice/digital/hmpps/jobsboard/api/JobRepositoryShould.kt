@@ -24,7 +24,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.Month.JULY
 import java.util.*
 
@@ -45,7 +44,6 @@ class JobRepositoryShould {
   @Autowired
   private lateinit var jobRepository: JobRepository
 
-  private val employerFixedTime = LocalDateTime.of(2024, JULY, 20, 22, 6)
   private val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
   private val jobModificationTime = Instant.parse("2025-02-02T01:00:00Z")
 
@@ -55,7 +53,6 @@ class JobRepositoryShould {
     description = "Amazon.com, Inc., doing business as Amazon, is an American multinational technology company, engaged in e-commerce, cloud computing, online advertising, digital streaming, and artificial intelligence.",
     sector = "LOGISTICS",
     status = "KEY_PARTNER",
-    createdAt = employerFixedTime,
   )
 
   private val amazonForkliftOperatorJob = Job(
