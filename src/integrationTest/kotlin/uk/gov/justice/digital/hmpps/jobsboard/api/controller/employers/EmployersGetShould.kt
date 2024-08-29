@@ -147,7 +147,7 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated Employers list sorted by creation date, in ascending order, by default`() {
-    givenEmployersMustHaveDifferentCreationTimes()
+    givenEmployersHaveIncreasingIncrementByDayCreationTimes()
 
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
@@ -161,7 +161,7 @@ class EmployersGetShould : EmployerTestCase() {
   @Test
   fun `retrieve a default paginated Employers list sorted by creation date, in ascending order`() {
     val sortingOrder = "asc"
-    givenEmployersMustHaveDifferentCreationTimes()
+    givenEmployersHaveIncreasingIncrementByDayCreationTimes()
 
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
@@ -175,7 +175,7 @@ class EmployersGetShould : EmployerTestCase() {
   @Test
   fun `retrieve a default paginated Employers list sorted by creation date, in descending order`() {
     val sortingOrder = "desc"
-    givenEmployersMustHaveDifferentCreationTimes()
+    givenEmployersHaveIncreasingIncrementByDayCreationTimes()
 
     assertAddEmployerIsCreated(body = tescoBody)
     assertAddEmployerIsCreated(body = sainsburysBody)
@@ -186,7 +186,7 @@ class EmployersGetShould : EmployerTestCase() {
     )
   }
 
-  private fun givenEmployersMustHaveDifferentCreationTimes() {
+  private fun givenEmployersHaveIncreasingIncrementByDayCreationTimes() {
     givenCurrentTimeIsStrictlyIncreasingIncrementByDay(employerCreationTime)
   }
 }
