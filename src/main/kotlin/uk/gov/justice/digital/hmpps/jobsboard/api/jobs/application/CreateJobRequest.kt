@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
+@ConsistentCopyVisibility
 data class CreateJobRequest internal constructor(
   val id: String = "",
   val employerId: String,

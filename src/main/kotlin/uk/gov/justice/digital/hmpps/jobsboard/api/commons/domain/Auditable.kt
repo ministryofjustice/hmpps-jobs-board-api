@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
+package uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners

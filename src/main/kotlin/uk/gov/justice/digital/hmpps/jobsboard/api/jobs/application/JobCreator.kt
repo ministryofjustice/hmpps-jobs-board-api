@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import java.time.LocalDate

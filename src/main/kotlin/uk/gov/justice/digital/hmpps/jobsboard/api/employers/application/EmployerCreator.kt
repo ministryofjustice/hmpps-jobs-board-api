@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.employers.application
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 
 @Service
 class EmployerCreator(

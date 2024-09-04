@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -15,10 +16,10 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestJpaConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
@@ -169,4 +170,46 @@ class JobRepositoryShould {
 
     assertThat(updatedJob.modifiedAt).isEqualTo(jobModificationTime)
   }
+
+  @Test
+  fun `save prisoner's expression-of-interest to an existing job`() {
+    failAsNotImplemented()
+  }
+
+  @Test
+  fun `set createdAt attribute, when saving a new expression-of-interest`() {
+    failAsNotImplemented()
+  }
+
+  @Test
+  fun `do NOT update job's attribute, when saving a new expression-of-interest`() {
+    failAsNotImplemented()
+  }
+
+  @Test
+  fun `do NOT save expression-of-interest, when it exists`() {
+    failAsNotImplemented()
+  }
+
+  @Test
+  fun `throw exception, when saving expression-of-interest with non-existent job`() {
+    failAsNotImplemented()
+  }
+
+  @Test
+  fun `delete prisoner's expression-of-interest from an existing job`() {
+    failAsNotImplemented()
+  }
+
+  @Test
+  fun `do NOT update job's attribute, when deleting existing expression-of-interest`() {
+    failAsNotImplemented()
+  }
+
+  @Test
+  fun `throw exception, when deleting non-existent expression-of-interest`() {
+    failAsNotImplemented()
+  }
+
+  private fun failAsNotImplemented(): Nothing = fail("Yet to implement")
 }

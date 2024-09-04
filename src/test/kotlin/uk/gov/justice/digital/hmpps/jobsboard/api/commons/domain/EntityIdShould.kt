@@ -1,7 +1,6 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain
+package uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain
 
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
