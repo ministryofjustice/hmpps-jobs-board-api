@@ -25,6 +25,20 @@ class HmppsJobsBoardApiExceptionHandler {
       )
   }
 
+  @ExceptionHandler(IllegalArgumentException::class)
+  fun handleIllegalArgumentException(e: Exception): ResponseEntity<ErrorResponse> {
+    log.info("Illegal Argument exception: {}", e.message)
+    return ResponseEntity
+      .status(BAD_REQUEST)
+      .body(
+        ErrorResponse(
+          status = BAD_REQUEST,
+          userMessage = "Illegal Argument: ${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
   @ExceptionHandler(java.lang.Exception::class)
   fun handleException(e: java.lang.Exception): ResponseEntity<ErrorResponse?>? {
     log.error("Unexpected exception", e)

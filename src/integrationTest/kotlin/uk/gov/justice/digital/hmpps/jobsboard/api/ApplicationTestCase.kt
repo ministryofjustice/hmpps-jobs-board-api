@@ -21,6 +21,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.data.auditing.AuditingHandler
 import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON
@@ -41,6 +42,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
+import java.security.SecureRandom
 import java.time.Instant
 import java.time.Period
 import java.time.ZonedDateTime
@@ -88,6 +90,10 @@ abstract class ApplicationTestCase {
   private val countOfGettingCurrentTime = intArrayOf(0)
 
   val defaultCurrentTime = Instant.parse("2024-01-01T00:00:00Z")
+
+  private object Holder {
+    val random: SecureRandom by lazy { SecureRandom() }
+  }
 
   companion object {
     private val postgresContainer = PostgresContainer.flywayContainer
@@ -213,6 +219,24 @@ abstract class ApplicationTestCase {
     }
   }
 
+  protected fun assertRequestWithoutBody(
+    url: String,
+    expectedStatus: HttpStatus,
+    expectedResponse: String? = null,
+    expectedHttpVerb: HttpMethod = PUT,
+  ) {
+    val resultActions = mockMvc.perform(
+      request(expectedHttpVerb, url)
+        .contentType(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+        .headers(httpHeaders()),
+    ).andExpect(status().isEqualTo(expectedStatus.value()))
+    expectedResponse?.let {
+      resultActions.andExpect(content().contentType(APPLICATION_JSON))
+        .andExpect(content().json(it))
+    }
+  }
+
   protected fun assertResponse(
     url: String,
     expectedStatus: HttpStatus,
@@ -314,4 +338,10 @@ abstract class ApplicationTestCase {
     whenever(dateTimeProvider.now)
       .thenAnswer { Optional.of(startTime.plus(Period.ofDays(this.countOfGettingCurrentTime[0]++))) }
   }
+
+  protected fun randomAlphabets(length: Int): String =
+    ('A'..'Z').let { alphabets -> String(CharArray(length) { alphabets.random() }) }
+
+  protected fun randomDigits(length: Int): String =
+    String(CharArray(length) { Holder.random.nextInt(9 + 1).toString()[0] })
 }

@@ -1,10 +1,14 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.MapKey
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.Auditable
 import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
@@ -104,4 +108,8 @@ data class Job(
   @ManyToOne
   @JoinColumn(name = "employer_id", referencedColumnName = "id")
   val employer: Employer,
+
+  @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+  @MapKey(name = "id.prisonerPrisonNumber")
+  val expressionsOfInterest: MutableMap<String, ExpressionOfInterest> = mutableMapOf(),
 ) : Auditable()
