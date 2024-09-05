@@ -54,7 +54,7 @@ class JobsGetShould : JobsTestCase() {
 
   @Test
   fun `retrieve a default paginated empty Jobs list`() {
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       expectedResponse = expectedResponseListOf(),
     )
   }
@@ -63,7 +63,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       expectedResponse = expectedResponseListOf(
         amazonForkliftOperatorJobItemListResponse(jobCreationTime),
         tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
@@ -76,7 +76,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a custom paginated Jobs list`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "page=1&size=1",
       expectedResponse = expectedResponseListOf(
         size = 1,
@@ -91,7 +91,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list filtered by full Job title`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=Forklift operator",
       expectedResponse = expectedResponseListOf(
         amazonForkliftOperatorJobItemListResponse(jobCreationTime),
@@ -103,7 +103,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list filtered by incomplete Job title`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=operator",
       expectedResponse = expectedResponseListOf(
         amazonForkliftOperatorJobItemListResponse(jobCreationTime),
@@ -115,7 +115,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list filtered by full Employer name`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=Tesco",
       expectedResponse = expectedResponseListOf(
         tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
@@ -127,7 +127,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list filtered by incomplete Employer name`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=Tes",
       expectedResponse = expectedResponseListOf(
         tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
@@ -139,7 +139,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list filtered by job sector`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "sector=retail",
       expectedResponse = expectedResponseListOf(
         amazonForkliftOperatorJobItemListResponse(jobCreationTime),
@@ -151,7 +151,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list filtered by Job title OR Employer name AND job sector`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=tesco&sector=retail",
       expectedResponse = expectedResponseListOf(),
     )
@@ -161,7 +161,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list filtered by incomplete Job title OR Employer name AND job sector`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=er&sector=construction",
       expectedResponse = expectedResponseListOf(
         abcConstructionJobItemListResponse(jobCreationTime),
@@ -173,7 +173,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a custom paginated Jobs list filtered by Job title OR Employer name AND job sector`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOK(
+    assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=Tesco&sector=warehousing&page=0&size=1",
       expectedResponse = expectedResponseListOf(
         size = 1,
@@ -188,7 +188,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list sorted by job title, in ascending order, by default`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOKAndSortedByJobTitle(
+    assertGetJobsIsOKAndSortedByJobTitle(
       expectedJobTitlesSorted = listOf(
         "Apprentice plasterer",
         "Forklift operator",
@@ -201,7 +201,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list sorted by job title, in ascending order`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOKAndSortedByJobTitle(
+    assertGetJobsIsOKAndSortedByJobTitle(
       parameters = "sortBy=jobTitle&sortOrder=asc",
       expectedJobTitlesSorted = listOf(
         "Apprentice plasterer",
@@ -215,7 +215,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve a default paginated Jobs list sorted by job title, in descending order`() {
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOKAndSortedByJobTitle(
+    assertGetJobsIsOKAndSortedByJobTitle(
       parameters = "sortBy=jobTitle&sortOrder=desc",
       expectedJobTitlesSorted = listOf(
         "Warehouse handler",
@@ -231,7 +231,7 @@ class JobsGetShould : JobsTestCase() {
 
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOKAndSortedByDate(
+    assertGetJobsIsOKAndSortedByDate(
       parameters = "sortBy=createdAt",
       expectedSortingOrder = "asc",
     )
@@ -244,7 +244,7 @@ class JobsGetShould : JobsTestCase() {
 
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOKAndSortedByDate(
+    assertGetJobsIsOKAndSortedByDate(
       parameters = "sortBy=createdAt&sortOrder=$sortingOrder",
       expectedSortingOrder = sortingOrder,
     )
@@ -257,7 +257,7 @@ class JobsGetShould : JobsTestCase() {
 
     givenThreeJobsAreCreated()
 
-    assertGetJobIsOKAndSortedByDate(
+    assertGetJobsIsOKAndSortedByDate(
       parameters = "sortBy=createdAt&sortOrder=$sortingOrder",
       expectedSortingOrder = sortingOrder,
     )
