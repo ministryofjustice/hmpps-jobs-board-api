@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.CreateOrDeleteExpressionOfInterestRequest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.ExpressionOfInterestEditor
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.CreateExpressionOfInterestRequest
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.ExpressionOfInterestCreator
 
 @Validated
 @RestController
 @RequestMapping("/jobs/{jobId}/expressions-of-interest", produces = [APPLICATION_JSON_VALUE])
 class ExpressionsOfInterestPut(
-  private val expressionOfInterestCreator: ExpressionOfInterestEditor,
+  private val expressionOfInterestCreator: ExpressionOfInterestCreator,
 ) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @PutMapping("/{prisonNumber}")
@@ -34,7 +34,7 @@ class ExpressionsOfInterestPut(
     prisonNumber: String,
   ): ResponseEntity<Void> {
     val created = expressionOfInterestCreator.createWhenNotExist(
-      CreateOrDeleteExpressionOfInterestRequest(
+      CreateExpressionOfInterestRequest(
         jobId,
         prisonNumber,
       ),

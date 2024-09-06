@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 @ConsistentCopyVisibility
-data class CreateOrDeleteExpressionOfInterestRequest internal constructor(
+data class CreateExpressionOfInterestRequest internal constructor(
   val jobId: String,
   val prisonNumber: String,
 ) {
@@ -9,8 +9,8 @@ data class CreateOrDeleteExpressionOfInterestRequest internal constructor(
     fun from(
       jobId: String,
       prisonNumber: String,
-    ): CreateOrDeleteExpressionOfInterestRequest {
-      return CreateOrDeleteExpressionOfInterestRequest(
+    ): CreateExpressionOfInterestRequest {
+      return CreateExpressionOfInterestRequest(
         jobId,
         prisonNumber,
       )

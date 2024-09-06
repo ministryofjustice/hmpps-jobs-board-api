@@ -9,13 +9,13 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfIntere
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 
 @Service
-class ExpressionOfInterestEditor(
+class ExpressionOfInterestCreator(
   private val jobRepository: JobRepository,
   private val expressionOfInterestRepository: ExpressionOfInterestRepository,
 ) {
 
   @Transactional
-  fun createWhenNotExist(request: CreateOrDeleteExpressionOfInterestRequest): Boolean {
+  fun createWhenNotExist(request: CreateExpressionOfInterestRequest): Boolean {
     var created = false
     var toBeSaved: ExpressionOfInterest
 
@@ -35,22 +35,5 @@ class ExpressionOfInterestEditor(
       }
 
     return created
-  }
-
-  @Transactional
-  fun delete(request: CreateOrDeleteExpressionOfInterestRequest): Boolean {
-    var deleted = false
-    val jodId = EntityId(request.jobId)
-
-    if (jobRepository.findById(jodId).isEmpty) {
-      throw IllegalArgumentException("Job not found: jobId=${request.jobId}")
-    }
-
-    val id = ExpressionOfInterestId(jobId = jodId, prisonNumber = request.prisonNumber)
-    if (expressionOfInterestRepository.findById(id).isPresent) {
-      deleted = true
-      expressionOfInterestRepository.deleteById(id)
-    }
-    return deleted
   }
 }
