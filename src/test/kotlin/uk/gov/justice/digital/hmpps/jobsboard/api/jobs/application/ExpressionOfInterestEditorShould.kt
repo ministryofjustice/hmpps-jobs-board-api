@@ -4,22 +4,27 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
+import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.fail
 
 @ExtendWith(MockitoExtension::class)
 class ExpressionOfInterestEditorShould : TestBase() {
+
+  @Mock
+  protected lateinit var expressionOfInterestRepository: ExpressionOfInterestRepository
 
   @InjectMocks
   private lateinit var expressionOfInterestEditor: ExpressionOfInterestEditor
@@ -40,13 +45,9 @@ class ExpressionOfInterestEditorShould : TestBase() {
 
     expressionOfInterestEditor.createWhenNotExist(expressionsOfInterestRequest)
 
-    val actualJob = argumentCaptor<Job>().also { captor ->
-      verify(jobRepository).save(captor.capture())
+    val actualExpressionOfInterest = argumentCaptor<ExpressionOfInterest>().also { captor ->
+      verify(expressionOfInterestRepository).save(captor.capture())
     }.firstValue
-    assertThat(actualJob.expressionsOfInterest.containsKey(expectedPrisonNumber))
-      .withFailMessage("Expression of Interest is missing!")
-      .isTrue()
-    val actualExpressionOfInterest = actualJob.expressionsOfInterest[expectedPrisonNumber]
     assertThat(actualExpressionOfInterest).usingRecursiveComparison().isEqualTo(expectedExpressionOfInterest)
   }
 
@@ -55,8 +56,6 @@ class ExpressionOfInterestEditorShould : TestBase() {
     obtainTheJobJustCreated().also { job -> makeExpressionOfInterest(job, expectedPrisonNumber) }
 
     val created = expressionOfInterestEditor.createWhenNotExist(expressionsOfInterestRequest)
-
-    argumentCaptor<Job>().also { captor -> verify(jobRepository).save(captor.capture()) }
     assertThat(created).isTrue()
   }
 
@@ -128,16 +127,18 @@ class ExpressionOfInterestEditorShould : TestBase() {
 
   @Test
   fun `delete, when it exists`() {
-    givenAJobIsCreatedWithExpressionOfInterest()
+    val expressionOfInterest = obtainTheExpressionOfInterestJustCreated()
+    val id = expressionsOfInterestRequest.let { request ->
+      ExpressionOfInterestId(
+        EntityId(request.jobId),
+        request.prisonerPrisonNumber,
+      )
+    }
+    whenever(expressionOfInterestRepository.findById(id)).thenReturn(Optional.of(expressionOfInterest))
 
     expressionOfInterestEditor.delete(expressionsOfInterestRequest)
 
-    val actualJob = argumentCaptor<Job>().also { captor ->
-      verify(jobRepository).save(captor.capture())
-    }.firstValue
-    assertThat(actualJob.expressionsOfInterest.containsKey(expectedPrisonNumber))
-      .withFailMessage("Expression of Interest is NOT deleted!")
-      .isFalse()
+    verify(expressionOfInterestRepository).deleteById(id)
   }
 
   @Test
@@ -169,8 +170,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
 
   @Test
   fun `throw exception, when prisoner's Prison-Number is invalid at deletion`() {
-    givenAJobIsCreated()
-
+    givenAJobIsCreatedWithExpressionOfInterest()
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = expectedJobId,
       prisonerPrisonNumber = "A1234BCZ",
@@ -183,13 +183,12 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception, when expression-of-interest does NOT exist at deletion`() {
-    givenAJobIsCreated()
+  fun `return false, when expression-of-interest does NOT exist at deletion`() {
+    givenAJobIsCreatedWithExpressionOfInterest()
+    val deleted = expressionOfInterestEditor.delete(expressionsOfInterestRequest)
 
-    val exception = assertFailsWith<IllegalArgumentException> {
-      expressionOfInterestEditor.delete(expressionsOfInterestRequest)
-    }
-    assertEquals("Expression-of-Interest not found: jobId=$expectedJobId, prisonNumber=$expectedPrisonNumber", exception.message)
+    verify(expressionOfInterestRepository, never()).deleteById(any(ExpressionOfInterestId::class.java))
+    assertThat(deleted).isFalse()
   }
 
   private fun givenAJobIsCreated() {
@@ -197,9 +196,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   private fun givenAJobIsCreatedWithExpressionOfInterest() {
-    obtainTheJobJustCreated().also { job ->
-      job.expressionsOfInterest[expectedPrisonNumber] = makeExpressionOfInterest(job, expectedPrisonNumber)
-    }
+    obtainTheExpressionOfInterestJustCreated()
   }
 
   private fun obtainTheJobJustCreated(): Job {
@@ -208,7 +205,12 @@ class ExpressionOfInterestEditorShould : TestBase() {
     }
   }
 
-  private fun failAsNotImplemented(): Nothing = fail("Yet to implement")
+  private fun obtainTheExpressionOfInterestJustCreated(): ExpressionOfInterest =
+    obtainTheJobJustCreated().let { job ->
+      makeExpressionOfInterest(job, expectedPrisonNumber).also {
+        job.expressionsOfInterest[expectedPrisonNumber] = it
+      }
+    }
 
   private fun makeExpressionOfInterest(job: Job, prisonerPrisonNumber: String): ExpressionOfInterest =
     ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonerPrisonNumber), job = job)

@@ -1,11 +1,9 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
-import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
-import java.util.*
 
 class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
   @Test
@@ -15,6 +13,7 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
     assertAddExpressionOfInterest(
       jobId = jobId,
       expectedStatus = CREATED,
+      matchRedirectedUrl = true,
     )
   }
 
@@ -33,7 +32,7 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
 
   @Test
   fun `do NOT create expression-of-interest with non-existent job, and return error`() {
-    val nonExistentJobId = UUID.randomUUID().toString()
+    val nonExistentJobId = randomUUID()
 
     assertAddExpressionOfInterestThrowsValidationOrIllegalArgumentError(
       jobId = nonExistentJobId,
@@ -81,28 +80,8 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
 
   @Test
   fun `do NOT create expression-of-interest without prisoner's prison-number, and return error`() {
-    val jobId = obtainJobIdGivenAJobIsJustCreated()
-    assertAddExpressionOfInterestWithoutPrisonNumberRepliesNotFoundError(
-      jobId = jobId,
+    assertAddExpressionOfInterestRepliesNotFoundError(
+      jobId = randomUUID(),
     )
   }
-
-  private fun obtainJobIdGivenAJobIsJustCreated(): String {
-    assertAddEmployer(
-      id = "bf392249-b360-4e3e-81a0-8497047987e8",
-      body = amazonBody,
-      expectedStatus = CREATED,
-    )
-    assertAddJobIsCreated(body = amazonForkliftOperatorJobBody).also { jobId ->
-      return jobId
-    }
-  }
-
-  private fun obtainJodIdAndPrisonNumberGivenAJobWithExpressionsOfInterestedJustCreated(): Array<String> {
-    val jobId = obtainJobIdGivenAJobIsJustCreated()
-    val jobIdAndPrisonNumber = assertAddExpressionOfInterest(jobId)
-    return jobIdAndPrisonNumber
-  }
-
-  private fun failAsNotImplemented(): Nothing = fail("Yet to implement")
 }

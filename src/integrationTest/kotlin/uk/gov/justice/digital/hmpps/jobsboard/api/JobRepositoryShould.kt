@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -20,8 +19,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestJpaConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
@@ -49,9 +46,6 @@ class JobRepositoryShould {
 
   private val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
   private val jobModificationTime = Instant.parse("2025-02-02T01:00:00Z")
-  private val jobRegisterExpressionOfInterestTime = Instant.parse("2025-03-01T01:00:00Z")
-  private val jobReRegisterExpressionOfInterestTime = Instant.parse("2025-03-02T01:00:00Z")
-  private val jobDeleteExpressionOfInterestTime = Instant.parse("2025-03-03T01:00:00Z")
 
   private val amazonEmployer = Employer(
     id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
@@ -110,8 +104,6 @@ class JobRepositoryShould {
     supportingDocumentationDetails = "",
     employer = amazonEmployer,
   )
-
-  private val expectedPrisonNumber = "A1234BC"
 
   @BeforeEach
   fun setUp() {
@@ -177,90 +169,4 @@ class JobRepositoryShould {
 
     assertThat(updatedJob.modifiedAt).isEqualTo(jobModificationTime)
   }
-
-  @Test
-  fun `save prisoner's expression-of-interest to an existing job`() {
-    val job = obtainTheJobJustCreatedWithExpressionOfInterest()
-    val updatedJob = jobRepository.saveAndFlush(job)
-
-    assertThat(updatedJob.expressionsOfInterest.containsKey(expectedPrisonNumber)).isTrue()
-  }
-
-  @Test
-  fun `set createdAt attribute, when saving a new expression-of-interest`() {
-    val job = obtainTheJobJustCreatedWithExpressionOfInterest()
-
-    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
-    val updatedJob = jobRepository.saveAndFlush(job)
-
-    assertThat(updatedJob.expressionsOfInterest[expectedPrisonNumber]?.createdAt).isEqualTo(jobRegisterExpressionOfInterestTime)
-  }
-
-  @Test
-  fun `do NOT update job's attribute, when saving a new expression-of-interest`() {
-    val job = obtainTheJobJustCreatedWithExpressionOfInterest()
-
-    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
-    val updatedJob = jobRepository.saveAndFlush(job)
-
-    assertThat(updatedJob).usingRecursiveComparison().ignoringFields("expressionsOfInterest").isEqualTo(job)
-    assertThat(updatedJob.modifiedAt).isEqualTo(jobCreationTime)
-  }
-
-  @Test
-  fun `do NOT save expression-of-interest, when it exists`() {
-    val expectedJob = obtainTheJobJustCreatedWithExpressionOfInterest().let { job ->
-      whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
-      jobRepository.saveAndFlush(job)
-    }
-    val jobToUpdate = deepCopy(expectedJob).apply {
-      expressionsOfInterest[expectedPrisonNumber] = makeExpressionOfInterest(job = this, prisonerPrisonNumber = expectedPrisonNumber)
-    }
-
-    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobReRegisterExpressionOfInterestTime))
-    val updatedJob = jobRepository.saveAndFlush(jobToUpdate)
-
-    assertThat(updatedJob).usingRecursiveComparison().isEqualTo(expectedJob)
-    assertThat(updatedJob.expressionsOfInterest[expectedPrisonNumber]?.createdAt).isEqualTo(jobRegisterExpressionOfInterestTime)
-  }
-
-  @Test
-  fun `throw exception, when saving expression-of-interest with non-existent job`() {
-    failAsNotImplemented()
-  }
-
-  @Test
-  fun `delete prisoner's expression-of-interest from an existing job`() {
-    failAsNotImplemented()
-  }
-
-  @Test
-  fun `do NOT update job's attribute, when deleting existing expression-of-interest`() {
-    failAsNotImplemented()
-  }
-
-  @Test
-  fun `throw exception, when deleting non-existent expression-of-interest`() {
-    failAsNotImplemented()
-  }
-
-  private fun obtainTheJobJustCreated(): Job {
-    employerRepository.save(amazonEmployer)
-    return jobRepository.save(amazonForkliftOperatorJob)
-  }
-
-  private fun obtainTheJobJustCreatedWithExpressionOfInterest(): Job = obtainTheJobJustCreated().apply {
-    expressionsOfInterest[expectedPrisonNumber] =
-      makeExpressionOfInterest(job = this, prisonerPrisonNumber = expectedPrisonNumber)
-  }
-
-  private fun makeExpressionOfInterest(job: Job, prisonerPrisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonerPrisonNumber), job = job)
-
-  protected fun deepCopy(job: Job): Job = job.copy(
-    id = job.id.copy(),
-    employer = job.employer.copy(),
-  )
-
-  private fun failAsNotImplemented(): Nothing = fail("Yet to implement")
 }

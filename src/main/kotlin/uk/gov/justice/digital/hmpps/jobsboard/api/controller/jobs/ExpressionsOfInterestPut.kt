@@ -44,8 +44,7 @@ class ExpressionsOfInterestPut(
       ResponseEntity.created(
         ServletUriComponentsBuilder
           .fromCurrentRequest()
-          .path("/{prisonerPrisonNumber}")
-          .buildAndExpand(prisonerPrisonNumber)
+          .build()
           .toUri(),
       ).build()
     } else {

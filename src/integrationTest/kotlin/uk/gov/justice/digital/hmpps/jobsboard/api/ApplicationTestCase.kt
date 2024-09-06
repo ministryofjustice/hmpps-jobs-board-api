@@ -33,6 +33,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import org.springframework.transaction.annotation.Transactional
@@ -223,7 +224,8 @@ abstract class ApplicationTestCase {
     url: String,
     expectedStatus: HttpStatus,
     expectedResponse: String? = null,
-    expectedHttpVerb: HttpMethod = PUT,
+    expectedHttpVerb: HttpMethod,
+    expectedRedirectUrlPattern: String? = null,
   ) {
     val resultActions = mockMvc.perform(
       request(expectedHttpVerb, url)
@@ -234,6 +236,9 @@ abstract class ApplicationTestCase {
     expectedResponse?.let {
       resultActions.andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json(it))
+    }
+    expectedRedirectUrlPattern?.let {
+      resultActions.andExpect(redirectedUrlPattern(expectedRedirectUrlPattern))
     }
   }
 
