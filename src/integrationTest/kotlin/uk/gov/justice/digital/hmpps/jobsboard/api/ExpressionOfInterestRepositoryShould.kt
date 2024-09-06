@@ -192,7 +192,7 @@ class ExpressionOfInterestRepositoryShould {
   }
 
   @Test
-  fun `save prisoner's expression-of-interest to an existing job`() {
+  fun `save prisoner's ExpressionOfInterest to an existing job`() {
     val job = obtainTheJobJustCreated()
 
     val savedExpressionOfInterest = makeExpressionOfInterest(job, expectedPrisonNumber).let { expressionOfInterest ->
@@ -205,7 +205,7 @@ class ExpressionOfInterestRepositoryShould {
   }
 
   @Test
-  fun `set createdAt attribute, when saving a new expression-of-interest`() {
+  fun `set createdAt attribute, when saving a new ExpressionOfInterest`() {
     val job = obtainTheJobJustCreated()
 
     val expressionOfInterest = makeExpressionOfInterest(job, expectedPrisonNumber)
@@ -216,7 +216,7 @@ class ExpressionOfInterestRepositoryShould {
   }
 
   @Test
-  fun `do NOT update job's attribute, when saving a new expression-of-interest`() {
+  fun `do NOT update job's attribute, when saving a new ExpressionOfInterest`() {
     val job = obtainTheJobJustCreated()
 
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
@@ -230,7 +230,7 @@ class ExpressionOfInterestRepositoryShould {
   }
 
   @Test
-  fun `do NOT update expression-of-interest, when it exists`() {
+  fun `do NOT update ExpressionOfInterest, when it exists`() {
     val job = obtainTheJobJustCreated()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
     val savedExpressionOfInterest = makeExpressionOfInterest(job, expectedPrisonNumber).let { expressionOfInterest ->
@@ -251,7 +251,7 @@ class ExpressionOfInterestRepositoryShould {
   }
 
   @Test
-  fun `throw exception, when saving expression-of-interest with non-existent job`() {
+  fun `throw exception, when saving ExpressionOfInterest with non-existent job`() {
     val jobId = nonExistentJob.id.toString()
     val expressionOfInterest = makeExpressionOfInterest(nonExistentJob, expectedPrisonNumber)
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
@@ -267,7 +267,7 @@ class ExpressionOfInterestRepositoryShould {
   }
 
   @Test
-  fun `delete prisoner's expression-of-interest from an existing job`() {
+  fun `delete prisoner's ExpressionOfInterest from an existing job`() {
     val job = obtainTheJobJustCreated()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
     val savedExpressionOfInterest = makeExpressionOfInterest(job, expectedPrisonNumber).let { expressionOfInterest ->
@@ -281,7 +281,7 @@ class ExpressionOfInterestRepositoryShould {
   }
 
   @Test
-  fun `do NOT update job's attribute, when deleting existing expression-of-interest`() {
+  fun `do NOT update job's attribute, when deleting existing ExpressionOfInterest`() {
     val job = obtainTheJobJustCreated()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
     val savedExpressionOfInterest = makeExpressionOfInterest(job, expectedPrisonNumber).let { expressionOfInterest ->

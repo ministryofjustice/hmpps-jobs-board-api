@@ -9,7 +9,7 @@ class ExpressionsOfInterestDeleteShould : ExpressionsOfInterestTestCase() {
   val prisonNumber = "A1234BC"
 
   @Test
-  fun `delete expression-of-interest, when it exists`() {
+  fun `delete ExpressionOfInterest, when it exists`() {
     val ids = givenAJobIsCreatedWithExpressionOfInterest()
     val jobId = ids[0]
     val prisonNumber = ids[1]
@@ -22,7 +22,7 @@ class ExpressionsOfInterestDeleteShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
-  fun `do NOT delete expression-of-interest, when it does NOT exist, and return error`() {
+  fun `do NOT delete ExpressionOfInterest, when it does NOT exist, and return error`() {
     val jobId = givenAJobIsCreatedWithExpressionOfInterest().first()
 
     assertDeleteExpressionOfInterest(
@@ -33,7 +33,7 @@ class ExpressionsOfInterestDeleteShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
-  fun `do NOT delete expression-of-interest with non-existent job, and return error`() {
+  fun `do NOT delete ExpressionOfInterest with non-existent job, and return error`() {
     assertDeleteExpressionOfInterest(
       jobId = randomUUID(),
       prisonNumber = randomPrisonNumber(),
@@ -42,7 +42,7 @@ class ExpressionsOfInterestDeleteShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
-  fun `do NOT delete expression-of-interest without prisoner's prison-number, and return error`() {
+  fun `do NOT delete ExpressionOfInterest without prisoner's prisonNumber, and return error`() {
     assertDeleteExpressionOfInterestRepliesNotFoundError(
       jobId = randomUUID(),
     )

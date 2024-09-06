@@ -38,7 +38,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   )
 
   @Test
-  fun `save with valid Job-ID and Prison-Number, when it does NOT exist`() {
+  fun `save with valid Job ID and prisonNumber, when it does NOT exist`() {
     val expectedExpressionOfInterest = obtainTheJobJustCreated().let { job ->
       makeExpressionOfInterest(job, expectedPrisonNumber)
     }
@@ -60,7 +60,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `do NOT save expression-of-interest again, and return false, when it exists`() {
+  fun `do NOT save ExpressionOfInterest again, and return false, when it exists`() {
     givenAJobIsCreatedWithExpressionOfInterest()
 
     val created = expressionOfInterestEditor.createWhenNotExist(expressionsOfInterestRequest)
@@ -70,7 +70,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception, when Job-ID is empty at creation`() {
+  fun `throw exception, when Job ID is empty at creation`() {
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = "",
       prisonNumber = expectedPrisonNumber,
@@ -83,7 +83,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception, when Job-ID is invalid at creation`() {
+  fun `throw exception, when Job ID is invalid at creation`() {
     val invalidUUID = "00000000-0000-0000-0000-00000"
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = invalidUUID,
@@ -97,7 +97,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception, when job does NOT exist at creation`() {
+  fun `throw exception, when Job does NOT exist at creation`() {
     val nonExistentJobId = UUID.randomUUID().toString()
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = nonExistentJobId,
@@ -111,7 +111,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception, when prisoner's Prison-Number is invalid at creation`() {
+  fun `throw exception, when prisoner's prisonNumber is invalid at creation`() {
     givenAJobIsCreated()
 
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
@@ -142,7 +142,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception, when Job-ID is empty at deletion`() {
+  fun `throw exception, when Job ID is empty at deletion`() {
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = "",
       prisonNumber = expectedPrisonNumber,
@@ -155,7 +155,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception, when Job-ID is invalid at deletion`() {
+  fun `throw exception, when Job ID is invalid at deletion`() {
     val invalidUUID = "00000000-0000-0000-0000-00000"
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = invalidUUID,
@@ -169,7 +169,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `throw exception, when prisoner's Prison-Number is invalid at deletion`() {
+  fun `throw exception, when prisoner's prisonNumber is invalid at deletion`() {
     givenAJobIsCreatedWithExpressionOfInterest()
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = expectedJobId,
@@ -183,7 +183,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   }
 
   @Test
-  fun `return false, when expression-of-interest does NOT exist at deletion`() {
+  fun `return false, when ExpressionOfInterest does NOT exist at deletion`() {
     givenAJobIsCreatedWithExpressionOfInterest()
     val deleted = expressionOfInterestEditor.delete(expressionsOfInterestRequest)
 

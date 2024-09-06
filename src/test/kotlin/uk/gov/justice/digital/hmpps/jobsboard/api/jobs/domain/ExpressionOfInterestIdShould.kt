@@ -10,7 +10,7 @@ class ExpressionOfInterestIdShould {
   private val validJobId = "b67d9daf-fb7e-462b-9baf-dd4c8f62a3a7"
 
   @Test
-  fun `create with valid Job-ID and prisoner's Prison-Number`() {
+  fun `create with valid Job ID and prisoner's prisonNumber`() {
     val jobId = validJobId
     val prisonNumber = "A1234BC"
     val id = makeId(jobId, prisonNumber)
@@ -20,7 +20,7 @@ class ExpressionOfInterestIdShould {
   }
 
   @Test
-  fun `throw exception with invalid Job-ID`() {
+  fun `throw exception with invalid Job ID`() {
     val invalidJobId = "b67d9daf-fb7e-462b-9baf-dd4c"
     val prisonNumber = "A1234BC"
     val exception = assertFailsWith<IllegalArgumentException> { makeId(invalidJobId, prisonNumber) }
@@ -29,7 +29,7 @@ class ExpressionOfInterestIdShould {
   }
 
   @Test
-  fun `throw exception with empty Job-ID`() {
+  fun `throw exception with empty Job ID`() {
     val emptyJobId = ""
     val prisonNumber = "A1234BC"
     val exception = assertFailsWith<IllegalArgumentException> { makeId(emptyJobId, prisonNumber) }
@@ -38,7 +38,7 @@ class ExpressionOfInterestIdShould {
   }
 
   @Test
-  fun `throw exception with null Job-ID`() {
+  fun `throw exception with null Job ID`() {
     val nullJobId = "00000000-0000-0000-0000-00000"
     val prisonNumber = "A1234BC"
     val exception = assertFailsWith<IllegalArgumentException> { makeId(nullJobId, prisonNumber) }
@@ -46,7 +46,7 @@ class ExpressionOfInterestIdShould {
   }
 
   @Test
-  fun `throw exception with lengthy Prison-Number`() {
+  fun `throw exception with lengthy prisonNumber`() {
     val jobId = validJobId
     val prisonNumber = "A1234BCZ"
     val exception = assertFailsWith<IllegalArgumentException> { makeId(jobId, prisonNumber) }
@@ -54,7 +54,7 @@ class ExpressionOfInterestIdShould {
   }
 
   @Test
-  fun `throw exception with empty prisoner's Prison-Number`() {
+  fun `throw exception with empty prisoner's prisonNumber`() {
     val jobId = validJobId
     val prisonNumber = ""
     val exception = assertFailsWith<IllegalArgumentException> { makeId(jobId, prisonNumber) }

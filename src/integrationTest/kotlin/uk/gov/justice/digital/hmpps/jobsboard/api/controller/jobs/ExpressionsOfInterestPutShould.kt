@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus.OK
 
 class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
   @Test
-  fun `create expression-of-interest with valid job-ID and prisoner's prison-number, when it does NOT exist`() {
+  fun `create ExpressionOfInterest with valid Job ID and prisoner's prisonNumber, when it does NOT exist`() {
     val jobId = obtainJobIdGivenAJobIsJustCreated()
 
     assertAddExpressionOfInterest(
@@ -18,7 +18,7 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
-  fun `do NOT create expression-of-interest, when it exists`() {
+  fun `do NOT create ExpressionOfInterest, when it exists`() {
     val jobIdAndPrisonNumber = obtainJodIdAndPrisonNumberGivenAJobWithExpressionsOfInterestedJustCreated()
     val jobId = jobIdAndPrisonNumber[0]
     val prisonNumber = jobIdAndPrisonNumber[1]
@@ -31,7 +31,7 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
-  fun `do NOT create expression-of-interest with non-existent job, and return error`() {
+  fun `do NOT create ExpressionOfInterest with non-existent job, and return error`() {
     val nonExistentJobId = randomUUID()
 
     assertAddExpressionOfInterestThrowsValidationOrIllegalArgumentError(
@@ -49,7 +49,7 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
-  fun `do NOT create expression-of-interest with invalid prisoner's prison-number, and return error`() {
+  fun `do NOT create ExpressionOfInterest with invalid prisoner's prisonNumber, and return error`() {
     val jobId = obtainJobIdGivenAJobIsJustCreated()
 
     assertAddExpressionOfInterestThrowsValidationOrIllegalArgumentError(
@@ -68,7 +68,7 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
-  fun `do NOT create expression-of-interest with empty prisoner's prison-number, and return error`() {
+  fun `do NOT create ExpressionOfInterest with empty prisoner's prisonNumber, and return error`() {
     val jobId = obtainJobIdGivenAJobIsJustCreated()
 
     assertAddExpressionOfInterestThrowsValidationOrIllegalArgumentError(
@@ -79,7 +79,7 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
-  fun `do NOT create expression-of-interest without prisoner's prison-number, and return error`() {
+  fun `do NOT create ExpressionOfInterest without prisoner's prisonNumber, and return error`() {
     assertAddExpressionOfInterestRepliesNotFoundError(
       jobId = randomUUID(),
     )
