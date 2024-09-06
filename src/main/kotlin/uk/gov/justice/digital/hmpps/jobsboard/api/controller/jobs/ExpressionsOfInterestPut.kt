@@ -33,12 +33,19 @@ class ExpressionsOfInterestPut(
     @Size(max = 7, min = 1)
     prisonNumber: String,
   ): ResponseEntity<Void> {
-    val created = expressionOfInterestCreator.createOrUpdate(
-      CreateExpressionOfInterestRequest(
-        jobId,
-        prisonNumber,
-      ),
-    )
+    var created = false
+
+    (expressionOfInterestCreator.existsById(jobId, prisonNumber)).let { exists ->
+      if (!exists) {
+        expressionOfInterestCreator.createOrUpdate(
+          CreateExpressionOfInterestRequest(
+            jobId,
+            prisonNumber,
+          ),
+        )
+        created = true
+      }
+    }
 
     return if (created) {
       ResponseEntity.created(

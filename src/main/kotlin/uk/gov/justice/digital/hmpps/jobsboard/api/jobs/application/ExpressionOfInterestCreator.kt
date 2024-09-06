@@ -15,25 +15,19 @@ class ExpressionOfInterestCreator(
 ) {
 
   @Transactional
-  fun createOrUpdate(request: CreateExpressionOfInterestRequest): Boolean {
-    var created = false
-    var toBeSaved: ExpressionOfInterest
-
-    jobRepository.findById(EntityId(request.jobId))
+  fun createOrUpdate(request: CreateExpressionOfInterestRequest) {
+    val job = jobRepository.findById(EntityId(request.jobId))
       .orElseThrow { IllegalArgumentException("Job not found: jobId=${request.jobId}") }
-      .also { job ->
-        request.prisonNumber.let { prisonNumber ->
-          toBeSaved = job.expressionsOfInterest.computeIfAbsent(prisonNumber) {
-            created = true
-            ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonNumber), job = job)
-          }
-        }
 
-        if (created) {
-          expressionOfInterestRepository.save(toBeSaved)
-        }
-      }
+    val expressionOfInterest = ExpressionOfInterest(
+      id = ExpressionOfInterestId(job.id, request.prisonNumber),
+      job = job,
+    )
 
-    return created
+    expressionOfInterestRepository.save(expressionOfInterest)
+  }
+
+  fun existsById(jobId: String, prisonNumber: String): Boolean {
+    return expressionOfInterestRepository.existsById(ExpressionOfInterestId(EntityId(jobId), prisonNumber))
   }
 }

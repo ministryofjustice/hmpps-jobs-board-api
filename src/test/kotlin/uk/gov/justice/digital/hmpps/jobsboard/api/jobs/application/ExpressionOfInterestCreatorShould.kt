@@ -2,14 +2,13 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
@@ -37,7 +36,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
   )
 
   @Test
-  fun `save with valid Job ID and prisonNumber, when it does NOT exist`() {
+  fun `save with valid Job ID and prisonNumber`() {
     val expectedExpressionOfInterest = obtainTheJobJustCreated().let { job ->
       makeExpressionOfInterest(job, expectedPrisonNumber)
     }
@@ -48,24 +47,6 @@ class ExpressionOfInterestCreatorShould : TestBase() {
       verify(expressionOfInterestRepository).save(captor.capture())
     }.firstValue
     assertThat(actualExpressionOfInterest).usingRecursiveComparison().isEqualTo(expectedExpressionOfInterest)
-  }
-
-  @Test
-  fun `save and return true, when it does NOT exist`() {
-    obtainTheJobJustCreated().also { job -> makeExpressionOfInterest(job, expectedPrisonNumber) }
-
-    val created = expressionOfInterestCreator.createOrUpdate(expressionsOfInterestRequest)
-    assertThat(created).isTrue()
-  }
-
-  @Test
-  fun `do NOT save ExpressionOfInterest again, and return false, when it exists`() {
-    givenAJobIsCreatedWithExpressionOfInterest()
-
-    val created = expressionOfInterestCreator.createOrUpdate(expressionsOfInterestRequest)
-
-    verify(jobRepository, never()).save(any(Job::class.java))
-    assertThat(created).isFalse()
   }
 
   @Test
@@ -124,16 +105,26 @@ class ExpressionOfInterestCreatorShould : TestBase() {
     assertEquals("prisonNumber is too long", exception.message)
   }
 
-  private fun givenAJobIsCreated() {
-    obtainTheJobJustCreated()
+  @Test
+  fun `return true when ExpressionOfInterest exists`() {
+    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
+      .thenReturn(true)
+
+    val isExisting = expressionOfInterestCreator.existsById(expectedJobId, expectedPrisonNumber)
+    assertThat(isExisting).isTrue()
   }
 
-  private fun givenAJobIsCreatedWithExpressionOfInterest() {
-    obtainTheJobJustCreated().let { job ->
-      makeExpressionOfInterest(job, expectedPrisonNumber).also {
-        job.expressionsOfInterest[expectedPrisonNumber] = it
-      }
-    }
+  @Test
+  fun `return false when ExpressionOfInterest not exist`() {
+    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
+      .thenReturn(false)
+
+    val isExisting = expressionOfInterestCreator.existsById(expectedJobId, expectedPrisonNumber)
+    assertThat(isExisting).isFalse()
+  }
+
+  private fun givenAJobIsCreated() {
+    obtainTheJobJustCreated()
   }
 
   private fun obtainTheJobJustCreated(): Job {
@@ -141,6 +132,9 @@ class ExpressionOfInterestCreatorShould : TestBase() {
       whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
     }
   }
+
+  private fun makeExpressionOfInterestId(jobId: String, prisonNumber: String) =
+    ExpressionOfInterestId(EntityId(jobId), prisonNumber)
 
   private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
     ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonNumber), job = job)
