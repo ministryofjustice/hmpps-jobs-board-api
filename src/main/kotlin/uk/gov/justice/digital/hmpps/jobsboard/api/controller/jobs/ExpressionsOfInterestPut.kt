@@ -33,7 +33,7 @@ class ExpressionsOfInterestPut(
     @Size(max = 7, min = 1)
     prisonNumber: String,
   ): ResponseEntity<Void> {
-    val created = expressionOfInterestCreator.createWhenNotExist(
+    val created = expressionOfInterestCreator.createOrUpdate(
       CreateExpressionOfInterestRequest(
         jobId,
         prisonNumber,

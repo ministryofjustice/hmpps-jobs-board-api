@@ -42,7 +42,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
       makeExpressionOfInterest(job, expectedPrisonNumber)
     }
 
-    expressionOfInterestCreator.createWhenNotExist(expressionsOfInterestRequest)
+    expressionOfInterestCreator.createOrUpdate(expressionsOfInterestRequest)
 
     val actualExpressionOfInterest = argumentCaptor<ExpressionOfInterest>().also { captor ->
       verify(expressionOfInterestRepository).save(captor.capture())
@@ -54,7 +54,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
   fun `save and return true, when it does NOT exist`() {
     obtainTheJobJustCreated().also { job -> makeExpressionOfInterest(job, expectedPrisonNumber) }
 
-    val created = expressionOfInterestCreator.createWhenNotExist(expressionsOfInterestRequest)
+    val created = expressionOfInterestCreator.createOrUpdate(expressionsOfInterestRequest)
     assertThat(created).isTrue()
   }
 
@@ -62,7 +62,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
   fun `do NOT save ExpressionOfInterest again, and return false, when it exists`() {
     givenAJobIsCreatedWithExpressionOfInterest()
 
-    val created = expressionOfInterestCreator.createWhenNotExist(expressionsOfInterestRequest)
+    val created = expressionOfInterestCreator.createOrUpdate(expressionsOfInterestRequest)
 
     verify(jobRepository, never()).save(any(Job::class.java))
     assertThat(created).isFalse()
@@ -76,7 +76,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
-      expressionOfInterestCreator.createWhenNotExist(badRequest)
+      expressionOfInterestCreator.createOrUpdate(badRequest)
     }
     assertEquals("EntityId cannot be empty", exception.message)
   }
@@ -90,7 +90,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
-      expressionOfInterestCreator.createWhenNotExist(badRequest)
+      expressionOfInterestCreator.createOrUpdate(badRequest)
     }
     assertEquals("EntityId cannot be null: {$invalidUUID}", exception.message)
   }
@@ -104,7 +104,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
-      expressionOfInterestCreator.createWhenNotExist(badRequest)
+      expressionOfInterestCreator.createOrUpdate(badRequest)
     }
     assertEquals("Job not found: jobId=$nonExistentJobId", exception.message)
   }
@@ -119,7 +119,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
-      expressionOfInterestCreator.createWhenNotExist(badRequest)
+      expressionOfInterestCreator.createOrUpdate(badRequest)
     }
     assertEquals("prisonNumber is too long", exception.message)
   }

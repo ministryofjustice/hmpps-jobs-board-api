@@ -15,7 +15,7 @@ class ExpressionOfInterestCreator(
 ) {
 
   @Transactional
-  fun createWhenNotExist(request: CreateExpressionOfInterestRequest): Boolean {
+  fun createOrUpdate(request: CreateExpressionOfInterestRequest): Boolean {
     var created = false
     var toBeSaved: ExpressionOfInterest
 
