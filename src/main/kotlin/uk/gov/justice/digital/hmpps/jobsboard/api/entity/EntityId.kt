@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain
+package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import jakarta.persistence.Embeddable
 import java.io.Serializable

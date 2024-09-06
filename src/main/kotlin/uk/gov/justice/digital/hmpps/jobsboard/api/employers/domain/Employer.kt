@@ -6,8 +6,8 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.Auditable
-import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Auditable
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 
 @Entity

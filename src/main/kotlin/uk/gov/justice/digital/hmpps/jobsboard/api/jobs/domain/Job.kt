@@ -10,9 +10,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.MapKey
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.Auditable
-import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import java.time.LocalDate
 
 @Entity

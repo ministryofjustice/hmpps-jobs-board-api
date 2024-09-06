@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
 
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
-import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import java.io.Serializable
 
 const val PRISON_NUMBER_MAX_LENGTH: Int = 7
