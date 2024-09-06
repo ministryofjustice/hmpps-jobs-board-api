@@ -21,7 +21,7 @@ class ExpressionsOfInterestPut(
   private val expressionOfInterestCreator: ExpressionOfInterestEditor,
 ) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
-  @PutMapping("/{prisonerPrisonNumber}")
+  @PutMapping("/{prisonNumber}")
   fun create(
     @PathVariable
     @Pattern(
@@ -31,12 +31,12 @@ class ExpressionsOfInterestPut(
     jobId: String,
     @PathVariable
     @Size(max = 7, min = 1)
-    prisonerPrisonNumber: String,
+    prisonNumber: String,
   ): ResponseEntity<Void> {
     val created = expressionOfInterestCreator.createWhenNotExist(
       CreateOrDeleteExpressionOfInterestRequest(
         jobId,
-        prisonerPrisonNumber,
+        prisonNumber,
       ),
     )
 

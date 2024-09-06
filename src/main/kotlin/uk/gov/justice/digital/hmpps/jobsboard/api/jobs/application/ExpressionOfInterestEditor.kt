@@ -22,7 +22,7 @@ class ExpressionOfInterestEditor(
     jobRepository.findById(EntityId(request.jobId))
       .orElseThrow { IllegalArgumentException("Job not found: jobId=${request.jobId}") }
       .also { job ->
-        request.prisonerPrisonNumber.let { prisonNumber ->
+        request.prisonNumber.let { prisonNumber ->
           toBeSaved = job.expressionsOfInterest.computeIfAbsent(prisonNumber) {
             created = true
             ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonNumber), job = job)
@@ -46,7 +46,7 @@ class ExpressionOfInterestEditor(
       throw IllegalArgumentException("Job not found: jobId=${request.jobId}")
     }
 
-    val id = ExpressionOfInterestId(jobId = jodId, prisonerPrisonNumber = request.prisonerPrisonNumber)
+    val id = ExpressionOfInterestId(jobId = jodId, prisonNumber = request.prisonNumber)
     if (expressionOfInterestRepository.findById(id).isPresent) {
       deleted = true
       expressionOfInterestRepository.deleteById(id)

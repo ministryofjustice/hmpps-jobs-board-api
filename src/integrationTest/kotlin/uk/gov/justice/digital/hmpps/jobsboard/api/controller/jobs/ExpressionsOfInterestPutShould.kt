@@ -59,8 +59,8 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
         {
             "status": 400,
             "errorCode": null,
-            "userMessage": "Validation failure: create.prisonerPrisonNumber: size must be between 1 and 7",
-            "developerMessage": "create.prisonerPrisonNumber: size must be between 1 and 7",
+            "userMessage": "Validation failure: create.prisonNumber: size must be between 1 and 7",
+            "developerMessage": "create.prisonNumber: size must be between 1 and 7",
             "moreInfo": null
         }
       """.trimIndent(),

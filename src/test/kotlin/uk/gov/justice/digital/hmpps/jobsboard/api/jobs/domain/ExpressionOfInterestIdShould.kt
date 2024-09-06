@@ -12,18 +12,18 @@ class ExpressionOfInterestIdShould {
   @Test
   fun `create with valid Job-ID and prisoner's Prison-Number`() {
     val jobId = validJobId
-    val prisonerPrisonNumber = "A1234BC"
-    val id = makeId(jobId, prisonerPrisonNumber)
+    val prisonNumber = "A1234BC"
+    val id = makeId(jobId, prisonNumber)
 
     assertEquals(jobId, id.jobId.id)
-    assertEquals(prisonerPrisonNumber, id.prisonerPrisonNumber)
+    assertEquals(prisonNumber, id.prisonNumber)
   }
 
   @Test
   fun `throw exception with invalid Job-ID`() {
     val invalidJobId = "b67d9daf-fb7e-462b-9baf-dd4c"
-    val prisonerPrisonNumber = "A1234BC"
-    val exception = assertFailsWith<IllegalArgumentException> { makeId(invalidJobId, prisonerPrisonNumber) }
+    val prisonNumber = "A1234BC"
+    val exception = assertFailsWith<IllegalArgumentException> { makeId(invalidJobId, prisonNumber) }
 
     assertEquals("Invalid UUID format: {$invalidJobId}", exception.message)
   }
@@ -31,8 +31,8 @@ class ExpressionOfInterestIdShould {
   @Test
   fun `throw exception with empty Job-ID`() {
     val emptyJobId = ""
-    val prisonerPrisonNumber = "A1234BC"
-    val exception = assertFailsWith<IllegalArgumentException> { makeId(emptyJobId, prisonerPrisonNumber) }
+    val prisonNumber = "A1234BC"
+    val exception = assertFailsWith<IllegalArgumentException> { makeId(emptyJobId, prisonNumber) }
 
     assertEquals("EntityId cannot be empty", exception.message)
   }
@@ -40,27 +40,27 @@ class ExpressionOfInterestIdShould {
   @Test
   fun `throw exception with null Job-ID`() {
     val nullJobId = "00000000-0000-0000-0000-00000"
-    val prisonerPrisonNumber = "A1234BC"
-    val exception = assertFailsWith<IllegalArgumentException> { makeId(nullJobId, prisonerPrisonNumber) }
+    val prisonNumber = "A1234BC"
+    val exception = assertFailsWith<IllegalArgumentException> { makeId(nullJobId, prisonNumber) }
     assertEquals("EntityId cannot be null: {$nullJobId}", exception.message)
   }
 
   @Test
   fun `throw exception with lengthy Prison-Number`() {
     val jobId = validJobId
-    val prisonerPrisonNumber = "A1234BCZ"
-    val exception = assertFailsWith<IllegalArgumentException> { makeId(jobId, prisonerPrisonNumber) }
-    assertEquals("prisonerPrisonNumber is too long", exception.message)
+    val prisonNumber = "A1234BCZ"
+    val exception = assertFailsWith<IllegalArgumentException> { makeId(jobId, prisonNumber) }
+    assertEquals("prisonNumber is too long", exception.message)
   }
 
   @Test
   fun `throw exception with empty prisoner's Prison-Number`() {
     val jobId = validJobId
-    val prisonerPrisonNumber = ""
-    val exception = assertFailsWith<IllegalArgumentException> { makeId(jobId, prisonerPrisonNumber) }
-    assertEquals("prisonerPrisonNumber cannot be empty", exception.message)
+    val prisonNumber = ""
+    val exception = assertFailsWith<IllegalArgumentException> { makeId(jobId, prisonNumber) }
+    assertEquals("prisonNumber cannot be empty", exception.message)
   }
 
-  private fun makeId(jobId: String, prisonerPrisonNumber: String): ExpressionOfInterestId =
-    ExpressionOfInterestId(EntityId(jobId), prisonerPrisonNumber)
+  private fun makeId(jobId: String, prisonNumber: String): ExpressionOfInterestId =
+    ExpressionOfInterestId(EntityId(jobId), prisonNumber)
 }

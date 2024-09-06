@@ -239,7 +239,7 @@ class ExpressionOfInterestRepositoryShould {
 
     val duplicateExpressionOfInterest = makeExpressionOfInterest(
       job = savedExpressionOfInterest.job,
-      prisonerPrisonNumber = savedExpressionOfInterest.id.prisonerPrisonNumber,
+      prisonNumber = savedExpressionOfInterest.id.prisonNumber,
     )
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobReRegisterExpressionOfInterestTime))
     val updatedExpressionOfInterest = expressionOfInterestRepository.saveAndFlush(duplicateExpressionOfInterest).also {
@@ -301,6 +301,6 @@ class ExpressionOfInterestRepositoryShould {
     }
   }
 
-  private fun makeExpressionOfInterest(job: Job, prisonerPrisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonerPrisonNumber), job = job)
+  private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
+    ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonNumber), job = job)
 }

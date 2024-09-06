@@ -50,10 +50,10 @@ create table if not exists jobs(
 
 CREATE TABLE IF NOT EXISTS jobs_expressions_of_interest (
     job_id      VARCHAR(36) NOT NULL,
-    prisoner_prison_number VARCHAR(7) NOT NULL,
+    prison_number VARCHAR(7) NOT NULL,
     created_at TIMESTAMP(6) NOT NULL,
 
-    PRIMARY KEY (job_id, prisoner_prison_number),
+    PRIMARY KEY (job_id, prison_number),
     CONSTRAINT fk_jobs
         FOREIGN KEY(job_id)
         REFERENCES jobs(id)

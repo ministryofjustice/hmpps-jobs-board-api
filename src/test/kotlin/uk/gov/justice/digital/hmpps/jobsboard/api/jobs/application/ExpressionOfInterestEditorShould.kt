@@ -34,7 +34,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
 
   private val expressionsOfInterestRequest = CreateOrDeleteExpressionOfInterestRequest.from(
     jobId = expectedJobId,
-    prisonerPrisonNumber = expectedPrisonNumber,
+    prisonNumber = expectedPrisonNumber,
   )
 
   @Test
@@ -73,7 +73,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   fun `throw exception, when Job-ID is empty at creation`() {
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = "",
-      prisonerPrisonNumber = expectedPrisonNumber,
+      prisonNumber = expectedPrisonNumber,
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
@@ -87,7 +87,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
     val invalidUUID = "00000000-0000-0000-0000-00000"
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = invalidUUID,
-      prisonerPrisonNumber = expectedPrisonNumber,
+      prisonNumber = expectedPrisonNumber,
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
@@ -101,7 +101,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
     val nonExistentJobId = UUID.randomUUID().toString()
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = nonExistentJobId,
-      prisonerPrisonNumber = expectedPrisonNumber,
+      prisonNumber = expectedPrisonNumber,
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
@@ -116,13 +116,13 @@ class ExpressionOfInterestEditorShould : TestBase() {
 
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = expectedJobId,
-      prisonerPrisonNumber = "A1234BCZ",
+      prisonNumber = "A1234BCZ",
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
       expressionOfInterestEditor.createWhenNotExist(badRequest)
     }
-    assertEquals("prisonerPrisonNumber is too long", exception.message)
+    assertEquals("prisonNumber is too long", exception.message)
   }
 
   @Test
@@ -131,7 +131,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
     val id = expressionsOfInterestRequest.let { request ->
       ExpressionOfInterestId(
         EntityId(request.jobId),
-        request.prisonerPrisonNumber,
+        request.prisonNumber,
       )
     }
     whenever(expressionOfInterestRepository.findById(id)).thenReturn(Optional.of(expressionOfInterest))
@@ -145,7 +145,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
   fun `throw exception, when Job-ID is empty at deletion`() {
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = "",
-      prisonerPrisonNumber = expectedPrisonNumber,
+      prisonNumber = expectedPrisonNumber,
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
@@ -159,7 +159,7 @@ class ExpressionOfInterestEditorShould : TestBase() {
     val invalidUUID = "00000000-0000-0000-0000-00000"
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = invalidUUID,
-      prisonerPrisonNumber = expectedPrisonNumber,
+      prisonNumber = expectedPrisonNumber,
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
@@ -173,13 +173,13 @@ class ExpressionOfInterestEditorShould : TestBase() {
     givenAJobIsCreatedWithExpressionOfInterest()
     val badRequest = CreateOrDeleteExpressionOfInterestRequest.from(
       jobId = expectedJobId,
-      prisonerPrisonNumber = "A1234BCZ",
+      prisonNumber = "A1234BCZ",
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
       expressionOfInterestEditor.delete(badRequest)
     }
-    assertEquals("prisonerPrisonNumber is too long", exception.message)
+    assertEquals("prisonNumber is too long", exception.message)
   }
 
   @Test
@@ -212,6 +212,6 @@ class ExpressionOfInterestEditorShould : TestBase() {
       }
     }
 
-  private fun makeExpressionOfInterest(job: Job, prisonerPrisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonerPrisonNumber), job = job)
+  private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
+    ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonNumber), job = job)
 }

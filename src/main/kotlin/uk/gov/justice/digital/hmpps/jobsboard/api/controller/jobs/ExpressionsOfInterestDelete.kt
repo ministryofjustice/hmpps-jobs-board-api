@@ -20,7 +20,7 @@ class ExpressionsOfInterestDelete(
   private val expressionOfInterestRemover: ExpressionOfInterestEditor,
 ) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
-  @DeleteMapping("/{prisonerPrisonNumber}")
+  @DeleteMapping("/{prisonNumber}")
   fun delete(
     @PathVariable
     @Pattern(
@@ -30,12 +30,12 @@ class ExpressionsOfInterestDelete(
     jobId: String,
     @PathVariable
     @Size(max = 7, min = 1)
-    prisonerPrisonNumber: String,
+    prisonNumber: String,
   ): ResponseEntity<Void> {
     val deleted = expressionOfInterestRemover.delete(
       CreateOrDeleteExpressionOfInterestRequest(
         jobId,
-        prisonerPrisonNumber,
+        prisonNumber,
       ),
     )
 

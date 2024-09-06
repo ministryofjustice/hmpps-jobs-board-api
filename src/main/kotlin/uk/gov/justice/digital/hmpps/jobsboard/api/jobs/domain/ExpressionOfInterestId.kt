@@ -12,12 +12,12 @@ data class ExpressionOfInterestId(
   @Column(name = "job_id")
   val jobId: EntityId,
 
-  @Column(name = "prisoner_prison_number")
-  val prisonerPrisonNumber: String,
+  @Column(name = "prison_number")
+  val prisonNumber: String,
 ) : Serializable {
 
   init {
-    require(prisonerPrisonNumber.isNotEmpty()) { "prisonerPrisonNumber cannot be empty" }
-    require(prisonerPrisonNumber.length <= PRISON_NUMBER_MAX_LENGTH) { "prisonerPrisonNumber is too long" }
+    require(prisonNumber.isNotEmpty()) { "prisonNumber cannot be empty" }
+    require(prisonNumber.length <= PRISON_NUMBER_MAX_LENGTH) { "prisonNumber is too long" }
   }
 }
