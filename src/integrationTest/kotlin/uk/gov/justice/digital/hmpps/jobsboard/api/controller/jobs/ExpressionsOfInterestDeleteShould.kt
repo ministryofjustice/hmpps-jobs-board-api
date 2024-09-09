@@ -42,6 +42,23 @@ class ExpressionsOfInterestDeleteShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
+  fun `do NOT delete ExpressionOfInterest with invalid Job ID, and return error`() {
+    val invalidJobID = invalidUUID
+    assertAddExpressionOfInterestThrowsValidationOrIllegalArgumentError(
+      jobId = invalidJobID,
+      expectedResponse = """
+        {
+          "status": 400,
+          "errorCode": null,
+          "userMessage": "Validation failure: create.jobId: Invalid UUID format",
+          "developerMessage": "create.jobId: Invalid UUID format",
+          "moreInfo": null
+        }
+      """.trimIndent(),
+    )
+  }
+
+  @Test
   fun `do NOT delete ExpressionOfInterest without prisoner's prisonNumber, and return error`() {
     assertDeleteExpressionOfInterestRepliesNotFoundError(
       jobId = randomUUID(),

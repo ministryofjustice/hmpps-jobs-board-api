@@ -49,6 +49,23 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
   }
 
   @Test
+  fun `do NOT create ExpressionOfInterest with invalid Job ID, and return error`() {
+    val invalidJobID = invalidUUID
+    assertAddExpressionOfInterestThrowsValidationOrIllegalArgumentError(
+      jobId = invalidJobID,
+      expectedResponse = """
+        {
+          "status": 400,
+          "errorCode": null,
+          "userMessage": "Validation failure: create.jobId: Invalid UUID format",
+          "developerMessage": "create.jobId: Invalid UUID format",
+          "moreInfo": null
+        }
+      """.trimIndent(),
+    )
+  }
+
+  @Test
   fun `do NOT create ExpressionOfInterest with invalid prisoner's prisonNumber, and return error`() {
     val jobId = obtainJobIdGivenAJobIsJustCreated()
 

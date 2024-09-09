@@ -107,6 +107,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
 
   @Test
   fun `return true when ExpressionOfInterest exists`() {
+    givenAJobIsCreated()
     whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
       .thenReturn(true)
 
@@ -116,6 +117,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
 
   @Test
   fun `return false when ExpressionOfInterest not exist`() {
+    givenAJobIsCreated()
     whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
       .thenReturn(false)
 
