@@ -19,7 +19,7 @@ spring:
             jwk-set-uri: ${api.base.url.oauth}/.well-known/jwks.json
         provider:
           hmpps-auth:
-            token-uri: ${api.base.url.oauth}//auth/oauth/token
+            token-uri: ${api.base.url.oauth}/oauth/token
 
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
