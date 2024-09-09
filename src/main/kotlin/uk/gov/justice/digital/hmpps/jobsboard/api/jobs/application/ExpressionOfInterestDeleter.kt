@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfIntere
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 
 @Service
-class ExpressionOfInterestRemover(
+class ExpressionOfInterestDeleter(
   private val jobRepository: JobRepository,
   private val expressionOfInterestRepository: ExpressionOfInterestRepository,
 ) {

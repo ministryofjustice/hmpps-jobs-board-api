@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.DeleteExpressionOfInterestRequest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.ExpressionOfInterestRemover
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.ExpressionOfInterestDeleter
 
 @Validated
 @RestController
 @RequestMapping("/jobs/{jobId}/expressions-of-interest", produces = [APPLICATION_JSON_VALUE])
 class ExpressionsOfInterestDelete(
-  private val expressionOfInterestRemover: ExpressionOfInterestRemover,
+  private val expressionOfInterestDeleter: ExpressionOfInterestDeleter,
 ) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @DeleteMapping("/{prisonNumber}")
@@ -33,7 +33,7 @@ class ExpressionsOfInterestDelete(
     @Size(max = 7, min = 1)
     prisonNumber: String,
   ): ResponseEntity<Void> {
-    val deleted = expressionOfInterestRemover.delete(
+    val deleted = expressionOfInterestDeleter.delete(
       DeleteExpressionOfInterestRequest(
         jobId,
         prisonNumber,

@@ -20,13 +20,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 @ExtendWith(MockitoExtension::class)
-class ExpressionOfInterestRemoverShould : TestBase() {
+class ExpressionOfInterestDeleterShould : TestBase() {
 
   @Mock
   protected lateinit var expressionOfInterestRepository: ExpressionOfInterestRepository
 
   @InjectMocks
-  private lateinit var expressionOfInterestRemover: ExpressionOfInterestRemover
+  private lateinit var expressionOfInterestDeleter: ExpressionOfInterestDeleter
 
   private val expectedJobId = "fe5d5175-5a21-4cec-a30b-fd87a5f76ce7"
   private val expectedPrisonNumber = "A1234BC"
@@ -47,7 +47,7 @@ class ExpressionOfInterestRemoverShould : TestBase() {
     }
     whenever(expressionOfInterestRepository.findById(id)).thenReturn(Optional.of(expressionOfInterest))
 
-    expressionOfInterestRemover.delete(expressionsOfInterestRequest)
+    expressionOfInterestDeleter.delete(expressionsOfInterestRequest)
 
     verify(expressionOfInterestRepository).deleteById(id)
   }
@@ -60,7 +60,7 @@ class ExpressionOfInterestRemoverShould : TestBase() {
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
-      expressionOfInterestRemover.delete(badRequest)
+      expressionOfInterestDeleter.delete(badRequest)
     }
     assertEquals("EntityId cannot be empty", exception.message)
   }
@@ -74,7 +74,7 @@ class ExpressionOfInterestRemoverShould : TestBase() {
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
-      expressionOfInterestRemover.delete(badRequest)
+      expressionOfInterestDeleter.delete(badRequest)
     }
     assertEquals("EntityId cannot be null: {$invalidUUID}", exception.message)
   }
@@ -88,7 +88,7 @@ class ExpressionOfInterestRemoverShould : TestBase() {
     )
 
     val exception = assertFailsWith<IllegalArgumentException> {
-      expressionOfInterestRemover.delete(badRequest)
+      expressionOfInterestDeleter.delete(badRequest)
     }
     assertEquals("prisonNumber is too long", exception.message)
   }
@@ -96,7 +96,7 @@ class ExpressionOfInterestRemoverShould : TestBase() {
   @Test
   fun `return false, when ExpressionOfInterest does NOT exist at deletion`() {
     givenAJobIsCreatedWithExpressionOfInterest()
-    val deleted = expressionOfInterestRemover.delete(expressionsOfInterestRequest)
+    val deleted = expressionOfInterestDeleter.delete(expressionsOfInterestRequest)
 
     verify(expressionOfInterestRepository, never()).deleteById(any(ExpressionOfInterestId::class.java))
     assertThat(deleted).isFalse()
