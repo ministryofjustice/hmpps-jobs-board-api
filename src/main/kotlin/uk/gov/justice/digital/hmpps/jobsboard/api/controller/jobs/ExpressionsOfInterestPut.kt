@@ -34,7 +34,20 @@ class ExpressionsOfInterestPut(
     @Size(max = 7, min = 1)
     prisonNumber: String,
   ): ResponseEntity<Void> {
-    var created = false
+      if (expressionOfInterestCreator.existsById(jobId, prisonNumber)) {
+            ResponseEntity.ok().build()
+      } else {
+            expressionOfInterestCreator.createOrUpdate(
+                  CreateExpressionOfInterestRequest(jobId, prisonNumber)
+            )
+            ResponseEntity.created(
+                 ServletUriComponentsBuilder
+                 .fromCurrentRequest()
+                 .build()
+                 .toUri(),
+            ).build()
+      }
+}
 
     (expressionOfInterestCreator.existsById(jobId, prisonNumber)).let { exists ->
       if (!exists) {
