@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
+import io.swagger.v3.oas.annotations.Hidden
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -46,6 +47,7 @@ class ExpressionsOfInterestDelete(
     }
   }
 
+  @Hidden
   @DeleteMapping("/")
   fun notFound(): ResponseEntity<Void> = ResponseEntity.notFound().build()
 }
