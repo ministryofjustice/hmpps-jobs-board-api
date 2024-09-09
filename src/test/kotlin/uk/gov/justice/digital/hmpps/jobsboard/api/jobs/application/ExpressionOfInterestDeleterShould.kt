@@ -107,6 +107,16 @@ class ExpressionOfInterestDeleterShould : TestBase() {
     assertThat(isExisting).isFalse()
   }
 
+  @Test
+  fun `throw exception, when Job does NOT exist at ExpressionOfInterest's existence check`() {
+    val nonExistentJobId = UUID.randomUUID().toString()
+
+    val exception = assertFailsWith<IllegalArgumentException> {
+      expressionOfInterestDeleter.existsById(nonExistentJobId, expectedPrisonNumber)
+    }
+    assertEquals("Job not found: jobId=$nonExistentJobId", exception.message)
+  }
+
   private fun obtainTheJobJustCreated(stubJob: Boolean = true): Job {
     return deepCopy(expectedJob).also { job ->
       if (stubJob) {
