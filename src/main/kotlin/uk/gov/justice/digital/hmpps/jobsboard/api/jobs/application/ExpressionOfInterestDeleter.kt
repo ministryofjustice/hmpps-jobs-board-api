@@ -14,19 +14,18 @@ class ExpressionOfInterestDeleter(
 ) {
 
   @Transactional
-  fun delete(request: DeleteExpressionOfInterestRequest): Boolean {
-    var deleted = false
-    val jodId = EntityId(request.jobId)
+  fun delete(request: DeleteExpressionOfInterestRequest) =
+    expressionOfInterestRepository.deleteById(
+      ExpressionOfInterestId(
+        jobId = EntityId(request.jobId),
+        prisonNumber = request.prisonNumber,
+      ),
+    )
 
-    if (jobRepository.findById(jodId).isEmpty) {
-      throw IllegalArgumentException("Job not found: jobId=${request.jobId}")
+  fun existsById(jobId: String, prisonNumber: String): Boolean {
+    if (jobRepository.findById(EntityId(jobId)).isEmpty) {
+      throw IllegalArgumentException("Job not found: jobId=$jobId")
     }
-
-    val id = ExpressionOfInterestId(jobId = jodId, prisonNumber = request.prisonNumber)
-    if (expressionOfInterestRepository.findById(id).isPresent) {
-      deleted = true
-      expressionOfInterestRepository.deleteById(id)
-    }
-    return deleted
+    return expressionOfInterestRepository.existsById(ExpressionOfInterestId(EntityId(jobId), prisonNumber))
   }
 }

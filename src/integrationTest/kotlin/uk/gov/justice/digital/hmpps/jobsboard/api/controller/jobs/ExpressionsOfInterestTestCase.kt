@@ -16,6 +16,7 @@ abstract class ExpressionsOfInterestTestCase : JobsTestCase() {
 
   protected val invalidPrisonNumber = "A0000AAZ"
   protected val nonExistentPrisonNumber = "Z9999AA"
+  protected val invalidUUID = "00000000-0000-0000-0000-00000"
 
   protected fun assertAddExpressionOfInterest(
     jobId: String? = null,

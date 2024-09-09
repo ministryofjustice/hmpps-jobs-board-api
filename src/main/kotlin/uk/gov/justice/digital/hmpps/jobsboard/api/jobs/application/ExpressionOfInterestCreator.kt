@@ -28,6 +28,9 @@ class ExpressionOfInterestCreator(
   }
 
   fun existsById(jobId: String, prisonNumber: String): Boolean {
+    if (jobRepository.findById(EntityId(jobId)).isEmpty) {
+      throw IllegalArgumentException("Job not found: jobId=$jobId")
+    }
     return expressionOfInterestRepository.existsById(ExpressionOfInterestId(EntityId(jobId), prisonNumber))
   }
 }

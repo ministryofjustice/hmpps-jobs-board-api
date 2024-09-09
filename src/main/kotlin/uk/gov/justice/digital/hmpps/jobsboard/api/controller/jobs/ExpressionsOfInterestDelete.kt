@@ -33,14 +33,13 @@ class ExpressionsOfInterestDelete(
     @Size(max = 7, min = 1)
     prisonNumber: String,
   ): ResponseEntity<Void> {
-    val deleted = expressionOfInterestDeleter.delete(
-      DeleteExpressionOfInterestRequest(
-        jobId,
-        prisonNumber,
-      ),
-    )
-
-    return if (deleted) {
+    return if (expressionOfInterestDeleter.existsById(jobId, prisonNumber)) {
+      expressionOfInterestDeleter.delete(
+        DeleteExpressionOfInterestRequest(
+          jobId,
+          prisonNumber,
+        ),
+      )
       ResponseEntity.noContent().build()
     } else {
       ResponseEntity.notFound().build()

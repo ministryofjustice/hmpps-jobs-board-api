@@ -2,11 +2,9 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
@@ -38,18 +36,10 @@ class ExpressionOfInterestDeleterShould : TestBase() {
 
   @Test
   fun `delete, when it exists`() {
-    val expressionOfInterest = obtainTheExpressionOfInterestJustCreated()
-    val id = expressionsOfInterestRequest.let { request ->
-      ExpressionOfInterestId(
-        EntityId(request.jobId),
-        request.prisonNumber,
-      )
-    }
-    whenever(expressionOfInterestRepository.findById(id)).thenReturn(Optional.of(expressionOfInterest))
-
+    val expressionOfInterest = obtainTheExpressionOfInterestJustCreated(stubJob = false)
     expressionOfInterestDeleter.delete(expressionsOfInterestRequest)
 
-    verify(expressionOfInterestRepository).deleteById(id)
+    verify(expressionOfInterestRepository).deleteById(expressionOfInterest.id)
   }
 
   @Test
@@ -81,7 +71,6 @@ class ExpressionOfInterestDeleterShould : TestBase() {
 
   @Test
   fun `throw exception, when prisoner's prisonNumber is invalid at deletion`() {
-    givenAJobIsCreatedWithExpressionOfInterest()
     val badRequest = DeleteExpressionOfInterestRequest.from(
       jobId = expectedJobId,
       prisonNumber = "A1234BCZ",
@@ -94,30 +83,57 @@ class ExpressionOfInterestDeleterShould : TestBase() {
   }
 
   @Test
-  fun `return false, when ExpressionOfInterest does NOT exist at deletion`() {
-    givenAJobIsCreatedWithExpressionOfInterest()
-    val deleted = expressionOfInterestDeleter.delete(expressionsOfInterestRequest)
-
-    verify(expressionOfInterestRepository, never()).deleteById(any(ExpressionOfInterestId::class.java))
-    assertThat(deleted).isFalse()
+  fun `nothing deleted, when ExpressionOfInterest does NOT exist at deletion`() {
+    expressionOfInterestDeleter.delete(expressionsOfInterestRequest)
   }
 
-  private fun givenAJobIsCreatedWithExpressionOfInterest() {
+  @Test
+  fun `return true when ExpressionOfInterest exists`() {
     obtainTheExpressionOfInterestJustCreated()
+    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
+      .thenReturn(true)
+
+    val isExisting = expressionOfInterestDeleter.existsById(expectedJobId, expectedPrisonNumber)
+    assertThat(isExisting).isTrue()
   }
 
-  private fun obtainTheJobJustCreated(): Job {
-    return deepCopy(expectedJob).also { job ->
-      whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
+  @Test
+  fun `return false when ExpressionOfInterest not exist`() {
+    obtainTheJobJustCreated()
+    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
+      .thenReturn(false)
+
+    val isExisting = expressionOfInterestDeleter.existsById(expectedJobId, expectedPrisonNumber)
+    assertThat(isExisting).isFalse()
+  }
+
+  @Test
+  fun `throw exception, when Job does NOT exist at ExpressionOfInterest's existence check`() {
+    val nonExistentJobId = UUID.randomUUID().toString()
+
+    val exception = assertFailsWith<IllegalArgumentException> {
+      expressionOfInterestDeleter.existsById(nonExistentJobId, expectedPrisonNumber)
     }
+    assertEquals("Job not found: jobId=$nonExistentJobId", exception.message)
   }
 
-  private fun obtainTheExpressionOfInterestJustCreated(): ExpressionOfInterest =
-    obtainTheJobJustCreated().let { job ->
-      makeExpressionOfInterest(job, expectedPrisonNumber).also {
-        job.expressionsOfInterest[expectedPrisonNumber] = it
+  private fun obtainTheJobJustCreated(stubJob: Boolean = true): Job {
+    return deepCopy(expectedJob).also { job ->
+      if (stubJob) {
+        whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
       }
     }
+  }
+
+  private fun obtainTheExpressionOfInterestJustCreated(stubJob: Boolean = true): ExpressionOfInterest {
+    val job = obtainTheJobJustCreated(stubJob)
+    return makeExpressionOfInterest(job, expectedPrisonNumber).also {
+      job.expressionsOfInterest[expectedPrisonNumber] = it
+    }
+  }
+
+  private fun makeExpressionOfInterestId(jobId: String, prisonNumber: String) =
+    ExpressionOfInterestId(EntityId(jobId), prisonNumber)
 
   private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
     ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonNumber), job = job)
