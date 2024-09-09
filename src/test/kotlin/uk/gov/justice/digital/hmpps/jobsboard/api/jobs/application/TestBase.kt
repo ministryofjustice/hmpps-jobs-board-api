@@ -79,4 +79,9 @@ abstract class TestBase {
   )
 
   protected val expectedJob = amazonForkliftOperatorJob
+
+  protected fun deepCopy(job: Job): Job = job.copy(
+    id = job.id.copy(),
+    employer = job.employer.copy(),
+  )
 }

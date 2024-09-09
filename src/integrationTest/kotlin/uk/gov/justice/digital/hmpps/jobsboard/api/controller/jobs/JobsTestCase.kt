@@ -26,9 +26,11 @@ class JobsTestCase : ApplicationTestCase() {
 
   protected fun assertAddJobIsCreated(
     body: String,
+    jobId: String? = null,
   ): String {
     return assertAddJob(
       body = body,
+      jobId = jobId,
       expectedStatus = CREATED,
     )
   }
