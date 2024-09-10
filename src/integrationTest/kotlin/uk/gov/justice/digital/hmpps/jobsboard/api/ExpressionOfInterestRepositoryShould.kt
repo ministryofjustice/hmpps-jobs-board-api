@@ -23,9 +23,9 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import java.time.Instant
@@ -302,5 +302,5 @@ class ExpressionOfInterestRepositoryShould {
   }
 
   private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonNumber), job = job)
+    ExpressionOfInterest(id = JobPrisonerId(job.id, prisonNumber), job = job)
 }

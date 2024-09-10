@@ -18,7 +18,7 @@ import java.time.Instant
 data class ExpressionOfInterest(
 
   @EmbeddedId
-  var id: ExpressionOfInterestId,
+  var id: JobPrisonerId,
 
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)

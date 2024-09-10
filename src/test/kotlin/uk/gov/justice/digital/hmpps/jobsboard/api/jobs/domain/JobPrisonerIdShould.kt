@@ -5,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class ExpressionOfInterestIdShould {
+class JobPrisonerIdShould {
   // This is UUID v4, not yet v7
   private val validJobId = "b67d9daf-fb7e-462b-9baf-dd4c8f62a3a7"
 
@@ -61,6 +61,6 @@ class ExpressionOfInterestIdShould {
     assertEquals("prisonNumber cannot be empty", exception.message)
   }
 
-  private fun makeId(jobId: String, prisonNumber: String): ExpressionOfInterestId =
-    ExpressionOfInterestId(EntityId(jobId), prisonNumber)
+  private fun makeId(jobId: String, prisonNumber: String): JobPrisonerId =
+    JobPrisonerId(EntityId(jobId), prisonNumber)
 }

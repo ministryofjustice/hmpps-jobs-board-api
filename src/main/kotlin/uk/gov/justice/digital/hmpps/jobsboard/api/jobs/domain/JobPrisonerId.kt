@@ -8,7 +8,7 @@ import java.io.Serializable
 const val PRISON_NUMBER_MAX_LENGTH: Int = 7
 
 @Embeddable
-data class ExpressionOfInterestId(
+data class JobPrisonerId(
   @Column(name = "job_id")
   val jobId: EntityId,
 
