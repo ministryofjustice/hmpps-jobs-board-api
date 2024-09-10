@@ -10,9 +10,9 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -146,8 +146,8 @@ class ExpressionOfInterestCreatorShould : TestBase() {
   }
 
   private fun makeExpressionOfInterestId(jobId: String, prisonNumber: String) =
-    ExpressionOfInterestId(EntityId(jobId), prisonNumber)
+    JobPrisonerId(EntityId(jobId), prisonNumber)
 
   private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = ExpressionOfInterestId(job.id, prisonNumber), job = job)
+    ExpressionOfInterest(id = JobPrisonerId(job.id, prisonNumber), job = job)
 }

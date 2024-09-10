@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 
 @Service
@@ -20,7 +20,7 @@ class ExpressionOfInterestCreator(
       .orElseThrow { IllegalArgumentException("Job not found: jobId=${request.jobId}") }
 
     val expressionOfInterest = ExpressionOfInterest(
-      id = ExpressionOfInterestId(job.id, request.prisonNumber),
+      id = JobPrisonerId(job.id, request.prisonNumber),
       job = job,
     )
 
@@ -31,6 +31,6 @@ class ExpressionOfInterestCreator(
     if (jobRepository.findById(EntityId(jobId)).isEmpty) {
       throw IllegalArgumentException("Job not found: jobId=$jobId")
     }
-    return expressionOfInterestRepository.existsById(ExpressionOfInterestId(EntityId(jobId), prisonNumber))
+    return expressionOfInterestRepository.existsById(JobPrisonerId(EntityId(jobId), prisonNumber))
   }
 }
