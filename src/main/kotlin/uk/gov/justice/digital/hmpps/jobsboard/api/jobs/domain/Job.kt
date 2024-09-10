@@ -111,4 +111,8 @@ data class Job(
   @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
   @MapKey(name = "id.prisonNumber")
   val expressionsOfInterest: MutableMap<String, ExpressionOfInterest> = mutableMapOf(),
+
+  @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+  @MapKey(name = "id.prisonNumber")
+  val archived: MutableMap<String, Archived> = mutableMapOf(),
 ) : Auditable()
