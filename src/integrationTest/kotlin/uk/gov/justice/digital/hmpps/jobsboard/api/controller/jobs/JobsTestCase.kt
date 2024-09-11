@@ -76,7 +76,7 @@ class JobsTestCase : ApplicationTestCase() {
   }
 
   protected fun assertGetJobIsOK(
-    jobId: String? = null,
+    jobId: String,
     parameters: String? = null,
     expectedResponse: String,
   ) {
@@ -90,7 +90,20 @@ class JobsTestCase : ApplicationTestCase() {
     )
   }
 
-  protected fun assertGetJobIsOKAndSortedByJobTitle(
+  protected fun assertGetJobsIsOK(
+    parameters: String? = null,
+    expectedResponse: String,
+  ) {
+    var url = JOBS_ENDPOINT
+    parameters?.let { url = "$url?$it" }
+    assertResponse(
+      url = url,
+      expectedStatus = OK,
+      expectedResponse = expectedResponse,
+    )
+  }
+
+  protected fun assertGetJobsIsOKAndSortedByJobTitle(
     parameters: String? = "",
     expectedJobTitlesSorted: List<String>,
   ) {
@@ -101,18 +114,7 @@ class JobsTestCase : ApplicationTestCase() {
     )
   }
 
-  protected fun assertGetJobIsOKAndSortedByDate(
-    parameters: String? = null,
-    expectedDatesSorted: List<String>,
-  ) {
-    assertResponse(
-      url = "$JOBS_ENDPOINT?$parameters",
-      expectedStatus = OK,
-      expectedDateSortedList = expectedDatesSorted,
-    )
-  }
-
-  protected fun assertGetJobIsOKAndSortedByDate(
+  protected fun assertGetJobsIsOKAndSortedByDate(
     parameters: String? = null,
     expectedSortingOrder: String = "asc",
   ) {
