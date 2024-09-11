@@ -17,9 +17,15 @@ dependencies {
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-  testImplementation("org.springframework.boot:spring-boot-testcontainers")
+  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    testImplementation("org.xmlunit:xmlunit-core:2.10.0")
+  }
+  testImplementation("org.springframework.boot:spring-boot-testcontainers") {
+    testImplementation("org.apache.commons:commons-compress:1.27.1")
+  }
   testImplementation("org.testcontainers:postgresql")
   testImplementation("org.testcontainers:junit-jupiter")
+
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -34,7 +40,9 @@ testing {
       dependencies {
         testType.set(TestSuiteType.INTEGRATION_TEST)
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
-        implementation("org.springframework.boot:spring-boot-starter-test")
+        implementation("org.springframework.boot:spring-boot-starter-test") {
+          implementation("org.xmlunit:xmlunit-core:2.10.0")
+        }
         implementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
         implementation("io.jsonwebtoken:jjwt-impl:0.12.5")
         implementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
@@ -42,7 +50,9 @@ testing {
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
         implementation("com.zaxxer:HikariCP:5.1.0")
         implementation("com.h2database:h2")
-        implementation("org.springframework.boot:spring-boot-testcontainers")
+        implementation("org.springframework.boot:spring-boot-testcontainers") {
+          implementation("org.apache.commons:commons-compress:1.27.1")
+        }
         implementation("org.testcontainers:postgresql")
         implementation("org.testcontainers:junit-jupiter")
       }
