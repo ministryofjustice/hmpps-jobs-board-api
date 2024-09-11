@@ -12,7 +12,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
     environment:
-      - SPRING_PROFILES_ACTIVE=developer
+      - SPRING_PROFILES_ACTIVE=dev
       - SERVER_PORT=8080
       - DATABASE_ENDPOINT=job-board-db
       - DATABASE_NAME=job-board
