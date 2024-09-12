@@ -49,4 +49,17 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       ),
     )
   }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list filtered by jobs sector`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOK(
+      parameters = "sectors=retail,warehousing",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandlerMatchingCandidateJobItemListResponse(jobCreationTime),
+        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime)
+      ),
+    )
+  }
 }
