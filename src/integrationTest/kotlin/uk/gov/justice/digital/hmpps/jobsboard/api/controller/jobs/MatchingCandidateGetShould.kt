@@ -76,4 +76,18 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       ),
     )
   }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list sorted by job title, in descending order`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
+      parameters = "sortBy=jobTitle&sortOrder=desc",
+      expectedJobTitlesSorted = listOf(
+        "Warehouse handler",
+        "Forklift operator",
+        "Apprentice plasterer",
+      ),
+    )
+  }
 }
