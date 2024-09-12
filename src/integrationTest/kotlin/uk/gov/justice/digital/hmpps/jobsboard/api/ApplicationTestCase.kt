@@ -45,6 +45,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContain
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
 import java.security.SecureRandom
 import java.time.Instant
+import java.time.LocalDate
 import java.time.Period
 import java.time.ZonedDateTime
 import java.util.*
@@ -250,6 +251,7 @@ abstract class ApplicationTestCase {
     expectedNameSortedList: List<String>? = null,
     expectedDateSortedList: List<String>? = null,
     expectedDateSortingOrder: String? = null,
+    expectedClosingDateSortingOrder: String? = null,
   ) {
     val resultActions = mockMvc.get(url) {
       contentType = APPLICATION_JSON
@@ -303,6 +305,28 @@ abstract class ApplicationTestCase {
           resultActions.andExpect {
             content {
               jsonPath("$.content[*].createdAt", contains(*timestamps))
+            }
+          }
+        }
+        expectedClosingDateSortingOrder?.let { sortingOrder ->
+          val closingDates = (
+            JsonPath.parse(resultActions.andReturn().response.contentAsString)
+              .read("$.content[*].closingDate") as List<Any?>
+            ).map { closingDateElement ->
+            (closingDateElement as? String)?.let {
+              LocalDate.parse(it).toString()
+            }
+          }.run {
+            when (sortingOrder) {
+              "asc" -> this.filterNotNull().sorted() + this.filter { it == null }
+              "desc" -> this.filterNotNull().sortedDescending() + this.filter { it == null }
+              else -> this
+            }
+          }.toTypedArray()
+
+          resultActions.andExpect {
+            content {
+              jsonPath("$.content[*].closingDate", contains(*closingDates))
             }
           }
         }
