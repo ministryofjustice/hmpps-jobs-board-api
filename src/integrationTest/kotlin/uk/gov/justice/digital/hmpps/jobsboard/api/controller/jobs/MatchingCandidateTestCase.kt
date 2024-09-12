@@ -7,9 +7,14 @@ const val MATCHING_CANDIDATE_ENDPOINT = "${JOBS_ENDPOINT}/matching-candidate"
 
 abstract class MatchingCandidateTestCase : JobsTestCase() {
 
-  protected fun assertGetMatchingCandidateJobsIsOK(expectedResponse: String) {
+  protected fun assertGetMatchingCandidateJobsIsOK(
+    parameters: String? = null,
+    expectedResponse: String,
+  ) {
+    var url = MATCHING_CANDIDATE_ENDPOINT
+    parameters?.let { url = "$url?$it" }
     assertResponse(
-      url = MATCHING_CANDIDATE_ENDPOINT,
+      url = url,
       expectedStatus = OK,
       expectedResponse = expectedResponse,
     )

@@ -11,7 +11,13 @@ class MatchingCandidateJobRetriever(
   private val matchingCandidateJobsRepository: MatchingCandidateJobRepository,
 ) {
 
-  fun retrieveAllJobs(pageable: Pageable): Page<Job> {
-    return matchingCandidateJobsRepository.findAll(pageable)
+  fun retrieveAllJobs(sectors: List<String>?, pageable: Pageable): Page<Job> {
+    return when {
+      !sectors.isNullOrEmpty() -> matchingCandidateJobsRepository.findBySectorInIgnoringCase(
+        sectors = sectors,
+        pageable = pageable,
+      )
+      else -> matchingCandidateJobsRepository.findAll(pageable)
+    }
   }
 }

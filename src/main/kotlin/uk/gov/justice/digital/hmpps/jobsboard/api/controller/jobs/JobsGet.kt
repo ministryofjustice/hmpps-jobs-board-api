@@ -66,11 +66,16 @@ class JobsGet(
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/matching-candidate")
-  fun retrieveAll(): ResponseEntity<Page<GetMatchingCandidateJobsResponse>> {
-    val page = 0
-    val size = 10
+  fun retrieveAll(
+    @RequestParam(required = false)
+    sectors: List<String>?,
+    @RequestParam(defaultValue = "0")
+    page: Int,
+    @RequestParam(defaultValue = "10")
+    size: Int,
+  ): ResponseEntity<Page<GetMatchingCandidateJobsResponse>> {
     val pageable: Pageable = PageRequest.of(page, size)
-    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(pageable)
+    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(sectors, pageable)
     val response = jobList.map { GetMatchingCandidateJobsResponse.from(it) }
     return ResponseEntity.ok(response)
   }
