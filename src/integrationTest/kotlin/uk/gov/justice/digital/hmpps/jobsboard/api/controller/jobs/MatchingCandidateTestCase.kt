@@ -9,7 +9,7 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
 
   protected fun assertGetMatchingCandidateJobsIsOK(
     parameters: String? = null,
-    expectedResponse: String
+    expectedResponse: String,
   ) {
     var url = MATCHING_CANDIDATE_ENDPOINT
     parameters?.let { url = "$url?$it" }
