@@ -22,4 +22,19 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       ),
     )
   }
+
+  @Test
+  fun `retrieve a custom paginated matching candidate Jobs list`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOK(
+      parameters = "page=1&size=1",
+      expectedResponse = expectedResponseListOf(
+        size = 1,
+        page = 1,
+        totalElements = 3,
+        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
+      ),
+    )
+  }
 }
