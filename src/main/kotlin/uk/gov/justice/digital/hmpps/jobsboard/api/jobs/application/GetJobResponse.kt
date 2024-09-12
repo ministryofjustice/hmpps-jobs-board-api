@@ -47,7 +47,7 @@ data class GetJobResponse(
         sourcePrimary = job.sourcePrimary,
         sourceSecondary = job.sourceSecondary,
         charityName = job.charityName,
-        postCode = job.postCode,
+        postCode = job.postcode,
         salaryFrom = job.salaryFrom,
         salaryTo = job.salaryTo,
         salaryPeriod = job.salaryPeriod,

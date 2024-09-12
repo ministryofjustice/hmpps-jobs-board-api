@@ -31,7 +31,7 @@ class JobCreator(
         sourcePrimary = request.sourcePrimary,
         sourceSecondary = request.sourceSecondary,
         charityName = request.charityName,
-        postCode = request.postCode,
+        postcode = request.postCode,
         salaryFrom = request.salaryFrom,
         salaryTo = request.salaryTo,
         salaryPeriod = request.salaryPeriod,

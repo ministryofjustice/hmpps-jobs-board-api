@@ -42,7 +42,7 @@ data class Job(
   val charityName: String? = null,
 
   @Column(name = "post_code", nullable = false)
-  val postCode: String,
+  val postcode: String,
 
   @Column(name = "salary_from", nullable = false)
   val salaryFrom: Float,

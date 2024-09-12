@@ -266,36 +266,4 @@ class JobsGetShould : JobsTestCase() {
   private fun givenJobsMustHaveDifferentCreationTimes() {
     givenCurrentTimeIsStrictlyIncreasing(jobCreationTime)
   }
-
-  private fun givenThreeJobsAreCreated() {
-    assertAddEmployer(
-      id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
-      body = tescoBody,
-      expectedStatus = CREATED,
-    )
-
-    assertAddEmployer(
-      id = "bf392249-b360-4e3e-81a0-8497047987e8",
-      body = amazonBody,
-      expectedStatus = CREATED,
-    )
-
-    assertAddEmployer(
-      id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
-      body = abcConstructionBody,
-      expectedStatus = CREATED,
-    )
-
-    assertAddJobIsCreated(
-      body = tescoWarehouseHandlerJobBody,
-    )
-
-    assertAddJobIsCreated(
-      body = amazonForkliftOperatorJobBody,
-    )
-
-    assertAddJobIsCreated(
-      body = abcConstructionJobBody,
-    )
-  }
 }

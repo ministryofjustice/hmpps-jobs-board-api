@@ -17,13 +17,18 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.JobRetriever
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.MatchingCandidateJobRetriever
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 
 @Validated
 @RestController
 @RequestMapping("/jobs", produces = [APPLICATION_JSON_VALUE])
-class JobsGet(private val jobRetriever: JobRetriever) {
+class JobsGet(
+  private val jobRetriever: JobRetriever,
+  private val matchingCandidateJobRetriever: MatchingCandidateJobRetriever,
+) {
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/{id}")
@@ -61,10 +66,12 @@ class JobsGet(private val jobRetriever: JobRetriever) {
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/matching-candidate")
-  fun retrieveAll(): ResponseEntity<Page<String>> {
+  fun retrieveAll(): ResponseEntity<Page<GetMatchingCandidateJobsResponse>> {
     val page = 0
     val size = 10
     val pageable: Pageable = PageRequest.of(page, size)
-    return ResponseEntity.ok(Page.empty(pageable))
+    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(pageable)
+    val response = jobList.map { GetMatchingCandidateJobsResponse.from(it) }
+    return ResponseEntity.ok(response)
   }
 }

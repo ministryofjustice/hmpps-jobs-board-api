@@ -125,6 +125,38 @@ class JobsTestCase : ApplicationTestCase() {
     )
   }
 
+  protected fun givenThreeJobsAreCreated() {
+    assertAddEmployer(
+      id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
+      body = tescoBody,
+      expectedStatus = CREATED,
+    )
+
+    assertAddEmployer(
+      id = "bf392249-b360-4e3e-81a0-8497047987e8",
+      body = amazonBody,
+      expectedStatus = CREATED,
+    )
+
+    assertAddEmployer(
+      id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
+      body = abcConstructionBody,
+      expectedStatus = CREATED,
+    )
+
+    assertAddJobIsCreated(
+      body = tescoWarehouseHandlerJobBody,
+    )
+
+    assertAddJobIsCreated(
+      body = amazonForkliftOperatorJobBody,
+    )
+
+    assertAddJobIsCreated(
+      body = abcConstructionJobBody,
+    )
+  }
+
   protected val abcConstructionJobBody: String = newJobBody(
     employerId = "182e9a24-6edb-48a6-a84f-b7061f004a97",
     jobTitle = "Apprentice plasterer",
@@ -535,7 +567,7 @@ class JobsTestCase : ApplicationTestCase() {
     """.trimIndent()
   }
 
-  private fun String.asJson(): String {
+  protected fun String.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
     return mapper.writeValueAsString(this)
   }

@@ -37,7 +37,7 @@ abstract class TestBase {
     sourcePrimary = "PEL",
     sourceSecondary = "",
     charityName = "",
-    postCode = "LS12",
+    postcode = "LS12",
     salaryFrom = 11.93f,
     salaryTo = 15.90f,
     salaryPeriod = "PER_HOUR",
