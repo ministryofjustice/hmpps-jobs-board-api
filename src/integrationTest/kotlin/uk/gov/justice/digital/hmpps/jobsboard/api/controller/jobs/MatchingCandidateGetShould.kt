@@ -58,7 +58,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       parameters = "sectors=retail,warehousing",
       expectedResponse = expectedResponseListOf(
         tescoWarehouseHandlerMatchingCandidateJobItemListResponse(jobCreationTime),
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime)
+        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
       ),
     )
   }
