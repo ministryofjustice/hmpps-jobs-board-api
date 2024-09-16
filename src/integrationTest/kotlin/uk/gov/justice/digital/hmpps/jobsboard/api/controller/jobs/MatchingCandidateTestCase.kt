@@ -20,6 +20,32 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
     )
   }
 
+  protected fun assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
+    parameters: String? = "",
+    expectedJobTitlesSorted: List<String>,
+  ) {
+    var url = MATCHING_CANDIDATE_ENDPOINT
+    parameters?.let { url = "$url?$it" }
+    assertResponse(
+      url = url,
+      expectedStatus = OK,
+      expectedJobTitleSortedList = expectedJobTitlesSorted,
+    )
+  }
+
+  protected fun assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
+    parameters: String? = null,
+    expectedSortingOrder: String = "asc",
+  ) {
+    var url = MATCHING_CANDIDATE_ENDPOINT
+    parameters?.let { url = "$url?$it" }
+    assertResponse(
+      url = url,
+      expectedStatus = OK,
+      expectedClosingDateSortingOrder = expectedSortingOrder,
+    )
+  }
+
   protected fun amazonForkliftOperatorMatchingCandidateJobItemListResponse(createdAt: Instant): String = newMatchingCandidateJobItemListResponse(
     jobTitle = "Forklift operator",
     employerName = "Amazon",

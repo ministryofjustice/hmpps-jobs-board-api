@@ -62,4 +62,62 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       ),
     )
   }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list sorted by job title, in ascending order`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
+      parameters = "sortBy=jobTitle&sortOrder=asc",
+      expectedJobTitlesSorted = listOf(
+        "Apprentice plasterer",
+        "Forklift operator",
+        "Warehouse handler",
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list sorted by job title, in descending order`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
+      parameters = "sortBy=jobTitle&sortOrder=desc",
+      expectedJobTitlesSorted = listOf(
+        "Warehouse handler",
+        "Forklift operator",
+        "Apprentice plasterer",
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list sorted by closing date, in ascending order, by default`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
+      parameters = "sortBy=closingDate",
+      expectedSortingOrder = "asc",
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list sorted by closing date, in ascending order`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
+      parameters = "sortBy=closingDate&sortOrder=asc",
+      expectedSortingOrder = "asc",
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list sorted by closing date, in descending order`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
+      parameters = "sortBy=closingDate&sortOrder=desc",
+      expectedSortingOrder = "desc",
+    )
+  }
 }
