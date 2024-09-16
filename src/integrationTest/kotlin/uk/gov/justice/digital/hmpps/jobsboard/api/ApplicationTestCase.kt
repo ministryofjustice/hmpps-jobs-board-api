@@ -319,7 +319,7 @@ abstract class ApplicationTestCase {
           }.run {
             when (sortingOrder) {
               "asc" -> this.filterNotNull().sorted() + this.filter { it == null }
-              "desc" -> this.filterNotNull().sortedDescending() + this.filter { it == null }
+              "desc" -> this.filter { it == null } + this.filterNotNull().sortedDescending()
               else -> this
             }
           }.toTypedArray()

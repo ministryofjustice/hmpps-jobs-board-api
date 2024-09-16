@@ -100,4 +100,14 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       expectedSortingOrder = "asc",
     )
   }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list sorted by closing date, in descending order`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
+      parameters = "sortBy=closingDate&sortOrder=desc",
+      expectedSortingOrder = "desc",
+    )
+  }
 }
