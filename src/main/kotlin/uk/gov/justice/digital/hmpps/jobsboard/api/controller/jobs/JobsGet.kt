@@ -88,4 +88,22 @@ class JobsGet(
     val response = jobList.map { GetMatchingCandidateJobsResponse.from(it) }
     return ResponseEntity.ok(response)
   }
+
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or  hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("/{id}/matching-candidate")
+  fun retrieve(
+    @PathVariable id: String,
+    @RequestParam(required = false)
+    prisonNumber: String?,
+    @RequestParam(required = false)
+    postcode: String?,
+  ): ResponseEntity<String> {
+    return ResponseEntity.ok(
+      """
+        {
+          "id": "$id"
+        }
+      """.trimIndent(),
+    )
+  }
 }
