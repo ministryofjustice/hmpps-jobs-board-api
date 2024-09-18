@@ -121,7 +121,6 @@ class MatchingCandidateJobDetailsRetrieverShould : TestBase() {
 
   @Test
   fun `return nothing with prisonNumber, when not found`() {
-    val job = expectedJob.deepCopyMe()
     whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber))
       .thenReturn(listOf())
 
