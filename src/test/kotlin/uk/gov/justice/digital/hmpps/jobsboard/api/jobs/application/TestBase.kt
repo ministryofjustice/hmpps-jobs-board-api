@@ -6,6 +6,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import java.time.LocalDate
@@ -80,8 +82,39 @@ abstract class TestBase {
 
   protected val expectedJob = amazonForkliftOperatorJob
 
-  protected fun deepCopy(job: Job): Job = job.copy(
-    id = job.id.copy(),
-    employer = job.employer.copy(),
-  )
+  protected fun deepCopy(job: Job): Job = job.deepCopyMe()
+
+  protected fun Job.deepCopyMe(): Job = this.copy(
+    id = this.id.copy(),
+    employer = this.employer.copy(),
+    expressionsOfInterest = this.expressionsOfInterest.toMutableMap(),
+    archived = this.archived.toMutableMap(),
+  ).apply {
+    expressionsOfInterest.forEach {
+      expressionsOfInterest[it.key] = it.value.deepCopy(job = this)
+    }
+    archived.forEach { pair ->
+      archived[pair.key] = pair.value.deepCopy(job = this)
+    }
+  }
+
+  fun ExpressionOfInterest.deepCopy(job: Job): ExpressionOfInterest {
+    val expressionOfInterest = this
+    return expressionOfInterest.copy(
+      id = expressionOfInterest.id.copy(
+        jobId = expressionOfInterest.id.jobId.copy(id = expressionOfInterest.id.jobId.id),
+      ),
+      job = job,
+    )
+  }
+
+  fun Archived.deepCopy(job: Job): Archived {
+    val archived = this
+    return archived.copy(
+      id = archived.id.copy(
+        jobId = archived.id.jobId.copy(id = archived.id.jobId.id),
+      ),
+      job = job,
+    )
+  }
 }
