@@ -20,8 +20,4 @@ class MatchingCandidateJobDetailsRetriever(
       else -> matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(jobId, prisonNumber).firstOrNull()
     }
   }
-
-  fun existsById(jobId: String): Boolean {
-    return jobRepository.existsById(EntityId(jobId))
-  }
 }
