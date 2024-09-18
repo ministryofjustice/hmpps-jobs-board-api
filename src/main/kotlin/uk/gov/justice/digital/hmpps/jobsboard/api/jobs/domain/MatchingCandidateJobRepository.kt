@@ -14,7 +14,10 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
 
   @Query(
     """
-    SELECT j, eoi, a from Job j 
+    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobDetails(
+      j, :prisonNumber, eoi, a
+    )
+    FROM Job j
     LEFT JOIN j.expressionsOfInterest eoi on eoi.id.prisonNumber = :prisonNumber 
     LEFT JOIN j.archived a on a.id.prisonNumber = :prisonNumber
     WHERE j.id.id = :jobId
@@ -23,5 +26,5 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
   fun findJobDetailsByPrisonNumber(
     @Param("jobId") jobId: String,
     @Param("prisonNumber") prisonNumber: String,
-  ): List<Array<Any>>
+  ): List<MatchingCandidateJobDetails>
 }

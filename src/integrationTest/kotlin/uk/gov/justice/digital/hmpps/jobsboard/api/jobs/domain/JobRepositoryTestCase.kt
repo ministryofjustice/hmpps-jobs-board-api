@@ -38,4 +38,10 @@ abstract class JobRepositoryTestCase : RepositoryTestCase() {
       entityManager.flush()
     }
   }
+
+  protected fun Job.archivedBy(prisonNumber: String): Archived =
+    Archived(id = JobPrisonerId(this.id, prisonNumber), job = this)
+
+  protected fun Job.registerExpressionOfInterest(prisonNumber: String): ExpressionOfInterest =
+    ExpressionOfInterest(id = JobPrisonerId(this.id, prisonNumber), job = this)
 }
