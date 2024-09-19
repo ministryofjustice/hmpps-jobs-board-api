@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.responseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.sainsburys
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tesco
 
@@ -30,7 +31,7 @@ class EmployersPutShould : EmployerTestCase() {
 
   @Test
   fun `update an existing Employer`() {
-    val employerId = assertAddEmployerIsCreated(employer = tesco)
+    val employerId = assertAddEmployerIsCreated(employer = sainsburys)
 
     assertUpdateEmployerIsOk(
       employerId = employerId,
@@ -39,7 +40,7 @@ class EmployersPutShould : EmployerTestCase() {
 
     assertGetEmployerIsOK(
       employerId = employerId,
-      expectedResponse = sainsburys.requestBody,
+      expectedResponse = sainsburys.responseBody,
     )
   }
 }

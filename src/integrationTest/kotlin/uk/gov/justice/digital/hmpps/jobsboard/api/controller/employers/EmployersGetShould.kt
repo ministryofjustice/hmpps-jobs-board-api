@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.responseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.sainsburys
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tescoLogistics
@@ -14,7 +14,7 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployerIsOK(
       employerId = employerId,
-      expectedResponse = tesco.requestBody,
+      expectedResponse = tesco.responseBody,
     )
   }
 
@@ -31,7 +31,7 @@ class EmployersGetShould : EmployerTestCase() {
     assertAddEmployerIsCreated(employer = sainsburys)
 
     assertGetEmployerIsOK(
-      expectedResponse = expectedResponseListOf(tesco.requestBody, sainsburys.requestBody),
+      expectedResponse = expectedResponseListOf(tesco.responseBody, sainsburys.responseBody),
     )
   }
 
@@ -42,7 +42,7 @@ class EmployersGetShould : EmployerTestCase() {
 
     this.assertGetEmployerIsOK(
       parameters = "page=1&size=1",
-      expectedResponse = expectedResponseListOf(size = 1, page = 1, totalElements = 2, tesco.requestBody),
+      expectedResponse = expectedResponseListOf(size = 1, page = 1, totalElements = 2, tesco.responseBody),
     )
   }
 
@@ -53,7 +53,7 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployerIsOK(
       parameters = "name=tesco",
-      expectedResponse = expectedResponseListOf(tesco.requestBody),
+      expectedResponse = expectedResponseListOf(tesco.responseBody),
     )
   }
 
@@ -64,7 +64,7 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployerIsOK(
       parameters = "name=tes",
-      expectedResponse = expectedResponseListOf(tesco.requestBody),
+      expectedResponse = expectedResponseListOf(tesco.responseBody),
     )
   }
 
@@ -75,7 +75,7 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployerIsOK(
       parameters = "sector=logistics",
-      expectedResponse = expectedResponseListOf(amazon.requestBody),
+      expectedResponse = expectedResponseListOf(amazon.responseBody),
     )
   }
 
@@ -88,7 +88,7 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployerIsOK(
       parameters = "name=Tesco&sector=LOGISTICS",
-      expectedResponse = expectedResponseListOf(tescoLogistics.requestBody),
+      expectedResponse = expectedResponseListOf(tescoLogistics.responseBody),
     )
   }
 
@@ -101,7 +101,7 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployerIsOK(
       parameters = "name=sAINS&sector=retail",
-      expectedResponse = expectedResponseListOf(sainsburys.requestBody),
+      expectedResponse = expectedResponseListOf(sainsburys.responseBody),
     )
   }
 
@@ -114,7 +114,7 @@ class EmployersGetShould : EmployerTestCase() {
 
     assertGetEmployerIsOK(
       parameters = "name=Sainsbury's&sector=RETAIL&page=0&size=1",
-      expectedResponse = expectedResponseListOf(size = 1, page = 0, sainsburys.requestBody),
+      expectedResponse = expectedResponseListOf(size = 1, page = 0, sainsburys.responseBody),
     )
   }
 

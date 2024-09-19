@@ -4,15 +4,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 
 object EmployersMother {
-  private fun employerBody(name: String, description: String, sector: String, status: String): String = """
-        {
-          "name": "$name",
-          "description": "$description",
-          "sector": "$sector",
-          "status": "$status"
-        }
-  """.trimIndent()
-
   val tesco = Employer(
     id = EntityId("89de6c84-3372-4546-bbc1-9d1dc9ceb354"),
     name = "Tesco",
@@ -53,5 +44,34 @@ object EmployersMother {
     status = "SILVER",
   )
 
-  val Employer.requestBody: String get() = employerBody(name, description, sector, status)
+  val Employer.requestBody: String get() = employerRequestBody(name, description, sector, status)
+
+  val Employer.responseBody: String get() = employerResponseBody(id, name, description, sector, status)
+
+  private fun employerRequestBody(name: String, description: String, sector: String, status: String): String {
+    return employerBody(name, description, sector, status)
+  }
+
+  private fun employerResponseBody(id: EntityId, name: String, description: String, sector: String, status: String): String {
+    return employerBody(name, description, sector, status, id.id)
+  }
+
+  private fun employerBody(
+    name: String,
+    description: String,
+    sector: String,
+    status: String,
+    id: String? = null,
+  ): String {
+    val idField = id?.let { "\"id\": \"$it\"," } ?: ""
+    return """
+        {
+          $idField
+          "name": "$name",
+          "description": "$description",
+          "sector": "$sector",
+          "status": "$status"
+        }
+    """.trimIndent()
+  }
 }
