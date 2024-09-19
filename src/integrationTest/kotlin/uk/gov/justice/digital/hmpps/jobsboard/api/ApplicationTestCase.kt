@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -38,6 +39,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EMPLOYERS_ENDPOINT
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.EXPRESSIONS_OF_INTEREST_PATH_PREFIX
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
@@ -201,6 +204,45 @@ abstract class ApplicationTestCase {
     )
     return employerId
   }
+
+  protected fun assertAddExpressionOfInterest(
+    jobId: String? = null,
+    prisonNumber: String? = null,
+    expectedStatus: HttpStatus = CREATED,
+    matchRedirectedUrl: Boolean = false,
+  ): Array<String> = assertEditExpressionOfInterest(
+    jobId = jobId,
+    prisonNumber = prisonNumber,
+    expectedStatus = expectedStatus,
+    expectedHttpVerb = PUT,
+    matchRedirectedUrl = matchRedirectedUrl,
+  )
+
+  protected fun assertEditExpressionOfInterest(
+    jobId: String? = null,
+    prisonNumber: String? = null,
+    expectedStatus: HttpStatus,
+    expectedHttpVerb: HttpMethod,
+    expectedResponse: String? = null,
+    matchRedirectedUrl: Boolean = false,
+  ): Array<String> {
+    val finalJobId = jobId ?: randomUUID()
+    val finalPrisonNumber = prisonNumber ?: randomPrisonNumber()
+    val url = "$JOBS_ENDPOINT/$finalJobId/$EXPRESSIONS_OF_INTEREST_PATH_PREFIX/$finalPrisonNumber"
+    assertRequestWithoutBody(
+      url = url,
+      expectedStatus = expectedStatus,
+      expectedHttpVerb = expectedHttpVerb,
+      expectedResponse = expectedResponse,
+      expectedRedirectUrlPattern = if (matchRedirectedUrl) "http*://*$url" else null,
+    )
+    return arrayOf(finalJobId, finalPrisonNumber)
+  }
+
+  protected fun randomUUID(): String = UUID.randomUUID().toString()
+
+  protected fun randomPrisonNumber(): String =
+    randomAlphabets(1) + randomDigits(4) + randomAlphabets(2)
 
   protected fun assertRequestWithBody(
     url: String,

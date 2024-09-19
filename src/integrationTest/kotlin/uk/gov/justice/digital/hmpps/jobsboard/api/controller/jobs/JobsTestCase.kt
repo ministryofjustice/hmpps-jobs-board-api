@@ -10,13 +10,13 @@ import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
 import java.time.Instant
-import java.util.Optional
-import java.util.UUID.randomUUID
+import java.util.*
 
 const val JOBS_ENDPOINT = "/jobs"
 
 class JobsTestCase : ApplicationTestCase() {
   val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+  val prisonNumber = "A1234BC"
 
   @BeforeEach
   override fun setup() {
@@ -158,6 +158,8 @@ class JobsTestCase : ApplicationTestCase() {
       id = "6fdf2bf4-cfe6-419c-bab2-b3673adbb393",
       body = abcConstructionJobBody,
     )
+
+    assertAddExpressionOfInterest("6fdf2bf4-cfe6-419c-bab2-b3673adbb393", prisonNumber)
   }
 
   protected val abcConstructionJobBody: String = newJobBody(

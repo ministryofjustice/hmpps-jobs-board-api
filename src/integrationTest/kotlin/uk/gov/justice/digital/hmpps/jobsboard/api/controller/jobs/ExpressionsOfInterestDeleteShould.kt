@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
 
 class ExpressionsOfInterestDeleteShould : ExpressionsOfInterestTestCase() {
-  val prisonNumber = "A1234BC"
-
   @Test
   fun `delete ExpressionOfInterest, when it exists`() {
     val ids = givenAJobIsCreatedWithExpressionOfInterest()

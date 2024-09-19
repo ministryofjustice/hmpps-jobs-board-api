@@ -18,19 +18,6 @@ abstract class ExpressionsOfInterestTestCase : JobsTestCase() {
   protected val nonExistentPrisonNumber = "Z9999AA"
   protected val invalidUUID = "00000000-0000-0000-0000-00000"
 
-  protected fun assertAddExpressionOfInterest(
-    jobId: String? = null,
-    prisonNumber: String? = null,
-    expectedStatus: HttpStatus = CREATED,
-    matchRedirectedUrl: Boolean = false,
-  ): Array<String> = assertEditExpressionOfInterest(
-    jobId = jobId,
-    prisonNumber = prisonNumber,
-    expectedStatus = expectedStatus,
-    expectedHttpVerb = PUT,
-    matchRedirectedUrl = matchRedirectedUrl,
-  )
-
   protected fun assertAddExpressionOfInterestThrowsValidationOrIllegalArgumentError(
     jobId: String? = null,
     prisonNumber: String? = null,
@@ -84,32 +71,6 @@ abstract class ExpressionsOfInterestTestCase : JobsTestCase() {
     expectedHttpVerb = expectedHttpVerb,
     expectedResponse = expectedResponse,
   )
-
-  private fun assertEditExpressionOfInterest(
-    jobId: String? = null,
-    prisonNumber: String? = null,
-    expectedStatus: HttpStatus,
-    expectedHttpVerb: HttpMethod,
-    expectedResponse: String? = null,
-    matchRedirectedUrl: Boolean = false,
-  ): Array<String> {
-    val finalJobId = jobId ?: randomUUID()
-    val finalPrisonNumber = prisonNumber ?: randomPrisonNumber()
-    val url = "$JOBS_ENDPOINT/$finalJobId/$EXPRESSIONS_OF_INTEREST_PATH_PREFIX/$finalPrisonNumber"
-    assertRequestWithoutBody(
-      url = url,
-      expectedStatus = expectedStatus,
-      expectedHttpVerb = expectedHttpVerb,
-      expectedResponse = expectedResponse,
-      expectedRedirectUrlPattern = if (matchRedirectedUrl) "http*://*$url" else null,
-    )
-    return arrayOf(finalJobId, finalPrisonNumber)
-  }
-
-  protected fun randomUUID(): String = UUID.randomUUID().toString()
-
-  protected fun randomPrisonNumber(): String =
-    randomAlphabets(1) + randomDigits(4) + randomAlphabets(2)
 
   protected fun obtainJobIdGivenAJobIsJustCreated(): String {
     assertAddEmployer(
