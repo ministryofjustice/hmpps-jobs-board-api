@@ -8,13 +8,16 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.abcConstruction
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tesco
 import java.time.Instant
 import java.util.*
 
 const val JOBS_ENDPOINT = "/jobs"
 
-class JobsTestCase : ApplicationTestCase() {
+class JobsTestCase : EmployerTestCase() {
   val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
   val prisonNumber = "A1234BC"
 
@@ -126,23 +129,9 @@ class JobsTestCase : ApplicationTestCase() {
   }
 
   protected fun givenThreeJobsAreCreated() {
-    assertAddEmployer(
-      id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
-      body = tescoBody,
-      expectedStatus = CREATED,
-    )
-
-    assertAddEmployer(
-      id = "bf392249-b360-4e3e-81a0-8497047987e8",
-      body = amazonBody,
-      expectedStatus = CREATED,
-    )
-
-    assertAddEmployer(
-      id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
-      body = abcConstructionBody,
-      expectedStatus = CREATED,
-    )
+    assertAddEmployerIsCreated(employer = tesco)
+    assertAddEmployerIsCreated(employer = amazon)
+    assertAddEmployerIsCreated(employer = abcConstruction)
 
     assertAddJobIsCreated(
       id = "04295747-e60d-4e51-9716-e721a63bdd06",

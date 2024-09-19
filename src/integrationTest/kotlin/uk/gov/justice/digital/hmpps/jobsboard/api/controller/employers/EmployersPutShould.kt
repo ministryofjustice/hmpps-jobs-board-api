@@ -1,18 +1,22 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.responseBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.sainsburys
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tesco
 
 class EmployersPutShould : EmployerTestCase() {
   @Test
   fun `create a valid Employer`() {
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(employer = sainsburys)
   }
 
   @Test
   fun `not create an Employer with invalid UUID`() {
     assertAddEmployerThrowsValidationError(
       employerId = "invalid-uuid",
-      body = tescoBody,
+      body = tesco.requestBody,
       expectedResponse = """
         {
           "status":400,
@@ -27,16 +31,16 @@ class EmployersPutShould : EmployerTestCase() {
 
   @Test
   fun `update an existing Employer`() {
-    val employerId = assertAddEmployerIsCreated(body = tescoBody)
+    val employerId = assertAddEmployerIsCreated(employer = sainsburys)
 
     assertUpdateEmployerIsOk(
       employerId = employerId,
-      body = sainsburysBody,
+      body = sainsburys.requestBody,
     )
 
     assertGetEmployerIsOK(
       employerId = employerId,
-      expectedResponse = sainsburysBody,
+      expectedResponse = sainsburys.responseBody,
     )
   }
 }
