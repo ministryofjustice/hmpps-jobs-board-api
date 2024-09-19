@@ -39,6 +39,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EMPLOYERS_ENDPOINT
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.ARCHIVED_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.EXPRESSIONS_OF_INTEREST_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
@@ -52,7 +53,6 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.ZonedDateTime
 import java.util.*
-import java.util.UUID.randomUUID
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.SECONDS
 
@@ -238,6 +238,40 @@ abstract class ApplicationTestCase {
     )
     return arrayOf(finalJobId, finalPrisonNumber)
   }
+
+  protected fun assertRequestArchived(
+    jobId: String? = null,
+    prisonNumber: String? = null,
+    expectedStatus: HttpStatus,
+    expectedHttpVerb: HttpMethod,
+    expectedResponse: String? = null,
+    matchRedirectedUrl: Boolean = false,
+  ): Array<String> {
+    val finalJobId = jobId ?: randomUUID()
+    val finalPrisonNumber = prisonNumber ?: randomPrisonNumber()
+    val url = "$JOBS_ENDPOINT/$finalJobId/$ARCHIVED_PATH_PREFIX/$finalPrisonNumber"
+    assertRequestWithoutBody(
+      url = url,
+      expectedStatus = expectedStatus,
+      expectedHttpVerb = expectedHttpVerb,
+      expectedResponse = expectedResponse,
+      expectedRedirectUrlPattern = if (matchRedirectedUrl) "http*://*$url" else null,
+    )
+    return arrayOf(finalJobId, finalPrisonNumber)
+  }
+
+  protected fun assertAddArchived(
+    jobId: String? = null,
+    prisonNumber: String? = null,
+    expectedStatus: HttpStatus = CREATED,
+    matchRedirectedUrl: Boolean = false,
+  ): Array<String> = assertRequestArchived(
+    jobId = jobId,
+    prisonNumber = prisonNumber,
+    expectedStatus = expectedStatus,
+    expectedHttpVerb = PUT,
+    matchRedirectedUrl = matchRedirectedUrl,
+  )
 
   protected fun randomUUID(): String = UUID.randomUUID().toString()
 

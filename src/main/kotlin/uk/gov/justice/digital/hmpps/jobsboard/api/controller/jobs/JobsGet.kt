@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -17,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.JobRetriever
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.MatchingCandidateJobDetailsRetriever
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.MatchingCandidateJobRetriever
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 
@@ -28,6 +34,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 class JobsGet(
   private val jobRetriever: JobRetriever,
   private val matchingCandidateJobRetriever: MatchingCandidateJobRetriever,
+  private val matchingCandidateJobDetailsRetriever: MatchingCandidateJobDetailsRetriever,
 ) {
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
@@ -91,19 +98,53 @@ class JobsGet(
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or  hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/{id}/matching-candidate")
+  @Operation(
+    summary = "Retrieve Job details, while matching candidate",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "The failure status is set when the job is not found (Job has been deleted or a wrong job ID was provided).",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Incorrect permissions to access this endpoint",
+        useReturnTypeSchema = true,
+        content = [Content()],
+      ),
+    ],
+  )
   fun retrieve(
-    @PathVariable id: String,
+    @PathVariable
+    @Parameter(description = "Job ID, identifier of the given job")
+    id: String,
     @RequestParam(required = false)
+    @Parameter(description = "The identifier (prison number) of the given prisoner")
     prisonNumber: String?,
     @RequestParam(required = false)
+    @Parameter(description = "The release area’s postcode of the given prisoner")
     postcode: String?,
-  ): ResponseEntity<String> {
-    return ResponseEntity.ok(
-      """
-        {
-          "id": "$id"
-        }
-      """.trimIndent(),
-    )
+  ): ResponseEntity<GetMatchingCandidateJobResponse> {
+    val details = matchingCandidateJobDetailsRetriever.retrieve(id, prisonNumber)
+    return when {
+      details != null -> ResponseEntity.ok(
+        GetMatchingCandidateJobResponse.from(
+          job = details.job,
+          expressionOfInterest = details.hasExpressionOfInterest(),
+          archived = details.isArchived(),
+        ),
+      )
+
+      else -> ResponseEntity.notFound().build()
+    }
   }
 }

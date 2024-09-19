@@ -577,7 +577,7 @@ class JobsTestCase : ApplicationTestCase() {
     return mapper.writeValueAsString(this)
   }
 
-  private fun List<String>.asJson(): String {
+  protected fun List<String>.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
     return mapper.writeValueAsString(this)
   }
