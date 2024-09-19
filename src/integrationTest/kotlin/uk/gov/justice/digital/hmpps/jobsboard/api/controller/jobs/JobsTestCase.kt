@@ -18,9 +18,8 @@ import java.util.*
 
 const val JOBS_ENDPOINT = "/jobs"
 
-class JobsTestCase : ApplicationTestCase() {
+class JobsTestCase : EmployerTestCase() {
   val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
-  val prisonNumber = "A1234BC"
 
   @BeforeEach
   override fun setup() {
@@ -130,23 +129,9 @@ class JobsTestCase : ApplicationTestCase() {
   }
 
   protected fun givenThreeJobsAreCreated() {
-    assertAddEmployer(
-      id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
-      body = tesco.requestBody,
-      expectedStatus = CREATED,
-    )
-
-    assertAddEmployer(
-      id = "bf392249-b360-4e3e-81a0-8497047987e8",
-      body = amazon.requestBody,
-      expectedStatus = CREATED,
-    )
-
-    assertAddEmployer(
-      id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
-      body = abcConstruction.requestBody,
-      expectedStatus = CREATED,
-    )
+    assertAddEmployerIsCreated(employer = tesco)
+    assertAddEmployerIsCreated(employer = amazon)
+    assertAddEmployerIsCreated(employer = abcConstruction)
 
     assertAddJobIsCreated(
       id = "04295747-e60d-4e51-9716-e721a63bdd06",

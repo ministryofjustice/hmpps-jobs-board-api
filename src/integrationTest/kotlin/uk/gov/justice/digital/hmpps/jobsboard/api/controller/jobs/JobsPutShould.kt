@@ -1,30 +1,19 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpStatus.CREATED
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
-import java.util.*
 
 class JobsPutShould : JobsTestCase() {
   @Test
   fun `create a valid Job`() {
-    assertAddEmployer(
-      id = "bf392249-b360-4e3e-81a0-8497047987e8",
-      body = amazon.requestBody,
-      expectedStatus = CREATED,
-    )
+    assertAddEmployerIsCreated(employer = amazon)
     assertAddJobIsCreated(body = amazonForkliftOperatorJobBody)
   }
 
   @Test
   fun `create a valid Job with empty optional attributes`() {
-    assertAddEmployer(
-      id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
-      body = abcConstruction.requestBody,
-      expectedStatus = CREATED,
-    )
+    assertAddEmployerIsCreated(employer = abcConstruction)
     assertAddJobIsCreated(body = abcConstructionJobBody)
   }
 
@@ -48,11 +37,7 @@ class JobsPutShould : JobsTestCase() {
   @Test
   fun `update an existing Job`() {
     val employerId = "bf392249-b360-4e3e-81a0-8497047987e8"
-    assertAddEmployer(
-      id = employerId,
-      body = amazon.requestBody,
-      expectedStatus = CREATED,
-    )
+    assertAddEmployerIsCreated(employer = amazon)
 
     val jobId = assertAddJobIsCreated(body = amazonForkliftOperatorJobBody)
 

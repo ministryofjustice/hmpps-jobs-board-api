@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.Employers
 class EmployersPutShould : EmployerTestCase() {
   @Test
   fun `create a valid Employer`() {
-    assertAddEmployerIsCreated(body = sainsburys.requestBody)
+    assertAddEmployerIsCreated(employer = sainsburys)
   }
 
   @Test
@@ -30,7 +30,7 @@ class EmployersPutShould : EmployerTestCase() {
 
   @Test
   fun `update an existing Employer`() {
-    val employerId = assertAddEmployerIsCreated(body = tesco.requestBody)
+    val employerId = assertAddEmployerIsCreated(employer = tesco)
 
     assertUpdateEmployerIsOk(
       employerId = employerId,

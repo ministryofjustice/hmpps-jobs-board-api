@@ -5,11 +5,9 @@ import org.springframework.http.HttpMethod.DELETE
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
-import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
 
 const val ARCHIVED_PATH_PREFIX = "archived"
 
@@ -74,11 +72,7 @@ abstract class ArchivedTestCase : JobsTestCase() {
   )
 
   protected fun obtainJobIdGivenAJobIsJustCreated(): String {
-    assertAddEmployer(
-      id = "bf392249-b360-4e3e-81a0-8497047987e8",
-      body = amazon.requestBody,
-      expectedStatus = CREATED,
-    )
+    assertAddEmployerIsCreated(employer = amazon)
     assertAddJobIsCreated(body = amazonForkliftOperatorJobBody).also { jobId ->
       return jobId
     }
