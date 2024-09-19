@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.abcConstructionBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazonBody
 import java.util.*
 
 class JobsPutShould : JobsTestCase() {

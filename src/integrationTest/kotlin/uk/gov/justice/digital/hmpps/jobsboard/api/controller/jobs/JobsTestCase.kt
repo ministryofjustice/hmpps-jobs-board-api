@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.abcConstructionBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazonBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tescoBody
 import java.time.Instant
 import java.util.*
 
