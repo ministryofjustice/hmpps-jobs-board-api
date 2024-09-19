@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 
 data class GetMatchingCandidateJobsResponse(
+  val id: String,
   val jobTitle: String,
   val employerName: String,
   val sector: String,
@@ -15,6 +16,7 @@ data class GetMatchingCandidateJobsResponse(
   companion object {
     fun from(job: Job): GetMatchingCandidateJobsResponse {
       return GetMatchingCandidateJobsResponse(
+        id = job.id.toString(),
         jobTitle = job.title,
         employerName = job.employer.name,
         sector = job.sector,

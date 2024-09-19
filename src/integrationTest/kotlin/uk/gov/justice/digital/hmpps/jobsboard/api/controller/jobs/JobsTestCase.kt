@@ -10,13 +10,13 @@ import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
 import java.time.Instant
-import java.util.Optional
-import java.util.UUID.randomUUID
+import java.util.*
 
 const val JOBS_ENDPOINT = "/jobs"
 
 class JobsTestCase : ApplicationTestCase() {
   val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+  val prisonNumber = "A1234BC"
 
   @BeforeEach
   override fun setup() {
@@ -26,11 +26,11 @@ class JobsTestCase : ApplicationTestCase() {
 
   protected fun assertAddJobIsCreated(
     body: String,
-    jobId: String? = null,
+    id: String? = null,
   ): String {
     return assertAddJob(
       body = body,
-      jobId = jobId,
+      id = id,
       expectedStatus = CREATED,
     )
   }
@@ -40,7 +40,7 @@ class JobsTestCase : ApplicationTestCase() {
     body: String,
   ): String {
     return assertAddJob(
-      jobId = jobId,
+      id = jobId,
       body = body,
       expectedStatus = OK,
     )
@@ -52,7 +52,7 @@ class JobsTestCase : ApplicationTestCase() {
     expectedResponse: String,
   ) {
     assertAddJob(
-      jobId = jobId,
+      id = jobId,
       body = body,
       expectedStatus = BAD_REQUEST,
       expectedResponse = expectedResponse,
@@ -60,12 +60,12 @@ class JobsTestCase : ApplicationTestCase() {
   }
 
   private fun assertAddJob(
-    jobId: String? = null,
+    id: String? = null,
     body: String,
     expectedStatus: HttpStatus,
     expectedResponse: String? = null,
   ): String {
-    val finalJobId = jobId ?: randomUUID().toString()
+    val finalJobId = id ?: randomUUID().toString()
     assertRequestWithBody(
       url = "$JOBS_ENDPOINT/$finalJobId",
       body = body,
@@ -145,16 +145,21 @@ class JobsTestCase : ApplicationTestCase() {
     )
 
     assertAddJobIsCreated(
+      id = "04295747-e60d-4e51-9716-e721a63bdd06",
       body = tescoWarehouseHandlerJobBody,
     )
 
     assertAddJobIsCreated(
+      id = "d3035924-f9fe-426f-b253-f7c8225167ae",
       body = amazonForkliftOperatorJobBody,
     )
 
     assertAddJobIsCreated(
+      id = "6fdf2bf4-cfe6-419c-bab2-b3673adbb393",
       body = abcConstructionJobBody,
     )
+
+    assertAddExpressionOfInterest("6fdf2bf4-cfe6-419c-bab2-b3673adbb393", prisonNumber)
   }
 
   protected val abcConstructionJobBody: String = newJobBody(

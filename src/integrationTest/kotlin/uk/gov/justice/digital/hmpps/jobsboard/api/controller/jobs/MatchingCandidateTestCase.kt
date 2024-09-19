@@ -47,6 +47,7 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
   }
 
   protected fun amazonForkliftOperatorMatchingCandidateJobItemListResponse(createdAt: Instant): String = newMatchingCandidateJobItemListResponse(
+    id = "d3035924-f9fe-426f-b253-f7c8225167ae",
     jobTitle = "Forklift operator",
     employerName = "Amazon",
     sector = "RETAIL",
@@ -58,6 +59,7 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
   )
 
   protected fun tescoWarehouseHandlerMatchingCandidateJobItemListResponse(createdAt: Instant): String = newMatchingCandidateJobItemListResponse(
+    id = "04295747-e60d-4e51-9716-e721a63bdd06",
     jobTitle = "Warehouse handler",
     employerName = "Tesco",
     sector = "WAREHOUSING",
@@ -69,6 +71,7 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
   )
 
   protected fun abcConstructionMatchingCandidateJobItemListResponse(createdAt: Instant): String = newMatchingCandidateJobItemListResponse(
+    id = "6fdf2bf4-cfe6-419c-bab2-b3673adbb393",
     jobTitle = "Apprentice plasterer",
     employerName = "ABC Construction",
     sector = "CONSTRUCTION",
@@ -80,6 +83,7 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
   )
 
   private fun newMatchingCandidateJobItemListResponse(
+    id: String,
     jobTitle: String,
     employerName: String,
     sector: String,
@@ -91,6 +95,7 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
   ): String {
     return """
         {
+          "id": "$id",
           "jobTitle": "$jobTitle",
           "employerName": "$employerName",
           "sector": "$sector",

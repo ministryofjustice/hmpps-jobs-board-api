@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
 
 class ArchivedDeleteShould : ArchivedTestCase() {
-  val prisonNumber = "A1234BC"
 
   @Test
   fun `delete Archived, when it exists`() {

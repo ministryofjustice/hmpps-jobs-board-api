@@ -106,11 +106,6 @@ abstract class ArchivedTestCase : JobsTestCase() {
     return arrayOf(finalJobId, finalPrisonNumber)
   }
 
-  protected fun randomUUID(): String = UUID.randomUUID().toString()
-
-  protected fun randomPrisonNumber(): String =
-    randomAlphabets(1) + randomDigits(4) + randomAlphabets(2)
-
   protected fun obtainJobIdGivenAJobIsJustCreated(): String {
     assertAddEmployer(
       id = "bf392249-b360-4e3e-81a0-8497047987e8",
