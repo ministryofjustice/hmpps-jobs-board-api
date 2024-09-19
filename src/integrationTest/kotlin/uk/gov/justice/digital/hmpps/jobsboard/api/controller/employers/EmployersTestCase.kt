@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import java.time.Instant
-import java.util.UUID.randomUUID
 
 const val EMPLOYERS_ENDPOINT = "/employers"
 

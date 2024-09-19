@@ -38,7 +38,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirec
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EMPLOYERS_ENDPOINT
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.ARCHIVED_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.EXPRESSIONS_OF_INTEREST_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
@@ -144,22 +143,6 @@ abstract class ApplicationTestCase {
   }
 
   private fun httpHeaders(): HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
-
-  protected fun assertAddEmployer(
-    id: String? = null,
-    body: String,
-    expectedStatus: HttpStatus,
-    expectedResponse: String? = null,
-  ): String {
-    val employerId = id ?: randomUUID().toString()
-    assertRequestWithBody(
-      url = "$EMPLOYERS_ENDPOINT/$employerId",
-      body = body,
-      expectedStatus = expectedStatus,
-      expectedResponse = expectedResponse,
-    )
-    return employerId
-  }
 
   protected fun assertAddExpressionOfInterest(
     jobId: String? = null,

@@ -8,10 +8,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tesco
 import java.time.Instant
 import java.util.*
@@ -20,6 +19,7 @@ const val JOBS_ENDPOINT = "/jobs"
 
 class JobsTestCase : EmployerTestCase() {
   val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+  val prisonNumber = "A1234BC"
 
   @BeforeEach
   override fun setup() {
