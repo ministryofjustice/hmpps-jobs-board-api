@@ -2,16 +2,17 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.abcConstructionBody
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazonBody
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tescoBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.abcConstruction
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tesco
 
 class JobsGetShould : JobsTestCase() {
   @Test
   fun `retrieve an existing Job`() {
     assertAddEmployer(
       id = "bf392249-b360-4e3e-81a0-8497047987e8",
-      body = amazonBody,
+      body = amazon.requestBody,
       expectedStatus = CREATED,
     )
 
@@ -27,7 +28,7 @@ class JobsGetShould : JobsTestCase() {
   fun `retrieve an existing Job with all optional fields empty`() {
     assertAddEmployer(
       id = "182e9a24-6edb-48a6-a84f-b7061f004a97",
-      body = abcConstructionBody,
+      body = abcConstruction.requestBody,
       expectedStatus = CREATED,
     )
 
@@ -43,7 +44,7 @@ class JobsGetShould : JobsTestCase() {
   fun `return null on empty optional fields`() {
     assertAddEmployer(
       id = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
-      body = tescoBody,
+      body = tesco.requestBody,
       expectedStatus = CREATED,
     )
 

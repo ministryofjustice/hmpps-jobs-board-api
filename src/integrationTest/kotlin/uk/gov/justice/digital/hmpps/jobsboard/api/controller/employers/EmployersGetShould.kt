@@ -1,19 +1,20 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazonBody
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.sainsburysBody
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tescoBody
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tescoLogisticsBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.requestBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.sainsburys
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tesco
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tescoLogistics
 
 class EmployersGetShould : EmployerTestCase() {
   @Test
   fun `retrieve an existing Employer`() {
-    val employerId = assertAddEmployerIsCreated(body = tescoBody)
+    val employerId = assertAddEmployerIsCreated(body = tesco.requestBody)
 
     assertGetEmployerIsOK(
       employerId = employerId,
-      expectedResponse = tescoBody,
+      expectedResponse = tesco.requestBody,
     )
   }
 
@@ -26,101 +27,101 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated Employers list`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployerIsOK(
-      expectedResponse = expectedResponseListOf(tescoBody, sainsburysBody),
+      expectedResponse = expectedResponseListOf(tesco.requestBody, sainsburys.requestBody),
     )
   }
 
   @Test
   fun `retrieve a custom paginated Employers list`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     this.assertGetEmployerIsOK(
       parameters = "page=1&size=1",
-      expectedResponse = expectedResponseListOf(size = 1, page = 1, totalElements = 2, tescoBody),
+      expectedResponse = expectedResponseListOf(size = 1, page = 1, totalElements = 2, tesco.requestBody),
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list filtered by full name`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployerIsOK(
       parameters = "name=tesco",
-      expectedResponse = expectedResponseListOf(tescoBody),
+      expectedResponse = expectedResponseListOf(tesco.requestBody),
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list filtered by incomplete name`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployerIsOK(
       parameters = "name=tes",
-      expectedResponse = expectedResponseListOf(tescoBody),
+      expectedResponse = expectedResponseListOf(tesco.requestBody),
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list filtered by industry sector`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = amazonBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = amazon.requestBody)
 
     assertGetEmployerIsOK(
       parameters = "sector=logistics",
-      expectedResponse = expectedResponseListOf(amazonBody),
+      expectedResponse = expectedResponseListOf(amazon.requestBody),
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list filtered by name AND sector`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = tescoLogisticsBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
-    assertAddEmployerIsCreated(body = amazonBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = tescoLogistics.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
+    assertAddEmployerIsCreated(body = amazon.requestBody)
 
     assertGetEmployerIsOK(
       parameters = "name=Tesco&sector=LOGISTICS",
-      expectedResponse = expectedResponseListOf(tescoLogisticsBody),
+      expectedResponse = expectedResponseListOf(tescoLogistics.requestBody),
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list filtered by incomplete name AND sector`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = tescoLogisticsBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
-    assertAddEmployerIsCreated(body = amazonBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = tescoLogistics.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
+    assertAddEmployerIsCreated(body = amazon.requestBody)
 
     assertGetEmployerIsOK(
       parameters = "name=sAINS&sector=retail",
-      expectedResponse = expectedResponseListOf(sainsburysBody),
+      expectedResponse = expectedResponseListOf(sainsburys.requestBody),
     )
   }
 
   @Test
   fun `retrieve a custom paginated Employers list filtered by name AND sector`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = tescoLogisticsBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
-    assertAddEmployerIsCreated(body = amazonBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = tescoLogistics.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
+    assertAddEmployerIsCreated(body = amazon.requestBody)
 
     assertGetEmployerIsOK(
       parameters = "name=Sainsbury's&sector=RETAIL&page=0&size=1",
-      expectedResponse = expectedResponseListOf(size = 1, page = 0, sainsburysBody),
+      expectedResponse = expectedResponseListOf(size = 1, page = 0, sainsburys.requestBody),
     )
   }
 
   @Test
   fun `retrieve a default paginated Employers list sorted by name, in ascending order, by default`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployersIsOKAndSortedByName(
       expectedNamesSorted = listOf("Sainsbury's", "Tesco"),
@@ -129,8 +130,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated Employers list sorted by name, in ascending order`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployersIsOKAndSortedByName(
       parameters = "sortBy=name&sortOrder=asc",
@@ -140,8 +141,8 @@ class EmployersGetShould : EmployerTestCase() {
 
   @Test
   fun `retrieve a default paginated Employers list sorted by name, in descending order`() {
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployersIsOKAndSortedByName(
       parameters = "sortBy=name&sortOrder=desc",
@@ -153,8 +154,8 @@ class EmployersGetShould : EmployerTestCase() {
   fun `retrieve a default paginated Employers list sorted by creation date, in ascending order, by default`() {
     givenEmployersHaveIncreasingIncrementByDayCreationTimes()
 
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt",
@@ -167,8 +168,8 @@ class EmployersGetShould : EmployerTestCase() {
     val sortingOrder = "asc"
     givenEmployersHaveIncreasingIncrementByDayCreationTimes()
 
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt&sortOrder=$sortingOrder",
@@ -181,8 +182,8 @@ class EmployersGetShould : EmployerTestCase() {
     val sortingOrder = "desc"
     givenEmployersHaveIncreasingIncrementByDayCreationTimes()
 
-    assertAddEmployerIsCreated(body = tescoBody)
-    assertAddEmployerIsCreated(body = sainsburysBody)
+    assertAddEmployerIsCreated(body = tesco.requestBody)
+    assertAddEmployerIsCreated(body = sainsburys.requestBody)
 
     assertGetEmployersIsOkAndSortedByDate(
       parameters = "sortBy=createdAt&sortOrder=$sortingOrder",
