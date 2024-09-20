@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 
-object EmployersMother {
+object EmployerMother {
   val tesco = Employer(
     id = EntityId("89de6c84-3372-4546-bbc1-9d1dc9ceb354"),
     name = "Tesco",

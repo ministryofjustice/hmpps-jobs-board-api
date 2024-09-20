@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.responseBody
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.sainsburys
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tesco
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.tescoLogistics
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.responseBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.sainsburys
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tescoLogistics
 
 class EmployersGetShould : EmployerTestCase() {
   @Test

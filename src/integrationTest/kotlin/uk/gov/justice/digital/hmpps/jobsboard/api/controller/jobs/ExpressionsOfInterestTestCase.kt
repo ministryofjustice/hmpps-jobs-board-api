@@ -7,8 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
-import java.util.*
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 
 const val EXPRESSIONS_OF_INTEREST_PATH_PREFIX = "expressions-of-interest"
 

@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.abcConstruction
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployersMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 
 class JobsPutShould : JobsTestCase() {
   @Test
