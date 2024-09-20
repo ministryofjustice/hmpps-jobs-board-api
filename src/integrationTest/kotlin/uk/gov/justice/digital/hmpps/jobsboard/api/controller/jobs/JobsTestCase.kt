@@ -8,10 +8,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.jobRequestBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.newJobItemListResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.newJobResponse
 import java.time.Instant
 import java.util.*
 
@@ -151,7 +154,7 @@ class JobsTestCase : EmployerTestCase() {
     assertAddExpressionOfInterest("6fdf2bf4-cfe6-419c-bab2-b3673adbb393", prisonNumber)
   }
 
-  protected val abcConstructionJobBody: String = newJobBody(
+  protected val abcConstructionJobBody: String = jobRequestBody(
     employerId = "182e9a24-6edb-48a6-a84f-b7061f004a97",
     jobTitle = "Apprentice plasterer",
     sector = "CONSTRUCTION",
@@ -225,7 +228,7 @@ class JobsTestCase : EmployerTestCase() {
     createdAt = createdAt.toString(),
   )
 
-  protected val tescoWarehouseHandlerJobBody: String = newJobBody(
+  protected val tescoWarehouseHandlerJobBody: String = jobRequestBody(
     employerId = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
     jobTitle = "Warehouse handler",
     sector = "WAREHOUSING",
@@ -299,7 +302,7 @@ class JobsTestCase : EmployerTestCase() {
     createdAt = createdAt.toString(),
   )
 
-  protected val amazonForkliftOperatorJobBody: String = newJobBody(
+  protected val amazonForkliftOperatorJobBody: String = jobRequestBody(
     employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
     jobTitle = "Forklift operator",
     sector = "RETAIL",
@@ -406,160 +409,6 @@ class JobsTestCase : EmployerTestCase() {
     sector = "RETAIL",
     createdAt = createdAt.toString(),
   )
-
-  private fun newJobResponse(
-    employerId: String,
-    jobTitle: String,
-    sector: String,
-    industrySector: String,
-    numberOfVacancies: Int,
-    sourcePrimary: String,
-    sourceSecondary: String? = null,
-    charityName: String? = null,
-    postCode: String,
-    salaryFrom: Float,
-    salaryTo: Float? = null,
-    salaryPeriod: String,
-    additionalSalaryInformation: String? = null,
-    isPayingAtLeastNationalMinimumWage: Boolean,
-    workPattern: String,
-    hoursPerWeek: String,
-    contractType: String,
-    baseLocation: String? = null,
-    essentialCriteria: String,
-    desirableCriteria: String? = null,
-    description: String,
-    offenceExclusions: List<String>,
-    isRollingOpportunity: Boolean,
-    closingDate: String? = null,
-    isOnlyForPrisonLeavers: Boolean,
-    startDate: String? = null,
-    howToApply: String,
-    supportingDocumentationRequired: List<String>,
-    supportingDocumentationDetails: String? = null,
-    createdAt: String,
-  ): String {
-    return """
-        {
-          "employerId": "$employerId",
-          "jobTitle": "$jobTitle",
-          "sector": "$sector",
-          "industrySector": "$industrySector",
-          "numberOfVacancies": $numberOfVacancies,
-          "sourcePrimary": "$sourcePrimary",
-          "sourceSecondary": ${sourceSecondary?.asJson()},
-          "charityName": ${charityName?.asJson()},
-          "postCode": "$postCode",
-          "salaryFrom": $salaryFrom,
-          "salaryTo": $salaryTo,
-          "salaryPeriod": "$salaryPeriod",
-          "additionalSalaryInformation": ${additionalSalaryInformation?.asJson()},
-          "isPayingAtLeastNationalMinimumWage": $isPayingAtLeastNationalMinimumWage,
-          "workPattern": "$workPattern",
-          "hoursPerWeek": "$hoursPerWeek",
-          "contractType": "$contractType",
-          "baseLocation": ${baseLocation?.asJson()},
-          "essentialCriteria": "$essentialCriteria",
-          "desirableCriteria": ${desirableCriteria?.asJson()},
-          "description": ${description.asJson()},
-          "offenceExclusions": ${offenceExclusions.asJson()},
-          "isRollingOpportunity": $isRollingOpportunity,
-          "closingDate": ${closingDate?.asJson()},
-          "isOnlyForPrisonLeavers": $isOnlyForPrisonLeavers,
-          "startDate": ${startDate?.asJson()},
-          "howToApply": "$howToApply",
-          "supportingDocumentationRequired": ${supportingDocumentationRequired.asJson()},
-          "supportingDocumentationDetails": ${supportingDocumentationDetails?.asJson()},
-          "createdAt": "$createdAt"
-        }
-    """.trimIndent()
-  }
-
-  private fun newJobBody(
-    employerId: String,
-    jobTitle: String,
-    sector: String,
-    industrySector: String,
-    numberOfVacancies: Int,
-    sourcePrimary: String,
-    sourceSecondary: String? = null,
-    charityName: String? = null,
-    postCode: String,
-    salaryFrom: Float,
-    salaryTo: Float? = null,
-    salaryPeriod: String,
-    additionalSalaryInformation: String? = null,
-    isPayingAtLeastNationalMinimumWage: Boolean,
-    workPattern: String,
-    hoursPerWeek: String,
-    contractType: String,
-    baseLocation: String? = null,
-    essentialCriteria: String,
-    desirableCriteria: String? = null,
-    description: String,
-    offenceExclusions: List<String>,
-    isRollingOpportunity: Boolean,
-    closingDate: String? = null,
-    isOnlyForPrisonLeavers: Boolean,
-    startDate: String? = null,
-    howToApply: String,
-    supportingDocumentationRequired: List<String>,
-    supportingDocumentationDetails: String? = null,
-  ): String {
-    return """
-        {
-          "employerId": "$employerId",
-          "jobTitle": "$jobTitle",
-          "sector": "$sector",
-          "industrySector": "$industrySector",
-          "numberOfVacancies": $numberOfVacancies,
-          "sourcePrimary": "$sourcePrimary",
-          "sourceSecondary": ${sourceSecondary?.asJson()},
-          "charityName": ${charityName?.asJson()},
-          "postCode": "$postCode",
-          "salaryFrom": $salaryFrom,
-          "salaryTo": $salaryTo,
-          "salaryPeriod": "$salaryPeriod",
-          "additionalSalaryInformation": ${additionalSalaryInformation?.asJson()},
-          "isPayingAtLeastNationalMinimumWage": $isPayingAtLeastNationalMinimumWage,
-          "workPattern": "$workPattern",
-          "hoursPerWeek": "$hoursPerWeek",
-          "contractType": "$contractType",
-          "baseLocation": ${baseLocation?.asJson()},
-          "essentialCriteria": "$essentialCriteria",
-          "desirableCriteria": ${desirableCriteria?.asJson()},
-          "description": ${description.asJson()},
-          "offenceExclusions": ${offenceExclusions.asJson()},
-          "isRollingOpportunity": $isRollingOpportunity,
-          "closingDate": ${closingDate?.asJson()},
-          "isOnlyForPrisonLeavers": $isOnlyForPrisonLeavers,
-          "startDate": ${startDate?.asJson()},
-          "howToApply": "$howToApply",
-          "supportingDocumentationRequired": ${supportingDocumentationRequired.asJson()},
-          "supportingDocumentationDetails": ${supportingDocumentationDetails?.asJson()}
-        }
-    """.trimIndent()
-  }
-
-  private fun newJobItemListResponse(
-    employerId: String,
-    employerName: String,
-    jobTitle: String,
-    numberOfVacancies: Int,
-    sector: String,
-    createdAt: String,
-  ): String {
-    return """
-        {
-          "employerId": "$employerId",
-          "employerName": "$employerName",
-          "jobTitle": "$jobTitle",
-          "numberOfVacancies": $numberOfVacancies,
-          "sector": "$sector",
-          "createdAt": "$createdAt"
-        }
-    """.trimIndent()
-  }
 
   protected fun String.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
