@@ -111,4 +111,8 @@ class EmployerTestCase : ApplicationTestCase() {
     )
     return employerId
   }
+
+  protected fun givenEmployersAreCreated(vararg employers: Employer) {
+    employers.forEach { employer -> assertAddEmployerIsCreated(employer = employer) }
+  }
 }
