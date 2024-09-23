@@ -4,41 +4,42 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.responseBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 
 class JobsGetShould : JobsTestCase() {
   @Test
   fun `retrieve an existing Job`() {
     assertAddEmployerIsCreated(employer = amazon)
-
-    val jobId = assertAddJobIsCreated(body = amazonForkliftOperatorJobBody)
+    val jobId = assertAddJobIsCreated(job = amazonForkliftOperator)
 
     assertGetJobIsOK(
       jobId = jobId,
-      expectedResponse = amazonForkliftOperatorJobResponse(jobCreationTime),
+      expectedResponse = amazonForkliftOperator.responseBody,
     )
   }
 
   @Test
   fun `retrieve an existing Job with all optional fields empty`() {
     assertAddEmployerIsCreated(employer = abcConstruction)
-
-    val jobId = assertAddJobIsCreated(body = abcConstructionJobBody)
+    val jobId = assertAddJobIsCreated(job = abcConstructionApprentice)
 
     assertGetJobIsOK(
       jobId = jobId,
-      expectedResponse = abcConstructionJobResponse(jobCreationTime),
+      expectedResponse = abcConstructionApprentice.responseBody,
     )
   }
 
   @Test
   fun `return null on empty optional fields`() {
     assertAddEmployerIsCreated(employer = tesco)
-
-    val jobId = assertAddJobIsCreated(body = tescoWarehouseHandlerJobBody)
+    val jobId = assertAddJobIsCreated(job = tescoWarehouseHandler)
 
     assertGetJobIsOK(
       jobId = jobId,
-      expectedResponse = tescoWarehouseHandlerJobBody,
+      expectedResponse = tescoWarehouseHandler.responseBody,
     )
   }
 
