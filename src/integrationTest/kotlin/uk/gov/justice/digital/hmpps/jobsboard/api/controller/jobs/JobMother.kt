@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import java.time.LocalDate
 
 object JobMother {
@@ -129,16 +130,30 @@ object JobMother {
 
   val Job.requestBody: String get() = jobRequestBody(this)
   val Job.responseBody: String get() = jobResponseBody(this)
+  val Job.itemListResponseBody: String get() = jobItemListResponseBody(this)
 
-  fun jobRequestBody(job: Job): String {
+  private fun jobRequestBody(job: Job): String {
     return jobBody(job)
   }
 
-  fun jobResponseBody(job: Job): String {
+  private fun jobResponseBody(job: Job): String {
     return jobBody(job)
   }
 
-  fun newJobItemListResponse(
+  private fun jobItemListResponseBody(job: Job): String {
+    return """
+        {
+          "employerId": "${job.employer.id.id}",
+          "employerName": "${job.employer.name}",
+          "jobTitle": "${job.title}",
+          "numberOfVacancies": ${job.numberOfVacancies},
+          "sector": "${job.sector}",
+          "createdAt": "$jobCreationTime"
+        }
+    """.trimIndent()
+  }
+
+  private fun jobItemListResponseBody(
     employerId: String,
     employerName: String,
     jobTitle: String,
@@ -196,11 +211,6 @@ object JobMother {
   }
 
   private fun String.asJson(): String {
-    val mapper: ObjectMapper = jacksonObjectMapper()
-    return mapper.writeValueAsString(this)
-  }
-
-  private fun List<String>.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
     return mapper.writeValueAsString(this)
   }

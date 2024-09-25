@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.itemListResponseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.responseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 
@@ -56,9 +57,9 @@ class JobsGetShould : JobsTestCase() {
 
     assertGetJobsIsOK(
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
-        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
-        abcConstructionJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.itemListResponseBody,
+        tescoWarehouseHandler.itemListResponseBody,
+        abcConstructionApprentice.itemListResponseBody,
       ),
     )
   }
@@ -73,7 +74,7 @@ class JobsGetShould : JobsTestCase() {
         size = 1,
         page = 1,
         totalElements = 3,
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.itemListResponseBody,
       ),
     )
   }
@@ -85,7 +86,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=Forklift operator",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.itemListResponseBody,
       ),
     )
   }
@@ -97,7 +98,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=operator",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.itemListResponseBody,
       ),
     )
   }
@@ -109,7 +110,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=Tesco",
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandler.itemListResponseBody,
       ),
     )
   }
@@ -121,7 +122,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=Tes",
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandler.itemListResponseBody,
       ),
     )
   }
@@ -133,7 +134,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobsIsOK(
       parameters = "sector=retail",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.itemListResponseBody,
       ),
     )
   }
@@ -155,7 +156,7 @@ class JobsGetShould : JobsTestCase() {
     assertGetJobsIsOK(
       parameters = "jobTitleOrEmployerName=er&sector=construction",
       expectedResponse = expectedResponseListOf(
-        abcConstructionJobItemListResponse(jobCreationTime),
+        abcConstructionApprentice.itemListResponseBody,
       ),
     )
   }
@@ -170,7 +171,7 @@ class JobsGetShould : JobsTestCase() {
         size = 1,
         page = 0,
         totalElements = 1,
-        tescoWarehouseHandlerJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandler.itemListResponseBody,
       ),
     )
   }

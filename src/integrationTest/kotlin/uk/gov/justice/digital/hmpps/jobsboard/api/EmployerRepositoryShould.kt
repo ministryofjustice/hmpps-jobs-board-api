@@ -18,11 +18,12 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestJpaConfig
-import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.sainsburys
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.employerCreationTime
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.employerModificationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
-import java.time.Instant
 import java.util.*
 
 @DataJpaTest
@@ -39,22 +40,9 @@ class EmployerRepositoryShould {
   @Autowired
   lateinit var employerRepository: EmployerRepository
 
-  val employerCreationTime = Instant.parse("2024-07-01T01:00:00Z")
-  val employerModificationTime = Instant.parse("2024-07-01T02:00:00Z")
-
-  private lateinit var employer: Employer
-
   @BeforeEach
   fun setUp() {
     employerRepository.deleteAll()
-    employer =
-      Employer(
-        id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
-        name = "Sainsbury's",
-        description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century",
-        sector = "sector",
-        status = "status",
-      )
     whenever(dateTimeProvider.now).thenReturn(Optional.of(employerCreationTime))
   }
 
@@ -74,16 +62,16 @@ class EmployerRepositoryShould {
 
   @Test
   fun `save an Employer`() {
-    employerRepository.save(employer)
+    employerRepository.save(sainsburys)
   }
 
   @Test
   fun `find an existing Employer`() {
-    employerRepository.save(employer)
+    employerRepository.save(sainsburys)
 
     assertEquals(
-      Optional.of(employer),
-      employer.id.let { employerRepository.findById(it) },
+      Optional.of(sainsburys),
+      sainsburys.id.let { employerRepository.findById(it) },
     )
   }
 
@@ -94,14 +82,14 @@ class EmployerRepositoryShould {
 
   @Test
   fun `set createdAt attribute when saving a new employer`() {
-    val savedEmployer = employerRepository.save(employer)
+    val savedEmployer = employerRepository.save(sainsburys)
 
     assertThat(savedEmployer.createdAt).isEqualTo(employerCreationTime)
   }
 
   @Test
   fun `not update createdAt attribute when updating an existing Employer`() {
-    val savedEmployer = employerRepository.save(employer)
+    val savedEmployer = employerRepository.save(sainsburys)
 
     whenever(dateTimeProvider.now).thenReturn(Optional.of(employerModificationTime))
     val updatedJEmployer = employerRepository.save(savedEmployer)
@@ -111,14 +99,14 @@ class EmployerRepositoryShould {
 
   @Test
   fun `set modifiedAt attribute with same value as createdAt when saving a new Employer`() {
-    val savedEmployer = employerRepository.save(employer)
+    val savedEmployer = employerRepository.save(sainsburys)
 
     assertThat(savedEmployer.modifiedAt).isEqualTo(employerCreationTime)
   }
 
   @Test
   fun `update modifiedAt attribute with current date and time when updating an existing Employer`() {
-    val savedEmployer = employerRepository.save(employer)
+    val savedEmployer = employerRepository.save(sainsburys)
 
     whenever(dateTimeProvider.now).thenReturn(Optional.of(employerModificationTime))
     val updatedEmployer = employerRepository.saveAndFlush(savedEmployer)

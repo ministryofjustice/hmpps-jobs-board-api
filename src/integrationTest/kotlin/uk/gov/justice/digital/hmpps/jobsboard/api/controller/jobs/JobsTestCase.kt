@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.newJobItemListResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
@@ -144,33 +143,6 @@ class JobsTestCase : EmployerTestCase() {
 
     assertAddExpressionOfInterest("6fdf2bf4-cfe6-419c-bab2-b3673adbb393", prisonNumber)
   }
-
-  protected fun abcConstructionJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
-    employerId = "182e9a24-6edb-48a6-a84f-b7061f004a97",
-    employerName = "ABC Construction",
-    jobTitle = "Apprentice plasterer",
-    numberOfVacancies = 3,
-    sector = "CONSTRUCTION",
-    createdAt = createdAt.toString(),
-  )
-
-  protected fun tescoWarehouseHandlerJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
-    employerId = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
-    employerName = "Tesco",
-    jobTitle = "Warehouse handler",
-    numberOfVacancies = 1,
-    sector = "WAREHOUSING",
-    createdAt = createdAt.toString(),
-  )
-
-  protected fun amazonForkliftOperatorJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
-    employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
-    employerName = "Amazon",
-    jobTitle = "Forklift operator",
-    numberOfVacancies = 2,
-    sector = "RETAIL",
-    createdAt = createdAt.toString(),
-  )
 
   protected fun String.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
