@@ -19,7 +19,7 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
 
   @Test
   fun `archive a job for given prisoner`() {
-    val job = obtainTheJobJustCreated()
+    val job = givenAJobHasBeenCreated()
 
     val savedJobArchived = makeJobArchived(job, expectedPrisonNumber).let { jobArchived ->
       archivedRepository.saveAndFlush(jobArchived)
@@ -32,7 +32,7 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
 
   @Test
   fun `set createdAt attribute, when archiving job`() {
-    val job = obtainTheJobJustCreated()
+    val job = givenAJobHasBeenCreated()
 
     val jobArchived = makeJobArchived(job, expectedPrisonNumber)
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobArchivedTime))
@@ -43,7 +43,7 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
 
   @Test
   fun `do NOT update job's attribute, when archiving job`() {
-    val job = obtainTheJobJustCreated()
+    val job = givenAJobHasBeenCreated()
 
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobArchivedTime))
     val savedJobArchived = makeJobArchived(job, expectedPrisonNumber).let { jobArchived ->
@@ -57,7 +57,7 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
 
   @Test
   fun `do NOT archive again, when it exists`() {
-    val job = obtainTheJobJustCreated()
+    val job = givenAJobHasBeenCreated()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobArchivedTime))
     val savedJobArchived = makeJobArchived(job, expectedPrisonNumber).let { jobArchived ->
       archivedRepository.saveAndFlush(jobArchived)
@@ -94,7 +94,7 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
 
   @Test
   fun `undo archiving a job for given prisoner`() {
-    val job = obtainTheJobJustCreated()
+    val job = givenAJobHasBeenCreated()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobArchivedTime))
     val savedJobArchived = makeJobArchived(job, expectedPrisonNumber).let { jobArchived ->
       archivedRepository.saveAndFlush(jobArchived)
@@ -108,7 +108,7 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
 
   @Test
   fun `do NOT update job's attribute, when undo archiving`() {
-    val job = obtainTheJobJustCreated()
+    val job = givenAJobHasBeenCreated()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobArchivedTime))
     val savedJobArchived = makeJobArchived(job, expectedPrisonNumber).let { jobArchived ->
       archivedRepository.saveAndFlush(jobArchived)

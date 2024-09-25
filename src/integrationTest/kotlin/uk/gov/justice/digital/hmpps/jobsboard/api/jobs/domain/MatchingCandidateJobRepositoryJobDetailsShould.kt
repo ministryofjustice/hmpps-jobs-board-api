@@ -19,7 +19,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
 
   @Test
   fun `retrieve by prison number`() {
-    val expectedJob = this.obtainTheJobJustCreated()
+    val expectedJob = this.givenAJobHasBeenCreated()
 
     val actual = findJobDetailsByPrisonNumber(expectedJob.id.id, expectedPrisonNumber)
 
@@ -32,7 +32,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
 
   @Test
   fun `retrieve with relevant ExpressionOfInterest and Archived`() {
-    val expectedJob = obtainTheJobJustCreated().apply {
+    val expectedJob = givenAJobHasBeenCreated().apply {
       val makeMoreRecords: (String) -> Unit = { prisonNumber ->
         this.registerExpressionOfInterest(prisonNumber).also { expressionOfInterestRepository.save(it) }
         this.archivedBy(prisonNumber).also { archivedRepository.save(it) }
@@ -56,7 +56,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
 
   @Test
   fun `retrieve without relevant ExpressionOfInterest nor Archived`() {
-    val expectedJob = obtainTheJobJustCreated().apply {
+    val expectedJob = givenAJobHasBeenCreated().apply {
       registerExpressionOfInterest(unexpectedPrisonNumber).also { expressionOfInterestRepository.save(it) }
       archivedBy(unexpectedPrisonNumber).also { archivedRepository.save(it) }
     }.also { entityManager.flush() }
@@ -73,7 +73,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
 
   @Test
   fun `retrieve with relevant ExpressionOfInterest only`() {
-    val expectedJob = obtainTheJobJustCreated().apply {
+    val expectedJob = givenAJobHasBeenCreated().apply {
       registerExpressionOfInterest(expectedPrisonNumber).also { expressionOfInterestRepository.save(it) }
     }.also { entityManager.flush() }
 
@@ -87,7 +87,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
 
   @Test
   fun `retrieve with relevant Archived only`() {
-    val expectedJob = obtainTheJobJustCreated().apply {
+    val expectedJob = givenAJobHasBeenCreated().apply {
       archivedBy(expectedPrisonNumber).also { archivedRepository.save(it) }
     }.also { entityManager.flush() }
 
