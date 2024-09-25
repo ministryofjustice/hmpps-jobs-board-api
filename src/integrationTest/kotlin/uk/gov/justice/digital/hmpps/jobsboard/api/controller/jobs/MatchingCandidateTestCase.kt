@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.springframework.http.HttpStatus.OK
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.newMatchingCandidateJobItemListResponse
 import java.time.Instant
 
 const val MATCHING_CANDIDATE_ENDPOINT = "${JOBS_ENDPOINT}/matching-candidate"
@@ -81,30 +82,4 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
     expressionOfInterest = false,
     createdAt = createdAt.toString(),
   )
-
-  private fun newMatchingCandidateJobItemListResponse(
-    id: String,
-    jobTitle: String,
-    employerName: String,
-    sector: String,
-    postcode: String,
-    distance: Float,
-    closingDate: String?,
-    expressionOfInterest: Boolean,
-    createdAt: String,
-  ): String {
-    return """
-        {
-          "id": "$id",
-          "jobTitle": "$jobTitle",
-          "employerName": "$employerName",
-          "sector": "$sector",
-          "postcode": "$postcode",
-          "distance": $distance,
-          "closingDate": ${closingDate?.asJson()},
-          "expressionOfInterest": $expressionOfInterest,
-          "createdAt": "$createdAt"
-        }
-    """.trimIndent()
-  }
 }

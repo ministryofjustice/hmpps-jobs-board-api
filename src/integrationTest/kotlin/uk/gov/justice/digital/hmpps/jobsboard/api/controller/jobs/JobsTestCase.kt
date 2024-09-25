@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
@@ -136,7 +133,7 @@ class JobsTestCase : EmployerTestCase() {
     givenJobsAreCreated(
       tescoWarehouseHandler,
       amazonForkliftOperator,
-      abcConstructionApprentice
+      abcConstructionApprentice,
     )
 
     assertAddExpressionOfInterest("6fdf2bf4-cfe6-419c-bab2-b3673adbb393", prisonNumber)

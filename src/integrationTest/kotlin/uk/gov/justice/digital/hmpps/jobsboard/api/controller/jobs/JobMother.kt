@@ -190,6 +190,32 @@ object JobMother {
     """.trimIndent()
   }
 
+  fun newMatchingCandidateJobItemListResponse(
+    id: String,
+    jobTitle: String,
+    employerName: String,
+    sector: String,
+    postcode: String,
+    distance: Float,
+    closingDate: String?,
+    expressionOfInterest: Boolean,
+    createdAt: String,
+  ): String {
+    return """
+        {
+          "id": "$id",
+          "jobTitle": "$jobTitle",
+          "employerName": "$employerName",
+          "sector": "$sector",
+          "postcode": "$postcode",
+          "distance": $distance,
+          "closingDate": ${closingDate?.asJson()},
+          "expressionOfInterest": $expressionOfInterest,
+          "createdAt": "$createdAt"
+        }
+    """.trimIndent()
+  }
+
   private fun String.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
     return mapper.writeValueAsString(this)
