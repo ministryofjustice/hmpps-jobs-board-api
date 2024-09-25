@@ -153,26 +153,6 @@ object JobMother {
     """.trimIndent()
   }
 
-  private fun jobItemListResponseBody(
-    employerId: String,
-    employerName: String,
-    jobTitle: String,
-    numberOfVacancies: Int,
-    sector: String,
-    createdAt: String,
-  ): String {
-    return """
-        {
-          "employerId": "$employerId",
-          "employerName": "$employerName",
-          "jobTitle": "$jobTitle",
-          "numberOfVacancies": $numberOfVacancies,
-          "sector": "$sector",
-          "createdAt": "$createdAt"
-        }
-    """.trimIndent()
-  }
-
   private fun jobBody(job: Job): String {
     val createdAtField = job.createdAt?.let { ",\n\"createdAt\": \"$it\"" } ?: ""
     return """
