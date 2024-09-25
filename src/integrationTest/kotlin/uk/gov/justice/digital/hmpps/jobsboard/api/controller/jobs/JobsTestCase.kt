@@ -135,8 +135,6 @@ class JobsTestCase : EmployerTestCase() {
       amazonForkliftOperator,
       abcConstructionApprentice,
     )
-
-    assertAddExpressionOfInterest("6fdf2bf4-cfe6-419c-bab2-b3673adbb393", prisonNumber)
   }
 
   protected fun givenJobsAreCreated(vararg jobs: Job) {

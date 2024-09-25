@@ -31,6 +31,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   @Test
   fun `retrieve a default paginated matching candidate Jobs list from known prison number`() {
     givenThreeJobsAreCreated()
+    assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
 
     assertGetMatchingCandidateJobsIsOK(
       parameters = "prisonNumber=$prisonNumber",
