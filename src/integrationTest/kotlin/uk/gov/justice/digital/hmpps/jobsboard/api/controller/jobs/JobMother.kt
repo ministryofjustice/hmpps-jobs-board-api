@@ -131,6 +131,7 @@ object JobMother {
   val Job.requestBody: String get() = jobRequestBody(this)
   val Job.responseBody: String get() = jobResponseBody(this)
   val Job.itemListResponseBody: String get() = jobItemListResponseBody(this)
+  val Job.candidateMatchingItemListResponseBody: String get() = matchingCandidateJobItemListResponseBody(this)
 
   private fun jobRequestBody(job: Job): String {
     return jobBody(job)
@@ -190,28 +191,18 @@ object JobMother {
     """.trimIndent()
   }
 
-  fun newMatchingCandidateJobItemListResponse(
-    id: String,
-    jobTitle: String,
-    employerName: String,
-    sector: String,
-    postcode: String,
-    distance: Float,
-    closingDate: String?,
-    expressionOfInterest: Boolean,
-    createdAt: String,
-  ): String {
+  private fun matchingCandidateJobItemListResponseBody(job: Job): String {
     return """
         {
-          "id": "$id",
-          "jobTitle": "$jobTitle",
-          "employerName": "$employerName",
-          "sector": "$sector",
-          "postcode": "$postcode",
-          "distance": $distance,
-          "closingDate": ${closingDate?.asJson()},
-          "expressionOfInterest": $expressionOfInterest,
-          "createdAt": "$createdAt"
+          "id": "${job.id}",
+          "jobTitle": "${job.title}",
+          "employerName": "${job.employer.name}",
+          "sector": "${job.sector}",
+          "postcode": "${job.postcode}",
+          "distance": 0,
+          "closingDate": ${job.closingDate?.toString()?.asJson()},
+          "expressionOfInterest": false,
+          "createdAt": "$jobCreationTime"
         }
     """.trimIndent()
   }

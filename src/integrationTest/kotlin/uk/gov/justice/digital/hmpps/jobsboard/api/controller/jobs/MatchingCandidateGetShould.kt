@@ -1,8 +1,13 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingItemListResponseBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 
 class MatchingCandidateGetShould : MatchingCandidateTestCase() {
+
   @Test
   fun `retrieve a default paginated empty matching candidate Jobs list`() {
     assertGetMatchingCandidateJobsIsOK(
@@ -16,9 +21,23 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
 
     assertGetMatchingCandidateJobsIsOK(
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerMatchingCandidateJobItemListResponse(jobCreationTime),
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
-        abcConstructionMatchingCandidateJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
+        abcConstructionApprentice.candidateMatchingItemListResponseBody,
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list from known prison number`() {
+    givenThreeJobsAreCreated()
+
+    assertGetMatchingCandidateJobsIsOK(
+      parameters = "prisonNumber=$prisonNumber",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
+        abcConstructionApprentice.candidateMatchingItemListResponseBody,
       ),
     )
   }
@@ -33,7 +52,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         size = 1,
         page = 1,
         totalElements = 3,
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
       ),
     )
   }
@@ -45,7 +64,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     assertGetMatchingCandidateJobsIsOK(
       parameters = "sectors=retail",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
       ),
     )
   }
@@ -57,8 +76,8 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     assertGetMatchingCandidateJobsIsOK(
       parameters = "sectors=retail,warehousing",
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerMatchingCandidateJobItemListResponse(jobCreationTime),
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
       ),
     )
   }
