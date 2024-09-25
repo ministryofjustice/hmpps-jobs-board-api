@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
-import java.time.Instant
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import java.time.LocalDate
 
 object JobMother {
@@ -43,15 +43,6 @@ object JobMother {
     supportingDocumentationRequired = "[\"DISCLOSURE_LETTER\", \"OTHER\"]",
     supportingDocumentationDetails = null,
     employer = tesco,
-  )
-
-  fun tescoWarehouseHandlerJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
-    employerId = "89de6c84-3372-4546-bbc1-9d1dc9ceb354",
-    employerName = "Tesco",
-    jobTitle = "Warehouse handler",
-    numberOfVacancies = 1,
-    sector = "WAREHOUSING",
-    createdAt = createdAt.toString(),
   )
 
   val amazonForkliftOperator = Job(
@@ -104,15 +95,6 @@ object JobMother {
     employer = amazon,
   )
 
-  fun amazonForkliftOperatorJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
-    employerId = "bf392249-b360-4e3e-81a0-8497047987e8",
-    employerName = "Amazon",
-    jobTitle = "Forklift operator",
-    numberOfVacancies = 2,
-    sector = "RETAIL",
-    createdAt = createdAt.toString(),
-  )
-
   val abcConstructionApprentice = Job(
     id = EntityId("6fdf2bf4-cfe6-419c-bab2-b3673adbb393"),
     title = "Apprentice plasterer",
@@ -146,17 +128,9 @@ object JobMother {
     employer = abcConstruction,
   )
 
-  fun abcConstructionJobItemListResponse(createdAt: Instant): String = newJobItemListResponse(
-    employerId = "182e9a24-6edb-48a6-a84f-b7061f004a97",
-    employerName = "ABC Construction",
-    jobTitle = "Apprentice plasterer",
-    numberOfVacancies = 3,
-    sector = "CONSTRUCTION",
-    createdAt = createdAt.toString(),
-  )
-
   val Job.requestBody: String get() = jobRequestBody(this)
   val Job.responseBody: String get() = jobResponseBody(this)
+  val Job.itemListResponseBody: String get() = jobItemListResponseBody(this)
 
   private fun jobRequestBody(job: Job): String {
     return jobBody(job)
@@ -166,7 +140,20 @@ object JobMother {
     return jobBody(job)
   }
 
-  fun newJobItemListResponse(
+  private fun jobItemListResponseBody(job: Job): String {
+    return """
+        {
+          "employerId": "${job.employer.id.id}",
+          "employerName": "${job.employer.name}",
+          "jobTitle": "${job.title}",
+          "numberOfVacancies": ${job.numberOfVacancies},
+          "sector": "${job.sector}",
+          "createdAt": "$jobCreationTime"
+        }
+    """.trimIndent()
+  }
+
+  private fun jobItemListResponseBody(
     employerId: String,
     employerName: String,
     jobTitle: String,
@@ -224,11 +211,6 @@ object JobMother {
   }
 
   private fun String.asJson(): String {
-    val mapper: ObjectMapper = jacksonObjectMapper()
-    return mapper.writeValueAsString(this)
-  }
-
-  private fun List<String>.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
     return mapper.writeValueAsString(this)
   }
