@@ -8,10 +8,14 @@ import java.time.Month.JULY
 
 class TestPrototypes {
   companion object {
-    val defaultCreationTime = Instant.parse("2024-01-01T00:00:00Z")
-    val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+    val defaultCreationTime: Instant = Instant.parse("2024-01-01T00:00:00Z")
+    val employerCreationTime = Instant.parse("2024-07-01T01:00:00Z")
+    val employerModificationTime = Instant.parse("2024-07-01T02:00:00Z")
+    val jobCreationTime: Instant = Instant.parse("2024-01-01T00:00:00Z")
+    val jobModificationTime = Instant.parse("2025-02-02T01:00:00Z")
+    val jobRegisterExpressionOfInterestTime = Instant.parse("2025-03-01T01:00:00Z")
 
-    val nonExistentEmployer = Employer(
+    private val nonExistentEmployer = Employer(
       id = EntityId("b9c925c1-c0d3-460d-8142-f79e7c292fce"),
       name = "Non-Existent Employer",
       description = "Daydreaming Inc.",
@@ -54,6 +58,6 @@ class TestPrototypes {
       employer = nonExistentEmployer,
     )
 
-    val expectedPrisonNumber = "A1234BC"
+    const val VALID_PRISON_NUMBER = "A1234BC"
   }
 }

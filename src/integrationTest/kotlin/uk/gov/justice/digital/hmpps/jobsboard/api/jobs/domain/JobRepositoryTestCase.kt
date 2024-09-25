@@ -19,7 +19,7 @@ abstract class JobRepositoryTestCase : RepositoryTestCase() {
   protected lateinit var jobRepository: JobRepository
 
   protected final val jobCreationTime: Instant = TestPrototypes.jobCreationTime
-  protected final val expectedPrisonNumber = TestPrototypes.expectedPrisonNumber
+  protected final val expectedPrisonNumber = TestPrototypes.VALID_PRISON_NUMBER
   protected final val nonExistentJob = TestPrototypes.nonExistentJob
 
   @BeforeEach
