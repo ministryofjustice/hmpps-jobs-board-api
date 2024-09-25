@@ -5,9 +5,12 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionJobItemListResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperatorJobItemListResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.responseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandlerJobItemListResponse
 
 class JobsGetShould : JobsTestCase() {
   @Test
