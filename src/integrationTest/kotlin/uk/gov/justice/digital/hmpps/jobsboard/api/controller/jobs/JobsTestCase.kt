@@ -133,15 +133,22 @@ class JobsTestCase : EmployerTestCase() {
   }
 
   protected fun givenThreeJobsAreCreated() {
-    assertAddEmployerIsCreated(employer = tesco)
-    assertAddEmployerIsCreated(employer = amazon)
-    assertAddEmployerIsCreated(employer = abcConstruction)
-
-    assertAddJobIsCreated(job = tescoWarehouseHandler)
-    assertAddJobIsCreated(job = amazonForkliftOperator)
-    assertAddJobIsCreated(job = abcConstructionApprentice)
+    givenJobsAreCreated(
+      tescoWarehouseHandler,
+      amazonForkliftOperator,
+      abcConstructionApprentice
+    )
 
     assertAddExpressionOfInterest("6fdf2bf4-cfe6-419c-bab2-b3673adbb393", prisonNumber)
+  }
+
+  protected fun givenJobsAreCreated(vararg jobs: Job) {
+    jobs.forEach { job ->
+      run {
+        assertAddEmployerIsCreated(job.employer)
+        assertAddJobIsCreated(job)
+      }
+    }
   }
 
   protected fun String.asJson(): String {
