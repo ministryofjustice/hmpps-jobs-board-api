@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingItemListResponseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 
@@ -29,7 +30,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated matching candidate Jobs list from known prison number`() {
+  fun `retrieve a default paginated matching candidate Jobs list given a prison number`() {
     givenThreeJobsAreCreated()
     assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
 
@@ -38,7 +39,10 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       expectedResponse = expectedResponseListOf(
         tescoWarehouseHandler.candidateMatchingItemListResponseBody,
         amazonForkliftOperator.candidateMatchingItemListResponseBody,
-        abcConstructionApprentice.candidateMatchingItemListResponseBody,
+        builder()
+          .from(abcConstructionApprentice)
+          .withExpressionOfInterestFrom(prisonNumber)
+          .build().candidateMatchingItemListResponseBody,
       ),
     )
   }

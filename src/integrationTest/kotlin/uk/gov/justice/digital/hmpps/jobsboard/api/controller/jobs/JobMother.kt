@@ -5,10 +5,15 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.VALID_PRISON_NUMBER
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import java.time.LocalDate
+import java.util.*
 
 object JobMother {
 
@@ -128,6 +133,10 @@ object JobMother {
     employer = abcConstruction,
   )
 
+  fun builder(): JobBuilder {
+    return JobBuilder()
+  }
+
   val Job.requestBody: String get() = jobRequestBody(this)
   val Job.responseBody: String get() = jobResponseBody(this)
   val Job.itemListResponseBody: String get() = jobItemListResponseBody(this)
@@ -201,7 +210,7 @@ object JobMother {
           "postcode": "${job.postcode}",
           "distance": 0,
           "closingDate": ${job.closingDate?.toString()?.asJson()},
-          "expressionOfInterest": false,
+          "expressionOfInterest": ${job.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
           "createdAt": "$jobCreationTime"
         }
     """.trimIndent()
@@ -210,5 +219,144 @@ object JobMother {
   private fun String.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
     return mapper.writeValueAsString(this)
+  }
+}
+
+class JobBuilder {
+  var id: EntityId = EntityId(UUID.randomUUID().toString())
+  var title: String = "Service Colleague"
+  var sector: String = "RETAIL"
+  var industrySector: String = "RETAIL"
+  var numberOfVacancies: Int = 1
+  var sourcePrimary: String = "PEL"
+  var sourceSecondary: String? = null
+  var charityName: String? = null
+  var postcode: String = "LS11 5AD"
+  var salaryFrom: Float = 96.32f
+  var salaryTo: Float? = null
+  var salaryPeriod: String = "PER_DAY"
+  var additionalSalaryInformation: String? = null
+  var isPayingAtLeastNationalMinimumWage: Boolean = true
+  var workPattern: String = "FLEXIBLE_SHIFTS"
+  var hoursPerWeek: String = "FULL_TIME"
+  var contractType: String = "PERMANENT"
+  var baseLocation: String? = null
+  var essentialCriteria: String = "Essential job criteria"
+  var desirableCriteria: String? = null
+  var description: String = ""
+  var offenceExclusions: String = "[\"CASE_BY_CASE\", \"OTHER\"]"
+  var isRollingOpportunity: Boolean = false
+  var closingDate: LocalDate? = null
+  var isOnlyForPrisonLeavers: Boolean = true
+  var startDate: LocalDate? = null
+  var howToApply: String = "How to apply How to apply"
+  var supportingDocumentationRequired: String = "[\"DISCLOSURE_LETTER\", \"OTHER\"]"
+  var supportingDocumentationDetails: String? = null
+  var expressionsOfInterest: MutableMap<String, ExpressionOfInterest> = mutableMapOf()
+  var employer: Employer = Employer(
+    id = EntityId(UUID.randomUUID().toString()),
+    name = "ASDA",
+    description = "Asda and often styled as ASDA, is a British supermarket and petrol station chain. Its headquarters are in Leeds, England.",
+    sector = "RETAIL",
+    status = "SILVER",
+  )
+
+  fun withExpressionsOfInterest(expressionsOfInterest: MutableMap<String, ExpressionOfInterest>): JobBuilder {
+    this.expressionsOfInterest = expressionsOfInterest
+    return this
+  }
+
+  fun withExpressionOfInterestFrom(prisonNumber: String): JobBuilder {
+    this.expressionsOfInterest.put(
+      prisonNumber,
+      ExpressionOfInterest(
+        JobPrisonerId(jobId = this.id, prisonNumber),
+        null,
+        this.build(),
+      ),
+    )
+    return this
+  }
+
+  fun from(job: Job): JobBuilder {
+    this.id = job.id
+    this.title = job.title
+    this.sector = job.sector
+    this.industrySector = job.industrySector
+    this.numberOfVacancies = job.numberOfVacancies
+    this.sourcePrimary = job.sourcePrimary
+    this.sourceSecondary = job.sourceSecondary
+    this.charityName = job.charityName
+    this.postcode = job.postcode
+    this.salaryFrom = job.salaryFrom
+    this.salaryTo = job.salaryTo
+    this.salaryPeriod = job.salaryPeriod
+    this.additionalSalaryInformation = job.additionalSalaryInformation
+    this.isPayingAtLeastNationalMinimumWage = job.isPayingAtLeastNationalMinimumWage
+    this.workPattern = job.workPattern
+    this.hoursPerWeek = job.hoursPerWeek
+    this.contractType = job.contractType
+    this.baseLocation = job.baseLocation
+    this.essentialCriteria = job.essentialCriteria
+    this.desirableCriteria = job.desirableCriteria
+    this.description = job.description
+    this.offenceExclusions = job.offenceExclusions
+    this.isRollingOpportunity = job.isRollingOpportunity
+    this.closingDate = job.closingDate
+    this.isOnlyForPrisonLeavers = job.isOnlyForPrisonLeavers
+    this.startDate = job.startDate
+    this.howToApply = job.howToApply
+    this.supportingDocumentationRequired = job.supportingDocumentationRequired
+    this.supportingDocumentationDetails = job.supportingDocumentationDetails
+    this.expressionsOfInterest = job.expressionsOfInterest.mapValues { entry ->
+      ExpressionOfInterest(
+        id = JobPrisonerId(entry.value.id.jobId, entry.value.id.prisonNumber),
+        job = this.build()
+      )
+    }.toMutableMap()
+    this.employer = Employer(
+      id = job.employer.id,
+      name = job.employer.name,
+      description = job.employer.description,
+      sector = job.employer.sector,
+      status = job.employer.status,
+    )
+    return this
+  }
+
+  fun build(): Job {
+    return Job(
+      id = this.id,
+      title = this.title,
+      sector = this.sector,
+      industrySector = this.industrySector,
+      numberOfVacancies = this.numberOfVacancies,
+      sourcePrimary = this.sourcePrimary,
+      sourceSecondary = this.sourceSecondary,
+      charityName = this.charityName,
+      postcode = this.postcode,
+      salaryFrom = this.salaryFrom,
+      salaryTo = this.salaryTo,
+      salaryPeriod = this.salaryPeriod,
+      additionalSalaryInformation = this.additionalSalaryInformation,
+      isPayingAtLeastNationalMinimumWage = this.isPayingAtLeastNationalMinimumWage,
+      workPattern = this.workPattern,
+      hoursPerWeek = this.hoursPerWeek,
+      contractType = this.contractType,
+      baseLocation = this.baseLocation,
+      essentialCriteria = this.essentialCriteria,
+      desirableCriteria = this.desirableCriteria,
+      description = this.description,
+      offenceExclusions = this.offenceExclusions,
+      isRollingOpportunity = this.isRollingOpportunity,
+      closingDate = this.closingDate,
+      isOnlyForPrisonLeavers = this.isOnlyForPrisonLeavers,
+      startDate = this.startDate,
+      howToApply = this.howToApply,
+      supportingDocumentationRequired = this.supportingDocumentationRequired,
+      supportingDocumentationDetails = this.supportingDocumentationDetails,
+      expressionsOfInterest = this.expressionsOfInterest,
+      employer = this.employer,
+    )
   }
 }
