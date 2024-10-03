@@ -32,7 +32,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated matching candidate Jobs list given a candidate expressed interest on a job`() {
+  fun `retrieve a default paginated matching candidate Jobs list given a candidate interested on a job`() {
     givenThreeJobsAreCreated()
     assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
 
@@ -50,7 +50,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated matching candidate Jobs list given different candidates expressed interest on the same job`() {
+  fun `retrieve a default paginated matching candidate Jobs list given different candidates interested on the same job`() {
     givenThreeJobsAreCreated()
     assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
     assertAddExpressionOfInterest(abcConstructionApprentice.id.id, anotherPrisonNumber)
@@ -69,7 +69,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated matching candidate Jobs list given different candidates expressed interest on different jobs`() {
+  fun `retrieve a default paginated matching candidate Jobs list given different candidates interested on different jobs`() {
     givenThreeJobsAreCreated()
     assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
     assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
