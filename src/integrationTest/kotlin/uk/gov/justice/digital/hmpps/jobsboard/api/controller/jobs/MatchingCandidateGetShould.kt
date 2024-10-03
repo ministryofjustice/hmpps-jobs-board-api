@@ -32,7 +32,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated matching candidate Jobs list given a prison number`() {
+  fun `retrieve a default paginated matching candidate Jobs list given a candidate expressed interest on a job`() {
     givenThreeJobsAreCreated()
     assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
 
