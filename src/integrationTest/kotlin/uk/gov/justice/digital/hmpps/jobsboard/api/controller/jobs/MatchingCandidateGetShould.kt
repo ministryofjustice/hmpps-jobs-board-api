@@ -50,6 +50,25 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   }
 
   @Test
+  fun `retrieve a default paginated matching candidate Jobs list given different candidates expressed interest on the same job`() {
+    givenThreeJobsAreCreated()
+    assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
+    assertAddExpressionOfInterest(abcConstructionApprentice.id.id, anotherPrisonNumber)
+
+    assertGetMatchingCandidateJobsIsOK(
+      parameters = "prisonNumber=$prisonNumber",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
+        builder()
+          .from(abcConstructionApprentice)
+          .withExpressionOfInterestFrom(prisonNumber)
+          .build().candidateMatchingItemListResponseBody,
+      ),
+    )
+  }
+
+  @Test
   fun `retrieve a custom paginated matching candidate Jobs list`() {
     givenThreeJobsAreCreated()
 
