@@ -77,7 +77,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   }
 
   @Test
-  fun `retrieve a default paginated matching candidate Jobs list filtered by jobs sector`() {
+  fun `retrieve a default paginated matching candidate Jobs list filtered by job sectors`() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOK(
