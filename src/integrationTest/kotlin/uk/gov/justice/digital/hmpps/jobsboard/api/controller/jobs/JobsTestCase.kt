@@ -85,7 +85,7 @@ class JobsTestCase : EmployerTestCase() {
     expectedResponse: String,
   ) {
     var url = JOBS_ENDPOINT
-    jobId?.let { url = "$url/$it" }
+    jobId.let { url = "$url/$it" }
     parameters?.let { url = "$url?$it" }
     assertResponse(
       url = url,

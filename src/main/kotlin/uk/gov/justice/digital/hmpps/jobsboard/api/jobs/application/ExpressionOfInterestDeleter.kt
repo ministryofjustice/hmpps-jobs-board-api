@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
@@ -13,7 +12,7 @@ class ExpressionOfInterestDeleter(
   private val expressionOfInterestRepository: ExpressionOfInterestRepository,
 ) {
 
-  @Transactional
+  // @Transactional
   fun delete(request: DeleteExpressionOfInterestRequest) =
     expressionOfInterestRepository.deleteById(
       JobPrisonerId(

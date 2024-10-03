@@ -104,15 +104,54 @@ data class Job(
   @Column(name = "supporting_documentation_details", nullable = true)
   val supportingDocumentationDetails: String? = null,
 
-  @ManyToOne
   @JoinColumn(name = "employer_id", referencedColumnName = "id")
+  @ManyToOne(fetch = FetchType.LAZY)
   val employer: Employer,
 
-  @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
   @MapKey(name = "id.prisonNumber")
   val expressionsOfInterest: MutableMap<String, ExpressionOfInterest> = mutableMapOf(),
 
   @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
   @MapKey(name = "id.prisonNumber")
   val archived: MutableMap<String, Archived> = mutableMapOf(),
-) : Auditable()
+) : Auditable() {
+  override fun toString(): String = """
+    Job(
+        id=$id,
+        title=$title,
+        sector=$sector,
+        industrySector=$industrySector,
+        numberOfVacancies=$numberOfVacancies,
+        sourcePrimary=$sourcePrimary,
+        sourceSecondary=$sourceSecondary,
+        charityName=$charityName,
+        postcode=$postcode,
+        salaryFrom=$salaryFrom,
+        salaryTo=$salaryTo,
+        salaryPeriod=$salaryPeriod,
+        additionalSalaryInformation=$additionalSalaryInformation,
+        isPayingAtLeastNationalMinimumWage=$isPayingAtLeastNationalMinimumWage,
+        workPattern=$workPattern,
+        hoursPerWeek=$hoursPerWeek,
+        contractType=$contractType,
+        baseLocation=$baseLocation,
+        essentialCriteria=$essentialCriteria,
+        desirableCriteria=$desirableCriteria,
+        description=$description,
+        offenceExclusions=$offenceExclusions,
+        isRollingOpportunity=$isRollingOpportunity,
+        closingDate=$closingDate,
+        isOnlyForPrisonLeavers=$isOnlyForPrisonLeavers,
+        startDate=$startDate,
+        howToApply=$howToApply,
+        supportingDocumentationRequired=$supportingDocumentationRequired,
+        supportingDocumentationDetails=$supportingDocumentationDetails,
+        employer=$employer,
+        expressionsOfInterest=$expressionsOfInterest,
+        archived=$archived,
+        createdAt=$createdAt,
+        modifiedAt=$modifiedAt,
+    )
+  """.trimIndent()
+}

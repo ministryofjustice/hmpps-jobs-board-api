@@ -147,7 +147,10 @@ object JobMother {
   }
 
   private fun jobResponseBody(job: Job): String {
-    return jobBody(job)
+    val expectedJob = job.copy().also {
+      it.createdAt = jobCreationTime
+    }
+    return jobBody(expectedJob)
   }
 
   private fun jobItemListResponseBody(job: Job): String {
@@ -164,7 +167,7 @@ object JobMother {
   }
 
   private fun jobBody(job: Job): String {
-    val createdAtField = job.createdAt?.let { ",\n\"createdAt\": \"$it\"" } ?: ""
+    val createdAt = job.createdAt?.let { ",\n\"createdAt\": \"$it\"" } ?: ""
     return """
         {
           "employerId": "${job.employer.id.id}",
@@ -195,7 +198,7 @@ object JobMother {
           "startDate": ${job.startDate?.toString()?.asJson()},
           "howToApply": "${job.howToApply}",
           "supportingDocumentationRequired": ${job.supportingDocumentationRequired},
-          "supportingDocumentationDetails": ${job.supportingDocumentationDetails?.asJson()}$createdAtField
+          "supportingDocumentationDetails": ${job.supportingDocumentationDetails?.asJson()}$createdAt
         }
     """.trimIndent()
   }
@@ -210,7 +213,7 @@ object JobMother {
           "postcode": "${job.postcode}",
           "distance": 0,
           "closingDate": ${job.closingDate?.toString()?.asJson()},
-          "expressionOfInterest": ${job.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
+          "hasExpressedInterest": ${job.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
           "createdAt": "$jobCreationTime"
         }
     """.trimIndent()
@@ -311,7 +314,7 @@ class JobBuilder {
     this.expressionsOfInterest = job.expressionsOfInterest.mapValues { entry ->
       ExpressionOfInterest(
         id = JobPrisonerId(entry.value.id.jobId, entry.value.id.prisonNumber),
-        job = this.build()
+        job = this.build(),
       )
     }.toMutableMap()
     this.employer = Employer(

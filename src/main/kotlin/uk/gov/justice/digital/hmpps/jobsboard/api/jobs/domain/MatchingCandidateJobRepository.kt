@@ -7,10 +7,35 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
 
 @Repository
 interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
-  fun findBySectorInIgnoringCase(sectors: List<String>, pageable: Pageable): Page<Job>
+
+  @Query(
+    """
+    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse(
+      j.id.id,
+      j.title,
+      e.name,
+      j.sector,
+      j.postcode,
+      j.closingDate,
+      CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
+      j.createdAt,
+      0.0f
+    )
+    FROM Job j
+    LEFT JOIN ExpressionOfInterest eoi ON eoi.job.id.id = j.id.id AND eoi.id.prisonNumber = :prisonNumber
+    LEFT JOIN Employer e ON j.employer.id.id = e.id.id
+    WHERE (:sectors IS NULL OR LOWER(j.sector) IN :sectors)
+  """,
+  )
+  fun findAll(
+    @Param("prisonNumber") prisonNumber: String,
+    @Param("sectors") sectors: List<String>?,
+    pageable: Pageable,
+  ): Page<GetMatchingCandidateJobsResponse>
 
   @Query(
     """

@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.OK
 import java.time.Instant
 
+const val MATCHING_CANDIDATE_PATH_SUFFIX = "matching-candidate"
+
 abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
 
   protected fun assertGetMatchingCandidateJobDetailsIsOK(
@@ -217,5 +219,3 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     """.trimIndent()
   }
 }
-
-const val MATCHING_CANDIDATE_PATH_SUFFIX = "matching-candidate"
