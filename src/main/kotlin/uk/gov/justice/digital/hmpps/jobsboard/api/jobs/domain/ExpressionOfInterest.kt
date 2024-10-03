@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.MapsId
@@ -24,9 +25,9 @@ data class ExpressionOfInterest(
   @Column(name = "created_at", nullable = false, updatable = false)
   var createdAt: Instant? = null,
 
-  @ManyToOne
   @MapsId("id")
   @JoinColumn(name = "job_id", referencedColumnName = "id")
+  @ManyToOne(fetch = FetchType.EAGER)
   val job: Job,
 ) {
   override fun toString(): String = "ExpressionOfInterest(id=$id, createdAt=$createdAt)"

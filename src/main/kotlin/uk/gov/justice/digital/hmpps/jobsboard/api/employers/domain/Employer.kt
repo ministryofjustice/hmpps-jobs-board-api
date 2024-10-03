@@ -30,4 +30,15 @@ data class Employer(
 
   @OneToMany(mappedBy = "employer", cascade = [CascadeType.ALL], orphanRemoval = true)
   val jobs: List<Job> = mutableListOf(),
-) : Auditable()
+) : Auditable() {
+  override fun toString(): String = """
+    Employer(id=$id,
+        name=$name,
+        description=$description,
+        sector=$sector,
+        status=$status,
+        createdAt=$createdAt,
+        modifiedAt=$modifiedAt,
+    )
+  """.trimIndent()
+}

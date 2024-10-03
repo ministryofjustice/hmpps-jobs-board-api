@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
@@ -88,7 +85,7 @@ class JobsTestCase : EmployerTestCase() {
     expectedResponse: String,
   ) {
     var url = JOBS_ENDPOINT
-    jobId?.let { url = "$url/$it" }
+    jobId.let { url = "$url/$it" }
     parameters?.let { url = "$url?$it" }
     assertResponse(
       url = url,
@@ -133,15 +130,20 @@ class JobsTestCase : EmployerTestCase() {
   }
 
   protected fun givenThreeJobsAreCreated() {
-    assertAddEmployerIsCreated(employer = tesco)
-    assertAddEmployerIsCreated(employer = amazon)
-    assertAddEmployerIsCreated(employer = abcConstruction)
+    givenJobsAreCreated(
+      tescoWarehouseHandler,
+      amazonForkliftOperator,
+      abcConstructionApprentice,
+    )
+  }
 
-    assertAddJobIsCreated(job = tescoWarehouseHandler)
-    assertAddJobIsCreated(job = amazonForkliftOperator)
-    assertAddJobIsCreated(job = abcConstructionApprentice)
-
-    assertAddExpressionOfInterest("6fdf2bf4-cfe6-419c-bab2-b3673adbb393", prisonNumber)
+  protected fun givenJobsAreCreated(vararg jobs: Job) {
+    jobs.forEach { job ->
+      run {
+        assertAddEmployerIsCreated(job.employer)
+        assertAddJobIsCreated(job)
+      }
+    }
   }
 
   protected fun String.asJson(): String {

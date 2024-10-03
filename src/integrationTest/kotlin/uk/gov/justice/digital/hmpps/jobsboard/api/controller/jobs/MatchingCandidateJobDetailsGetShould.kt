@@ -30,6 +30,7 @@ class MatchingCandidateJobDetailsGetShould : MatchingCandidateJobDetailsTestCase
   @Test
   fun `retrieve details of a matching candidate job, with prisonNumber, ExpressionOfInterest and without Archived`() {
     val jobId = "6fdf2bf4-cfe6-419c-bab2-b3673adbb393"
+    assertAddExpressionOfInterest(jobId, prisonNumber)
 
     assertGetMatchingCandidateJobDetailsIsOK(
       id = jobId,

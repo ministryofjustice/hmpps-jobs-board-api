@@ -87,7 +87,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
     val exception = assertFailsWith<IllegalArgumentException> {
       expressionOfInterestCreator.createOrUpdate(badRequest)
     }
-    assertEquals("Job not found: jobId=$nonExistentJobId", exception.message)
+    assertEquals("Job not found: jobId = $nonExistentJobId", exception.message)
   }
 
   @Test

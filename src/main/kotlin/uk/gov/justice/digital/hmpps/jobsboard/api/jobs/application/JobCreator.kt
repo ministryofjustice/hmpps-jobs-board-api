@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
@@ -16,11 +15,9 @@ class JobCreator(
   private val employerRepository: EmployerRepository,
 ) {
 
-  @Transactional
   fun createOrUpdate(request: CreateJobRequest) {
     val employer = employerRepository.findById(EntityId(request.employerId))
-      .orElseThrow { IllegalArgumentException("Employer not found") }
-
+      .orElseThrow { IllegalArgumentException("Employer not found: employerId = ${request.employerId}") }
     jobRepository.save(
       Job(
         id = EntityId(request.id),

@@ -1,11 +1,18 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingItemListResponseBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 
 class MatchingCandidateGetShould : MatchingCandidateTestCase() {
+
   @Test
   fun `retrieve a default paginated empty matching candidate Jobs list`() {
     assertGetMatchingCandidateJobsIsOK(
+      parameters = "prisonNumber=$prisonNumber",
       expectedResponse = expectedResponseListOf(),
     )
   }
@@ -15,10 +22,29 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOK(
+      parameters = "prisonNumber=$prisonNumber",
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerMatchingCandidateJobItemListResponse(jobCreationTime),
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
-        abcConstructionMatchingCandidateJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
+        abcConstructionApprentice.candidateMatchingItemListResponseBody,
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated matching candidate Jobs list given a prison number`() {
+    givenThreeJobsAreCreated()
+    assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
+
+    assertGetMatchingCandidateJobsIsOK(
+      parameters = "prisonNumber=$prisonNumber",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
+        builder()
+          .from(abcConstructionApprentice)
+          .withExpressionOfInterestFrom(prisonNumber)
+          .build().candidateMatchingItemListResponseBody,
       ),
     )
   }
@@ -28,12 +54,12 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOK(
-      parameters = "page=1&size=1",
+      parameters = "prisonNumber=$prisonNumber&page=1&size=1",
       expectedResponse = expectedResponseListOf(
         size = 1,
         page = 1,
         totalElements = 3,
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
       ),
     )
   }
@@ -43,9 +69,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOK(
-      parameters = "sectors=retail",
+      parameters = "prisonNumber=$prisonNumber&sectors=retail",
       expectedResponse = expectedResponseListOf(
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
       ),
     )
   }
@@ -55,10 +81,10 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOK(
-      parameters = "sectors=retail,warehousing",
+      parameters = "prisonNumber=$prisonNumber&sectors=retail,warehousing",
       expectedResponse = expectedResponseListOf(
-        tescoWarehouseHandlerMatchingCandidateJobItemListResponse(jobCreationTime),
-        amazonForkliftOperatorMatchingCandidateJobItemListResponse(jobCreationTime),
+        tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+        amazonForkliftOperator.candidateMatchingItemListResponseBody,
       ),
     )
   }
@@ -68,7 +94,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
-      parameters = "sortBy=jobTitle&sortOrder=asc",
+      parameters = "prisonNumber=$prisonNumber&sortBy=jobTitle&sortOrder=asc",
       expectedJobTitlesSorted = listOf(
         "Apprentice plasterer",
         "Forklift operator",
@@ -82,7 +108,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
-      parameters = "sortBy=jobTitle&sortOrder=desc",
+      parameters = "prisonNumber=$prisonNumber&sortBy=jobTitle&sortOrder=desc",
       expectedJobTitlesSorted = listOf(
         "Warehouse handler",
         "Forklift operator",
@@ -96,7 +122,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-      parameters = "sortBy=closingDate",
+      parameters = "prisonNumber=$prisonNumber&sortBy=closingDate",
       expectedSortingOrder = "asc",
     )
   }
@@ -106,7 +132,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-      parameters = "sortBy=closingDate&sortOrder=asc",
+      parameters = "prisonNumber=$prisonNumber&sortBy=closingDate&sortOrder=asc",
       expectedSortingOrder = "asc",
     )
   }
@@ -116,7 +142,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     givenThreeJobsAreCreated()
 
     assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-      parameters = "sortBy=closingDate&sortOrder=desc",
+      parameters = "prisonNumber=$prisonNumber&sortBy=closingDate&sortOrder=desc",
       expectedSortingOrder = "desc",
     )
   }

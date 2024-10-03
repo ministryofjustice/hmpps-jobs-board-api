@@ -74,8 +74,10 @@ class JobsGet(
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/matching-candidate")
   fun retrieveAll(
+    @RequestParam(required = true)
+    prisonNumber: String,
     @RequestParam(required = false)
-    sectors: List<String>?,
+    sectors: List<String>? = null,
     @RequestParam(defaultValue = "title", required = false)
     sortBy: String?,
     @RequestParam(defaultValue = "asc", required = false)
@@ -89,11 +91,11 @@ class JobsGet(
       "jobTitle" -> "title"
       else -> sortBy
     }
+    val lowerCaseSectors = sectors?.map { it.lowercase() }
     val direction = if (sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
     val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortedBy))
-    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(sectors, pageable)
-    val response = jobList.map { GetMatchingCandidateJobsResponse.from(it) }
-    return ResponseEntity.ok(response)
+    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(prisonNumber, lowerCaseSectors, pageable)
+    return ResponseEntity.ok(jobList)
   }
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or  hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
