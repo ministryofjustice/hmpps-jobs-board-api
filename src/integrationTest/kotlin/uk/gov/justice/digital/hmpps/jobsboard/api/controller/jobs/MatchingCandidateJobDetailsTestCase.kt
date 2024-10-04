@@ -90,7 +90,7 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     workPattern = "FLEXIBLE_SHIFTS",
     hoursPerWeek = "FULL_TIME",
     contractType = "TEMPORARY",
-    offenceExclusions = listOf("NONE", "DRIVING"),
+    offenceExclusions = listOf("NONE", "DRIVING", "OTH"),
     essentialCriteria = "",
     desirableCriteria = "",
     description = """

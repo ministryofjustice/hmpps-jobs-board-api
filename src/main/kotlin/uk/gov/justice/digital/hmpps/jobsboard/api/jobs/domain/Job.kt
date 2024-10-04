@@ -83,6 +83,9 @@ data class Job(
   @Column(name = "offence_exclusions", nullable = false)
   val offenceExclusions: String,
 
+  @Column(name = "offence_exclusions_details", nullable = true)
+  val offenceExclusionsDetails: String? = null,
+
   @Column(name = "is_rolling_opportunity", nullable = false)
   val isRollingOpportunity: Boolean,
 
@@ -140,6 +143,7 @@ data class Job(
         desirableCriteria=$desirableCriteria,
         description=$description,
         offenceExclusions=$offenceExclusions,
+        offenceExclusionsDetails=$offenceExclusionsDetails,
         isRollingOpportunity=$isRollingOpportunity,
         closingDate=$closingDate,
         isOnlyForPrisonLeavers=$isOnlyForPrisonLeavers,

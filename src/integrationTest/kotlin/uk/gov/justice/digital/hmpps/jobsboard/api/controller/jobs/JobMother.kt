@@ -40,6 +40,7 @@ object JobMother {
     desirableCriteria = null,
     description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
     offenceExclusions = "[\"CASE_BY_CASE\", \"OTHER\"]",
+    offenceExclusionsDetails = null,
     howToApply = "How to applyHow to apply",
     closingDate = null,
     startDate = null,
@@ -89,7 +90,8 @@ object JobMother {
       - Regularly checking forklift equipment for faults or damages
       - Consolidating partial pallets for incoming goods
     """.trimIndent(),
-    offenceExclusions = "[\"NONE\", \"DRIVING\"]",
+    offenceExclusions = "[\"NONE\", \"DRIVING\", \"OTH\"]",
+    offenceExclusionsDetails = "Other offence A, another offence B, yet another offence C",
     isRollingOpportunity = false,
     closingDate = LocalDate.parse("2025-02-01"),
     isOnlyForPrisonLeavers = true,
@@ -123,6 +125,7 @@ object JobMother {
     desirableCriteria = null,
     description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
     offenceExclusions = "[\"CASE_BY_CASE\", \"OTHER\"]",
+    offenceExclusionsDetails = null,
     howToApply = "How to applyHow to apply",
     closingDate = null,
     startDate = null,
@@ -192,6 +195,7 @@ object JobMother {
           "desirableCriteria": ${job.desirableCriteria?.asJson()},
           "description": ${job.description.asJson()},
           "offenceExclusions": ${job.offenceExclusions},
+          "offenceExclusionsDetails": ${job.offenceExclusionsDetails?.let { "\"$it\"" }}, 
           "isRollingOpportunity": ${job.isRollingOpportunity},
           "closingDate": ${job.closingDate?.toString()?.asJson()},
           "isOnlyForPrisonLeavers": ${job.isOnlyForPrisonLeavers},
@@ -248,6 +252,7 @@ class JobBuilder {
   var desirableCriteria: String? = null
   var description: String = ""
   var offenceExclusions: String = "[\"CASE_BY_CASE\", \"OTHER\"]"
+  var offenceExclusionsDetails: String? = null
   var isRollingOpportunity: Boolean = false
   var closingDate: LocalDate? = null
   var isOnlyForPrisonLeavers: Boolean = true
@@ -304,6 +309,7 @@ class JobBuilder {
     this.desirableCriteria = job.desirableCriteria
     this.description = job.description
     this.offenceExclusions = job.offenceExclusions
+    this.offenceExclusionsDetails = job.offenceExclusionsDetails
     this.isRollingOpportunity = job.isRollingOpportunity
     this.closingDate = job.closingDate
     this.isOnlyForPrisonLeavers = job.isOnlyForPrisonLeavers
@@ -351,6 +357,7 @@ class JobBuilder {
       desirableCriteria = this.desirableCriteria,
       description = this.description,
       offenceExclusions = this.offenceExclusions,
+      offenceExclusionsDetails = this.offenceExclusionsDetails,
       isRollingOpportunity = this.isRollingOpportunity,
       closingDate = this.closingDate,
       isOnlyForPrisonLeavers = this.isOnlyForPrisonLeavers,
