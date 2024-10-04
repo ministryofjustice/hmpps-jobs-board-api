@@ -44,6 +44,24 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     }
 
     @Nested
+    @DisplayName("And jobs has been archived")
+    inner class AndJobsHasBeenArchived {
+      @Test
+      fun `return Jobs that have not been archived for the candidate`() {
+        assertAddArchived(amazonForkliftOperator.id.id, prisonNumber)
+        assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
+
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = "prisonNumber=$prisonNumber",
+          expectedResponse = expectedResponseListOf(
+            tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+            abcConstructionApprentice.candidateMatchingItemListResponseBody,
+          ),
+        )
+      }
+    }
+
+    @Nested
     @DisplayName("And candidates expressed interest")
     inner class AndCandidatesExpressed {
       @Test
@@ -98,7 +116,6 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
           ),
         )
       }
-
     }
 
     @Nested

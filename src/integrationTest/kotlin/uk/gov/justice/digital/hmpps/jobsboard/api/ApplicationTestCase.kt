@@ -174,7 +174,20 @@ abstract class ApplicationTestCase {
     return arrayOf(finalJobId, finalPrisonNumber)
   }
 
-  protected fun assertRequestArchived(
+  protected fun assertAddArchived(
+    jobId: String? = null,
+    prisonNumber: String? = null,
+    expectedStatus: HttpStatus = CREATED,
+    matchRedirectedUrl: Boolean = false,
+  ): Array<String> = assertEditArchived(
+    jobId = jobId,
+    prisonNumber = prisonNumber,
+    expectedStatus = expectedStatus,
+    expectedHttpVerb = PUT,
+    matchRedirectedUrl = matchRedirectedUrl,
+  )
+
+  protected fun assertEditArchived(
     jobId: String? = null,
     prisonNumber: String? = null,
     expectedStatus: HttpStatus,
@@ -194,19 +207,6 @@ abstract class ApplicationTestCase {
     )
     return arrayOf(finalJobId, finalPrisonNumber)
   }
-
-  protected fun assertAddArchived(
-    jobId: String? = null,
-    prisonNumber: String? = null,
-    expectedStatus: HttpStatus = CREATED,
-    matchRedirectedUrl: Boolean = false,
-  ): Array<String> = assertRequestArchived(
-    jobId = jobId,
-    prisonNumber = prisonNumber,
-    expectedStatus = expectedStatus,
-    expectedHttpVerb = PUT,
-    matchRedirectedUrl = matchRedirectedUrl,
-  )
 
   protected fun randomUUID(): String = UUID.randomUUID().toString()
 
