@@ -49,6 +49,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs that have not been archived for the candidate`() {
         assertAddArchived(amazonForkliftOperator.id.id, prisonNumber)
+        assertAddArchived(amazonForkliftOperator.id.id, anotherPrisonNumber)
         assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
         assertGetMatchingCandidateJobsIsOK(
@@ -67,41 +68,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs tagged with candidate's interest`() {
         assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
-
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber",
-          expectedResponse = expectedResponseListOf(
-            tescoWarehouseHandler.candidateMatchingItemListResponseBody,
-            amazonForkliftOperator.candidateMatchingItemListResponseBody,
-            builder()
-              .from(abcConstructionApprentice)
-              .withExpressionOfInterestFrom(prisonNumber)
-              .build().candidateMatchingItemListResponseBody,
-          ),
-        )
-      }
-
-      @Test
-      fun `return Jobs avoiding others candidates interests`() {
-        assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
         assertAddExpressionOfInterest(abcConstructionApprentice.id.id, anotherPrisonNumber)
-
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber",
-          expectedResponse = expectedResponseListOf(
-            tescoWarehouseHandler.candidateMatchingItemListResponseBody,
-            amazonForkliftOperator.candidateMatchingItemListResponseBody,
-            builder()
-              .from(abcConstructionApprentice)
-              .withExpressionOfInterestFrom(prisonNumber)
-              .build().candidateMatchingItemListResponseBody,
-          ),
-        )
-      }
-
-      @Test
-      fun `return Jobs avoiding others candidates different jobs interests`() {
-        assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
         assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
         assertGetMatchingCandidateJobsIsOK(
