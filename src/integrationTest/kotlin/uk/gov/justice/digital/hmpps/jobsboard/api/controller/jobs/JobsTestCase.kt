@@ -20,8 +20,9 @@ import java.util.*
 const val JOBS_ENDPOINT = "/jobs"
 
 class JobsTestCase : EmployerTestCase() {
-  val jobCreationTime = Instant.parse("2024-01-01T00:00:00Z")
+  val jobCreationTime: Instant = Instant.parse("2024-01-01T00:00:00Z")
   val prisonNumber = "A1234BC"
+  val anotherPrisonNumber = "A5678BC"
 
   @BeforeEach
   override fun setup() {

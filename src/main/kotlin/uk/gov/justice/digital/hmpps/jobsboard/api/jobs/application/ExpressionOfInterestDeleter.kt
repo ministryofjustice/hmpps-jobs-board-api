@@ -11,8 +11,6 @@ class ExpressionOfInterestDeleter(
   private val jobRepository: JobRepository,
   private val expressionOfInterestRepository: ExpressionOfInterestRepository,
 ) {
-
-  // @Transactional
   fun delete(request: DeleteExpressionOfInterestRequest) =
     expressionOfInterestRepository.deleteById(
       JobPrisonerId(
