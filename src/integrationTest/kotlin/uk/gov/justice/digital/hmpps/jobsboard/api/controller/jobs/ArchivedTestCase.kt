@@ -43,7 +43,7 @@ abstract class ArchivedTestCase : JobsTestCase() {
     jobId: String,
     prisonNumber: String,
     expectedStatus: HttpStatus = NO_CONTENT,
-  ): Array<String> = assertRequestArchived(
+  ): Array<String> = assertEditArchived(
     jobId = jobId,
     prisonNumber = prisonNumber,
     expectedStatus = expectedStatus,
@@ -64,7 +64,7 @@ abstract class ArchivedTestCase : JobsTestCase() {
     expectedStatus: HttpStatus = BAD_REQUEST,
     expectedHttpVerb: HttpMethod,
     expectedResponse: String? = null,
-  ) = assertRequestArchived(
+  ) = assertEditArchived(
     jobId = jobId,
     prisonNumber = prisonNumber,
     expectedStatus = expectedStatus,

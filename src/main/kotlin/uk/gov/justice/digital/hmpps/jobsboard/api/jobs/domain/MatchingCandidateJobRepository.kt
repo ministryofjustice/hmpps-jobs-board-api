@@ -28,7 +28,9 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     FROM Job j
     LEFT JOIN ExpressionOfInterest eoi ON eoi.job.id.id = j.id.id AND eoi.id.prisonNumber = :prisonNumber
     LEFT JOIN Employer e ON j.employer.id.id = e.id.id
+    LEFT JOIN Archived a ON a.job.id.id = j.id.id AND a.id.prisonNumber = :prisonNumber
     WHERE (:sectors IS NULL OR LOWER(j.sector) IN :sectors)
+    AND a.id IS NULL
   """,
   )
   fun findAll(
