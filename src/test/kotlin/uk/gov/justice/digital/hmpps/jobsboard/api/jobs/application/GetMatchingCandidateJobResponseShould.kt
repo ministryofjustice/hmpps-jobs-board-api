@@ -58,11 +58,11 @@ class GetMatchingCandidateJobResponseShould : TestBase() {
         "archived",
       )
       .isEqualTo(expectedJob)
-    assertThat(actual!!.id).isEqualTo(expectedJob.id.id)
+    assertThat(actual.id).isEqualTo(expectedJob.id.id)
     assertThat(actual.jobTitle).isEqualTo(expectedJob.title)
     assertThat(actual.closingDate).isEqualTo(expectedJob.closingDate?.toString())
     assertThat(actual.startDate).isEqualTo(expectedJob.startDate?.toString())
-    assertThat(actual.offenceExclusions?.joinToString(separator = ",")).isEqualTo(expectedJob.offenceExclusions)
+    assertThat(actual.offenceExclusions.joinToString(separator = ",")).isEqualTo(expectedJob.offenceExclusions)
     assertThat(actual.createdAt).isEqualTo(expectedJob.createdAt.toString())
 
     expectedExpressionOfInterest?.let { assertThat(actual.expressionOfInterest).isEqualTo(it) }
