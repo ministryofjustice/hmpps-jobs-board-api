@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
+import jakarta.validation.constraints.Size
+
 @ConsistentCopyVisibility
 data class CreateJobRequest internal constructor(
   val id: String = "",
@@ -25,6 +27,7 @@ data class CreateJobRequest internal constructor(
   val desirableCriteria: String? = null,
   val description: String,
   val offenceExclusions: List<String>,
+  @field:Size(max = 500)
   val offenceExclusionsDetails: String? = null,
   val isRollingOpportunity: Boolean,
   val closingDate: String? = null,
