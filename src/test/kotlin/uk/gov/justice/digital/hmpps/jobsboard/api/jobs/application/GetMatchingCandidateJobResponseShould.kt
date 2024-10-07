@@ -25,6 +25,7 @@ class GetMatchingCandidateJobResponseShould : TestBase() {
       hoursPerWeek = job.hoursPerWeek,
       contractType = job.contractType,
       offenceExclusions = job.offenceExclusions,
+      offenceExclusionsDetails = job.offenceExclusionsDetails,
       essentialCriteria = job.essentialCriteria,
       desirableCriteria = job.desirableCriteria,
       description = job.description,
@@ -63,6 +64,7 @@ class GetMatchingCandidateJobResponseShould : TestBase() {
     assertThat(actual.closingDate).isEqualTo(expectedJob.closingDate?.toString())
     assertThat(actual.startDate).isEqualTo(expectedJob.startDate?.toString())
     assertThat(actual.offenceExclusions.joinToString(separator = ",")).isEqualTo(expectedJob.offenceExclusions)
+    assertThat(actual.offenceExclusionsDetails).isEqualTo(expectedJob.offenceExclusionsDetails)
     assertThat(actual.createdAt).isEqualTo(expectedJob.createdAt.toString())
 
     expectedExpressionOfInterest?.let { assertThat(actual.expressionOfInterest).isEqualTo(it) }

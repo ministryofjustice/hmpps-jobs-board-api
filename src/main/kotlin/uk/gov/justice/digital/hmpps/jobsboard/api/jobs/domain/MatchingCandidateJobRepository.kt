@@ -59,6 +59,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.hoursPerWeek,
       j.contractType,
       j.offenceExclusions,
+      j.offenceExclusionsDetails, 
       j.essentialCriteria,
       j.desirableCriteria,
       j.description,
