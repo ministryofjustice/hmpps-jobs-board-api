@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import java.time.Instant
+import java.time.LocalDate
 
 data class GetMatchingCandidateJobResponse(
   val id: String,
@@ -27,6 +29,57 @@ data class GetMatchingCandidateJobResponse(
   val archived: Boolean,
   val createdAt: String,
 ) {
+  constructor(
+    id: String,
+    employerName: String,
+    jobTitle: String,
+    closingDate: LocalDate?,
+    startDate: LocalDate?,
+    postcode: String,
+    distance: Float?,
+    sector: String,
+    salaryFrom: Float,
+    salaryTo: Float?,
+    salaryPeriod: String,
+    additionalSalaryInformation: String?,
+    workPattern: String,
+    hoursPerWeek: String,
+    contractType: String,
+    offenceExclusions: String,
+    essentialCriteria: String,
+    desirableCriteria: String?,
+    description: String,
+    howToApply: String,
+    expressionOfInterest: Boolean,
+    archived: Boolean,
+    createdAt: Instant?,
+  ) : this(
+    id,
+    employerName,
+    jobTitle,
+    closingDate?.toString(),
+    startDate?.toString(),
+    postcode,
+    distance,
+    sector,
+    salaryFrom,
+    salaryTo,
+    salaryPeriod,
+    additionalSalaryInformation,
+    workPattern,
+    hoursPerWeek,
+    contractType,
+    offenceExclusions.split(","),
+    essentialCriteria,
+    desirableCriteria,
+    description,
+    howToApply,
+    expressionOfInterest,
+    archived,
+    createdAt.toString(),
+  ) {
+  }
+
   companion object {
     fun from(
       job: Job,
