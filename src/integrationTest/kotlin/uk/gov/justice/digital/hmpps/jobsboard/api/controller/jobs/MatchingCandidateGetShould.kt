@@ -13,6 +13,21 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tesc
 @DisplayName("Matching Candidate GET Should")
 class MatchingCandidateGetShould : MatchingCandidateTestCase() {
 
+  @Test
+  fun `return BAD REQUEST error when prison number is missing`() {
+    assertGetMatchingCandidateJobsReturnsBadRequestError(
+      expectedResponse = """
+        {
+            "status": 400,
+            "errorCode": null,
+            "userMessage": "Missing required parameter: Required request parameter 'prisonNumber' for method parameter type String is not present",
+            "developerMessage": "Required request parameter 'prisonNumber' for method parameter type String is not present",
+            "moreInfo": null
+        }
+      """.trimIndent(),
+    )
+  }
+
   @Nested
   @DisplayName("Given Job Board has no jobs")
   inner class GivenJobBoardHasNoJobs {
@@ -76,9 +91,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingItemListResponseBody,
             amazonForkliftOperator.candidateMatchingItemListResponseBody,
-            builder()
-              .from(abcConstructionApprentice)
-              .withExpressionOfInterestFrom(prisonNumber)
+            builder().from(abcConstructionApprentice).withExpressionOfInterestFrom(prisonNumber)
               .build().candidateMatchingItemListResponseBody,
           ),
         )

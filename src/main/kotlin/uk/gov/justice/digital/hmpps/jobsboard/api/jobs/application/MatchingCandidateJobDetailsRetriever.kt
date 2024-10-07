@@ -14,7 +14,7 @@ class MatchingCandidateJobDetailsRetriever(
 ) {
   fun retrieve(jobId: String, prisonNumber: String? = null): MatchingCandidateJobDetails? {
     return when {
-      (prisonNumber == null || prisonNumber.isEmpty()) -> jobRepository.findById(EntityId(jobId)).getOrNull()
+      prisonNumber.isNullOrEmpty() -> jobRepository.findById(EntityId(jobId)).getOrNull()
         ?.let { job -> MatchingCandidateJobDetails(job) }
 
       else -> matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(jobId, prisonNumber).firstOrNull()
