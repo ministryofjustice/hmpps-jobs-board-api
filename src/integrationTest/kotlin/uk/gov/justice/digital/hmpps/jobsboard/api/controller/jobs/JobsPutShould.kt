@@ -54,4 +54,24 @@ class JobsPutShould : JobsTestCase() {
       expectedResponse = amazonForkliftOperator.requestBody,
     )
   }
+
+  @Test
+  fun `not update an existing job with validation error, as offence exclusions details is too long`() {
+    assertAddEmployerIsCreated(employer = amazon)
+
+    val jobBuilder = JobMother.builder().from(amazonForkliftOperator).apply {
+      offenceExclusionsDetails = ".".repeat(500)
+    }
+    val jobId = assertAddJobIsCreated(job = jobBuilder.build()).also {
+      jobBuilder.id = jobBuilder.id.copy(id = it)
+    }
+
+    jobBuilder.offenceExclusionsDetails += "x"
+    val expectedError = "offenceExclusionsDetails - size must be between 0 and 500".let { error ->
+      """
+        {"status":400,"errorCode":null,"userMessage":"Validation failure: $error","developerMessage":"$error","moreInfo":null}
+      """.trimIndent()
+    }
+    assertAddJobThrowsValidationError(jobId, jobBuilder.build().requestBody, expectedError)
+  }
 }

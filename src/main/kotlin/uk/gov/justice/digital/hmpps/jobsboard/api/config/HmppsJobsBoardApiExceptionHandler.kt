@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -76,6 +77,21 @@ class HmppsJobsBoardApiExceptionHandler {
           status = BAD_REQUEST,
           userMessage = "Missing required parameter: ${e.message}",
           developerMessage = e.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException::class)
+  fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+    val errorMessage = e.fieldErrors.map { "${it.field} - ${it.defaultMessage}" }.joinToString(separator = ", ")
+    log.info("Method argument not valid: {}", errorMessage)
+    return ResponseEntity
+      .status(BAD_REQUEST)
+      .body(
+        ErrorResponse(
+          status = BAD_REQUEST,
+          userMessage = "Validation failure: $errorMessage",
+          developerMessage = errorMessage,
         ),
       )
   }

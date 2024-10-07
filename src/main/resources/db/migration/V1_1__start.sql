@@ -32,6 +32,7 @@ create table if not exists jobs(
     desirable_criteria varchar(1000),
     description varchar(3000) not null,
     offence_exclusions varchar(355) not null,
+    offence_exclusions_details varchar(500),
     is_rolling_opportunity boolean not null,
     closing_date date,
     is_only_for_prison_leavers boolean not null,

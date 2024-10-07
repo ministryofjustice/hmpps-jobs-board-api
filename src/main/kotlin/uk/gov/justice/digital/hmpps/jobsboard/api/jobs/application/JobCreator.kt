@@ -42,6 +42,7 @@ class JobCreator(
         desirableCriteria = request.desirableCriteria,
         description = request.description,
         offenceExclusions = request.offenceExclusions.joinToString(","),
+        offenceExclusionsDetails = request.offenceExclusionsDetails,
         isRollingOpportunity = request.isRollingOpportunity,
         closingDate = request.closingDate?.toLocalDate(),
         isOnlyForPrisonLeavers = request.isOnlyForPrisonLeavers,
