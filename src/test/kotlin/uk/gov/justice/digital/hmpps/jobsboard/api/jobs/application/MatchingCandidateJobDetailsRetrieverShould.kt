@@ -8,11 +8,6 @@ import org.mockito.Mockito.times
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobDetails
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
 import java.util.*
 import kotlin.test.Test
@@ -32,87 +27,72 @@ class MatchingCandidateJobDetailsRetrieverShould : TestBase() {
   @Test
   fun `return JobDetails without prisonNumber, when found`() {
     whenever(jobRepository.findById(expectedJobId)).thenReturn(Optional.of(expectedJob))
+    val expectedMatchingCandidateJobDetails = GetMatchingCandidateJobResponse.from(expectedJob, false, false)
 
-    val actualMatchingCandidateJobDetails: MatchingCandidateJobDetails? =
-      matchingCandidateJobDetailsRetriever.retrieve(expectedJobId.id)
-
+    val actualMatchingCandidateJobDetails = matchingCandidateJobDetailsRetriever.retrieve(expectedJobId.id)
     verify(jobRepository, times(1)).findById(expectedJobId)
-    assertThat(actualMatchingCandidateJobDetails!!.job).isEqualTo(expectedJob)
-    assertThat(actualMatchingCandidateJobDetails.expressionOfInterest).isNull()
-    assertThat(actualMatchingCandidateJobDetails.hasExpressionOfInterest()).isFalse()
-    assertThat(actualMatchingCandidateJobDetails.archived).isNull()
-    assertThat(actualMatchingCandidateJobDetails.isArchived()).isFalse()
+    assertThat(actualMatchingCandidateJobDetails!!).usingRecursiveComparison()
+      .isEqualTo(expectedMatchingCandidateJobDetails)
+    assertThat(actualMatchingCandidateJobDetails.expressionOfInterest).isFalse()
+    assertThat(actualMatchingCandidateJobDetails.archived).isFalse()
   }
 
   @Test
   fun `return JobDetails with prisonNumber, when found`() {
     val job = expectedJob.deepCopyMe()
-    val expectedMatchingCandidateJobDetails = MatchingCandidateJobDetails(
-      job = job,
-      expressionOfInterest = job.makeExpressionOfInterest(expectedPrisonNumber),
-      archived = job.makeArchived(expectedPrisonNumber),
-    )
+    val expectedMatchingCandidateJobDetails = GetMatchingCandidateJobResponse.from(job, true, true)
     whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber))
       .thenReturn(listOf(expectedMatchingCandidateJobDetails))
 
-    val actualMatchingCandidateJobDetails: MatchingCandidateJobDetails? =
+    val actualMatchingCandidateJobDetails =
       matchingCandidateJobDetailsRetriever.retrieve(expectedJobId.id, expectedPrisonNumber)
 
     verify(matchingCandidateJobsRepository, times(1))
       .findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber)
     assertThat(actualMatchingCandidateJobDetails!!).usingRecursiveComparison()
       .isEqualTo(expectedMatchingCandidateJobDetails)
-    assertThat(actualMatchingCandidateJobDetails.expressionOfInterest).usingRecursiveComparison()
-      .isEqualTo(expectedMatchingCandidateJobDetails.expressionOfInterest)
-    assertThat(actualMatchingCandidateJobDetails.hasExpressionOfInterest()).isTrue()
-    assertThat(actualMatchingCandidateJobDetails.archived).usingRecursiveComparison()
-      .isEqualTo(expectedMatchingCandidateJobDetails.archived)
-    assertThat(actualMatchingCandidateJobDetails.isArchived()).isTrue()
+    assertThat(actualMatchingCandidateJobDetails.expressionOfInterest).isTrue()
+    assertThat(actualMatchingCandidateJobDetails.archived).isTrue()
   }
 
   @Test
   fun `return JobDetails with prisonNumber and ExpressionOfInterest only, when found`() {
     val job = expectedJob.deepCopyMe()
-    val expectedMatchingCandidateJobDetails = MatchingCandidateJobDetails(
-      job = job,
-      expressionOfInterest = job.makeExpressionOfInterest(expectedPrisonNumber),
-    )
+    val expectedMatchingCandidateJobDetails =
+      GetMatchingCandidateJobResponse.from(job = job, expressionOfInterest = true)
     whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber))
       .thenReturn(listOf(expectedMatchingCandidateJobDetails))
 
-    val actualMatchingCandidateJobDetails: MatchingCandidateJobDetails? =
+    val actualMatchingCandidateJobDetails =
       matchingCandidateJobDetailsRetriever.retrieve(expectedJobId.id, expectedPrisonNumber)
 
     verify(matchingCandidateJobsRepository, times(1))
       .findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber)
-    assertThat(actualMatchingCandidateJobDetails!!.hasExpressionOfInterest()).isTrue()
-    assertThat(actualMatchingCandidateJobDetails.isArchived()).isFalse()
+    assertThat(actualMatchingCandidateJobDetails!!.expressionOfInterest).isTrue()
+    assertThat(actualMatchingCandidateJobDetails.archived).isFalse()
   }
 
   @Test
   fun `return JobDetails with prisonNumber and Archived only, when found`() {
     val job = expectedJob.deepCopyMe()
-    val expectedMatchingCandidateJobDetails = MatchingCandidateJobDetails(
-      job = job,
-      archived = job.makeArchived(expectedPrisonNumber),
-    )
+    val expectedMatchingCandidateJobDetails = GetMatchingCandidateJobResponse.from(job = job, archived = true)
     whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber))
       .thenReturn(listOf(expectedMatchingCandidateJobDetails))
 
-    val actualMatchingCandidateJobDetails: MatchingCandidateJobDetails? =
+    val actualMatchingCandidateJobDetails =
       matchingCandidateJobDetailsRetriever.retrieve(expectedJobId.id, expectedPrisonNumber)
 
     verify(matchingCandidateJobsRepository, times(1))
       .findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber)
-    assertThat(actualMatchingCandidateJobDetails!!.hasExpressionOfInterest()).isFalse()
-    assertThat(actualMatchingCandidateJobDetails.isArchived()).isTrue()
+    assertThat(actualMatchingCandidateJobDetails!!.expressionOfInterest).isFalse()
+    assertThat(actualMatchingCandidateJobDetails.archived).isTrue()
   }
 
   @Test
   fun `return nothing without prisonNumber, when not found`() {
     whenever(jobRepository.findById(expectedJobId)).thenReturn(Optional.empty())
 
-    val actualMatchingCandidateJobDetails: MatchingCandidateJobDetails? =
+    val actualMatchingCandidateJobDetails =
       matchingCandidateJobDetailsRetriever.retrieve(expectedJobId.id)
 
     verify(jobRepository, times(1)).findById(expectedJobId)
@@ -124,21 +104,11 @@ class MatchingCandidateJobDetailsRetrieverShould : TestBase() {
     whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber))
       .thenReturn(listOf())
 
-    val actualMatchingCandidateJobDetails: MatchingCandidateJobDetails? =
+    val actualMatchingCandidateJobDetails =
       matchingCandidateJobDetailsRetriever.retrieve(expectedJobId.id, expectedPrisonNumber)
 
     verify(matchingCandidateJobsRepository, times(1))
       .findJobDetailsByPrisonNumber(expectedJobId.id, expectedPrisonNumber)
     assertThat(actualMatchingCandidateJobDetails).isNull()
   }
-
-  private fun Job.makeExpressionOfInterest(prisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = JobPrisonerId(this.id, prisonNumber), job = this).also {
-      this.expressionsOfInterest.put(prisonNumber, it)
-    }
-
-  private fun Job.makeArchived(prisonNumber: String): Archived =
-    Archived(id = JobPrisonerId(this.id, prisonNumber), job = this).also {
-      this.archived.put(prisonNumber, it)
-    }
 }

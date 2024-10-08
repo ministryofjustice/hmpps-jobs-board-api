@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
 
 @Repository
@@ -41,8 +42,30 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
 
   @Query(
     """
-    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobDetails(
-      j, :prisonNumber, eoi, a
+    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse(
+      j.id.id,
+      j.employer.name,
+      j.title,
+      j.closingDate,
+      j.startDate,
+      j.postcode,
+      null,
+      j.sector,
+      j.salaryFrom,
+      j.salaryTo,
+      j.salaryPeriod,
+      j.additionalSalaryInformation,
+      j.workPattern,
+      j.hoursPerWeek,
+      j.contractType,
+      j.offenceExclusions,
+      j.essentialCriteria,
+      j.desirableCriteria,
+      j.description,
+      j.howToApply,
+      CASE WHEN eoi.id IS NOT NULL THEN true ELSE false END,
+      CASE WHEN a.id IS NOT NULL THEN true ELSE false END,
+      j.createdAt
     )
     FROM Job j
     LEFT JOIN j.expressionsOfInterest eoi on eoi.id.prisonNumber = :prisonNumber 
@@ -53,5 +76,5 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
   fun findJobDetailsByPrisonNumber(
     @Param("jobId") jobId: String,
     @Param("prisonNumber") prisonNumber: String,
-  ): List<MatchingCandidateJobDetails>
+  ): List<GetMatchingCandidateJobResponse>
 }

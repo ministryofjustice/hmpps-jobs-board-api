@@ -138,14 +138,7 @@ class JobsGet(
   ): ResponseEntity<GetMatchingCandidateJobResponse> {
     val details = matchingCandidateJobDetailsRetriever.retrieve(id, prisonNumber)
     return when {
-      details != null -> ResponseEntity.ok(
-        GetMatchingCandidateJobResponse.from(
-          job = details.job,
-          expressionOfInterest = details.hasExpressionOfInterest(),
-          archived = details.isArchived(),
-        ),
-      )
-
+      details != null -> ResponseEntity.ok(details)
       else -> ResponseEntity.notFound().build()
     }
   }

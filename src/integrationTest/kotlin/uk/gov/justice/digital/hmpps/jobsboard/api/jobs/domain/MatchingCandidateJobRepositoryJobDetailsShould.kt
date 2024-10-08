@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse
 
 class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
 
@@ -21,13 +22,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
   fun `retrieve by prison number`() {
     val expectedJob = this.givenAJobHasBeenCreated()
 
-    val actual = findJobDetailsByPrisonNumber(expectedJob.id.id, expectedPrisonNumber)
-
-    assertThat(actual).isNotNull()
-    assertThat(actual!!.job).usingRecursiveComparison().ignoringFields("expressionsOfInterest", "archived")
-      .isEqualTo(expectedJob)
-    assertThat(actual.hasExpressionOfInterest()).isFalse()
-    assertThat(actual.isArchived()).isFalse()
+    assertJobDetailsByPrisonNumber(expectedJob, expectedPrisonNumber, false, false)
   }
 
   @Test
@@ -44,14 +39,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
       makeMoreRecords("U5555ST")
     }.also { entityManager.flush() }
 
-    val actual = findJobDetailsByPrisonNumber(expectedJob.id.id, expectedPrisonNumber)
-
-    assertThat(actual!!.job).usingRecursiveComparison().ignoringFields("expressionsOfInterest", "archived")
-      .isEqualTo(expectedJob)
-    assertThat(actual.expressionOfInterest!!.id.prisonNumber).isEqualTo(expectedPrisonNumber)
-    assertThat(actual.archived!!.id.prisonNumber).isEqualTo(expectedPrisonNumber)
-    assertThat(actual.hasExpressionOfInterest()).isTrue()
-    assertThat(actual.isArchived()).isTrue()
+    assertJobDetailsByPrisonNumber(expectedJob, expectedPrisonNumber, true, true)
   }
 
   @Test
@@ -61,14 +49,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
       archivedBy(unexpectedPrisonNumber).also { archivedRepository.save(it) }
     }.also { entityManager.flush() }
 
-    val actual = findJobDetailsByPrisonNumber(expectedJob.id.id, expectedPrisonNumber)
-
-    assertThat(actual!!.job).usingRecursiveComparison().ignoringFields("expressionsOfInterest", "archived")
-      .isEqualTo(expectedJob)
-    assertThat(actual.expressionOfInterest).isNull()
-    assertThat(actual.archived).isNull()
-    assertThat(actual.hasExpressionOfInterest()).isFalse()
-    assertThat(actual.isArchived()).isFalse()
+    assertJobDetailsByPrisonNumber(expectedJob, expectedPrisonNumber, false, false)
   }
 
   @Test
@@ -77,12 +58,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
       registerExpressionOfInterest(expectedPrisonNumber).also { expressionOfInterestRepository.save(it) }
     }.also { entityManager.flush() }
 
-    val actual = findJobDetailsByPrisonNumber(expectedJob.id.id, expectedPrisonNumber)
-
-    assertThat(actual!!.job).usingRecursiveComparison().ignoringFields("expressionsOfInterest", "archived")
-      .isEqualTo(expectedJob)
-    assertThat(actual.hasExpressionOfInterest()).isTrue()
-    assertThat(actual.isArchived()).isFalse()
+    assertJobDetailsByPrisonNumber(expectedJob, expectedPrisonNumber, true, false)
   }
 
   @Test
@@ -91,12 +67,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
       archivedBy(expectedPrisonNumber).also { archivedRepository.save(it) }
     }.also { entityManager.flush() }
 
-    val actual = findJobDetailsByPrisonNumber(expectedJob.id.id, expectedPrisonNumber)
-
-    assertThat(actual!!.job).usingRecursiveComparison().ignoringFields("expressionsOfInterest", "archived")
-      .isEqualTo(expectedJob)
-    assertThat(actual.hasExpressionOfInterest()).isFalse()
-    assertThat(actual.isArchived()).isTrue()
+    assertJobDetailsByPrisonNumber(expectedJob, expectedPrisonNumber, false, true)
   }
 
   @Test
@@ -113,10 +84,46 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
     jobId: String,
     prisonNumber: String,
     isExistingJob: Boolean = true,
-  ): MatchingCandidateJobDetails? =
+  ): GetMatchingCandidateJobResponse? =
     matchingCandidateJobRepository.findJobDetailsByPrisonNumber(jobId, prisonNumber).also { searchResults ->
       assertThat(searchResults.size).isEqualTo(
         if (isExistingJob) 1 else 0,
       )
     }.firstOrNull()
+
+  private fun assertJobDetailsByPrisonNumber(
+    expectedJob: Job,
+    expectedPrisonNumber: String,
+    expectedExpessionOfInterest: Boolean? = null,
+    expectedArchived: Boolean? = null,
+    expectedDistance: Float? = null,
+  ): GetMatchingCandidateJobResponse? {
+    val actualJobDetails = findJobDetailsByPrisonNumber(expectedJob.id.id, expectedPrisonNumber)
+
+    assertThat(actualJobDetails).isNotNull.usingRecursiveComparison()
+      .ignoringFields(
+        "id",
+        "jobTitle",
+        "employerName",
+        "closingDate",
+        "startDate",
+        "offenceExclusions",
+        "createdAt",
+        "distance",
+        "expressionOfInterest",
+        "archived",
+      )
+      .isEqualTo(expectedJob)
+    assertThat(actualJobDetails!!.id).isEqualTo(expectedJob.id.id)
+    assertThat(actualJobDetails.jobTitle).isEqualTo(expectedJob.title)
+    assertThat(actualJobDetails.closingDate).isEqualTo(expectedJob.closingDate?.toString())
+    assertThat(actualJobDetails.startDate).isEqualTo(expectedJob.startDate?.toString())
+    assertThat(actualJobDetails.offenceExclusions?.joinToString(separator = ",")).isEqualTo(expectedJob.offenceExclusions)
+    assertThat(actualJobDetails.createdAt).isEqualTo(expectedJob.createdAt.toString())
+    expectedDistance?.let { assertThat(actualJobDetails.distance).isEqualTo(it) }
+    expectedExpessionOfInterest?.let { assertThat(actualJobDetails.expressionOfInterest).isEqualTo(it) }
+    expectedArchived?.let { assertThat(actualJobDetails.archived).isEqualTo(it) }
+
+    return actualJobDetails
+  }
 }
