@@ -32,7 +32,7 @@ class JobCreatorShould : TestBase() {
     numberOfVacancies = 2,
     sourcePrimary = "PEL",
     sourceSecondary = "",
-    charityName = "",
+    charityName = "Switchback",
     postCode = "LS12",
     salaryFrom = 11.93f,
     salaryTo = 15.90f,
@@ -63,7 +63,12 @@ class JobCreatorShould : TestBase() {
       - Regularly checking forklift equipment for faults or damages
       - Consolidating partial pallets for incoming goods
     """.trimIndent(),
-    offenceExclusions = listOf("NONE", "DRIVING"),
+    offenceExclusions = listOf("NONE", "DRIVING", "OTH"),
+    offenceExclusionsDetails = """
+      More details of other offence exclusions:
+      - drunken at pub
+      - war crime
+    """.trimIndent(),
     isRollingOpportunity = false,
     closingDate = LocalDate.of(2024, JULY, 20).toString(),
     isOnlyForPrisonLeavers = true,

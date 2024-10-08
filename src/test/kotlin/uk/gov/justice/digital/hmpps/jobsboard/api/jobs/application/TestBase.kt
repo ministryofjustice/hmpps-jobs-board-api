@@ -38,7 +38,7 @@ abstract class TestBase {
     numberOfVacancies = 2,
     sourcePrimary = "PEL",
     sourceSecondary = "",
-    charityName = "",
+    charityName = "Switchback",
     postcode = "LS12",
     salaryFrom = 11.93f,
     salaryTo = 15.90f,
@@ -69,7 +69,12 @@ abstract class TestBase {
       - Regularly checking forklift equipment for faults or damages
       - Consolidating partial pallets for incoming goods
     """.trimIndent(),
-    offenceExclusions = "NONE,DRIVING",
+    offenceExclusions = "NONE,DRIVING,OTH",
+    offenceExclusionsDetails = """
+      More details of other offence exclusions:
+      - drunken at pub
+      - war crime
+    """.trimIndent(),
     isRollingOpportunity = false,
     closingDate = LocalDate.of(2024, JULY, 20),
     isOnlyForPrisonLeavers = true,
