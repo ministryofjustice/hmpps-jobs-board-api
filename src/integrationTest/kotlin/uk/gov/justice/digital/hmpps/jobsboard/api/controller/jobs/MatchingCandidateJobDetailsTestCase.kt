@@ -54,10 +54,13 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     salaryFrom = 99f,
     salaryTo = null,
     salaryPeriod = "PER_DAY",
-    additionalSalaryInformation = null,
-    workPattern = "FLEXIBLE_SHIFTS",
+    additionalSalaryInformation = "Immediate starts available\nFull training provided",
+    workPattern = "FLEXI_TIME",
     hoursPerWeek = "FULL_TIME_40_PLUS",
-    contractType = "TEMPORARY",
+    contractType = "PERMANENT",
+    numberOfVacancies = 1,
+    charityName = null,
+    isOnlyForPrisonLeavers = false,
     offenceExclusions = listOf("CASE_BY_CASE", "OTHER"),
     offenceExclusionsDetails = null,
     essentialCriteria = "Essential job criteria",
@@ -91,6 +94,9 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     workPattern = "FLEXIBLE_SHIFTS",
     hoursPerWeek = "FULL_TIME",
     contractType = "TEMPORARY",
+    numberOfVacancies = 2,
+    charityName = "",
+    isOnlyForPrisonLeavers = true,
     offenceExclusions = listOf("NONE", "DRIVING", "OTH"),
     offenceExclusionsDetails = "Other offence A, another offence B, yet another offence C",
     essentialCriteria = "",
@@ -140,6 +146,9 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     workPattern = "FLEXIBLE_SHIFTS",
     hoursPerWeek = "FULL_TIME_40_PLUS",
     contractType = "TEMPORARY",
+    numberOfVacancies = 3,
+    charityName = null,
+    isOnlyForPrisonLeavers = true,
     offenceExclusions = listOf("CASE_BY_CASE", "OTHER"),
     offenceExclusionsDetails = null,
     essentialCriteria = "Essential job criteria",
@@ -169,6 +178,9 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     workPattern: String,
     hoursPerWeek: String,
     contractType: String,
+    numberOfVacancies: Int,
+    charityName: String?,
+    isOnlyForPrisonLeavers: Boolean,
     offenceExclusions: List<String>,
     offenceExclusionsDetails: String?,
     essentialCriteria: String,
@@ -199,6 +211,7 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     appendOptionalField("additionalSalaryInformation", additionalSalaryInformation?.asJson())
     appendOptionalField("desirableCriteria", desirableCriteria?.asJson())
     appendOptionalField("offenceExclusionsDetails", offenceExclusionsDetails?.asJson())
+    appendOptionalField("charityName", charityName?.asJson())
 
     return """
       {
@@ -212,6 +225,8 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
         "workPattern": "$workPattern",
         "hoursPerWeek": "$hoursPerWeek",
         "contractType": "$contractType", 
+        "numberOfVacancies": $numberOfVacancies, 
+        "isOnlyForPrisonLeavers": $isOnlyForPrisonLeavers, 
         "offenceExclusions": ${offenceExclusions.asJson()},
         "essentialCriteria": ${essentialCriteria.asJson()},
         "description": ${description.asJson()},
