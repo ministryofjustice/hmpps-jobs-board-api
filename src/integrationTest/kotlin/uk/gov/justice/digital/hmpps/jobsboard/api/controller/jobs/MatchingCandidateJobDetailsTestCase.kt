@@ -59,6 +59,7 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     hoursPerWeek = "FULL_TIME_40_PLUS",
     contractType = "TEMPORARY",
     offenceExclusions = listOf("CASE_BY_CASE", "OTHER"),
+    offenceExclusionsDetails = null,
     essentialCriteria = "Essential job criteria",
     desirableCriteria = null,
     description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
@@ -91,6 +92,7 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     hoursPerWeek = "FULL_TIME",
     contractType = "TEMPORARY",
     offenceExclusions = listOf("NONE", "DRIVING", "OTH"),
+    offenceExclusionsDetails = "Other offence A, another offence B, yet another offence C",
     essentialCriteria = "",
     desirableCriteria = "",
     description = """
@@ -139,6 +141,7 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     hoursPerWeek = "FULL_TIME_40_PLUS",
     contractType = "TEMPORARY",
     offenceExclusions = listOf("CASE_BY_CASE", "OTHER"),
+    offenceExclusionsDetails = null,
     essentialCriteria = "Essential job criteria",
     desirableCriteria = null,
     description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
@@ -167,6 +170,7 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     hoursPerWeek: String,
     contractType: String,
     offenceExclusions: List<String>,
+    offenceExclusionsDetails: String?,
     essentialCriteria: String,
     desirableCriteria: String?,
     description: String,
@@ -194,6 +198,7 @@ abstract class MatchingCandidateJobDetailsTestCase : JobsTestCase() {
     appendOptionalField("salaryTo", salaryTo)
     appendOptionalField("additionalSalaryInformation", additionalSalaryInformation?.asJson())
     appendOptionalField("desirableCriteria", desirableCriteria?.asJson())
+    appendOptionalField("offenceExclusionsDetails", offenceExclusionsDetails?.asJson())
 
     return """
       {
