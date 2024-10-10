@@ -11,8 +11,9 @@ generic-service:
     host: jobs-board-api-dev.hmpps.service.justice.gov.uk
 
   env:
-    APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
-    API_BASE_URL_OAUTH: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+    APPLICATIONINSIGHTS_CONFIGURATION_FILE: "applicationinsights.dev.json"
+    API_BASE_URL_OAUTH: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
+    OS_PLACES_API_URL: "https://api.os.uk/search/places/v1"
     SPRING_PROFILES_ACTIVE: dev
 
 # CloudPlatform AlertManager receiver to route prometheus alerts to slack

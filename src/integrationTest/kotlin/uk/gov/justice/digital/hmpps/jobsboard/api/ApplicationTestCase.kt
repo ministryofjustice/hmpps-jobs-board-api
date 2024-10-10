@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.data.auditing.AuditingHandler
 import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.http.HttpHeaders
@@ -59,6 +60,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 @AutoConfigureTestDatabase(replace = NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
+@AutoConfigureWireMock(port = 0)
 @Transactional
 @ActiveProfiles("test-containers-flyway")
 abstract class ApplicationTestCase {
