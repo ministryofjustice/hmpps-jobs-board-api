@@ -2,12 +2,13 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.assertj.core.api.Assertions.assertThat
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
 import kotlin.test.Test
 
 class GetMatchingCandidateJobResponseShould : TestBase() {
   @Test
   fun `create a response from Job`() {
-    val job = expectedJob
+    val job = amazonForkliftOperator
     val actual = GetMatchingCandidateJobResponse(
       id = job.id.id,
       employerName = job.employer.name,

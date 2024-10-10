@@ -11,6 +11,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.deepCopy
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import java.util.*
 import kotlin.test.Test
@@ -26,11 +28,10 @@ class ExpressionOfInterestDeleterShould : TestBase() {
   @InjectMocks
   private lateinit var expressionOfInterestDeleter: ExpressionOfInterestDeleter
 
-  private val expectedJobId = "fe5d5175-5a21-4cec-a30b-fd87a5f76ce7"
   private val expectedPrisonNumber = "A1234BC"
 
   private val expressionsOfInterestRequest = DeleteExpressionOfInterestRequest.from(
-    jobId = expectedJobId,
+    jobId = amazonForkliftOperator.id.id,
     prisonNumber = expectedPrisonNumber,
   )
 
@@ -72,7 +73,7 @@ class ExpressionOfInterestDeleterShould : TestBase() {
   @Test
   fun `throw exception, when prisoner's prisonNumber is invalid at deletion`() {
     val badRequest = DeleteExpressionOfInterestRequest.from(
-      jobId = expectedJobId,
+      jobId = amazonForkliftOperator.id.id,
       prisonNumber = "A1234BCZ",
     )
 
@@ -90,20 +91,20 @@ class ExpressionOfInterestDeleterShould : TestBase() {
   @Test
   fun `return true when ExpressionOfInterest exists`() {
     obtainTheExpressionOfInterestJustCreated()
-    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
+    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(amazonForkliftOperator.id.id, expectedPrisonNumber)))
       .thenReturn(true)
 
-    val isExisting = expressionOfInterestDeleter.existsById(expectedJobId, expectedPrisonNumber)
+    val isExisting = expressionOfInterestDeleter.existsById(amazonForkliftOperator.id.id, expectedPrisonNumber)
     assertThat(isExisting).isTrue()
   }
 
   @Test
   fun `return false when ExpressionOfInterest not exist`() {
     obtainTheJobJustCreated()
-    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
+    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(amazonForkliftOperator.id.id, expectedPrisonNumber)))
       .thenReturn(false)
 
-    val isExisting = expressionOfInterestDeleter.existsById(expectedJobId, expectedPrisonNumber)
+    val isExisting = expressionOfInterestDeleter.existsById(amazonForkliftOperator.id.id, expectedPrisonNumber)
     assertThat(isExisting).isFalse()
   }
 
@@ -118,7 +119,7 @@ class ExpressionOfInterestDeleterShould : TestBase() {
   }
 
   private fun obtainTheJobJustCreated(stubJob: Boolean = true): Job {
-    return deepCopy(expectedJob).also { job ->
+    return deepCopy(amazonForkliftOperator).also { job ->
       if (stubJob) {
         whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
       }
