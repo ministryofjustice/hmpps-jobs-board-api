@@ -12,7 +12,7 @@ import java.time.Instant
 const val EMPLOYERS_ENDPOINT = "/employers"
 
 class EmployerTestCase : ApplicationTestCase() {
-  val employerCreationTime = Instant.parse("2024-07-01T01:00:00Z")
+  val employerCreationTime: Instant = Instant.parse("2024-07-01T01:00:00Z")
 
   fun assertAddEmployerIsCreated(
     employer: Employer,

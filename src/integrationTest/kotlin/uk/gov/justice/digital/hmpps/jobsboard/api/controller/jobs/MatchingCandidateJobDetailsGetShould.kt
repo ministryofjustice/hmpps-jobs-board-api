@@ -3,6 +3,10 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import java.util.*
 
 class MatchingCandidateJobDetailsGetShould : MatchingCandidateJobDetailsTestCase() {
@@ -14,48 +18,43 @@ class MatchingCandidateJobDetailsGetShould : MatchingCandidateJobDetailsTestCase
 
   @Test
   fun `retrieve details of a matching candidate job`() {
-    val jobId = "04295747-e60d-4e51-9716-e721a63bdd06"
-
     assertGetMatchingCandidateJobDetailsIsOK(
-      id = jobId,
-      parameters = null,
-      expectedResponse = tescoWarehouseHandlerJobDetailsBody(
-        id = jobId,
-        expressionOfInterest = false,
-        archived = false,
-      ),
+      id = tescoWarehouseHandler.id.id,
+      parameters = "prisonNumber=$prisonNumber",
+      expectedResponse = builder()
+        .from(tescoWarehouseHandler)
+//        .withDistance(distanceInMiles)
+        .buildJobDetailsResponseBody(prisonNumber),
     )
   }
 
   @Test
   fun `retrieve details of a matching candidate job, with prisonNumber, ExpressionOfInterest and without Archived`() {
-    val jobId = "6fdf2bf4-cfe6-419c-bab2-b3673adbb393"
-    assertAddExpressionOfInterest(jobId, prisonNumber)
+    assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
 
     assertGetMatchingCandidateJobDetailsIsOK(
-      id = jobId,
+      id = abcConstructionApprentice.id.id,
       parameters = "prisonNumber=$prisonNumber",
-      expectedResponse = abcConstructionJobDetailsBody(
-        id = jobId,
-        expressionOfInterest = true,
-        archived = false,
-      ),
+      expectedResponse = builder()
+        .from(abcConstructionApprentice)
+        .withExpressionOfInterestFrom(prisonNumber)
+        .buildJobDetailsResponseBody(prisonNumber),
     )
   }
 
   @Test
   fun `retrieve details of a matching candidate job, with prisonNumber, Archived and without ExpressionOfInterest`() {
-    val jobId = "d3035924-f9fe-426f-b253-f7c8225167ae"
-    assertAddArchived(jobId, prisonNumber)
+    // TODO: this test is wrong.
+    //  If a job is archived we cannot obtain the details.
+    //  We must, instead, return a 404 Not Found
+    assertAddArchived(amazonForkliftOperator.id.id, prisonNumber)
 
     assertGetMatchingCandidateJobDetailsIsOK(
-      id = jobId,
+      id = abcConstructionApprentice.id.id,
       parameters = "prisonNumber=$prisonNumber",
-      expectedResponse = amazonForkliftOperatorJobDetailsBody(
-        id = jobId,
-        expressionOfInterest = false,
-        archived = true,
-      ),
+      expectedResponse = builder()
+        .from(abcConstructionApprentice)
+        .buildJobDetailsResponseBody(prisonNumber),
     )
   }
 

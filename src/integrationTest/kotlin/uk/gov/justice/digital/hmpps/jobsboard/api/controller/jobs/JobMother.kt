@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.VALID_PRISON_NUMBER
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
+import java.time.Instant
 import java.time.LocalDate
 import java.util.*
 
@@ -222,11 +223,6 @@ object JobMother {
         }
     """.trimIndent()
   }
-
-  private fun String.asJson(): String {
-    val mapper: ObjectMapper = jacksonObjectMapper()
-    return mapper.writeValueAsString(this)
-  }
 }
 
 class JobBuilder {
@@ -267,7 +263,11 @@ class JobBuilder {
     description = "Asda and often styled as ASDA, is a British supermarket and petrol station chain. Its headquarters are in Leeds, England.",
     sector = "RETAIL",
     status = "SILVER",
+
   )
+  var archived: Boolean = false
+  var distance: Float? = null
+  var createdAt: Instant? = jobCreationTime
 
   fun withExpressionsOfInterest(expressionsOfInterest: MutableMap<String, ExpressionOfInterest>): JobBuilder {
     this.expressionsOfInterest = expressionsOfInterest
@@ -283,6 +283,11 @@ class JobBuilder {
         this.build(),
       ),
     )
+    return this
+  }
+
+  fun withDistance(distance: Float): JobBuilder {
+    this.distance = distance
     return this
   }
 
@@ -369,4 +374,55 @@ class JobBuilder {
       employer = this.employer,
     )
   }
+
+  fun buildJobDetailsResponseBody(prisonNumber: String): String {
+    val optionalFields = StringBuilder()
+    val appendOptionalFieldWithOrWithoutQuote: (String, Any?, Boolean) -> Unit =
+      { name: String, value: Any?, withQuote: Boolean ->
+        value?.let {
+          val finalValue = if (withQuote) "\"$value\"" else value
+          optionalFields.append("\"$name\": $finalValue,\n")
+        }
+      }
+    val appendOptionalField: (String, Any?) -> Unit =
+      { name: String, value: Any? -> appendOptionalFieldWithOrWithoutQuote(name, value, false) }
+    val appendOptionalFieldQuoted: (String, Any?) -> Unit =
+      { name: String, value: Any? -> appendOptionalFieldWithOrWithoutQuote(name, value, true) }
+
+    appendOptionalFieldQuoted("closingDate", this.closingDate)
+    appendOptionalFieldQuoted("startDate", this.startDate)
+    appendOptionalField("distance", this.distance)
+    appendOptionalField("salaryTo", this.salaryTo)
+    appendOptionalField("additionalSalaryInformation", this.additionalSalaryInformation?.asJson())
+    appendOptionalField("desirableCriteria", this.desirableCriteria?.asJson())
+    appendOptionalField("offenceExclusionsDetails", this.offenceExclusionsDetails?.asJson())
+
+    return """
+      {
+        "id": "${this.id}",
+        "employerName": "${this.employer.name}",
+        "jobTitle": "${this.title}",
+        "postcode": "${this.postcode}",
+        "sector": "${this.sector}",
+        "salaryFrom": ${this.salaryFrom},
+        "salaryPeriod": "${this.salaryPeriod}",
+        "workPattern": "${this.workPattern}",
+        "hoursPerWeek": "${this.hoursPerWeek}",
+        "contractType": "${this.contractType}", 
+        "offenceExclusions": ${this.offenceExclusions},
+        "essentialCriteria": ${this.essentialCriteria.asJson()},
+        "description": ${this.description.asJson()},
+        "howToApply": ${this.howToApply.asJson()},
+        "expressionOfInterest": ${this.expressionsOfInterest.containsKey(prisonNumber)},
+        "archived": ${this.archived}, 
+        $optionalFields
+        "createdAt": "${this.createdAt}"
+      }
+    """.trimIndent()
+  }
+}
+
+fun String.asJson(): String {
+  val mapper: ObjectMapper = jacksonObjectMapper()
+  return mapper.writeValueAsString(this)
 }
