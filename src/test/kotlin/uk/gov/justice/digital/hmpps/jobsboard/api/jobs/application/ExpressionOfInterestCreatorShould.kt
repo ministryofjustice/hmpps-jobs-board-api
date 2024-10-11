@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.deepCopy
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import java.util.*
 import kotlin.test.Test
@@ -27,11 +29,10 @@ class ExpressionOfInterestCreatorShould : TestBase() {
   @InjectMocks
   private lateinit var expressionOfInterestCreator: ExpressionOfInterestCreator
 
-  private val expectedJobId = "fe5d5175-5a21-4cec-a30b-fd87a5f76ce7"
   private val expectedPrisonNumber = "A1234BC"
 
   private val expressionsOfInterestRequest = CreateExpressionOfInterestRequest.from(
-    jobId = expectedJobId,
+    jobId = amazonForkliftOperator.id.id,
     prisonNumber = expectedPrisonNumber,
   )
 
@@ -95,7 +96,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
     givenAJobIsCreated()
 
     val badRequest = CreateExpressionOfInterestRequest.from(
-      jobId = expectedJobId,
+      jobId = amazonForkliftOperator.id.id,
       prisonNumber = "A1234BCZ",
     )
 
@@ -108,20 +109,20 @@ class ExpressionOfInterestCreatorShould : TestBase() {
   @Test
   fun `return true when ExpressionOfInterest exists`() {
     givenAJobIsCreated()
-    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
+    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(amazonForkliftOperator.id.id, expectedPrisonNumber)))
       .thenReturn(true)
 
-    val isExisting = expressionOfInterestCreator.existsById(expectedJobId, expectedPrisonNumber)
+    val isExisting = expressionOfInterestCreator.existsById(amazonForkliftOperator.id.id, expectedPrisonNumber)
     assertThat(isExisting).isTrue()
   }
 
   @Test
   fun `return false when ExpressionOfInterest not exist`() {
     givenAJobIsCreated()
-    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(expectedJobId, expectedPrisonNumber)))
+    whenever(expressionOfInterestRepository.existsById(makeExpressionOfInterestId(amazonForkliftOperator.id.id, expectedPrisonNumber)))
       .thenReturn(false)
 
-    val isExisting = expressionOfInterestCreator.existsById(expectedJobId, expectedPrisonNumber)
+    val isExisting = expressionOfInterestCreator.existsById(amazonForkliftOperator.id.id, expectedPrisonNumber)
     assertThat(isExisting).isFalse()
   }
 
@@ -140,7 +141,7 @@ class ExpressionOfInterestCreatorShould : TestBase() {
   }
 
   private fun obtainTheJobJustCreated(): Job {
-    return deepCopy(expectedJob).also { job ->
+    return deepCopy(amazonForkliftOperator).also { job ->
       whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
     }
   }

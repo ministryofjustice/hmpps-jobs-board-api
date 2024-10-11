@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.deepCopy
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import java.util.*
 import kotlin.test.Test
@@ -27,11 +29,10 @@ class ArchivedCreatorShould : TestBase() {
   @InjectMocks
   private lateinit var archivedCreator: ArchivedCreator
 
-  private val expectedJobId = "fe5d5175-5a21-4cec-a30b-fd87a5f76ce7"
   private val expectedPrisonNumber = "A1234BC"
 
   private val archivedRequest = CreateArchivedRequest.from(
-    jobId = expectedJobId,
+    jobId = amazonForkliftOperator.id.id,
     prisonNumber = expectedPrisonNumber,
   )
 
@@ -95,7 +96,7 @@ class ArchivedCreatorShould : TestBase() {
     givenAJobIsCreated()
 
     val badRequest = CreateArchivedRequest.from(
-      jobId = expectedJobId,
+      jobId = amazonForkliftOperator.id.id,
       prisonNumber = "A1234BCZ",
     )
 
@@ -108,20 +109,20 @@ class ArchivedCreatorShould : TestBase() {
   @Test
   fun `return true when Archived exists`() {
     givenAJobIsCreated()
-    whenever(archivedRepository.existsById(makeArchivedId(expectedJobId, expectedPrisonNumber)))
+    whenever(archivedRepository.existsById(makeArchivedId(amazonForkliftOperator.id.id, expectedPrisonNumber)))
       .thenReturn(true)
 
-    val isExisting = archivedCreator.existsById(expectedJobId, expectedPrisonNumber)
+    val isExisting = archivedCreator.existsById(amazonForkliftOperator.id.id, expectedPrisonNumber)
     assertThat(isExisting).isTrue()
   }
 
   @Test
   fun `return false when Archived not exist`() {
     givenAJobIsCreated()
-    whenever(archivedRepository.existsById(makeArchivedId(expectedJobId, expectedPrisonNumber)))
+    whenever(archivedRepository.existsById(makeArchivedId(amazonForkliftOperator.id.id, expectedPrisonNumber)))
       .thenReturn(false)
 
-    val isExisting = archivedCreator.existsById(expectedJobId, expectedPrisonNumber)
+    val isExisting = archivedCreator.existsById(amazonForkliftOperator.id.id, expectedPrisonNumber)
     assertThat(isExisting).isFalse()
   }
 
@@ -140,7 +141,7 @@ class ArchivedCreatorShould : TestBase() {
   }
 
   private fun obtainTheJobJustCreated(): Job {
-    return deepCopy(expectedJob).also { job ->
+    return deepCopy(amazonForkliftOperator).also { job ->
       whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
     }
   }

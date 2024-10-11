@@ -1,23 +1,15 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
+package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerMother.abcConstruction
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.VALID_PRISON_NUMBER
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
-import java.time.Instant
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.CreateJobRequest
 import java.time.LocalDate
 import java.util.*
 
 object JobMother {
-
   val tescoWarehouseHandler = Job(
     id = EntityId("04295747-e60d-4e51-9716-e721a63bdd06"),
     title = "Warehouse handler",
@@ -31,10 +23,10 @@ object JobMother {
     salaryFrom = 99f,
     salaryTo = null,
     salaryPeriod = "PER_DAY",
-    additionalSalaryInformation = "Immediate starts available\nFull training provided",
+    additionalSalaryInformation = null,
     isPayingAtLeastNationalMinimumWage = true,
-    workPattern = "FLEXI_TIME",
-    contractType = "PERMANENT",
+    workPattern = "FLEXIBLE_SHIFTS",
+    contractType = "TEMPORARY",
     hoursPerWeek = "FULL_TIME_40_PLUS",
     baseLocation = "HYBRID",
     essentialCriteria = "Essential job criteria",
@@ -46,7 +38,7 @@ object JobMother {
     closingDate = null,
     startDate = null,
     isRollingOpportunity = false,
-    isOnlyForPrisonLeavers = false,
+    isOnlyForPrisonLeavers = true,
     supportingDocumentationRequired = "[\"DISCLOSURE_LETTER\", \"OTHER\"]",
     supportingDocumentationDetails = null,
     employer = tesco,
@@ -60,7 +52,7 @@ object JobMother {
     numberOfVacancies = 2,
     sourcePrimary = "PEL",
     sourceSecondary = "",
-    charityName = "Switchback",
+    charityName = "",
     postcode = "LS12",
     salaryFrom = 11.93f,
     salaryTo = 15.90f,
@@ -92,11 +84,7 @@ object JobMother {
       - Consolidating partial pallets for incoming goods
     """.trimIndent(),
     offenceExclusions = "[\"NONE\", \"DRIVING\", \"OTH\"]",
-    offenceExclusionsDetails = """
-      More details of other offence exclusions:
-      - drunken at pub
-      - war crime
-    """.trimIndent(),
+    offenceExclusionsDetails = "Other offence A, another offence B, yet another offence C",
     isRollingOpportunity = false,
     closingDate = LocalDate.parse("2025-02-01"),
     isOnlyForPrisonLeavers = true,
@@ -145,92 +133,83 @@ object JobMother {
     return JobBuilder()
   }
 
-  val Job.requestBody: String get() = jobRequestBody(this)
-  val Job.responseBody: String get() = jobResponseBody(this)
-  val Job.itemListResponseBody: String get() = jobItemListResponseBody(this)
-  val Job.candidateMatchingItemListResponseBody: String get() = matchingCandidateJobItemListResponseBody(this)
+  val Job.createJobRequest: CreateJobRequest get() = createJobRequest(this)
 
-  private fun jobRequestBody(job: Job): String {
-    return jobBody(job)
-  }
+  fun deepCopy(job: Job): Job = job.deepCopyMe()
 
-  private fun jobResponseBody(job: Job): String {
-    val expectedJob = job.copy().also {
-      it.createdAt = jobCreationTime
+  fun Job.deepCopyMe(): Job = this.copy(
+    id = this.id.copy(),
+    employer = this.employer.copy(),
+    expressionsOfInterest = this.expressionsOfInterest.toMutableMap(),
+    archived = this.archived.toMutableMap(),
+  ).apply {
+    expressionsOfInterest.forEach {
+      expressionsOfInterest[it.key] = it.value.deepCopy(job = this)
     }
-    return jobBody(expectedJob)
+    archived.forEach { pair ->
+      archived[pair.key] = pair.value.deepCopy(job = this)
+    }
   }
 
-  private fun jobItemListResponseBody(job: Job): String {
-    return """
-        {
-          "employerId": "${job.employer.id.id}",
-          "employerName": "${job.employer.name}",
-          "jobTitle": "${job.title}",
-          "numberOfVacancies": ${job.numberOfVacancies},
-          "sector": "${job.sector}",
-          "createdAt": "$jobCreationTime"
-        }
-    """.trimIndent()
+  private fun ExpressionOfInterest.deepCopy(job: Job): ExpressionOfInterest {
+    val expressionOfInterest = this
+    return expressionOfInterest.copy(
+      id = expressionOfInterest.id.copy(
+        jobId = expressionOfInterest.id.jobId.copy(id = expressionOfInterest.id.jobId.id),
+      ),
+      job = job,
+    )
   }
 
-  private fun jobBody(job: Job): String {
-    val createdAt = job.createdAt?.let { ",\n\"createdAt\": \"$it\"" } ?: ""
-    return """
-        {
-          "employerId": "${job.employer.id.id}",
-          "jobTitle": "${job.title}",
-          "sector": "${job.sector}",
-          "industrySector": "${job.industrySector}",
-          "numberOfVacancies": ${job.numberOfVacancies},
-          "sourcePrimary": "${job.sourcePrimary}",
-          "sourceSecondary": ${job.sourceSecondary?.asJson()},
-          "charityName": ${job.charityName?.asJson()},
-          "postCode": "${job.postcode}",
-          "salaryFrom": ${job.salaryFrom},
-          "salaryTo": ${job.salaryTo},
-          "salaryPeriod": "${job.salaryPeriod}",
-          "additionalSalaryInformation": ${job.additionalSalaryInformation?.asJson()},
-          "isPayingAtLeastNationalMinimumWage": ${job.isPayingAtLeastNationalMinimumWage},
-          "workPattern": "${job.workPattern}",
-          "hoursPerWeek": "${job.hoursPerWeek}",
-          "contractType": "${job.contractType}",
-          "baseLocation": ${job.baseLocation?.asJson()},
-          "essentialCriteria": "${job.essentialCriteria}",
-          "desirableCriteria": ${job.desirableCriteria?.asJson()},
-          "description": ${job.description.asJson()},
-          "offenceExclusions": ${job.offenceExclusions},
-          "offenceExclusionsDetails": ${job.offenceExclusionsDetails?.asJson()}, 
-          "isRollingOpportunity": ${job.isRollingOpportunity},
-          "closingDate": ${job.closingDate?.toString()?.asJson()},
-          "isOnlyForPrisonLeavers": ${job.isOnlyForPrisonLeavers},
-          "startDate": ${job.startDate?.toString()?.asJson()},
-          "howToApply": "${job.howToApply}",
-          "supportingDocumentationRequired": ${job.supportingDocumentationRequired},
-          "supportingDocumentationDetails": ${job.supportingDocumentationDetails?.asJson()}$createdAt
-        }
-    """.trimIndent()
+  private fun Archived.deepCopy(job: Job): Archived {
+    val archived = this
+    return archived.copy(
+      id = archived.id.copy(
+        jobId = archived.id.jobId.copy(id = archived.id.jobId.id),
+      ),
+      job = job,
+    )
   }
 
-  private fun matchingCandidateJobItemListResponseBody(job: Job): String {
-    return """
-        {
-          "id": "${job.id}",
-          "jobTitle": "${job.title}",
-          "employerName": "${job.employer.name}",
-          "sector": "${job.sector}",
-          "postcode": "${job.postcode}",
-          "distance": 0,
-          "closingDate": ${job.closingDate?.toString()?.asJson()},
-          "hasExpressedInterest": ${job.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
-          "createdAt": "$jobCreationTime"
-        }
-    """.trimIndent()
+  private fun createJobRequest(job: Job): CreateJobRequest {
+    return CreateJobRequest.from(
+      id = job.id.id,
+      employerId = job.employer.id.id,
+      jobTitle = job.title,
+      sector = job.sector,
+      industrySector = job.industrySector,
+      numberOfVacancies = job.numberOfVacancies,
+      sourcePrimary = job.sourcePrimary,
+      sourceSecondary = job.sourceSecondary,
+      charityName = job.charityName,
+      postCode = job.postcode,
+      salaryFrom = job.salaryFrom,
+      salaryTo = job.salaryTo,
+      salaryPeriod = job.salaryPeriod,
+      additionalSalaryInformation = job.additionalSalaryInformation,
+      isPayingAtLeastNationalMinimumWage = job.isPayingAtLeastNationalMinimumWage,
+      workPattern = job.workPattern,
+      hoursPerWeek = job.hoursPerWeek,
+      contractType = job.contractType,
+      baseLocation = job.baseLocation,
+      essentialCriteria = job.essentialCriteria,
+      desirableCriteria = job.desirableCriteria,
+      description = job.description,
+      offenceExclusions = job.offenceExclusions.split(','),
+      offenceExclusionsDetails = job.offenceExclusionsDetails,
+      isRollingOpportunity = job.isRollingOpportunity,
+      closingDate = job.closingDate.toString(),
+      isOnlyForPrisonLeavers = job.isOnlyForPrisonLeavers,
+      startDate = job.startDate.toString(),
+      howToApply = job.howToApply,
+      supportingDocumentationRequired = job.supportingDocumentationRequired.split(','),
+      supportingDocumentationDetails = job.supportingDocumentationDetails,
+    )
   }
 }
 
 class JobBuilder {
-  var id: EntityId = EntityId(UUID.randomUUID().toString())
+  var id: String = UUID.randomUUID().toString()
   var title: String = "Service Colleague"
   var sector: String = "RETAIL"
   var industrySector: String = "RETAIL"
@@ -267,11 +246,12 @@ class JobBuilder {
     description = "Asda and often styled as ASDA, is a British supermarket and petrol station chain. Its headquarters are in Leeds, England.",
     sector = "RETAIL",
     status = "SILVER",
-
   )
-  var archived: Boolean = false
-  var distance: Float? = null
-  var createdAt: Instant? = jobCreationTime
+
+  fun withId(id: String): JobBuilder {
+    this.id = id
+    return this
+  }
 
   fun withExpressionsOfInterest(expressionsOfInterest: MutableMap<String, ExpressionOfInterest>): JobBuilder {
     this.expressionsOfInterest = expressionsOfInterest
@@ -282,7 +262,7 @@ class JobBuilder {
     this.expressionsOfInterest.put(
       prisonNumber,
       ExpressionOfInterest(
-        JobPrisonerId(jobId = this.id, prisonNumber),
+        JobPrisonerId(jobId = EntityId(this.id), prisonNumber),
         null,
         this.build(),
       ),
@@ -290,13 +270,8 @@ class JobBuilder {
     return this
   }
 
-  fun withDistance(distance: Float): JobBuilder {
-    this.distance = distance
-    return this
-  }
-
   fun from(job: Job): JobBuilder {
-    this.id = job.id
+    this.id = job.id.id
     this.title = job.title
     this.sector = job.sector
     this.industrySector = job.industrySector
@@ -344,7 +319,7 @@ class JobBuilder {
 
   fun build(): Job {
     return Job(
-      id = this.id,
+      id = EntityId(this.id),
       title = this.title,
       sector = this.sector,
       industrySector = this.industrySector,
@@ -379,57 +354,39 @@ class JobBuilder {
     )
   }
 
-  fun buildJobDetailsResponseBody(prisonNumber: String): String {
-    val optionalFields = StringBuilder()
-    val appendOptionalFieldWithOrWithoutQuote: (String, Any?, Boolean) -> Unit =
-      { name: String, value: Any?, withQuote: Boolean ->
-        value?.let {
-          val finalValue = if (withQuote) "\"$value\"" else value
-          optionalFields.append("\"$name\": $finalValue,\n")
-        }
-      }
-    val appendOptionalField: (String, Any?) -> Unit =
-      { name: String, value: Any? -> appendOptionalFieldWithOrWithoutQuote(name, value, false) }
-    val appendOptionalFieldQuoted: (String, Any?) -> Unit =
-      { name: String, value: Any? -> appendOptionalFieldWithOrWithoutQuote(name, value, true) }
-
-    appendOptionalFieldQuoted("closingDate", this.closingDate)
-    appendOptionalFieldQuoted("startDate", this.startDate)
-    appendOptionalField("distance", this.distance)
-    appendOptionalField("salaryTo", this.salaryTo)
-    appendOptionalField("additionalSalaryInformation", this.additionalSalaryInformation?.asJson())
-    appendOptionalField("desirableCriteria", this.desirableCriteria?.asJson())
-    appendOptionalField("offenceExclusionsDetails", this.offenceExclusionsDetails?.asJson())
-    appendOptionalField("charityName", this.charityName?.asJson())
-
-    return """
-      {
-        "id": "${this.id}",
-        "employerName": "${this.employer.name}",
-        "jobTitle": "${this.title}",
-        "postcode": "${this.postcode}",
-        "sector": "${this.sector}",
-        "salaryFrom": ${this.salaryFrom},
-        "salaryPeriod": "${this.salaryPeriod}",
-        "workPattern": "${this.workPattern}",
-        "hoursPerWeek": "${this.hoursPerWeek}",
-        "contractType": "${this.contractType}",
-        "numberOfVacancies": ${this.numberOfVacancies},
-        "isOnlyForPrisonLeavers": ${this.isOnlyForPrisonLeavers}, 
-        "offenceExclusions": ${this.offenceExclusions},
-        "essentialCriteria": ${this.essentialCriteria.asJson()},
-        "description": ${this.description.asJson()},
-        "howToApply": ${this.howToApply.asJson()},
-        "expressionOfInterest": ${this.expressionsOfInterest.containsKey(prisonNumber)},
-        "archived": ${this.archived}, 
-        $optionalFields
-        "createdAt": "${this.createdAt}"
-      }
-    """.trimIndent()
+  fun buildCreateJobRequest(): CreateJobRequest {
+    return CreateJobRequest.from(
+      id = this.id,
+      employerId = this.employer.id.id,
+      jobTitle = this.title,
+      sector = this.sector,
+      industrySector = this.industrySector,
+      numberOfVacancies = this.numberOfVacancies,
+      sourcePrimary = this.sourcePrimary,
+      sourceSecondary = this.sourceSecondary,
+      charityName = this.charityName,
+      postCode = this.postcode,
+      salaryFrom = this.salaryFrom,
+      salaryTo = this.salaryTo,
+      salaryPeriod = this.salaryPeriod,
+      additionalSalaryInformation = this.additionalSalaryInformation,
+      isPayingAtLeastNationalMinimumWage = this.isPayingAtLeastNationalMinimumWage,
+      workPattern = this.workPattern,
+      hoursPerWeek = this.hoursPerWeek,
+      contractType = this.contractType,
+      baseLocation = this.baseLocation,
+      essentialCriteria = this.essentialCriteria,
+      desirableCriteria = this.desirableCriteria,
+      description = this.description,
+      offenceExclusions = this.offenceExclusions.split(','),
+      offenceExclusionsDetails = this.offenceExclusionsDetails,
+      isRollingOpportunity = this.isRollingOpportunity,
+      closingDate = this.closingDate.toString(),
+      isOnlyForPrisonLeavers = this.isOnlyForPrisonLeavers,
+      startDate = this.startDate.toString(),
+      howToApply = this.howToApply,
+      supportingDocumentationRequired = this.supportingDocumentationRequired.split(','),
+      supportingDocumentationDetails = this.supportingDocumentationDetails,
+    )
   }
-}
-
-fun String.asJson(): String {
-  val mapper: ObjectMapper = jacksonObjectMapper()
-  return mapper.writeValueAsString(this)
 }

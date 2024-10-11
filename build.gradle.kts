@@ -9,6 +9,7 @@ plugins {
 dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.3.2")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+  implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
@@ -44,6 +45,7 @@ testing {
           implementation("org.xmlunit:xmlunit-core:2.10.0")
         }
         implementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
+        implementation("org.springframework.cloud:spring-cloud-contract-wiremock:4.1.4")
         implementation("io.jsonwebtoken:jjwt-impl:0.12.5")
         implementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
         implementation("org.flywaydb:flyway-core")

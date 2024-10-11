@@ -6,8 +6,8 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
-import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,15 +20,15 @@ class JobRetrieverShould : TestBase() {
 
   @Test
   fun `return a Job when found`() {
-    `when`(jobRepository.findById(EntityId("f17355ca-5806-4f68-b60a-bafb1568120e"))).thenReturn(
+    `when`(jobRepository.findById(amazonForkliftOperator.id)).thenReturn(
       Optional.of(
-        expectedJob,
+        amazonForkliftOperator,
       ),
     )
 
-    val actualJob: Job = jobRetriever.retrieve("f17355ca-5806-4f68-b60a-bafb1568120e")
+    val actualJob: Job = jobRetriever.retrieve(amazonForkliftOperator.id.id)
 
-    verify(jobRepository, times(1)).findById(EntityId("f17355ca-5806-4f68-b60a-bafb1568120e"))
-    assertEquals(expectedJob, actualJob)
+    verify(jobRepository, times(1)).findById(amazonForkliftOperator.id)
+    assertEquals(amazonForkliftOperator, actualJob)
   }
 }
