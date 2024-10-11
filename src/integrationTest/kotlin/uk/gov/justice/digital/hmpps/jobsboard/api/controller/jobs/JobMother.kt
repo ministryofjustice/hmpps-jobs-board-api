@@ -60,7 +60,7 @@ object JobMother {
     numberOfVacancies = 2,
     sourcePrimary = "PEL",
     sourceSecondary = "",
-    charityName = "",
+    charityName = "Switchback",
     postcode = "LS12",
     salaryFrom = 11.93f,
     salaryTo = 15.90f,
@@ -92,7 +92,11 @@ object JobMother {
       - Consolidating partial pallets for incoming goods
     """.trimIndent(),
     offenceExclusions = "[\"NONE\", \"DRIVING\", \"OTH\"]",
-    offenceExclusionsDetails = "Other offence A, another offence B, yet another offence C",
+    offenceExclusionsDetails = """
+      More details of other offence exclusions:
+      - drunken at pub
+      - war crime
+    """.trimIndent(),
     isRollingOpportunity = false,
     closingDate = LocalDate.parse("2025-02-01"),
     isOnlyForPrisonLeavers = true,
@@ -196,7 +200,7 @@ object JobMother {
           "desirableCriteria": ${job.desirableCriteria?.asJson()},
           "description": ${job.description.asJson()},
           "offenceExclusions": ${job.offenceExclusions},
-          "offenceExclusionsDetails": ${job.offenceExclusionsDetails?.let { "\"$it\"" }}, 
+          "offenceExclusionsDetails": ${job.offenceExclusionsDetails?.asJson()}, 
           "isRollingOpportunity": ${job.isRollingOpportunity},
           "closingDate": ${job.closingDate?.toString()?.asJson()},
           "isOnlyForPrisonLeavers": ${job.isOnlyForPrisonLeavers},
@@ -396,6 +400,7 @@ class JobBuilder {
     appendOptionalField("additionalSalaryInformation", this.additionalSalaryInformation?.asJson())
     appendOptionalField("desirableCriteria", this.desirableCriteria?.asJson())
     appendOptionalField("offenceExclusionsDetails", this.offenceExclusionsDetails?.asJson())
+    appendOptionalField("charityName", this.charityName?.asJson())
 
     return """
       {
@@ -408,7 +413,9 @@ class JobBuilder {
         "salaryPeriod": "${this.salaryPeriod}",
         "workPattern": "${this.workPattern}",
         "hoursPerWeek": "${this.hoursPerWeek}",
-        "contractType": "${this.contractType}", 
+        "contractType": "${this.contractType}",
+        "numberOfVacancies": ${this.numberOfVacancies},
+        "isOnlyForPrisonLeavers": ${this.isOnlyForPrisonLeavers}, 
         "offenceExclusions": ${this.offenceExclusions},
         "essentialCriteria": ${this.essentialCriteria.asJson()},
         "description": ${this.description.asJson()},
