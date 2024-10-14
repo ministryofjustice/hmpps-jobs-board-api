@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.builder
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
@@ -73,5 +75,23 @@ class JobsPutShould : JobsTestCase() {
       """.trimIndent()
     }
     assertAddJobThrowsValidationError(jobId, jobBuilder.build().requestBody, expectedError)
+  }
+
+  @Test
+  fun `update an existing Employer maintaining its related Jobs`() {
+    val employerId = assertAddEmployerIsCreated(employer = amazon)
+    val jobId = assertAddJobIsCreated(job = amazonForkliftOperator)
+
+    val updatedAmazon = builder().from(amazon).withName("${amazon.name} updated").build()
+
+    assertUpdateEmployerIsOk(
+      employerId = employerId,
+      body = updatedAmazon.requestBody,
+    )
+
+    assertGetJobIsOK(
+      jobId = jobId,
+      expectedResponse = amazonForkliftOperator.requestBody,
+    )
   }
 }

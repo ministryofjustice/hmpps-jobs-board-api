@@ -17,13 +17,13 @@ data class Employer(
   var id: EntityId,
 
   @Column(name = "name", nullable = false)
-  var name: String,
+  val name: String,
 
   @Column(name = "description", length = 500, nullable = false)
-  var description: String,
+  val description: String,
 
   @Column(name = "sector", nullable = false)
-  var sector: String,
+  val sector: String,
 
   @Column(name = "status", nullable = false)
   val status: String,
