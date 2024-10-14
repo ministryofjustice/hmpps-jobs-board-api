@@ -57,12 +57,11 @@ class EmployersPut(
     id: String,
     @Valid @RequestBody createEmployerRequest: CreateEmployerRequest,
   ): ResponseEntity<Void> {
-    val employerExists = employerCreator.existsById(id)
-    employerCreator.createOrUpdate(createEmployerRequest.copy(id = id))
-
-    return if (employerExists) {
+    return if (employerCreator.existsById(id)) {
+      employerCreator.update(createEmployerRequest.copy(id = id))
       ResponseEntity.ok().build()
     } else {
+      employerCreator.create(createEmployerRequest.copy(id = id))
       ResponseEntity.created(
         ServletUriComponentsBuilder
           .fromCurrentRequest()

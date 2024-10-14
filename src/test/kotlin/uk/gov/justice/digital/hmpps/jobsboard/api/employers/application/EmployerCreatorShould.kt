@@ -58,7 +58,7 @@ class EmployerCreatorShould : TestBase() {
 
   @Test
   fun `save an Employer with valid details`() {
-    employerCreator.createOrUpdate(createEmployerRequest)
+    employerCreator.create(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
     verify(employerRepository).save(employerCaptor.capture())
@@ -73,7 +73,7 @@ class EmployerCreatorShould : TestBase() {
 
   @Test
   fun `save an Employer with current time`() {
-    employerCreator.createOrUpdate(createEmployerRequest)
+    employerCreator.create(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
     verify(employerRepository).save(employerCaptor.capture())
@@ -94,7 +94,7 @@ class EmployerCreatorShould : TestBase() {
     )
 
     val exception = assertThrows<IllegalArgumentException> {
-      employerCreator.createOrUpdate(createEmployerRequest)
+      employerCreator.create(createEmployerRequest)
     }
 
     verify(employerRepository, never()).save(any(Employer::class.java))
@@ -112,7 +112,7 @@ class EmployerCreatorShould : TestBase() {
     )
 
     val exception = assertThrows<IllegalArgumentException> {
-      employerCreator.createOrUpdate(createEmployerRequest)
+      employerCreator.create(createEmployerRequest)
     }
 
     verify(employerRepository, never()).save(any(Employer::class.java))
@@ -130,7 +130,7 @@ class EmployerCreatorShould : TestBase() {
     )
 
     val exception = assertThrows<IllegalArgumentException> {
-      employerCreator.createOrUpdate(createEmployerRequest)
+      employerCreator.create(createEmployerRequest)
     }
 
     verify(employerRepository, never()).save(any(Employer::class.java))
