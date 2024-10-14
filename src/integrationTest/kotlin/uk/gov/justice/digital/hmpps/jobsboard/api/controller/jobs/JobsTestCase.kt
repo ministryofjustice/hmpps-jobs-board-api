@@ -120,8 +120,8 @@ class JobsTestCase : EmployerTestCase() {
         {
           "status":404,
           "errorCode":null,
-          "userMessage":"No resource found failure: $errorMessage",
-          "developerMessage":$errorMessage",
+          "userMessage":"No Job found failure: $errorMessage",
+          "developerMessage":"$errorMessage",
           "moreInfo":null
         }
       """.trimIndent(),
