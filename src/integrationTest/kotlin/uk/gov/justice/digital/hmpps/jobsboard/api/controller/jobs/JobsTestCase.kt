@@ -7,6 +7,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
+import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
@@ -105,6 +106,25 @@ class JobsTestCase : EmployerTestCase() {
       url = url,
       expectedStatus = OK,
       expectedResponse = expectedResponse,
+    )
+  }
+
+  protected fun assertGetJobThrowsNotFoundError(
+    jobId: String,
+    errorMessage: String,
+  ) {
+    assertResponse(
+      url = "$JOBS_ENDPOINT/$jobId",
+      expectedStatus = NOT_FOUND,
+      expectedResponse = """
+        {
+          "status":404,
+          "errorCode":null,
+          "userMessage":"No resource found failure: $errorMessage",
+          "developerMessage":$errorMessage",
+          "moreInfo":null
+        }
+      """.trimIndent(),
     )
   }
 
