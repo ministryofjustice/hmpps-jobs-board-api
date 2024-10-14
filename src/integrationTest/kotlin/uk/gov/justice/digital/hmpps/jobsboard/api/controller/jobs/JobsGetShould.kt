@@ -34,7 +34,7 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `return null on empty optional fields`() {
+  fun `return a Job with all optional fields empty as null`() {
     assertAddEmployerIsCreated(employer = tesco)
     val jobId = assertAddJobIsCreated(job = tescoWarehouseHandler)
 
