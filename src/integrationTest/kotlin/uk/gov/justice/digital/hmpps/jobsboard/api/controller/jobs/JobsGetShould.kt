@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amaz
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.itemListResponseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.responseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import java.util.UUID
 
 class JobsGetShould : JobsTestCase() {
   @Test
@@ -34,13 +35,22 @@ class JobsGetShould : JobsTestCase() {
   }
 
   @Test
-  fun `return null on empty optional fields`() {
+  fun `return a Job with all optional fields empty as null`() {
     assertAddEmployerIsCreated(employer = tesco)
     val jobId = assertAddJobIsCreated(job = tescoWarehouseHandler)
 
     assertGetJobIsOK(
       jobId = jobId,
       expectedResponse = tescoWarehouseHandler.responseBody,
+    )
+  }
+
+  @Test
+  fun `returns Not Found when a Job doesn't exist`() {
+    val nonExistingJobId = UUID.randomUUID().toString()
+    assertGetJobThrowsNotFoundError(
+      jobId = nonExistingJobId,
+      errorMessage = "Job with Id $nonExistingJobId not found",
     )
   }
 

@@ -13,7 +13,8 @@ class JobRetriever(
 ) {
 
   fun retrieve(id: String): Job {
-    return jobRepository.findById(EntityId(id)).orElseThrow()
+    return jobRepository.findById(EntityId(id))
+      .orElseThrow { JobNotFoundException("Job with Id $id not found") }
   }
 
   fun retrieveAllJobs(jobTitleOrEmployerName: String?, sector: String?, pageable: Pageable): Page<Job> {

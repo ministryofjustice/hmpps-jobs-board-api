@@ -14,6 +14,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.resource.NoResourceFoundException
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.JobNotFoundException
 
 @RestControllerAdvice
 class HmppsJobsBoardApiExceptionHandler {
@@ -41,6 +42,17 @@ class HmppsJobsBoardApiExceptionHandler {
         developerMessage = e.message,
       ),
     ).also { log.info("No resource found exception: {}", e.message) }
+
+  @ExceptionHandler(JobNotFoundException::class)
+  fun handleJobNotFoundException(e: JobNotFoundException): ResponseEntity<ErrorResponse> = ResponseEntity
+    .status(NOT_FOUND)
+    .body(
+      ErrorResponse(
+        status = NOT_FOUND,
+        userMessage = "No Job found failure: ${e.message}",
+        developerMessage = e.message,
+      ),
+    ).also { log.info("No Job found exception: {}", e.message) }
 
   @ExceptionHandler(AccessDeniedException::class)
   fun handleAccessDeniedException(e: AccessDeniedException): ResponseEntity<ErrorResponse> = ResponseEntity
