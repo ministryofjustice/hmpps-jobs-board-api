@@ -2,6 +2,10 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.employerCreationTime
+import java.time.Instant
+import java.util.*
 
 object EmployerMother {
   val tesco = Employer(
@@ -44,8 +48,11 @@ object EmployerMother {
     status = "SILVER",
   )
 
-  val Employer.requestBody: String get() = employerRequestBody(name, description, sector, status)
+  fun builder(): EmployerBuilder {
+    return EmployerBuilder()
+  }
 
+  val Employer.requestBody: String get() = employerRequestBody(name, description, sector, status)
   val Employer.responseBody: String get() = employerResponseBody(id, name, description, sector, status)
 
   private fun employerRequestBody(name: String, description: String, sector: String, status: String): String {
@@ -74,4 +81,39 @@ object EmployerMother {
         }
     """.trimIndent()
   }
+}
+
+class EmployerBuilder {
+  var id: EntityId = EntityId(UUID.randomUUID().toString())
+  var name: String = ""
+  var description: String = ""
+  var sector: String = ""
+  var status: String = ""
+  var jobs: List<Job> = emptyList()
+  var createdAt: Instant? = employerCreationTime
+
+  fun from(employer: Employer): EmployerBuilder {
+    this.id = employer.id
+    this.name = employer.name
+    this.description = employer.description
+    this.sector = employer.sector
+    this.status = employer.status
+    this.jobs = employer.jobs
+    this.createdAt = employer.createdAt
+    return this
+  }
+
+  fun withName(name: String): EmployerBuilder {
+    this.name = name
+    return this
+  }
+
+  fun build(): Employer = Employer(
+    id = this.id,
+    name = this.name,
+    description = this.description,
+    sector = this.sector,
+    status = this.status,
+    jobs = this.jobs,
+  )
 }
