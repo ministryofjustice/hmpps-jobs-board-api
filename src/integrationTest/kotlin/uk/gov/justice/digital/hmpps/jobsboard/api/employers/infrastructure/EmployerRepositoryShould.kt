@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestJpaConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.sainsburys
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.anotherUserTestName
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.employerCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.employerModificationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
@@ -46,6 +47,7 @@ class EmployerRepositoryShould {
   fun setUp() {
     employerRepository.deleteAll()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(employerCreationTime))
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
   }
 
   companion object {
@@ -92,11 +94,11 @@ class EmployerRepositoryShould {
   @Test
   fun `not update createdAt attribute when updating an existing Employer`() {
     val savedEmployer = employerRepository.save(sainsburys)
-
     whenever(dateTimeProvider.now).thenReturn(Optional.of(employerModificationTime))
-    val updatedJEmployer = employerRepository.save(savedEmployer)
 
-    assertThat(updatedJEmployer.createdAt).isEqualTo(employerCreationTime)
+    val updatedEmployer = employerRepository.save(savedEmployer)
+
+    assertThat(updatedEmployer.createdAt).isEqualTo(employerCreationTime)
   }
 
   @Test
@@ -109,8 +111,8 @@ class EmployerRepositoryShould {
   @Test
   fun `update modifiedAt attribute with current date and time when updating an existing Employer`() {
     val savedEmployer = employerRepository.save(sainsburys)
-
     whenever(dateTimeProvider.now).thenReturn(Optional.of(employerModificationTime))
+
     val updatedEmployer = employerRepository.saveAndFlush(savedEmployer)
 
     assertThat(updatedEmployer.modifiedAt).isEqualTo(employerModificationTime)
@@ -124,9 +126,29 @@ class EmployerRepositoryShould {
   }
 
   @Test
+  fun `not update createdBy attribute when updating an existing Employer`() {
+    val savedEmployer = employerRepository.save(sainsburys)
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(anotherUserTestName))
+
+    employerRepository.saveAndFlush(savedEmployer)
+
+    assertThat(savedEmployer.createdBy).isEqualTo(userTestName)
+  }
+
+  @Test
   fun `set lastModifiedBy attribute when saving a new Employer`() {
     val savedEmployer = employerRepository.save(sainsburys)
 
     assertThat(savedEmployer.lastModifiedBy).isEqualTo(userTestName)
+  }
+
+  @Test
+  fun `update lastModifiedBy attribute when updating an existing Employer`() {
+    val savedEmployer = employerRepository.save(sainsburys)
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(anotherUserTestName))
+
+    employerRepository.saveAndFlush(savedEmployer)
+
+    assertThat(savedEmployer.lastModifiedBy).isEqualTo(anotherUserTestName)
   }
 }

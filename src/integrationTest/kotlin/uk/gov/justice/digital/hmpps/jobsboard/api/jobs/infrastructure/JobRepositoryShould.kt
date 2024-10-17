@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.anotherUserTestName
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobModificationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
@@ -119,11 +120,33 @@ class JobRepositoryShould {
   }
 
   @Test
+  fun `not update createdBy attribute when updating an existing Job`() {
+    employerRepository.save(amazon)
+    val savedJob = jobRepository.save(amazonForkliftOperator)
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(anotherUserTestName))
+
+    jobRepository.saveAndFlush(savedJob)
+
+    assertThat(savedJob.createdBy).isEqualTo(userTestName)
+  }
+
+  @Test
   fun `set lastModifiedBy attribute when saving a new Job`() {
     employerRepository.save(amazon)
 
     val savedJob = jobRepository.save(amazonForkliftOperator)
 
     assertThat(savedJob.lastModifiedBy).isEqualTo(userTestName)
+  }
+
+  @Test
+  fun `update lastModifiedBy attribute when updating an existing Job`() {
+    employerRepository.save(amazon)
+    val savedJob = jobRepository.save(amazonForkliftOperator)
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(anotherUserTestName))
+
+    jobRepository.saveAndFlush(savedJob)
+
+    assertThat(savedJob.lastModifiedBy).isEqualTo(anotherUserTestName)
   }
 }
