@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes
-import java.time.Instant
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import java.util.*
 
 abstract class JobRepositoryTestCase : RepositoryTestCase() {
@@ -24,12 +24,12 @@ abstract class JobRepositoryTestCase : RepositoryTestCase() {
   @Autowired
   protected lateinit var jobRepository: JobRepository
 
-  protected final val jobCreationTime: Instant = TestPrototypes.jobCreationTime
   protected final val expectedPrisonNumber = TestPrototypes.VALID_PRISON_NUMBER
   protected final val nonExistentJob = TestPrototypes.nonExistentJob
 
   @BeforeEach
   override fun setUp() {
+    super.setUp()
     jobRepository.deleteAll()
     employerRepository.deleteAll()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
