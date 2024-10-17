@@ -4,6 +4,7 @@ create table if not exists employers (
     description varchar(500) NOT NULL,
     sector varchar(255) NOT NULL,
     status varchar(255) NOT NULL,
+    created_by varchar(255) NOT NULL,
     created_at timestamp(6) NOT NULL,
     modified_at timestamp(6) NOT NULL
 );
@@ -40,6 +41,7 @@ create table if not exists jobs(
     how_to_apply varchar(1000) not null,
     supporting_documentation_required varchar(255) not null,
     supporting_documentation_details varchar(200),
+    created_by varchar(255) NOT NULL,
     created_at timestamp(6) NOT NULL,
     modified_at timestamp(6) NOT NULL,
 

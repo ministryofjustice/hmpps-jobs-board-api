@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepos
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.employerCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.employerModificationTime
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import java.util.*
 
@@ -79,7 +80,7 @@ class EmployerRepositoryShould {
   }
 
   @Test
-  fun `set createdAt attribute when saving a new employer`() {
+  fun `set createdAt attribute when saving a new Employer`() {
     val savedEmployer = employerRepository.save(sainsburys)
 
     assertThat(savedEmployer.createdAt).isEqualTo(employerCreationTime)
@@ -110,5 +111,12 @@ class EmployerRepositoryShould {
     val updatedEmployer = employerRepository.saveAndFlush(savedEmployer)
 
     assertThat(updatedEmployer.modifiedAt).isEqualTo(employerModificationTime)
+  }
+
+  @Test
+  fun `set createdBy attribute when saving a new Employer`() {
+    val savedEmployer = employerRepository.save(sainsburys)
+
+    assertThat(savedEmployer.createdBy).isEqualTo(userTestName)
   }
 }
