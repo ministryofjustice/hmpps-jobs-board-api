@@ -23,8 +23,8 @@ class TestJpaConfig {
   }
 
   @Bean
-  fun auditorProvider(): AuditorAware<*> {
-    val auditorProvider = mock(AuditorAware::class.java)
+  fun auditorProvider(): AuditorAware<String> {
+    val auditorProvider = mock(UserPrincipalAuditorAware::class.java)
     whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
     return auditorProvider
   }
