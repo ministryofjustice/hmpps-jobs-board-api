@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -33,8 +32,6 @@ import java.util.*
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test-containers")
 class JobRepositoryShould {
-
-  @Qualifier("auditorProvider")
   @Autowired
   private lateinit var auditorProvider: AuditorAware<String>
 
@@ -114,11 +111,19 @@ class JobRepositoryShould {
 
   @Test
   fun `set createdBy attribute when saving a new Job`() {
-    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
     employerRepository.save(amazon)
 
     val savedJob = jobRepository.save(amazonForkliftOperator)
 
     assertThat(savedJob.createdBy).isEqualTo(userTestName)
+  }
+
+  @Test
+  fun `set lastModifiedBy attribute when saving a new Job`() {
+    employerRepository.save(amazon)
+
+    val savedJob = jobRepository.save(amazonForkliftOperator)
+
+    assertThat(savedJob.lastModifiedBy).isEqualTo(userTestName)
   }
 }

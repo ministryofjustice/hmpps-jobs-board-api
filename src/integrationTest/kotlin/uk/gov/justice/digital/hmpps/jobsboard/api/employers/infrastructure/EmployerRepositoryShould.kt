@@ -118,9 +118,15 @@ class EmployerRepositoryShould {
 
   @Test
   fun `set createdBy attribute when saving a new Employer`() {
-    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
     val savedEmployer = employerRepository.save(sainsburys)
 
     assertThat(savedEmployer.createdBy).isEqualTo(userTestName)
+  }
+
+  @Test
+  fun `set lastModifiedBy attribute when saving a new Employer`() {
+    val savedEmployer = employerRepository.save(sainsburys)
+
+    assertThat(savedEmployer.lastModifiedBy).isEqualTo(userTestName)
   }
 }
