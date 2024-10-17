@@ -51,9 +51,9 @@ class JwtAuthHelper() {
       expiryTime = Duration.ofHours(1L),
       roles = roles,
     )
-    val hhtphander: HttpHeaders = HttpHeaders()
-    hhtphander.set(HttpHeaders.AUTHORIZATION, "Bearer $token")
-    return hhtphander
+    val httpHeaders = HttpHeaders()
+    httpHeaders.set(HttpHeaders.AUTHORIZATION, "Bearer $token")
+    return httpHeaders
   }
   internal fun createJwt(
     subject: String?,
@@ -64,7 +64,7 @@ class JwtAuthHelper() {
   ): String =
     mutableMapOf<String, Any>()
       .also { subject?.let { subject -> it["user_name"] = subject } }
-      .also { it["client_id"] = "calculate-release-dates-admin" }
+      .also { it["client_id"] = "jobs-upload-admin" }
       .also { roles?.let { roles -> it["authorities"] = roles } }
       .also { scope?.let { scope -> it["scope"] = scope } }
       .let {
