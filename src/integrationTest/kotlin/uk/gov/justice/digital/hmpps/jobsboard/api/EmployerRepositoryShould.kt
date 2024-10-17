@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.DateTimeProvider
+import org.springframework.data.domain.AuditorAware
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
@@ -32,6 +34,10 @@ import java.util.*
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test-containers")
 class EmployerRepositoryShould {
+
+  @Qualifier("auditorProvider")
+  @Autowired
+  private lateinit var auditorProvider: AuditorAware<String>
 
   @Autowired
   private lateinit var dateTimeProvider: DateTimeProvider
@@ -115,6 +121,7 @@ class EmployerRepositoryShould {
 
   @Test
   fun `set createdBy attribute when saving a new Employer`() {
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
     val savedEmployer = employerRepository.save(sainsburys)
 
     assertThat(savedEmployer.createdBy).isEqualTo(userTestName)

@@ -13,7 +13,7 @@ import java.time.Instant
 @EntityListeners(AuditingEntityListener::class)
 abstract class Auditable {
   @CreatedBy
-  @Column(name = "created_by", nullable = true, updatable = false)
+  @Column(name = "created_by", nullable = false, updatable = false)
   var createdBy: String? = null
 
   @CreatedDate
