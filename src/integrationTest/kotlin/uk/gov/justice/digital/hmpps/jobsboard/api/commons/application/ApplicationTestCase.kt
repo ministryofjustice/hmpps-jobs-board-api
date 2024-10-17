@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api
+package uk.gov.justice.digital.hmpps.jobsboard.api.commons.application
 
 import com.jayway.jsonpath.JsonPath
 import org.awaitility.Awaitility

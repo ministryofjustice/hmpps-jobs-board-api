@@ -1,12 +1,18 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
+package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain.RepositoryTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.commons.infrastructure.RepositoryTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes
 import java.time.Instant
 import java.util.*
 

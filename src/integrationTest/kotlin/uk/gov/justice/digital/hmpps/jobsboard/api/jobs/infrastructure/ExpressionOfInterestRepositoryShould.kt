@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api
+package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat

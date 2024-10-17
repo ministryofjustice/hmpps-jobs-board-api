@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.commons.application.ApplicationTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import java.time.Instant

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
+package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -6,6 +6,10 @@ import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import java.time.Duration
 import java.util.*
 

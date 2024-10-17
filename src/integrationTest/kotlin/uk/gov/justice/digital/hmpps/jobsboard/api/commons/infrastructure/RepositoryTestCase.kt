@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain
+package uk.gov.justice.digital.hmpps.jobsboard.api.commons.infrastructure
 
 import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.BeforeEach
