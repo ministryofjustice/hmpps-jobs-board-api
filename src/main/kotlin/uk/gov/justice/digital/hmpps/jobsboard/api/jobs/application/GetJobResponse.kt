@@ -32,7 +32,7 @@ data class GetJobResponse(
   val isOnlyForPrisonLeavers: Boolean,
   val startDate: String? = null,
   val howToApply: String,
-  val supportingDocumentationRequired: List<String>,
+  val supportingDocumentationRequired: List<String>? = null,
   val supportingDocumentationDetails: String? = null,
   val createdAt: String,
 ) {
@@ -68,7 +68,7 @@ data class GetJobResponse(
         isOnlyForPrisonLeavers = job.isOnlyForPrisonLeavers,
         startDate = job.startDate?.toString(),
         howToApply = job.howToApply,
-        supportingDocumentationRequired = job.supportingDocumentationRequired.asList(),
+        supportingDocumentationRequired = job.supportingDocumentationRequired?.asList(),
         supportingDocumentationDetails = job.supportingDocumentationDetails,
         createdAt = job.createdAt.toString(),
       )

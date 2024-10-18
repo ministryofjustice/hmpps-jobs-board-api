@@ -101,8 +101,8 @@ data class Job(
   @Column(name = "how_to_apply", nullable = false)
   val howToApply: String,
 
-  @Column(name = "supporting_documentation_required", nullable = false)
-  val supportingDocumentationRequired: String,
+  @Column(name = "supporting_documentation_required", nullable = true)
+  val supportingDocumentationRequired: String? = null,
 
   @Column(name = "supporting_documentation_details", nullable = true)
   val supportingDocumentationDetails: String? = null,

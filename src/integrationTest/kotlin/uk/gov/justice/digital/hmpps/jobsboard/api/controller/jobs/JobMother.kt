@@ -136,7 +136,7 @@ object JobMother {
     startDate = null,
     isRollingOpportunity = false,
     isOnlyForPrisonLeavers = true,
-    supportingDocumentationRequired = "[\"DISCLOSURE_LETTER\", \"OTHER\"]",
+    supportingDocumentationRequired = null,
     supportingDocumentationDetails = null,
     employer = abcConstruction,
   )
@@ -258,7 +258,7 @@ class JobBuilder {
   var isOnlyForPrisonLeavers: Boolean = true
   var startDate: LocalDate? = null
   var howToApply: String = "How to apply How to apply"
-  var supportingDocumentationRequired: String = "[\"DISCLOSURE_LETTER\", \"OTHER\"]"
+  var supportingDocumentationRequired: String? = null
   var supportingDocumentationDetails: String? = null
   var expressionsOfInterest: MutableMap<String, ExpressionOfInterest> = mutableMapOf()
   var employer: Employer = Employer(

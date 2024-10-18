@@ -202,7 +202,7 @@ object JobMother {
       isOnlyForPrisonLeavers = job.isOnlyForPrisonLeavers,
       startDate = job.startDate.toString(),
       howToApply = job.howToApply,
-      supportingDocumentationRequired = job.supportingDocumentationRequired.split(','),
+      supportingDocumentationRequired = job.supportingDocumentationRequired?.split(','),
       supportingDocumentationDetails = job.supportingDocumentationDetails,
     )
   }
@@ -237,7 +237,7 @@ class JobBuilder {
   var isOnlyForPrisonLeavers: Boolean = true
   var startDate: LocalDate? = null
   var howToApply: String = "How to apply How to apply"
-  var supportingDocumentationRequired: String = "[\"DISCLOSURE_LETTER\", \"OTHER\"]"
+  var supportingDocumentationRequired: String? = null
   var supportingDocumentationDetails: String? = null
   var expressionsOfInterest: MutableMap<String, ExpressionOfInterest> = mutableMapOf()
   var employer: Employer = Employer(
@@ -385,7 +385,7 @@ class JobBuilder {
       isOnlyForPrisonLeavers = this.isOnlyForPrisonLeavers,
       startDate = this.startDate.toString(),
       howToApply = this.howToApply,
-      supportingDocumentationRequired = this.supportingDocumentationRequired.split(','),
+      supportingDocumentationRequired = this.supportingDocumentationRequired?.split(','),
       supportingDocumentationDetails = this.supportingDocumentationDetails,
     )
   }

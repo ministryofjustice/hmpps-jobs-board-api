@@ -40,7 +40,7 @@ create table if not exists jobs(
     is_only_for_prison_leavers boolean not null,
     start_date date,
     how_to_apply varchar(1000) not null,
-    supporting_documentation_required varchar(255) not null,
+    supporting_documentation_required varchar(255),
     supporting_documentation_details varchar(200),
     created_by varchar(30) NOT NULL,
     last_modified_by varchar(30) NOT NULL,

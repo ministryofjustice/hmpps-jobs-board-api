@@ -34,7 +34,7 @@ data class CreateJobRequest internal constructor(
   val isOnlyForPrisonLeavers: Boolean,
   val startDate: String? = null,
   val howToApply: String,
-  val supportingDocumentationRequired: List<String>,
+  val supportingDocumentationRequired: List<String>? = null,
   val supportingDocumentationDetails: String? = null,
 ) {
   companion object {
@@ -68,7 +68,7 @@ data class CreateJobRequest internal constructor(
       isOnlyForPrisonLeavers: Boolean,
       startDate: String? = null,
       howToApply: String,
-      supportingDocumentationRequired: List<String>,
+      supportingDocumentationRequired: List<String>? = null,
       supportingDocumentationDetails: String? = null,
     ): CreateJobRequest {
       return CreateJobRequest(
