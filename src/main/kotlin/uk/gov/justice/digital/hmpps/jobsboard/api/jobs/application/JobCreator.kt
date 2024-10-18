@@ -48,7 +48,7 @@ class JobCreator(
         isOnlyForPrisonLeavers = request.isOnlyForPrisonLeavers,
         startDate = request.startDate?.toLocalDate(),
         howToApply = request.howToApply,
-        supportingDocumentationRequired = request.supportingDocumentationRequired.joinToString(","),
+        supportingDocumentationRequired = request.supportingDocumentationRequired?.joinToString(","),
         supportingDocumentationDetails = request.supportingDocumentationDetails,
         employer = employer,
       ),
