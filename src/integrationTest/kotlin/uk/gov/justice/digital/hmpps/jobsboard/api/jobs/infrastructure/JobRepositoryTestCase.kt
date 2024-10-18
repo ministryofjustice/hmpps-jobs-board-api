@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.hmpps.jobsboard.api.commons.infrastructure.RepositoryTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
@@ -14,6 +13,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.RepositoryTestCase
 import java.util.*
 
 abstract class JobRepositoryTestCase : RepositoryTestCase() {

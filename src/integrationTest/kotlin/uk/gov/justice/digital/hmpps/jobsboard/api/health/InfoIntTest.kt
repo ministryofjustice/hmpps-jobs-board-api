@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.health
 
-import uk.gov.justice.digital.hmpps.jobsboard.api.commons.application.ApplicationTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.application.ApplicationTestCase
 
 class InfoIntTest : ApplicationTestCase() {
 

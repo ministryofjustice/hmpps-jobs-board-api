@@ -10,6 +10,7 @@ import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.data.domain.AuditorAware
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.UserPrincipalAuditorAware
 import java.util.*
 
 @TestConfiguration
