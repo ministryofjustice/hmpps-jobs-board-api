@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.commons.domain
+package uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure
 
 import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.BeforeEach
@@ -10,12 +10,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.DateTimeProvider
+import org.springframework.data.domain.AuditorAware
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestJpaConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import java.time.Instant
 import java.util.*
@@ -25,10 +26,12 @@ import java.util.*
 @AutoConfigureTestDatabase(replace = NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test-containers")
-@Transactional
 abstract class RepositoryTestCase {
   @Autowired
   protected lateinit var dateTimeProvider: DateTimeProvider
+
+  @Autowired
+  protected lateinit var auditorProvider: AuditorAware<String>
 
   @Autowired
   protected lateinit var entityManager: EntityManager
@@ -38,6 +41,7 @@ abstract class RepositoryTestCase {
   @BeforeEach
   fun setUp() {
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCreationTime))
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
   }
 
   companion object {

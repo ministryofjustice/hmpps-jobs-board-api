@@ -1,9 +1,13 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
+package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
 
 class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
 

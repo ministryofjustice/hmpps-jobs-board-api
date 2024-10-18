@@ -154,8 +154,10 @@ data class Job(
         employer=$employer,
         expressionsOfInterest=$expressionsOfInterest,
         archived=$archived,
+        createdBy=$createdBy,
         createdAt=$createdAt,
-        modifiedAt=$modifiedAt,
+        lastModifiedBy=$lastModifiedBy,
+        lastModifiedAt=$lastModifiedAt,
     )
   """.trimIndent()
 }

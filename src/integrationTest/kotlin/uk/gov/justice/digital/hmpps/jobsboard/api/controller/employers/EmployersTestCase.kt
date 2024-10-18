@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import uk.gov.justice.digital.hmpps.jobsboard.api.ApplicationTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.application.ApplicationTestCase
 import java.time.Instant
 
 const val EMPLOYERS_ENDPOINT = "/employers"

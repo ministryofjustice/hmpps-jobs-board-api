@@ -80,7 +80,7 @@ class EmployerCreatorShould : TestBase() {
     val actualEmployer = employerCaptor.firstValue
 
     assertThat(actualEmployer.createdAt).isEqualTo(expectedEmployer.createdAt)
-    assertThat(actualEmployer.modifiedAt).isEqualTo(expectedEmployer.modifiedAt)
+    assertThat(actualEmployer.lastModifiedAt).isEqualTo(expectedEmployer.lastModifiedAt)
   }
 
   @Test
