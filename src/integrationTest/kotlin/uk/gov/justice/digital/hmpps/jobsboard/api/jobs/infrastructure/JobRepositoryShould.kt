@@ -38,22 +38,22 @@ class JobRepositoryShould : JobRepositoryTestCase() {
   }
 
   @Test
-  fun `set modifiedAt attribute with same value as createdAt when saving a new Job`() {
+  fun `set lastModifiedAt attribute when saving a new Job`() {
     employerRepository.save(amazon)
     val savedJob = jobRepository.save(amazonForkliftOperator)
 
-    assertThat(savedJob.modifiedAt).isEqualTo(jobCreationTime)
+    assertThat(savedJob.lastModifiedAt).isEqualTo(jobCreationTime)
   }
 
   @Test
-  fun `update modifiedAt attribute with current date and time when updating an existing Job`() {
+  fun `update lastModifiedAt attribute when updating an existing Job`() {
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobModificationTime))
     employerRepository.save(amazon)
     jobRepository.save(amazonForkliftOperator)
 
     val updatedJob = jobRepository.saveAndFlush(amazonForkliftOperator)
 
-    assertThat(updatedJob.modifiedAt).isEqualTo(jobModificationTime)
+    assertThat(updatedJob.lastModifiedAt).isEqualTo(jobModificationTime)
   }
 
   @Test

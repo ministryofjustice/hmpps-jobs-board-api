@@ -7,7 +7,7 @@ create table if not exists employers (
     created_by varchar(30) NOT NULL,
     last_modified_by varchar(30) NOT NULL,
     created_at timestamp(6) NOT NULL,
-    modified_at timestamp(6) NOT NULL
+    last_modified_at timestamp(6) NOT NULL
 );
 
 create table if not exists jobs(
@@ -45,7 +45,7 @@ create table if not exists jobs(
     created_by varchar(30) NOT NULL,
     last_modified_by varchar(30) NOT NULL,
     created_at timestamp(6) NOT NULL,
-    modified_at timestamp(6) NOT NULL,
+    last_modified_at timestamp(6) NOT NULL,
 
     CONSTRAINT fk_employer
         FOREIGN KEY(employer_id)

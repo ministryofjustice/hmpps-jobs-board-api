@@ -52,20 +52,20 @@ class EmployerRepositoryShould : EmployerRepositoryTestCase() {
   }
 
   @Test
-  fun `set modifiedAt attribute with same value as createdAt when saving a new Employer`() {
+  fun `set lastModifiedAt attribute when saving a new Employer`() {
     val savedEmployer = employerRepository.save(sainsburys)
 
-    assertThat(savedEmployer.modifiedAt).isEqualTo(employerCreationTime)
+    assertThat(savedEmployer.lastModifiedAt).isEqualTo(employerCreationTime)
   }
 
   @Test
-  fun `update modifiedAt attribute with current date and time when updating an existing Employer`() {
+  fun `update lastModifiedAt attribute when updating an existing Employer`() {
     val savedEmployer = employerRepository.save(sainsburys)
     whenever(dateTimeProvider.now).thenReturn(Optional.of(employerModificationTime))
 
     val updatedEmployer = employerRepository.saveAndFlush(savedEmployer)
 
-    assertThat(updatedEmployer.modifiedAt).isEqualTo(employerModificationTime)
+    assertThat(updatedEmployer.lastModifiedAt).isEqualTo(employerModificationTime)
   }
 
   @Test

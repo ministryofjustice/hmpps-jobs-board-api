@@ -37,8 +37,10 @@ data class Employer(
         description=$description,
         sector=$sector,
         status=$status,
+        createdBy=$createdBy,
         createdAt=$createdAt,
-        modifiedAt=$modifiedAt,
+        lastModifiedBy=$lastModifiedBy,
+        lastModifiedAt=$lastModifiedAt
     )
   """.trimIndent()
 }

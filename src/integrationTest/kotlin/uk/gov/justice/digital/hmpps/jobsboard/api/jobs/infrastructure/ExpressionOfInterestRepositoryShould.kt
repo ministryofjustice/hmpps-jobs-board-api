@@ -58,7 +58,7 @@ class ExpressionOfInterestRepositoryShould : JobRepositoryTestCase() {
 
     val jobFreshCopy = jobRepository.findById(savedExpressionOfInterest.job.id).orElseThrow()
     assertThat(jobFreshCopy).usingRecursiveComparison().ignoringFields("expressionsOfInterest").isEqualTo(job)
-    assertThat(jobFreshCopy.modifiedAt).isEqualTo(jobCreationTime)
+    assertThat(jobFreshCopy.lastModifiedAt).isEqualTo(jobCreationTime)
   }
 
   @Test

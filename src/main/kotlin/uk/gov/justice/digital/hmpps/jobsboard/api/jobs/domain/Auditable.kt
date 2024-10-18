@@ -26,6 +26,6 @@ abstract class Auditable {
   var createdAt: Instant? = null
 
   @LastModifiedDate
-  @Column(name = "modified_at", nullable = false, updatable = true)
-  var modifiedAt: Instant? = null
+  @Column(name = "last_modified_at", nullable = false, updatable = true)
+  var lastModifiedAt: Instant? = null
 }

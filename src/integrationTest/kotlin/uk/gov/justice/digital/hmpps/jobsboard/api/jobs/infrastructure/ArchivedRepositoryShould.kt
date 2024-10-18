@@ -57,7 +57,7 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
 
     val jobFreshCopy = jobRepository.findById(savedJobArchived.job.id).orElseThrow()
     assertThat(jobFreshCopy).usingRecursiveComparison().ignoringFields("expressionsOfInterest").isEqualTo(job)
-    assertThat(jobFreshCopy.modifiedAt).isEqualTo(jobCreationTime)
+    assertThat(jobFreshCopy.lastModifiedAt).isEqualTo(jobCreationTime)
   }
 
   @Test
