@@ -42,7 +42,7 @@ data class Job(
   @Column(name = "charity_name", nullable = true)
   val charityName: String? = null,
 
-  @Column(name = "post_code", nullable = false)
+  @Column(name = "postcode", nullable = false)
   val postcode: String,
 
   @Column(name = "salary_from", nullable = false)

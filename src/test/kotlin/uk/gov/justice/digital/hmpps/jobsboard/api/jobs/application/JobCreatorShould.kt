@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.createJobRequest
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -39,6 +40,22 @@ class JobCreatorShould : TestBase() {
     whenever(jobRepository.existsById(jobId)).thenReturn(false)
 
     assertThat(jobCreator.existsById(jobId.id)).isFalse()
+  }
+
+  @Test
+  fun `save a postcode with coordinates`() {
+    whenever(employerRepository.findById(amazon.id))
+      .thenReturn(Optional.of(amazon))
+
+    jobCreator.createOrUpdate(amazonForkliftOperator.createJobRequest)
+
+    val jobCaptor = argumentCaptor<Postcode>()
+    verify(postcodesRepository).save(jobCaptor.capture())
+    val actualPostcode = jobCaptor.firstValue
+
+    assertThat(actualPostcode.code).isEqualTo(amazonForkliftOperator.postcode)
+    assertThat(actualPostcode.xCoordinate).usingRecursiveComparison().isEqualTo(0.00f)
+    assertThat(actualPostcode.yCoordinate).usingRecursiveComparison().isEqualTo(0.00f)
   }
 
   @Test
