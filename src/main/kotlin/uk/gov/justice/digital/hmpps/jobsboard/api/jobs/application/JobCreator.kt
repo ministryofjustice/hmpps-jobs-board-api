@@ -5,19 +5,33 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepos
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.util.*
 
 @Service
 class JobCreator(
   private val jobRepository: JobRepository,
   private val employerRepository: EmployerRepository,
+  private val postcodesRepository: PostcodesRepository
 ) {
 
   fun createOrUpdate(request: CreateJobRequest) {
     val employer = employerRepository.findById(EntityId(request.employerId))
       .orElseThrow { IllegalArgumentException("Employer not found: employerId = ${request.employerId}") }
+
+    postcodesRepository.save(
+      Postcode(
+        id = EntityId(UUID.randomUUID().toString()),
+        code = request.postCode,
+        xCoordinate = 0.00f,
+        yCoordinate = 0.00f,
+      )
+    )
+
     jobRepository.save(
       Job(
         id = EntityId(request.id),
