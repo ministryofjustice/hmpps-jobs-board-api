@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.Creat
 @RestController
 @RequestMapping("/applications", produces = [APPLICATION_JSON_VALUE])
 class ApplicationsPut(
-  val applicationCreator: ApplicationCreator,
+  private val applicationCreator: ApplicationCreator,
 ) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @PutMapping("/{id}")
