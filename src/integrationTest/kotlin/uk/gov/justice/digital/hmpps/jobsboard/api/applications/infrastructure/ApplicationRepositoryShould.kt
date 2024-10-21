@@ -37,8 +37,8 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
 
   @Test
   fun `return false, when checking existence of non-existent application`() {
-    val jobIdNotExist = EntityId(UUID.randomUUID().toString())
-    val exist = applicationRepository.existsById(jobIdNotExist)
+    val applicationIdNotExist = EntityId(UUID.randomUUID().toString())
+    val exist = applicationRepository.existsById(applicationIdNotExist)
     assertThat(exist).isFalse()
   }
 
