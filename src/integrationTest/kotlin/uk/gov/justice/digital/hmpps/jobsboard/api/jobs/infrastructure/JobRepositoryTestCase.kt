@@ -37,9 +37,7 @@ abstract class JobRepositoryTestCase : RepositoryTestCase() {
 
   protected fun givenAJobHasBeenCreated(): Job {
     employerRepository.save(amazon)
-    return jobRepository.save(amazonForkliftOperator).also {
-      entityManager.flush()
-    }
+    return jobRepository.saveAndFlush(amazonForkliftOperator)
   }
 
   protected fun Job.archivedBy(prisonNumber: String): Archived =
