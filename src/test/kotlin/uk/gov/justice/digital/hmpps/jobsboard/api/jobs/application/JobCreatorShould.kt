@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -19,7 +17,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.createJobRequest
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -44,30 +41,18 @@ class JobCreatorShould : TestBase() {
     assertThat(jobCreator.existsById(jobId.id)).isFalse()
   }
 
-  @Nested
-  @DisplayName("Given a postcode does not exist")
-  inner class GivenPostcodeNotExisting {
-    @Test
-    fun `save a postcode with coordinates`() {
-      val expectedPostcode = Postcode(
-        id = EntityId(UUID.randomUUID().toString()),
-        code = amazonForkliftOperator.postcode,
-        xCoordinate = 1.23f,
-        yCoordinate = 4.56f,
-      )
-      whenever(employerRepository.findById(amazon.id))
-        .thenReturn(Optional.of(amazon))
-      whenever(postcodeLocationService.getPostcodeFrom(amazonForkliftOperator.postcode))
-        .thenReturn(expectedPostcode)
+  @Test
+  fun `save the job's postcode via postCodeLocationService`() {
+    whenever(employerRepository.findById(amazon.id))
+      .thenReturn(Optional.of(amazon))
 
-      jobCreator.createOrUpdate(amazonForkliftOperator.createJobRequest)
+    jobCreator.createOrUpdate(amazonForkliftOperator.createJobRequest)
 
-      val postcodeCaptor = argumentCaptor<Postcode>()
-      verify(postcodesRepository).save(postcodeCaptor.capture())
-      val actualPostcode = postcodeCaptor.firstValue
+    val postcodeCaptor = argumentCaptor<String>()
+    verify(postcodeLocationService).save(postcodeCaptor.capture())
+    val actualPostcode = postcodeCaptor.firstValue
 
-      assertThat(actualPostcode).isEqualTo(expectedPostcode)
-    }
+    assertThat(actualPostcode).isEqualTo(amazonForkliftOperator.postcode)
   }
 
   @Test
