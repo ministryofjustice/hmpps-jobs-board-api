@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -42,20 +44,30 @@ class JobCreatorShould : TestBase() {
     assertThat(jobCreator.existsById(jobId.id)).isFalse()
   }
 
-  @Test
-  fun `save a postcode with coordinates`() {
-    whenever(employerRepository.findById(amazon.id))
-      .thenReturn(Optional.of(amazon))
+  @Nested
+  @DisplayName("Given a postcode does not exist")
+  inner class GivenPostcodeNotExisting {
+    @Test
+    fun `save a postcode with coordinates`() {
+      val expectedPostcode = Postcode(
+        id = EntityId(UUID.randomUUID().toString()),
+        code = amazonForkliftOperator.postcode,
+        xCoordinate = 1.23f,
+        yCoordinate = 4.56f,
+      )
+      whenever(employerRepository.findById(amazon.id))
+        .thenReturn(Optional.of(amazon))
+      whenever(postcodeLocationService.getPostcodeFrom(amazonForkliftOperator.postcode))
+        .thenReturn(expectedPostcode)
 
-    jobCreator.createOrUpdate(amazonForkliftOperator.createJobRequest)
+      jobCreator.createOrUpdate(amazonForkliftOperator.createJobRequest)
 
-    val jobCaptor = argumentCaptor<Postcode>()
-    verify(postcodesRepository).save(jobCaptor.capture())
-    val actualPostcode = jobCaptor.firstValue
+      val postcodeCaptor = argumentCaptor<Postcode>()
+      verify(postcodesRepository).save(postcodeCaptor.capture())
+      val actualPostcode = postcodeCaptor.firstValue
 
-    assertThat(actualPostcode.code).isEqualTo(amazonForkliftOperator.postcode)
-    assertThat(actualPostcode.xCoordinate).usingRecursiveComparison().isEqualTo(0.00f)
-    assertThat(actualPostcode.yCoordinate).usingRecursiveComparison().isEqualTo(0.00f)
+      assertThat(actualPostcode).isEqualTo(expectedPostcode)
+    }
   }
 
   @Test

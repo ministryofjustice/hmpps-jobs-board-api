@@ -16,7 +16,7 @@ import java.util.*
 class JobCreator(
   private val jobRepository: JobRepository,
   private val employerRepository: EmployerRepository,
-  private val postcodesRepository: PostcodesRepository
+  private val postcodesRepository: PostcodesRepository,
 ) {
 
   fun createOrUpdate(request: CreateJobRequest) {
@@ -29,7 +29,7 @@ class JobCreator(
         code = request.postCode,
         xCoordinate = 0.00f,
         yCoordinate = 0.00f,
-      )
+      ),
     )
 
     jobRepository.save(
