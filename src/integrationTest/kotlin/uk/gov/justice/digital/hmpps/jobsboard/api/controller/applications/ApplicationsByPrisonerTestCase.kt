@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 
 const val OPEN_APPLICATIONS_ENDPOINT = "$APPLICATIONS_ENDPOINT/open"
+const val CLOSED_APPLICATIONS_ENDPOINT = "$APPLICATIONS_ENDPOINT/closed"
 
 abstract class ApplicationsByPrisonerTestCase(
   val endpoint: String,
@@ -60,6 +61,18 @@ abstract class OpenApplicationsTestCase : ApplicationsByPrisonerTestCase(OPEN_AP
   ) = assertGetApplicationsByPrisonerIsOk(parameters, expectedResponse)
 
   fun assertGetOpenApplicationsReturnsBadRequestError(
+    parameters: String? = null,
+    expectedResponse: String? = null,
+  ) = assertGetApplicationsByPrisonerReturnsBadRequestError(parameters, expectedResponse)
+}
+
+abstract class ClosedApplicationsTestCase : ApplicationsByPrisonerTestCase(CLOSED_APPLICATIONS_ENDPOINT) {
+  fun assertGetClosedApplicationsIsOk(
+    parameters: String,
+    expectedResponse: String? = null,
+  ) = assertGetApplicationsByPrisonerIsOk(parameters, expectedResponse)
+
+  fun assertGetClosedApplicationsReturnsBadRequestError(
     parameters: String? = null,
     expectedResponse: String? = null,
   ) = assertGetApplicationsByPrisonerReturnsBadRequestError(parameters, expectedResponse)
