@@ -13,9 +13,9 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.OSPlacesAPIClient
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure.OSPlacesAPIClient
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure.OSPlacesAPIDPA
 import java.util.UUID.randomUUID
 

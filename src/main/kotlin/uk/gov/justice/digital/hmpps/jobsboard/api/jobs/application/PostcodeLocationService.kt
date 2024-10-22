@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.OSPlacesAPIClient
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure.OSPlacesAPIClient
 
 @Service
 class PostcodeLocationService(
