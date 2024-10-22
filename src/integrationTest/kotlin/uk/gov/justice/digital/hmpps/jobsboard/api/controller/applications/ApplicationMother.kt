@@ -32,7 +32,7 @@ object ApplicationMother {
   )
 
   val applicationToAmazonForkliftOperator = Application(
-    id = EntityId("0ed3d1f1-2d21-450a-8e73-e5fd5477695d"),
+    id = EntityId("0cc48d05-e022-4309-99da-61bd21eb215c"),
     prisonNumber = KnownApplicant.prisonNumber,
     prisonId = KnownApplicant.prisonId,
     firstName = KnownApplicant.firstName,
