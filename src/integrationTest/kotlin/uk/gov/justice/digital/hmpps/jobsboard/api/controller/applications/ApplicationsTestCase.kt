@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus.OK
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToAbcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToAmazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToTescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobsTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
@@ -24,6 +27,16 @@ abstract class ApplicationsTestCase : JobsTestCase() {
   fun tearDown() {
     employerRepository.deleteAll()
   }
+
+  protected fun assertAddApplicationIsCreated(
+    application: Application,
+    expectedResponse: String? = null,
+  ) = assertAddApplication(application, CREATED, expectedResponse)
+
+  protected fun assertUpdateApplicationIsOk(
+    application: Application,
+    expectedResponse: String? = null,
+  ) = assertUpdateApplication(application, OK, expectedResponse)
 
   protected fun assertAddApplication(
     application: Application,
@@ -50,6 +63,22 @@ abstract class ApplicationsTestCase : JobsTestCase() {
             { "status":400,"errorCode":null,"userMessage":"Illegal Argument: $expectedErrorMessage","developerMessage":"${expectedDeveloperMessage ?: expectedErrorMessage}" }
         """.trimIndent(),
       )
+    }
+  }
+
+  protected fun givenThreeApplicationsAreCreated() {
+    givenApplicationsAreCreated(
+      applicationToAmazonForkliftOperator,
+      applicationToTescoWarehouseHandler,
+      applicationToAbcConstructionApprentice,
+    )
+  }
+
+  protected fun givenApplicationsAreCreated(vararg applications: Application) {
+    applications.forEach {
+      assertAddEmployerIsCreated(it.job.employer)
+      assertAddJobIsCreated(it.job)
+      assertAddApplicationIsCreated(it)
     }
   }
 
