@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS jobs
     source_primary                           VARCHAR(255)   NOT NULL,
     source_secondary                         VARCHAR(255),
     charity_name                             VARCHAR(100),
-    postcode                                 VARCHAR(7)     NOT NULL,
+    postcode                                 VARCHAR(8)     NOT NULL,
     salary_from                              NUMERIC(10, 2) NOT NULL,
     salary_to                                NUMERIC(10, 2),
     salary_period                            VARCHAR(255)   NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS jobs_archived
 CREATE TABLE IF NOT EXISTS postcodes
 (
     id               VARCHAR(36) PRIMARY KEY,
-    code             VARCHAR(7)   NOT NULL,
+    code             VARCHAR(8)   NOT NULL,
     x_coordinate     NUMERIC(10, 2),
     y_coordinate     NUMERIC(11, 2),
     created_by       VARCHAR(30)  NOT NULL,
