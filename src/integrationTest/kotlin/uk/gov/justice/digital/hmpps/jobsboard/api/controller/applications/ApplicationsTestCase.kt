@@ -1,31 +1,31 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications
 
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToAbcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToAmazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToTescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobsTestCase
-import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 
 const val APPLICATIONS_ENDPOINT = "/applications"
 
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
+// @Transactional(propagation = Propagation.NOT_SUPPORTED)
 abstract class ApplicationsTestCase : JobsTestCase() {
-  @Autowired
-  private lateinit var employerRepository: EmployerRepository
 
-  @AfterEach
-  fun tearDown() {
-    employerRepository.deleteAll()
+  @Autowired
+  protected lateinit var applicationRepository: ApplicationRepository
+
+  @BeforeEach
+  override fun setup() {
+    applicationRepository.deleteAll()
+    super.setup()
   }
 
   protected fun assertAddApplicationIsCreated(

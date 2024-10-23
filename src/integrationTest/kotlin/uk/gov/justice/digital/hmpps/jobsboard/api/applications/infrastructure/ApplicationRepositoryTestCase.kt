@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure
 
-import org.junit.jupiter.api.AfterEach
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother
@@ -13,15 +10,9 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.Applic
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure.JobRepositoryTestCase
 
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 abstract class ApplicationRepositoryTestCase : JobRepositoryTestCase() {
   @Autowired
   protected lateinit var applicationRepository: ApplicationRepository
-
-  @AfterEach
-  fun tearDown() {
-    applicationRepository.deleteAll()
-  }
 
   protected fun givenAnApplicationMade(): Application {
     val application = applicationBuilder(job = givenAJobHasBeenCreated()).build()

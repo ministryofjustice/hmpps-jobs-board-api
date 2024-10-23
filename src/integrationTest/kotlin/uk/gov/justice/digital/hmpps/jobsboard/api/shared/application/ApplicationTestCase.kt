@@ -72,10 +72,10 @@ abstract class ApplicationTestCase {
   private lateinit var flyway: Flyway
 
   @Autowired
-  private lateinit var employerRepository: EmployerRepository
+  protected lateinit var employerRepository: EmployerRepository
 
   @Autowired
-  private lateinit var jobRepository: JobRepository
+  protected lateinit var jobRepository: JobRepository
 
   @MockBean
   protected lateinit var timeProvider: DefaultTimeProvider
@@ -149,6 +149,8 @@ abstract class ApplicationTestCase {
 
   @BeforeEach
   fun setup() {
+    jobRepository.deleteAll()
+    employerRepository.deleteAll()
     osPlacesMockServer.resetAll()
     osPlacesMockServer.stubGetAddressesForPostcode("LS12")
     osPlacesMockServer.stubGetAddressesForPostcode("NE157LR")
