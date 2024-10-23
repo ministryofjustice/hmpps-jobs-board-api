@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS employers
 
 CREATE TABLE IF NOT EXISTS jobs
 (
-    id                                       VARCHAR(36) primary key,
+    id                                       VARCHAR(36) PRIMARY KEY,
     employer_id                              VARCHAR(36)    NOT NULL,
     title                                    VARCHAR(50)    NOT NULL,
     sector                                   VARCHAR(255)   NOT NULL,
@@ -84,13 +84,13 @@ CREATE TABLE IF NOT EXISTS jobs_archived
 CREATE TABLE IF NOT EXISTS postcodes
 (
     id               VARCHAR(36) PRIMARY KEY,
-    code             VARCHAR(7)    NOT NULL,
-    x_coordinate     NUMERIC(6, 2) NOT NULL,
-    y_coordinate     NUMERIC(7, 2) NOT NULL,
-    created_by       VARCHAR(30)   NOT NULL,
-    last_modified_by VARCHAR(30)   NOT NULL,
-    created_at       TIMESTAMP(6)  NOT NULL,
-    last_modified_at TIMESTAMP(6)  NOT NULL
+    code             VARCHAR(7)   NOT NULL,
+    x_coordinate     NUMERIC(10, 2),
+    y_coordinate     NUMERIC(11, 2),
+    created_by       VARCHAR(30)  NOT NULL,
+    last_modified_by VARCHAR(30)  NOT NULL,
+    created_at       TIMESTAMP(6) NOT NULL,
+    last_modified_at TIMESTAMP(6) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS applications

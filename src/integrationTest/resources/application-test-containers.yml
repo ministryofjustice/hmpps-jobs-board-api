@@ -25,6 +25,12 @@ spring:
   flyway:
     enabled: false
 
+os:
+  places:
+    api:
+      url: http://localhost:8093
+      key: "os-places-api-key"
+
 logging:
   level:
     org.hibernate.orm.jdbc.bind: trace

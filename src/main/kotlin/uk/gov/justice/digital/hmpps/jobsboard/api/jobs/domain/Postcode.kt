@@ -15,11 +15,11 @@ data class Postcode(
   @Column(name = "code", length = 7, nullable = false)
   var code: String,
 
-  @Column(name = "x_coordinate", nullable = false)
-  var xCoordinate: Double,
+  @Column(name = "x_coordinate", nullable = true)
+  var xCoordinate: Float?,
 
-  @Column(name = "y_coordinate", nullable = false)
-  var yCoordinate: Double,
+  @Column(name = "y_coordinate", nullable = true)
+  var yCoordinate: Float?,
 ) : Auditable() {
   override fun toString(): String = """
     Postcode(
