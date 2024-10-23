@@ -106,8 +106,8 @@ class ApplicationsGet(
     size: Int,
   ): ResponseEntity<Page<GetApplicationsByPrisonerResponse>> {
     val pageable: Pageable = PageRequest.of(page, size, Sort.by(DESC, "lastModifiedAt"))
-    val openApplications = applicationsRetriever.retrieveAllClosedApplications(prisonNumber, pageable)
-    val response = openApplications.map { GetApplicationsByPrisonerResponse.from(it) }
+    val closedApplications = applicationsRetriever.retrieveAllClosedApplications(prisonNumber, pageable)
+    val response = closedApplications.map { GetApplicationsByPrisonerResponse.from(it) }
     return ResponseEntity.ok(response)
   }
 }
