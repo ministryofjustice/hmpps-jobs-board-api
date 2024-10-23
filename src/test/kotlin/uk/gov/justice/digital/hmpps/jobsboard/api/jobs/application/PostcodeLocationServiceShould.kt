@@ -13,10 +13,10 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.OSPlacesAPIClient
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.OsPlacesApiClient
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure.OSPlacesAPIDPA
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure.OsPlacesApiDPA
 import java.util.UUID.randomUUID
 
 @ExtendWith(MockitoExtension::class)
@@ -28,7 +28,7 @@ class PostcodeLocationServiceShould {
   private lateinit var uuidGenerator: UUIDGenerator
 
   @Mock
-  private lateinit var osPlacesAPIClient: OSPlacesAPIClient
+  private lateinit var osPlacesAPIClient: OsPlacesApiClient
 
   @InjectMocks
   private lateinit var postcodeLocationService: PostcodeLocationService
@@ -48,7 +48,7 @@ class PostcodeLocationServiceShould {
         yCoordinate = 4.56f,
       )
 
-      val expectedLocation = OSPlacesAPIDPA(
+      val expectedLocation = OsPlacesApiDPA(
         postcode = amazonForkliftOperator.postcode,
         xCoordinate = expectedPostcode.xCoordinate,
         yCoordinate = expectedPostcode.yCoordinate,

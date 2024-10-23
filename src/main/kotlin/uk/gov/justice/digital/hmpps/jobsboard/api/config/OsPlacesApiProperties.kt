@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ConfigurationProperties(prefix = "os.places.api")
-class OSPlacesAPIProperties {
+class OsPlacesApiProperties {
   lateinit var url: String
   lateinit var key: String
 }

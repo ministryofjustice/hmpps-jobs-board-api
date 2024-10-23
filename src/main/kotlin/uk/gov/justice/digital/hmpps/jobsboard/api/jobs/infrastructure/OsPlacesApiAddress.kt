@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class OSPlacesAPIAddress(
+data class OsPlacesApiAddress(
   @JsonProperty("DPA")
-  val dpa: OSPlacesAPIDPA,
+  val dpa: OsPlacesApiDPA,
 )

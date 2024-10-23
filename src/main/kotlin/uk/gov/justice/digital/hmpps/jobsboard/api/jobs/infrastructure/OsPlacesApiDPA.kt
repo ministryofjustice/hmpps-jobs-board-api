@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class OSPlacesAPIDPA(
+data class OsPlacesApiDPA(
   @JsonProperty("POSTCODE")
   val postcode: String,
 

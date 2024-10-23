@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class WebClientConfiguration(
-  private val osPlacesAPIProperties: OSPlacesAPIProperties,
+  private val osPlacesAPIProperties: OsPlacesApiProperties,
 ) {
   @Bean
   fun osPlacesClient(): WebClient = WebClient.builder()

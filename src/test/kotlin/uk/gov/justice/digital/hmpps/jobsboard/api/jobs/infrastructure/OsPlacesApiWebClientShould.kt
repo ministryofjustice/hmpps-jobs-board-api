@@ -12,19 +12,19 @@ import org.mockito.kotlin.whenever
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
-import uk.gov.justice.digital.hmpps.jobsboard.api.config.OSPlacesAPIProperties
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.OsPlacesApiProperties
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
 
 @ExtendWith(MockitoExtension::class)
-class OSPlacesAPIWebClientShould {
+class OsPlacesApiWebClientShould {
   @Mock
   private lateinit var osPlacesWebClient: WebClient
 
   @Mock
-  lateinit var osPlacesAPIProperties: OSPlacesAPIProperties
+  lateinit var osPlacesAPIProperties: OsPlacesApiProperties
 
   @InjectMocks
-  private lateinit var osPlacesAPIWebClient: OSPlacesAPIWebClient
+  private lateinit var osPlacesAPIWebClient: OsPlacesApiWebClient
 
   companion object {
     val API_KEY = "test-api-key"
@@ -37,14 +37,14 @@ class OSPlacesAPIWebClientShould {
 
   @Test
   fun `get coordinates when a valid postcode is provided`() {
-    val expectedPostcode = OSPlacesAPIDPA(
+    val expectedPostcode = OsPlacesApiDPA(
       postcode = amazonForkliftOperator.postcode,
       xCoordinate = 1.23f,
       yCoordinate = 4.56f,
     )
-    val expectedSearchResult = OSPlacesAPIResponse(
+    val expectedSearchResult = OsPlacesApiResponse(
       results = listOf(
-        OSPlacesAPIAddress(
+        OsPlacesApiAddress(
           dpa = expectedPostcode,
         ),
       ),
@@ -56,7 +56,7 @@ class OSPlacesAPIWebClientShould {
     whenever(requestUriMock.uri("/postcode?postcode=${amazonForkliftOperator.postcode}&key=$API_KEY")).thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.accept(APPLICATION_JSON)).thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.retrieve()).thenReturn(responseSpecMock)
-    whenever(responseSpecMock.bodyToMono(OSPlacesAPIResponse::class.java)).thenReturn(Mono.just(expectedSearchResult))
+    whenever(responseSpecMock.bodyToMono(OsPlacesApiResponse::class.java)).thenReturn(Mono.just(expectedSearchResult))
 
     val postcode = osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
 
