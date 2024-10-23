@@ -17,7 +17,13 @@ data class JobPrisonerId(
 ) : Serializable {
 
   init {
-    require(prisonNumber.isNotEmpty()) { "prisonNumber cannot be empty" }
-    require(prisonNumber.length <= PRISON_NUMBER_MAX_LENGTH) { "prisonNumber is too long" }
+    validatePrisonNumber(prisonNumber)
+  }
+
+  companion object {
+    fun validatePrisonNumber(prisonNumber: String) {
+      require(prisonNumber.isNotEmpty()) { "prisonNumber cannot be empty" }
+      require(prisonNumber.length <= PRISON_NUMBER_MAX_LENGTH) { "prisonNumber is too long" }
+    }
   }
 }
