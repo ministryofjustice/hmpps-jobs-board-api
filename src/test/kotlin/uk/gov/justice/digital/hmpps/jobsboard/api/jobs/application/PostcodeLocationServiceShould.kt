@@ -51,19 +51,18 @@ class PostcodeLocationServiceShould {
     yCoordinate = expectedPostcode.yCoordinate,
   )
 
-  @BeforeEach
-  fun setUp() {
-    whenever(uuidGenerator.generate())
-      .thenReturn(postcodeId)
-    whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
-      .thenReturn(expectedLocation)
-  }
-
   @Nested
   @DisplayName("Given a postcode does not exist")
   inner class GivenPostcodeNotExisting {
     @Test
     fun `save a postcode with coordinates`() {
+      whenever(uuidGenerator.generate())
+        .thenReturn(postcodeId)
+      whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
+        .thenReturn(expectedLocation)
+      whenever(postcodesRepository.existsByCode(amazonForkliftOperator.postcode))
+        .thenReturn(false)
+
       postcodeLocationService.save(amazonForkliftOperator.postcode)
 
       val locationCaptor = argumentCaptor<String>()
@@ -84,6 +83,9 @@ class PostcodeLocationServiceShould {
   inner class GivenPostcodeExisting {
     @Test
     fun `not save a postcode with coordinates`() {
+      whenever(postcodesRepository.existsByCode(amazonForkliftOperator.postcode))
+        .thenReturn(true)
+
       postcodeLocationService.save(amazonForkliftOperator.postcode)
 
       verify(postcodesRepository, never()).save(any())
