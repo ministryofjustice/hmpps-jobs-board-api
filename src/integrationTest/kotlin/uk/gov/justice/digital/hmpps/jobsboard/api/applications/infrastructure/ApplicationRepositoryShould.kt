@@ -7,9 +7,14 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Sort.Direction.ASC
 import org.springframework.data.history.Revision
 import org.springframework.data.history.RevisionMetadata.RevisionType
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationStatus
 import uk.gov.justice.digital.hmpps.jobsboard.api.audit.domain.RevisionInfo
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationBuilder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother
@@ -45,6 +50,8 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
   @Nested
   @DisplayName("Given the known application")
   inner class GivenTheKnownApplicant {
+    private val knownApplicant = ApplicationMother.KnownApplicant
+
     @Test
     fun `submit an application by user on behalf of the given prisoner`() {
       val application = ApplicationMother.builder().apply { job = givenAJobHasBeenCreated() }.build()
@@ -60,8 +67,7 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
 
       @BeforeEach
       fun beforeEach() {
-        val application = ApplicationMother.builder().apply { job = givenAJobHasBeenCreated() }.build()
-        this.application = applicationRepository.saveAndFlush(application)
+        this.application = givenAnApplicationMade()
       }
 
       @Test
@@ -120,6 +126,51 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
           expectedCreator = subsequentAuditor,
           revisions = revisions.content.subList(1, revisions.content.size).toTypedArray(),
         )
+      }
+    }
+
+    @Nested
+    @DisplayName("And three applications have been made")
+    inner class AndThreeApplicationsMade {
+      private lateinit var applications: List<Application>
+
+      @BeforeEach
+      fun beforeEach() {
+        applications = givenThreeApplicationsMade()
+      }
+
+      @Test
+      fun `retrieve only open applications for given prisoner`() {
+        assertRetrieveApplicationsOfGivenStatusOnly(
+          prisonNumber = knownApplicant.prisonNumber,
+          status = ApplicationStatus.openStatus.map { it.name },
+          expectedContentSize = 2,
+        )
+      }
+
+      @Test
+      fun `retrieve only closed applications for given prisoner`() {
+        assertRetrieveApplicationsOfGivenStatusOnly(
+          prisonNumber = knownApplicant.prisonNumber,
+          status = ApplicationStatus.closedStatus.map { it.name },
+          expectedContentSize = 1,
+        )
+      }
+
+      private fun assertRetrieveApplicationsOfGivenStatusOnly(
+        prisonNumber: String,
+        status: List<String>,
+        expectedContentSize: Int,
+      ) {
+        val pageable: Pageable = PageRequest.of(0, 10, Sort.by(ASC, "createdAt"))
+        val applications = applicationRepository.findByPrisonNumberAndStatusIn(prisonNumber, status, pageable)
+
+        assertThat(applications).isNotNull
+        assertThat(applications.content.size).isEqualTo(expectedContentSize)
+        applications.content.forEach {
+          assertThat(it.prisonNumber).isEqualTo(prisonNumber)
+          assertThat(it.status).isIn(status)
+        }
       }
     }
   }

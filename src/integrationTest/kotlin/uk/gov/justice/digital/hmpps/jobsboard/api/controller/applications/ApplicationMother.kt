@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications
 
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.asJson
@@ -39,6 +40,16 @@ object ApplicationMother {
     lastName = KnownApplicant.lastName,
     status = "APPLICATION_MADE",
     job = amazonForkliftOperator,
+  )
+
+  val applicationToAbcConstructionApprentice = Application(
+    id = EntityId("1b635092-048f-4c88-b673-103e5e702122"),
+    prisonNumber = KnownApplicant.prisonNumber,
+    prisonId = KnownApplicant.prisonId,
+    firstName = KnownApplicant.firstName,
+    lastName = KnownApplicant.lastName,
+    status = "UNSUCCESSFUL_AT_INTERVIEW",
+    job = abcConstructionApprentice,
   )
 
   fun builder() = ApplicationBuilder()
