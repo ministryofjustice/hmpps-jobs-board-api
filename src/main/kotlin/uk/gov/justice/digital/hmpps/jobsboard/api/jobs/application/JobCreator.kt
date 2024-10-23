@@ -13,11 +13,15 @@ import java.time.format.DateTimeParseException
 class JobCreator(
   private val jobRepository: JobRepository,
   private val employerRepository: EmployerRepository,
+  private val postcodeLocationService: PostcodeLocationService,
 ) {
 
   fun createOrUpdate(request: CreateJobRequest) {
     val employer = employerRepository.findById(EntityId(request.employerId))
       .orElseThrow { IllegalArgumentException("Employer not found: employerId = ${request.employerId}") }
+
+    postcodeLocationService.save(request.postCode)
+
     jobRepository.save(
       Job(
         id = EntityId(request.id),

@@ -42,6 +42,20 @@ class JobCreatorShould : TestBase() {
   }
 
   @Test
+  fun `save the job's postcode via postCodeLocationService`() {
+    whenever(employerRepository.findById(amazon.id))
+      .thenReturn(Optional.of(amazon))
+
+    jobCreator.createOrUpdate(amazonForkliftOperator.createJobRequest)
+
+    val postcodeCaptor = argumentCaptor<String>()
+    verify(postcodeLocationService).save(postcodeCaptor.capture())
+    val actualPostcode = postcodeCaptor.firstValue
+
+    assertThat(actualPostcode).isEqualTo(amazonForkliftOperator.postcode)
+  }
+
+  @Test
   fun `save a Job with valid details`() {
     whenever(employerRepository.findById(amazon.id))
       .thenReturn(Optional.of(amazon))

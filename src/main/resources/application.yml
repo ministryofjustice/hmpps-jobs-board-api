@@ -95,3 +95,4 @@ os:
   places:
     api:
       url: "https://api.os.uk/search/places/v1"
+      key: ${os.places.api.key}

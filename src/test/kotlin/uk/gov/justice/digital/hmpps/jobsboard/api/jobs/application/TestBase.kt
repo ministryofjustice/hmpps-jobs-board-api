@@ -14,4 +14,7 @@ abstract class TestBase {
 
   @Mock
   protected lateinit var employerRepository: EmployerRepository
+
+  @Mock
+  protected lateinit var postcodeLocationService: PostcodeLocationService
 }

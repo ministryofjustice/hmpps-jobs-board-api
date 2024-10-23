@@ -5,12 +5,14 @@ import org.awaitility.Awaitility
 import org.flywaydb.core.Flyway
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -44,6 +46,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.OSPlacesMockServer
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
 import java.security.SecureRandom
@@ -69,10 +72,10 @@ abstract class ApplicationTestCase {
   private lateinit var flyway: Flyway
 
   @Autowired
-  private lateinit var employerRepository: EmployerRepository
+  protected lateinit var employerRepository: EmployerRepository
 
   @Autowired
-  private lateinit var jobRepository: JobRepository
+  protected lateinit var jobRepository: JobRepository
 
   @MockBean
   protected lateinit var timeProvider: DefaultTimeProvider
@@ -97,6 +100,9 @@ abstract class ApplicationTestCase {
     val random: SecureRandom by lazy { SecureRandom() }
   }
 
+  @Value("\${os.places.api.key}")
+  lateinit var apiKey: String
+
   companion object {
     private val postgresContainer = PostgresContainer.flywayContainer
 
@@ -111,6 +117,21 @@ abstract class ApplicationTestCase {
         registry.add("spring.flyway.user", postgresContainer::getUsername)
         registry.add("spring.flyway.password", postgresContainer::getPassword)
       }
+    }
+
+    lateinit var osPlacesMockServer: OSPlacesMockServer
+
+    @JvmStatic
+    @BeforeAll
+    fun startMocks(@Value("\${os.places.api.key}") apiKey: String) {
+      osPlacesMockServer = OSPlacesMockServer(apiKey)
+      osPlacesMockServer.start()
+    }
+
+    @JvmStatic
+    @AfterAll
+    fun stopMocks() {
+      osPlacesMockServer.stop()
     }
   }
 
@@ -128,6 +149,11 @@ abstract class ApplicationTestCase {
 
   @BeforeEach
   fun setup() {
+    jobRepository.deleteAll()
+    employerRepository.deleteAll()
+    osPlacesMockServer.resetAll()
+    osPlacesMockServer.stubGetAddressesForPostcode("LS12")
+    osPlacesMockServer.stubGetAddressesForPostcode("NE157LR")
     whenever(timeProvider.now()).thenCallRealMethod()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCurrentTime))
     countOfGettingCurrentTime[0] = 0

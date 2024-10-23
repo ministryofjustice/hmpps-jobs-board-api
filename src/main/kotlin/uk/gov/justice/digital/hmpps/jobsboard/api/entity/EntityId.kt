@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.entity
 
 import jakarta.persistence.Embeddable
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.UUIDGenerator
 import java.io.Serializable
 import java.util.*
 
 @Embeddable
 data class EntityId(val id: String) : Serializable {
+  constructor(generator: UUIDGenerator) : this(generator.generate())
   constructor() : this(UUID.randomUUID().toString())
 
   init {

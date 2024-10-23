@@ -14,7 +14,13 @@ spring:
   jpa:
     show-sql: true
   datasource:
-    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=disable'
+    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=disable&autosave=conservative'
   flyway:
     baseline-on-migrate: true
     clean-disabled: false
+
+os:
+  places:
+    api:
+      url: http://localhost:8093
+      key: "os-places-api-key"
