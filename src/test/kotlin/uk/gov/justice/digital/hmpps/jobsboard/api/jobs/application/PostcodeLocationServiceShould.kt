@@ -8,7 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
@@ -33,28 +35,32 @@ class PostcodeLocationServiceShould {
   @InjectMocks
   private lateinit var postcodeLocationService: PostcodeLocationService
 
+  val postcodeId = randomUUID().toString()
+
+  val expectedPostcode = Postcode(
+    id = EntityId(postcodeId),
+    code = amazonForkliftOperator.postcode,
+    xCoordinate = 1.23f,
+    yCoordinate = 4.56f,
+  )
+
+  val expectedLocation = OsPlacesApiDPA(
+    postcode = amazonForkliftOperator.postcode,
+    xCoordinate = expectedPostcode.xCoordinate,
+    yCoordinate = expectedPostcode.yCoordinate,
+  )
+
   @Nested
   @DisplayName("Given a postcode does not exist")
   inner class GivenPostcodeNotExisting {
     @Test
     fun `save a postcode with coordinates`() {
-      val postcodeId = randomUUID().toString()
       whenever(uuidGenerator.generate())
         .thenReturn(postcodeId)
-      val expectedPostcode = Postcode(
-        id = EntityId(postcodeId),
-        code = amazonForkliftOperator.postcode,
-        xCoordinate = 1.23f,
-        yCoordinate = 4.56f,
-      )
-
-      val expectedLocation = OsPlacesApiDPA(
-        postcode = amazonForkliftOperator.postcode,
-        xCoordinate = expectedPostcode.xCoordinate,
-        yCoordinate = expectedPostcode.yCoordinate,
-      )
       whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
         .thenReturn(expectedLocation)
+      whenever(postcodesRepository.existsByCode(amazonForkliftOperator.postcode))
+        .thenReturn(false)
 
       postcodeLocationService.save(amazonForkliftOperator.postcode)
 
@@ -68,6 +74,21 @@ class PostcodeLocationServiceShould {
 
       assertThat(actualLocation).isEqualTo(amazonForkliftOperator.postcode)
       assertThat(actualPostcode).isEqualTo(expectedPostcode)
+    }
+  }
+
+  @Nested
+  @DisplayName("Given a postcode exists")
+  inner class GivenPostcodeExisting {
+    @Test
+    fun `not save a postcode with coordinates`() {
+      whenever(postcodesRepository.existsByCode(amazonForkliftOperator.postcode))
+        .thenReturn(true)
+
+      postcodeLocationService.save(amazonForkliftOperator.postcode)
+
+      verify(postcodesRepository, never()).save(any())
+      verify(osPlacesAPIClient, never()).getAddressesFor(any())
     }
   }
 }

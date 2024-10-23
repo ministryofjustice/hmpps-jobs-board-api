@@ -13,6 +13,10 @@ class PostcodeLocationService(
   private val uuidGenerator: UUIDGenerator,
 ) {
   fun save(postcode: String) {
+    if (postcodesRepository.existsByCode(postcode)) {
+      return
+    }
+
     val postcodeCoordinates = osPlacesAPIClient.getAddressesFor(postcode)
 
     postcodesRepository.save(
