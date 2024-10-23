@@ -12,8 +12,13 @@ class ApplicationByPrisonerRetriever(
   private val applicationRepository: ApplicationRepository,
 ) {
   private val openStatus = ApplicationStatus.openStatus.map { it.name }
+  private val closedStatus = ApplicationStatus.closedStatus.map { it.name }
 
   fun retrieveAllOpenApplications(prisonNumber: String, pageable: Pageable): Page<Application> {
     return applicationRepository.findByPrisonNumberAndStatusIn(prisonNumber, openStatus, pageable)
+  }
+
+  fun retrieveAllClosedApplications(prisonNumber: String, pageable: Pageable): Page<Application> {
+    return applicationRepository.findByPrisonNumberAndStatusIn(prisonNumber, closedStatus, pageable)
   }
 }
