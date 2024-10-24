@@ -35,27 +35,7 @@ class PostcodeLocationServiceShould {
   @InjectMocks
   private lateinit var postcodeLocationService: PostcodeLocationService
 
-  val postcodeId = randomUUID().toString()
-
-  val expectedPostcode = Postcode(
-    id = EntityId(postcodeId),
-    code = amazonForkliftOperator.postcode,
-    xCoordinate = 1.23f,
-    yCoordinate = 4.56f,
-  )
-
-  val expectedPostcodeWithNullCoordinates = Postcode(
-    id = EntityId(postcodeId),
-    code = amazonForkliftOperator.postcode,
-    xCoordinate = null,
-    yCoordinate = null,
-  )
-
-  val expectedLocation = OsPlacesApiDPA(
-    postcode = amazonForkliftOperator.postcode,
-    xCoordinate = expectedPostcode.xCoordinate,
-    yCoordinate = expectedPostcode.yCoordinate,
-  )
+  private val postcodeId = randomUUID().toString()
 
   @Nested
   @DisplayName("Given a postcode does not exist")
@@ -117,4 +97,24 @@ class PostcodeLocationServiceShould {
       }
     }
   }
+
+  private val expectedPostcode = Postcode(
+    id = EntityId(postcodeId),
+    code = amazonForkliftOperator.postcode,
+    xCoordinate = 1.23f,
+    yCoordinate = 4.56f,
+  )
+
+  private val expectedPostcodeWithNullCoordinates = Postcode(
+    id = EntityId(postcodeId),
+    code = amazonForkliftOperator.postcode,
+    xCoordinate = null,
+    yCoordinate = null,
+  )
+
+  private val expectedLocation = OsPlacesApiDPA(
+    postcode = amazonForkliftOperator.postcode,
+    xCoordinate = expectedPostcode.xCoordinate,
+    yCoordinate = expectedPostcode.yCoordinate,
+  )
 }
