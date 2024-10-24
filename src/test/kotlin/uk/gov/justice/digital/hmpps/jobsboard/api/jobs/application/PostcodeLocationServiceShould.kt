@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -67,8 +66,6 @@ class PostcodeLocationServiceShould {
         .thenReturn(postcodeId)
       whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
         .thenReturn(expectedLocation)
-      whenever(postcodesRepository.existsByCode(amazonForkliftOperator.postcode))
-        .thenReturn(false)
 
       postcodeLocationService.save(amazonForkliftOperator.postcode)
 
@@ -88,12 +85,6 @@ class PostcodeLocationServiceShould {
   @Nested
   @DisplayName("Given a postcode exists")
   inner class GivenPostcodeExisting {
-    @BeforeEach
-    fun setUp() {
-      whenever(postcodesRepository.existsByCode(amazonForkliftOperator.postcode))
-        .thenReturn(true)
-    }
-
     @Nested
     @DisplayName("And the stored coordinates are not null")
     inner class AndStoredCoordinatesAreNotNull {
@@ -114,8 +105,6 @@ class PostcodeLocationServiceShould {
     inner class AndStoredCoordinatesAreNull {
       @Test
       fun `Update postcode with fresh coordinates`() {
-        whenever(uuidGenerator.generate())
-          .thenReturn(postcodeId)
         whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode))
           .thenReturn(expectedPostcodeWithNullCoordinates)
         whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
