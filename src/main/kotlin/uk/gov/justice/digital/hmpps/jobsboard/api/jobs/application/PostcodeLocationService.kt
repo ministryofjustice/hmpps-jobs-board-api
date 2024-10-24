@@ -13,19 +13,24 @@ class PostcodeLocationService(
   private val uuidGenerator: UUIDGenerator,
 ) {
   fun save(postcode: String) {
-    if (postcodesRepository.existsByCode(postcode)) {
-      return
+    val savedPostcode = postcodesRepository.findByCode(postcode)
+
+    savedPostcode?.let {
+      if (it.xCoordinate != null && it.yCoordinate != null) return
     }
 
     val postcodeCoordinates = osPlacesAPIClient.getAddressesFor(postcode)
 
-    postcodesRepository.save(
-      Postcode(
-        id = EntityId(uuidGenerator),
-        code = postcode,
-        xCoordinate = postcodeCoordinates.xCoordinate,
-        yCoordinate = postcodeCoordinates.yCoordinate,
-      ),
+    val postcodeToSave = savedPostcode?.copy(
+      xCoordinate = postcodeCoordinates.xCoordinate,
+      yCoordinate = postcodeCoordinates.yCoordinate,
+    ) ?: Postcode(
+      id = EntityId(uuidGenerator),
+      code = postcode,
+      xCoordinate = postcodeCoordinates.xCoordinate,
+      yCoordinate = postcodeCoordinates.yCoordinate,
     )
+
+    postcodesRepository.save(postcodeToSave)
   }
 }
