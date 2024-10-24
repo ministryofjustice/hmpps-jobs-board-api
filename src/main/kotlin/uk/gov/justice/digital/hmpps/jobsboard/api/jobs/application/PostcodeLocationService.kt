@@ -14,7 +14,10 @@ class PostcodeLocationService(
 ) {
   fun save(postcode: String) {
     if (postcodesRepository.existsByCode(postcode)) {
-      return
+      val savedPostcode = postcodesRepository.findByCode(postcode)
+      if (savedPostcode.xCoordinate != null && savedPostcode.yCoordinate != null) {
+        return
+      }
     }
 
     val postcodeCoordinates = osPlacesAPIClient.getAddressesFor(postcode)

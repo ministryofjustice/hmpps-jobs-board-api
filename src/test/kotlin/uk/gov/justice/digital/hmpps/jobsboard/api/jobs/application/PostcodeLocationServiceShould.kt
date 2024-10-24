@@ -99,6 +99,9 @@ class PostcodeLocationServiceShould {
     inner class AndStoredCoordinatesAreNotNull {
       @Test
       fun `not save a postcode with coordinates`() {
+        whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode))
+          .thenReturn(expectedPostcode)
+
         postcodeLocationService.save(amazonForkliftOperator.postcode)
 
         verify(postcodesRepository, never()).save(any())
@@ -111,6 +114,8 @@ class PostcodeLocationServiceShould {
     inner class AndStoredCoordinatesAreNull {
       @Test
       fun `Update postcode with fresh coordinates`() {
+        whenever(uuidGenerator.generate())
+          .thenReturn(postcodeId)
         whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode))
           .thenReturn(expectedPostcodeWithNullCoordinates)
         whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))

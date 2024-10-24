@@ -6,6 +6,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 
 @Repository
 interface PostcodesRepository : JpaRepository<Postcode, EntityId> {
-  fun existsByCode(postcode: String): Boolean
-  fun findByCode(postcode: String): Postcode
+  fun existsByCode(code: String): Boolean
+  fun findByCode(code: String): Postcode
 }
