@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -44,6 +45,13 @@ class PostcodeLocationServiceShould {
     yCoordinate = 4.56f,
   )
 
+  val expectedPostcodeWithNullCoordinates = Postcode(
+    id = EntityId(postcodeId),
+    code = amazonForkliftOperator.postcode,
+    xCoordinate = null,
+    yCoordinate = null,
+  )
+
   val expectedLocation = OsPlacesApiDPA(
     postcode = amazonForkliftOperator.postcode,
     xCoordinate = expectedPostcode.xCoordinate,
@@ -80,15 +88,39 @@ class PostcodeLocationServiceShould {
   @Nested
   @DisplayName("Given a postcode exists")
   inner class GivenPostcodeExisting {
-    @Test
-    fun `not save a postcode with coordinates`() {
+    @BeforeEach
+    fun setUp() {
       whenever(postcodesRepository.existsByCode(amazonForkliftOperator.postcode))
         .thenReturn(true)
+    }
 
-      postcodeLocationService.save(amazonForkliftOperator.postcode)
+    @Nested
+    @DisplayName("And the stored coordinates are not null")
+    inner class AndStoredCoordinatesAreNotNull {
+      @Test
+      fun `not save a postcode with coordinates`() {
+        postcodeLocationService.save(amazonForkliftOperator.postcode)
 
-      verify(postcodesRepository, never()).save(any())
-      verify(osPlacesAPIClient, never()).getAddressesFor(any())
+        verify(postcodesRepository, never()).save(any())
+        verify(osPlacesAPIClient, never()).getAddressesFor(any())
+      }
+    }
+
+    @Nested
+    @DisplayName("And the stored coordinates are null")
+    inner class AndStoredCoordinatesAreNull {
+      @Test
+      fun `Update postcode with fresh coordinates`() {
+        whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode))
+          .thenReturn(expectedPostcodeWithNullCoordinates)
+        whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
+          .thenReturn(expectedLocation)
+
+        postcodeLocationService.save(amazonForkliftOperator.postcode)
+
+        verify(postcodesRepository).save(expectedPostcode)
+        verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
+      }
     }
   }
 }
