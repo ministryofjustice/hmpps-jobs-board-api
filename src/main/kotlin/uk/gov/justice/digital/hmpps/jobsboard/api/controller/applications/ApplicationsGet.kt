@@ -20,14 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.ApplicationByPrisonerRetriever
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.ApplicationHistoryRetriever
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.GetApplicationHistoriesResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.GetApplicationsByPrisonerResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
-
 @Validated
 @RestController
 @RequestMapping("/applications", produces = [APPLICATION_JSON_VALUE])
 class ApplicationsGet(
   private val applicationsRetriever: ApplicationByPrisonerRetriever,
+  private val applicationHistoryRetriever: ApplicationHistoryRetriever,
 ) {
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/open")
@@ -108,6 +110,46 @@ class ApplicationsGet(
     val pageable: Pageable = PageRequest.of(page, size, Sort.by(DESC, "lastModifiedAt"))
     val closedApplications = applicationsRetriever.retrieveAllClosedApplications(prisonNumber, pageable)
     val response = closedApplications.map { GetApplicationsByPrisonerResponse.from(it) }
+    return ResponseEntity.ok(response)
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("/histories")
+  @Operation(
+    summary = "Retrieve histories of an application for the given prisoner",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "The failure status is set when the request is invalid. An error response will be provided.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Error: Unauthorised. The error status is set as the required authorisation was not provided.",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
+        content = [Content()],
+      ),
+    ],
+  )
+  fun retrieveApplicationHistories(
+    @RequestParam(required = true)
+    @Parameter(description = "The identifier (prison number) of the given prisoner")
+    prisonNumber: String,
+    @RequestParam(required = true)
+    @Parameter(description = "The identifier of the job")
+    jobId: String,
+  ): ResponseEntity<List<GetApplicationHistoriesResponse>> {
+    val revisions = applicationHistoryRetriever.retrieveAllApplicationHistories(prisonNumber, jobId)
+    val response =
+      revisions?.map { GetApplicationHistoriesResponse.from(it) }?.toList() ?: listOf()
     return ResponseEntity.ok(response)
   }
 }

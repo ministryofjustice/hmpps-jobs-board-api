@@ -11,4 +11,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 interface ApplicationRepository : JpaRepository<Application, EntityId>, RevisionRepository<Application, EntityId, Long> {
 
   fun findByPrisonNumberAndStatusIn(prisonNumber: String, status: List<String>, pageable: Pageable): Page<Application>
+
+  fun findByPrisonNumberAndJobIdId(prisonNumber: String, jobId: String): List<Application>
 }
