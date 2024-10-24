@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -9,7 +8,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -49,16 +47,8 @@ class PostcodeLocationServiceShould {
 
       postcodeLocationService.save(amazonForkliftOperator.postcode)
 
-      val locationCaptor = argumentCaptor<String>()
-      verify(osPlacesAPIClient).getAddressesFor(locationCaptor.capture())
-      val actualLocation = locationCaptor.firstValue
-
-      val postcodeCaptor = argumentCaptor<Postcode>()
-      verify(postcodesRepository).save(postcodeCaptor.capture())
-      val actualPostcode = postcodeCaptor.firstValue
-
-      assertThat(actualLocation).isEqualTo(amazonForkliftOperator.postcode)
-      assertThat(actualPostcode).isEqualTo(expectedPostcode)
+      verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
+      verify(postcodesRepository).save(expectedPostcode)
     }
   }
 
@@ -75,8 +65,8 @@ class PostcodeLocationServiceShould {
 
         postcodeLocationService.save(amazonForkliftOperator.postcode)
 
-        verify(postcodesRepository, never()).save(any())
         verify(osPlacesAPIClient, never()).getAddressesFor(any())
+        verify(postcodesRepository, never()).save(any())
       }
     }
 
@@ -92,8 +82,8 @@ class PostcodeLocationServiceShould {
 
         postcodeLocationService.save(amazonForkliftOperator.postcode)
 
-        verify(postcodesRepository).save(expectedPostcode)
         verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
+        verify(postcodesRepository).save(expectedPostcode)
       }
     }
   }
