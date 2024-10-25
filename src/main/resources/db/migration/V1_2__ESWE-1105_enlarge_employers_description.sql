@@ -1,0 +1,2 @@
+ALTER TABLE employers
+ALTER COLUMN description TYPE VARCHAR(1000);
