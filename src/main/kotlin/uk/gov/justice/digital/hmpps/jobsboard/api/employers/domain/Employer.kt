@@ -19,7 +19,7 @@ data class Employer(
   @Column(name = "name", nullable = false)
   val name: String,
 
-  @Column(name = "description", length = 500, nullable = false)
+  @Column(name = "description", length = 1000, nullable = false)
   val description: String,
 
   @Column(name = "sector", nullable = false)

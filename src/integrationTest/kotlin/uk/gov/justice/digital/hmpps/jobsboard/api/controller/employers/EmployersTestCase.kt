@@ -48,6 +48,19 @@ class EmployerTestCase : ApplicationTestCase() {
     )
   }
 
+  protected fun assertUpdateEmployerThrowsValidationError(
+    employerId: String,
+    body: String,
+    expectedResponse: String,
+  ) {
+    assertAddEmployer(
+      id = employerId,
+      body = body,
+      expectedStatus = BAD_REQUEST,
+      expectedResponse = expectedResponse,
+    )
+  }
+
   protected fun assertGetEmployerIsOK(
     employerId: String? = null,
     parameters: String? = null,
@@ -102,7 +115,7 @@ class EmployerTestCase : ApplicationTestCase() {
     expectedStatus: HttpStatus,
     expectedResponse: String? = null,
   ): String {
-    val employerId = id ?: randomUUID().toString()
+    val employerId = id ?: randomUUID()
     assertRequestWithBody(
       url = "$EMPLOYERS_ENDPOINT/$employerId",
       body = body,
