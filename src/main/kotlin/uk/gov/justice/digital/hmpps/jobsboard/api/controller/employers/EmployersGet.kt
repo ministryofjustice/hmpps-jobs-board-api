@@ -74,12 +74,12 @@ class EmployersGet(
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("")
   @Operation(
-    summary = "Create a job employer ",
-    description = "Create a job employer. Currently requires role <b>ROLE_VIEW_PRISONER_DATA</b>",
+    summary = "Retrieve all employers",
+    description = "Retrieve all employers. Currently requires role <b>ROLE_EDUCATION_WORK_PLAN_VIEW</b> or <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b>",
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Job Employer  created",
+        description = "The success status is set as the request has been processed correctly.",
       ),
       ApiResponse(
         responseCode = "401",
