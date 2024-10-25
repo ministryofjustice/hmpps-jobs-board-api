@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS employers
 (
     id               VARCHAR(36) PRIMARY KEY,
     name             VARCHAR(255) NOT NULL,
-    description      VARCHAR(500) NOT NULL,
+    description      VARCHAR(1000) NOT NULL,
     sector           VARCHAR(255) NOT NULL,
     status           VARCHAR(255) NOT NULL,
     created_by       VARCHAR(30)  NOT NULL,

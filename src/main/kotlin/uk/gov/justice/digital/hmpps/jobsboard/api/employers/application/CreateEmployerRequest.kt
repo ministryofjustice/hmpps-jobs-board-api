@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size
 data class CreateEmployerRequest internal constructor(
   val id: String = "",
   val name: String,
-  @field:Size(max = 500)
+  @field:Size(max = 1000)
   val description: String,
   val sector: String,
   val status: String,

@@ -57,7 +57,7 @@ class EmployersPutShould : EmployerTestCase() {
 
     @Test
     fun `not update an existing employer with validation error, as employer description is too long`() {
-      val employerBuilder = EmployerMother.builder().from(sainsburys).apply { description = ".".repeat(500) }
+      val employerBuilder = EmployerMother.builder().from(sainsburys).apply { description = ".".repeat(1000) }
       assertUpdateEmployerIsOk(
         employerId = employerId,
         body = employerBuilder.build().requestBody,
@@ -65,7 +65,7 @@ class EmployersPutShould : EmployerTestCase() {
 
       employerBuilder.description += "x"
 
-      val expectedError = "description - size must be between 0 and 500".let { error ->
+      val expectedError = "description - size must be between 0 and 1000".let { error ->
         """
         {"status":400,"errorCode":null,"userMessage":"Validation failure: $error","developerMessage":"$error","moreInfo":null}
         """.trimIndent()
