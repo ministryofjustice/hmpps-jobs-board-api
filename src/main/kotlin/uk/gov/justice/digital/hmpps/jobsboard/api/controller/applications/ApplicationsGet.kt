@@ -251,6 +251,7 @@ class ApplicationsGet(
     val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, *sortByFields))
     val applications = applicationRetriever.retrieveAllApplicationsByPrisonId(
       prisonId,
+      prisonerName = prisonerName,
       status = applicationStatus,
       jobTitleOrEmployerName = jobTitleOrEmployerName,
       pageable = pageable,
