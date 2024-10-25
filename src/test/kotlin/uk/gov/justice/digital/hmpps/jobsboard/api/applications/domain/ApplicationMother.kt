@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.Creat
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.tescoWarehouseHandler
 import java.time.Instant
@@ -28,13 +29,23 @@ object ApplicationMother {
   )
 
   val applicationToAmazonForkliftOperator = Application(
-    id = EntityId("0ed3d1f1-2d21-450a-8e73-e5fd5477695d"),
+    id = EntityId("0cc48d05-e022-4309-99da-61bd21eb215c"),
     prisonNumber = KnownApplicant.prisonNumber,
     prisonId = KnownApplicant.prisonId,
     firstName = KnownApplicant.firstName,
     lastName = KnownApplicant.lastName,
     status = "APPLICATION_MADE",
     job = amazonForkliftOperator,
+  )
+
+  val applicationToAbcConstructionApprentice = Application(
+    id = EntityId("1b635092-048f-4c88-b673-103e5e702122"),
+    prisonNumber = KnownApplicant.prisonNumber,
+    prisonId = KnownApplicant.prisonId,
+    firstName = KnownApplicant.firstName,
+    lastName = KnownApplicant.lastName,
+    status = "UNSUCCESSFUL_AT_INTERVIEW",
+    job = abcConstructionApprentice,
   )
 
   fun builder() = ApplicationBuilder()

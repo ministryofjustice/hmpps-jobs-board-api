@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToAbcConstructionApprentice
 
 class ClosedApplicationsGetShould : ClosedApplicationsTestCase() {
-  private val knownApplicant = ApplicationMother.KnownApplicant
+  private val knownApplicant = ApplicationMother.knownApplicant
 
   @Test
   fun `return an error, when missing prisonNumber`() {

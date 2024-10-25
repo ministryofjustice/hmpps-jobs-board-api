@@ -11,7 +11,17 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.domain.Sort.Direction.ASC
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationStatus
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonABC
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonMDI
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonXYZ
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import java.util.*
 
@@ -38,7 +48,7 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
   @Nested
   @DisplayName("Given the known application")
   inner class GivenTheKnownApplicant {
-    private val knownApplicant = ApplicationMother.KnownApplicant
+    private val knownApplicant = ApplicationMother.knownApplicant
 
     @Test
     fun `submit an application by user on behalf of the given prisoner`() {
@@ -127,23 +137,23 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
         applications = givenThreeApplicationsMade()
       }
 
-//      @Test
-//      fun `retrieve only open applications for given prisoner`() {
-//        assertRetrieveApplicationsOfGivenStatusOnly(
-//          prisonNumber = knownApplicant.prisonNumber,
-//          status = ApplicationStatus.openStatus.map { it.name },
-//          expectedContentSize = 2,
-//        )
-//      }
+      @Test
+      fun `retrieve only open applications for given prisoner`() {
+        assertRetrieveApplicationsOfGivenStatusOnly(
+          prisonNumber = knownApplicant.prisonNumber,
+          status = ApplicationStatus.openStatus.map { it.name },
+          expectedContentSize = 2,
+        )
+      }
 
-//      @Test
-//      fun `retrieve only closed applications for given prisoner`() {
-//        assertRetrieveApplicationsOfGivenStatusOnly(
-//          prisonNumber = knownApplicant.prisonNumber,
-//          status = ApplicationStatus.closedStatus.map { it.name },
-//          expectedContentSize = 1,
-//        )
-//      }
+      @Test
+      fun `retrieve only closed applications for given prisoner`() {
+        assertRetrieveApplicationsOfGivenStatusOnly(
+          prisonNumber = knownApplicant.prisonNumber,
+          status = ApplicationStatus.closedStatus.map { it.name },
+          expectedContentSize = 1,
+        )
+      }
 
       private fun assertRetrieveApplicationsOfGivenStatusOnly(
         prisonNumber: String,
@@ -159,6 +169,196 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
           assertThat(it.prisonNumber).isEqualTo(prisonNumber)
           assertThat(it.status).isIn(status)
         }
+      }
+    }
+  }
+
+  @Nested
+  @DisplayName("Given some applications made for prisoners from multiple prisons")
+  inner class GivenApplicationsMadeFromMultiplePrisons {
+    private val defaultPageable: Pageable = PageRequest.of(0, 20, Sort.by(ASC, "lastName", "firstName"))
+
+    @BeforeEach
+    fun setUp() = givenMoreApplicationsFromMultiplePrisons()
+
+    @Test
+    fun `retrieve all applications of given prison, when only prison ID is specified`() {
+      val prisonId = prisonMDI
+      val applicationPage = applicationRepository.findByPrisonId(prisonId, defaultPageable)
+      assertThat(applicationPage).isNotEmpty.hasSize(3)
+      applicationPage.forEach { assertThat(it.prisonId).isEqualTo(prisonId) }
+    }
+
+    @Test
+    fun `retrieve no application of another prison, when only prison ID is specified and no application there`() {
+      val applicationPage = applicationRepository.findByPrisonId(prisonXYZ, defaultPageable)
+      assertThat(applicationPage).isEmpty()
+    }
+
+    @Nested
+    @DisplayName("And optional parameter(s) has/have been specified")
+    inner class AndGivenPrisonIdAndOptionalParameters {
+      private val prisonId = prisonABC
+
+      @Test
+      fun `retrieve relevant applications, when searching with applicationStatus`() {
+        assertFindByStatusIsAsExpected(listOf(ApplicationStatus.APPLICATION_MADE.toString()), 4)
+        listOf(
+          ApplicationStatus.APPLICATION_UNSUCCESSFUL,
+          ApplicationStatus.SELECTED_FOR_INTERVIEW,
+          ApplicationStatus.INTERVIEW_BOOKED,
+          ApplicationStatus.UNSUCCESSFUL_AT_INTERVIEW,
+          ApplicationStatus.JOB_OFFER,
+        ).map { it.name }.forEach {
+          assertFindByStatusIsAsExpected(listOf(it), 1)
+        }
+
+        // APPLICATION_MADE: 4, SELECTED_FOR_INTERVIEW: 1, INTERVIEW_BOOKED: 1
+        assertFindByStatusIsAsExpected(ApplicationStatus.openStatus.map { it.name }, 4 + 1 + 1)
+
+        // APPLICATION_UNSUCCESSFUL, UNSUCCESSFUL_AT_INTERVIEW, JOB_OFFER
+        assertFindByStatusIsAsExpected(ApplicationStatus.closedStatus.map { it.name }, 1 * 3)
+      }
+
+      @Test
+      fun `retrieve relevant applications, when searching with prisonerName`() {
+        // Applicant  Name (Last, First)  First Last    Number of Application
+        //    A       One                 One           3
+        //    B       One, Double         Double One    3
+        //    C       Half, Three         Three Half    1
+        //    D       Three Half,         Three Half    1
+        //    E       , Half Three        Half Three    1
+
+        // applicant B : 3
+        assertFindByPrisonerNameIsAsExpected("Double", 3, setOf("Double One"))
+
+        // applicant A, B : 3+3
+        assertFindByPrisonerNameIsAsExpected("One", 6, setOf("One", "Double One"))
+
+        // applicant C, D, E: 1x3
+        assertFindByPrisonerNameIsAsExpected("Three", 3, setOf("Three Half", "Half Three"))
+        // applicant C, D, E: 1x3
+        assertFindByPrisonerNameIsAsExpected("Half", 3, setOf("Three Half", "Half Three"))
+
+        // applicant C, D: 1x2
+        assertFindByPrisonerNameIsAsExpected("Three Half", 2, setOf("Three Half"))
+        // application E: 1
+        assertFindByPrisonerNameIsAsExpected("Half Three", 1, setOf("Half Three"))
+      }
+
+      @Test
+      fun `retrieve relevant applications, when searching with prisonerName of mixed cases`() {
+        assertFindByPrisonerNameIsAsExpected("DOUBLE", 3)
+        assertFindByPrisonerNameIsAsExpected("double", 3)
+        assertFindByPrisonerNameIsAsExpected("thRee", 3)
+        assertFindByPrisonerNameIsAsExpected("haLF", 3)
+      }
+
+      @Test
+      fun `retrieve relevant applications, when searching with jobTitleOrEmployerName`() {
+        assertFindByJobTitleOrEmployerNameIsAsExpected(
+          jobTitleOrEmployerName = "Amazon",
+          expectedSize = 4,
+          expectedEmployerName = setOf(amazon.name),
+        )
+        assertFindByJobTitleOrEmployerNameIsAsExpected(
+          jobTitleOrEmployerName = "Tesco",
+          expectedSize = 3,
+          expectedEmployerName = setOf(tesco.name),
+        )
+        assertFindByJobTitleOrEmployerNameIsAsExpected(
+          jobTitleOrEmployerName = "Abc",
+          expectedSize = 2,
+          expectedEmployerName = setOf(abcConstruction.name),
+        )
+
+        assertFindByJobTitleOrEmployerNameIsAsExpected(
+          jobTitleOrEmployerName = "Operator",
+          expectedSize = 4,
+          expectedJobTitle = setOf(amazonForkliftOperator.title),
+        )
+        assertFindByJobTitleOrEmployerNameIsAsExpected(
+          jobTitleOrEmployerName = "Warehouse",
+          expectedSize = 3,
+          expectedJobTitle = setOf(tescoWarehouseHandler.title),
+        )
+        assertFindByJobTitleOrEmployerNameIsAsExpected(
+          jobTitleOrEmployerName = "Apprentice",
+          expectedSize = 2,
+          expectedJobTitle = setOf(abcConstructionApprentice.title),
+        )
+      }
+
+      @Test
+      fun `retrieve relevant applications, when searching with jobTitleOrEmployerName of mixed cases`() {
+        assertFindByJobTitleOrEmployerNameIsAsExpected("amazon", 4)
+        assertFindByJobTitleOrEmployerNameIsAsExpected("TESCO", 3)
+        assertFindByJobTitleOrEmployerNameIsAsExpected("aBc", 2)
+
+        assertFindByJobTitleOrEmployerNameIsAsExpected("operator", 4)
+        assertFindByJobTitleOrEmployerNameIsAsExpected("WAREHOUSE", 3)
+        assertFindByJobTitleOrEmployerNameIsAsExpected("aPPrenTICE", 2)
+      }
+
+      private fun assertFindByStatusIsAsExpected(
+        applicationStatus: List<String>,
+        expectedSize: Int,
+      ) {
+        val actual = applicationRepository.findByPrisonIdAndPrisonerNameAndApplicationStatusAndJobTitleOrEmployerName(
+          prisonId = prisonId,
+          prisonerName = null,
+          status = applicationStatus,
+          jobTitleOrEmployerName = null,
+          pageable = defaultPageable,
+        )
+        assertThat(actual).isNotEmpty.hasSize(expectedSize)
+        actual.content.forEach {
+          assertThat(it.status).isIn(applicationStatus)
+        }
+      }
+
+      private fun assertFindByPrisonerNameIsAsExpected(
+        prisonerName: String,
+        expectedSize: Int,
+        expectedApplicantNames: Set<String>? = null,
+      ) {
+        val actual = applicationRepository.findByPrisonIdAndPrisonerNameAndApplicationStatusAndJobTitleOrEmployerName(
+          prisonId = prisonId,
+          prisonerName = prisonerName,
+          status = null,
+          jobTitleOrEmployerName = null,
+          pageable = defaultPageable,
+        )
+
+        assertThat(actual).isNotEmpty.hasSize(expectedSize)
+
+        expectedApplicantNames?.let {
+          val applicantFullNames = actual.map { "${it.firstName ?: ""} ${it.lastName ?: ""}".trim() }.toSet()
+          it.forEach { applicantName ->
+            assertThat(applicantName).isIn(applicantFullNames)
+          }
+        }
+      }
+
+      private fun assertFindByJobTitleOrEmployerNameIsAsExpected(
+        jobTitleOrEmployerName: String,
+        expectedSize: Int,
+        expectedEmployerName: Set<String>? = null,
+        expectedJobTitle: Set<String>? = null,
+      ) {
+        val actual = applicationRepository.findByPrisonIdAndPrisonerNameAndApplicationStatusAndJobTitleOrEmployerName(
+          prisonId = prisonId,
+          prisonerName = null,
+          status = null,
+          jobTitleOrEmployerName = jobTitleOrEmployerName,
+          pageable = defaultPageable,
+        )
+
+        assertThat(actual).isNotEmpty.hasSize(expectedSize)
+
+        expectedJobTitle?.let { actual.forEach { assertThat(it.job.title).isIn(expectedJobTitle) } }
+
+        expectedEmployerName?.let { actual.forEach { assertThat(it.job.employer.name).isIn(expectedEmployerName) } }
       }
     }
   }

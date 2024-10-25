@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications
 
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationStatus
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
@@ -15,42 +16,72 @@ object ApplicationMother {
   val createdBy = "CCOLUMBUS_GEN"
   val lastModifiedBy = "JSMITH_GEN"
 
-  object KnownApplicant {
-    val prisonNumber = "GC12HDK"
-    val prisonId = "MDI"
-    val firstName = "JOE"
-    val lastName = "BLOGGS"
-  }
+  val prisonMDI = "MDI"
+  val prisonABC = "ABC"
+  val prisonXYZ = "XYZ"
+
+  val knownApplicant = Applicant(
+    prisonNumber = "GC12HDK",
+    prisonId = prisonMDI,
+    firstName = "JOE",
+    lastName = "BLOGGS",
+  )
+
+  val applicantA = Applicant.from("A1111AA", prisonABC, firstName = "One")
+  val applicantB = Applicant.from("B2222BB", prisonABC, "Double", "One")
+  val applicantC = Applicant.from("C3333CC", prisonABC, "Three", "Half")
+  val applicantE = Applicant.from("E5555EE", prisonABC, firstName = "Half Three")
+  val applicantD = Applicant.from("D4444DD", prisonABC, lastName = "Three Half")
 
   val applicationToTescoWarehouseHandler = Application(
     id = EntityId("0ed3d1f1-2d21-450a-8e73-e5fd5477695d"),
-    prisonNumber = KnownApplicant.prisonNumber,
-    prisonId = KnownApplicant.prisonId,
-    firstName = KnownApplicant.firstName,
-    lastName = KnownApplicant.lastName,
+    prisonNumber = knownApplicant.prisonNumber,
+    prisonId = knownApplicant.prisonId,
+    firstName = knownApplicant.firstName,
+    lastName = knownApplicant.lastName,
     status = "APPLICATION_MADE",
     job = tescoWarehouseHandler,
   )
 
   val applicationToAmazonForkliftOperator = Application(
     id = EntityId("0cc48d05-e022-4309-99da-61bd21eb215c"),
-    prisonNumber = KnownApplicant.prisonNumber,
-    prisonId = KnownApplicant.prisonId,
-    firstName = KnownApplicant.firstName,
-    lastName = KnownApplicant.lastName,
+    prisonNumber = knownApplicant.prisonNumber,
+    prisonId = knownApplicant.prisonId,
+    firstName = knownApplicant.firstName,
+    lastName = knownApplicant.lastName,
     status = "APPLICATION_MADE",
     job = amazonForkliftOperator,
   )
 
   val applicationToAbcConstructionApprentice = Application(
     id = EntityId("1b635092-048f-4c88-b673-103e5e702122"),
-    prisonNumber = KnownApplicant.prisonNumber,
-    prisonId = KnownApplicant.prisonId,
-    firstName = KnownApplicant.firstName,
-    lastName = KnownApplicant.lastName,
+    prisonNumber = knownApplicant.prisonNumber,
+    prisonId = knownApplicant.prisonId,
+    firstName = knownApplicant.firstName,
+    lastName = knownApplicant.lastName,
     status = "UNSUCCESSFUL_AT_INTERVIEW",
     job = abcConstructionApprentice,
   )
+
+  val applicationsFromPrisonMDI = listOf(
+    applicationToAmazonForkliftOperator,
+    applicationToTescoWarehouseHandler,
+    applicationToAbcConstructionApprentice,
+  )
+
+  val applicationsFromPrisonABC = listOf(
+    makeApplication(applicantA, amazonForkliftOperator, ApplicationStatus.APPLICATION_MADE),
+    makeApplication(applicantB, amazonForkliftOperator, ApplicationStatus.APPLICATION_UNSUCCESSFUL),
+    makeApplication(applicantC, amazonForkliftOperator, ApplicationStatus.SELECTED_FOR_INTERVIEW),
+    makeApplication(applicantD, amazonForkliftOperator, ApplicationStatus.INTERVIEW_BOOKED),
+    makeApplication(applicantA, tescoWarehouseHandler, ApplicationStatus.JOB_OFFER),
+    makeApplication(applicantB, tescoWarehouseHandler, ApplicationStatus.UNSUCCESSFUL_AT_INTERVIEW),
+    makeApplication(applicantE, tescoWarehouseHandler, ApplicationStatus.APPLICATION_MADE),
+    makeApplication(applicantA, abcConstructionApprentice, ApplicationStatus.APPLICATION_MADE),
+    makeApplication(applicantB, abcConstructionApprentice, ApplicationStatus.APPLICATION_MADE),
+  )
+
+  val applicationsFromPrisonXYZ = listOf<Application>()
 
   fun builder() = ApplicationBuilder()
 
@@ -79,6 +110,22 @@ object ApplicationMother {
       """.trimIndent()
     }
   }
+
+  fun makeApplication(
+    applicant: Applicant,
+    job: Job,
+    status: ApplicationStatus,
+    additionalInformation: String? = null,
+  ) = Application(
+    id = EntityId(UUID.randomUUID().toString()),
+    prisonNumber = applicant.prisonNumber,
+    prisonId = applicant.prisonId,
+    firstName = applicant.firstName,
+    lastName = applicant.lastName,
+    status = status.toString(),
+    additionalInformation = additionalInformation,
+    job = job,
+  )
 }
 
 class ApplicationBuilder {
@@ -125,5 +172,17 @@ class ApplicationBuilder {
     it.createdAt = this.createdAt
     it.lastModifiedBy = this.lastModifiedBy
     it.lastModifiedAt = this.lastModifiedAt
+  }
+}
+
+data class Applicant(
+  val prisonNumber: String,
+  val prisonId: String,
+  val firstName: String?,
+  val lastName: String?,
+) {
+  companion object {
+    fun from(prisonNumber: String, prisonId: String, firstName: String? = null, lastName: String? = null) =
+      Applicant(prisonNumber, prisonId, firstName, lastName)
   }
 }

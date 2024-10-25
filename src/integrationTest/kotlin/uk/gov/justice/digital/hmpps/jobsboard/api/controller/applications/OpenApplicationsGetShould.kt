@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.Applic
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToTescoWarehouseHandler
 
 class OpenApplicationsGetShould : OpenApplicationsTestCase() {
-  private val knownApplicant = ApplicationMother.KnownApplicant
+  private val knownApplicant = ApplicationMother.knownApplicant
 
   @Test
   fun `return an error, when missing prisonNumber`() {
