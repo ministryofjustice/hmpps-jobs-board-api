@@ -9,14 +9,17 @@ import kotlin.jvm.optionals.getOrNull
 @Service
 class MatchingCandidateJobDetailsRetriever(
   private val matchingCandidateJobsRepository: MatchingCandidateJobRepository,
+  private val postcodeLocationService: PostcodeLocationService,
   private val jobRepository: JobRepository,
 ) {
-  fun retrieve(jobId: String, prisonNumber: String? = null): GetMatchingCandidateJobResponse? {
+  fun retrieve(jobId: String, prisonNumber: String? = null, releaseAreaPostcode: String? = null): GetMatchingCandidateJobResponse? {
+    releaseAreaPostcode?.let { postcodeLocationService.save(it) }
+
     return when {
       prisonNumber.isNullOrEmpty() -> jobRepository.findById(EntityId(jobId)).getOrNull()
         ?.let { job -> GetMatchingCandidateJobResponse.from(job) }
 
-      else -> matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(jobId, prisonNumber).firstOrNull()
+      else -> matchingCandidateJobsRepository.findJobDetailsByPrisonNumberAndReleaseAreaPostcode(jobId, prisonNumber, releaseAreaPostcode).firstOrNull()
     }
   }
 }

@@ -8,7 +8,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 private const val OS_PLACES_WIREMOCK_PORT = 8093
 
 class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_WIREMOCK_PORT) {
-  fun stubGetAddressesForPostcode(postcode: String) {
+  fun stubGetAddressesForPostcode(postcode: String, xCoordinate: Double? = 401024.0, yCoordinate: Double? = 154112.0) {
     val json = """{
       "header": {
         "uri": "https://api.os.uk/search/places/v1/postcode?postcode=$postcode",
@@ -35,8 +35,8 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
             "POST_TOWN": "READING",
             "POSTCODE": "$postcode",
             "RPC": "1",
-            "X_COORDINATE": 401024.0,
-            "Y_COORDINATE": 154112.0,
+            "X_COORDINATE": $xCoordinate,
+            "Y_COORDINATE": $yCoordinate,
             "STATUS": "APPROVED",
             "LOGICAL_STATUS_CODE": "1",
             "CLASSIFICATION_CODE": "RD03",

@@ -81,4 +81,49 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("jobId") jobId: String,
     @Param("prisonNumber") prisonNumber: String,
   ): List<GetMatchingCandidateJobResponse>
+
+  @Query(
+    """
+    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse(
+      j.id.id,
+      j.employer.name,
+      j.title,
+      j.closingDate,
+      j.startDate,
+      j.postcode,
+      CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT),
+      j.sector,
+      j.salaryFrom,
+      j.salaryTo,
+      j.salaryPeriod,
+      j.additionalSalaryInformation,
+      j.workPattern,
+      j.hoursPerWeek,
+      j.contractType,
+      j.numberOfVacancies,
+      j.charityName,
+      j.isOnlyForPrisonLeavers,
+      j.offenceExclusions,
+      j.offenceExclusionsDetails, 
+      j.essentialCriteria,
+      j.desirableCriteria,
+      j.description,
+      j.howToApply,
+      CASE WHEN eoi.id IS NOT NULL THEN true ELSE false END,
+      CASE WHEN a.id IS NOT NULL THEN true ELSE false END,
+      j.createdAt
+    )
+    FROM Job j
+    LEFT JOIN j.expressionsOfInterest eoi on eoi.id.prisonNumber = :prisonNumber 
+    LEFT JOIN j.archived a on a.id.prisonNumber = :prisonNumber
+    LEFT JOIN Postcode pos1 on j.postcode = pos1.code
+    LEFT JOIN Postcode pos2 on pos2.code = :releaseAreaPostcode
+    WHERE j.id.id = :jobId
+    """,
+  )
+  fun findJobDetailsByPrisonNumberAndReleaseAreaPostcode(
+    @Param("jobId") jobId: String,
+    @Param("prisonNumber") prisonNumber: String,
+    @Param("releaseAreaPostcode") releaseAreaPostcode: String?,
+  ): List<GetMatchingCandidateJobResponse>
 }

@@ -136,7 +136,7 @@ class JobsGet(
     @Parameter(description = "The release area’s postcode of the given prisoner")
     postcode: String?,
   ): ResponseEntity<GetMatchingCandidateJobResponse> {
-    val details = matchingCandidateJobDetailsRetriever.retrieve(id, prisonNumber)
+    val details = matchingCandidateJobDetailsRetriever.retrieve(id, prisonNumber, postcode)
     return when {
       details != null -> ResponseEntity.ok(details)
       else -> ResponseEntity.notFound().build()

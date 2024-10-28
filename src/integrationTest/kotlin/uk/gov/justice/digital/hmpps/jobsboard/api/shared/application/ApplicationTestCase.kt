@@ -152,8 +152,8 @@ abstract class ApplicationTestCase {
     jobRepository.deleteAll()
     employerRepository.deleteAll()
     osPlacesMockServer.resetAll()
-    osPlacesMockServer.stubGetAddressesForPostcode("LS12")
-    osPlacesMockServer.stubGetAddressesForPostcode("NE157LR")
+    osPlacesMockServer.stubGetAddressesForPostcode("LS12", 426316.0, 432027.0)
+    osPlacesMockServer.stubGetAddressesForPostcode("NE157LR", 418788.0, 565604.0)
     whenever(timeProvider.now()).thenCallRealMethod()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCurrentTime))
     countOfGettingCurrentTime[0] = 0

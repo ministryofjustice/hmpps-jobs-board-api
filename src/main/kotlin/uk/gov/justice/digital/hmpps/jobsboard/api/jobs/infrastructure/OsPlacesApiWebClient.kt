@@ -22,8 +22,8 @@ class OsPlacesApiWebClient(
 
     return searchResult?.results?.first()?.dpa ?: OsPlacesApiDPA(
       postcode = postcode,
-      xCoordinate = 0.00f,
-      yCoordinate = 0.00f,
+      xCoordinate = null,
+      yCoordinate = null,
     )
   }
 }

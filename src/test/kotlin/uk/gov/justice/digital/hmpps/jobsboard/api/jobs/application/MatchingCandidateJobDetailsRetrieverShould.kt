@@ -23,8 +23,8 @@ class MatchingCandidateJobDetailsRetrieverShould : TestBase() {
   @InjectMocks
   private lateinit var matchingCandidateJobDetailsRetriever: MatchingCandidateJobDetailsRetriever
 
-  // private val expectedJobId = expectedJob.id
   private val expectedPrisonNumber = "A1234BC"
+  private val releaseAreaPostcode = "S37BS"
 
   @Test
   fun `return JobDetails without prisonNumber, when found`() {
@@ -45,14 +45,14 @@ class MatchingCandidateJobDetailsRetrieverShould : TestBase() {
   fun `return JobDetails with prisonNumber, when found`() {
     val job = amazonForkliftOperator.deepCopyMe()
     val expectedMatchingCandidateJobDetails = GetMatchingCandidateJobResponse.from(job, true, true)
-    whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(amazonForkliftOperator.id.id, expectedPrisonNumber))
+    whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumberAndReleaseAreaPostcode(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode))
       .thenReturn(listOf(expectedMatchingCandidateJobDetails))
 
     val actualMatchingCandidateJobDetails =
-      matchingCandidateJobDetailsRetriever.retrieve(amazonForkliftOperator.id.id, expectedPrisonNumber)
+      matchingCandidateJobDetailsRetriever.retrieve(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode)
 
     verify(matchingCandidateJobsRepository, times(1))
-      .findJobDetailsByPrisonNumber(amazonForkliftOperator.id.id, expectedPrisonNumber)
+      .findJobDetailsByPrisonNumberAndReleaseAreaPostcode(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode)
     assertThat(actualMatchingCandidateJobDetails!!).usingRecursiveComparison()
       .isEqualTo(expectedMatchingCandidateJobDetails)
     assertThat(actualMatchingCandidateJobDetails.expressionOfInterest).isTrue()
@@ -64,14 +64,14 @@ class MatchingCandidateJobDetailsRetrieverShould : TestBase() {
     val job = amazonForkliftOperator.deepCopyMe()
     val expectedMatchingCandidateJobDetails =
       GetMatchingCandidateJobResponse.from(job = job, expressionOfInterest = true)
-    whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(amazonForkliftOperator.id.id, expectedPrisonNumber))
+    whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumberAndReleaseAreaPostcode(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode))
       .thenReturn(listOf(expectedMatchingCandidateJobDetails))
 
     val actualMatchingCandidateJobDetails =
-      matchingCandidateJobDetailsRetriever.retrieve(amazonForkliftOperator.id.id, expectedPrisonNumber)
+      matchingCandidateJobDetailsRetriever.retrieve(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode)
 
     verify(matchingCandidateJobsRepository, times(1))
-      .findJobDetailsByPrisonNumber(amazonForkliftOperator.id.id, expectedPrisonNumber)
+      .findJobDetailsByPrisonNumberAndReleaseAreaPostcode(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode)
     assertThat(actualMatchingCandidateJobDetails!!.expressionOfInterest).isTrue()
     assertThat(actualMatchingCandidateJobDetails.archived).isFalse()
   }
@@ -80,14 +80,14 @@ class MatchingCandidateJobDetailsRetrieverShould : TestBase() {
   fun `return JobDetails with prisonNumber and Archived only, when found`() {
     val job = amazonForkliftOperator.deepCopyMe()
     val expectedMatchingCandidateJobDetails = GetMatchingCandidateJobResponse.from(job = job, archived = true)
-    whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(amazonForkliftOperator.id.id, expectedPrisonNumber))
+    whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumberAndReleaseAreaPostcode(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode))
       .thenReturn(listOf(expectedMatchingCandidateJobDetails))
 
     val actualMatchingCandidateJobDetails =
-      matchingCandidateJobDetailsRetriever.retrieve(amazonForkliftOperator.id.id, expectedPrisonNumber)
+      matchingCandidateJobDetailsRetriever.retrieve(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode)
 
     verify(matchingCandidateJobsRepository, times(1))
-      .findJobDetailsByPrisonNumber(amazonForkliftOperator.id.id, expectedPrisonNumber)
+      .findJobDetailsByPrisonNumberAndReleaseAreaPostcode(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode)
     assertThat(actualMatchingCandidateJobDetails!!.expressionOfInterest).isFalse()
     assertThat(actualMatchingCandidateJobDetails.archived).isTrue()
   }
@@ -105,14 +105,14 @@ class MatchingCandidateJobDetailsRetrieverShould : TestBase() {
 
   @Test
   fun `return nothing with prisonNumber, when not found`() {
-    whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumber(amazonForkliftOperator.id.id, expectedPrisonNumber))
+    whenever(matchingCandidateJobsRepository.findJobDetailsByPrisonNumberAndReleaseAreaPostcode(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode))
       .thenReturn(listOf())
 
     val actualMatchingCandidateJobDetails =
-      matchingCandidateJobDetailsRetriever.retrieve(amazonForkliftOperator.id.id, expectedPrisonNumber)
+      matchingCandidateJobDetailsRetriever.retrieve(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode)
 
     verify(matchingCandidateJobsRepository, times(1))
-      .findJobDetailsByPrisonNumber(amazonForkliftOperator.id.id, expectedPrisonNumber)
+      .findJobDetailsByPrisonNumberAndReleaseAreaPostcode(amazonForkliftOperator.id.id, expectedPrisonNumber, releaseAreaPostcode)
     assertThat(actualMatchingCandidateJobDetails).isNull()
   }
 }
