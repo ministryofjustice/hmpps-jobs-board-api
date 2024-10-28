@@ -290,7 +290,7 @@ class JobBuilder {
     return this
   }
 
-  fun withDistance(distance: Float): JobBuilder {
+  fun withDistanceInMiles(distance: Float): JobBuilder {
     this.distance = distance
     return this
   }
