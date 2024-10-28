@@ -30,8 +30,8 @@ object ApplicationMother {
   val applicantA = Applicant.from("A1111AA", prisonABC, firstName = "One")
   val applicantB = Applicant.from("B2222BB", prisonABC, "Double", "One")
   val applicantC = Applicant.from("C3333CC", prisonABC, "Three", "Half")
-  val applicantE = Applicant.from("E5555EE", prisonABC, firstName = "Half Three")
   val applicantD = Applicant.from("D4444DD", prisonABC, lastName = "Three Half")
+  val applicantE = Applicant.from("E5555EE", prisonABC, firstName = "Half Three")
 
   val applicationToTescoWarehouseHandler = Application(
     id = EntityId("0ed3d1f1-2d21-450a-8e73-e5fd5477695d"),
@@ -79,6 +79,14 @@ object ApplicationMother {
     makeApplication(applicantE, tescoWarehouseHandler, ApplicationStatus.APPLICATION_MADE),
     makeApplication(applicantA, abcConstructionApprentice, ApplicationStatus.APPLICATION_MADE),
     makeApplication(applicantB, abcConstructionApprentice, ApplicationStatus.APPLICATION_MADE),
+  )
+
+  val applicationsMap = mapOf(
+    applicantA to listOf(applicationsFromPrisonABC[0], applicationsFromPrisonABC[4], applicationsFromPrisonABC[7]),
+    applicantB to listOf(applicationsFromPrisonABC[1], applicationsFromPrisonABC[5], applicationsFromPrisonABC[8]),
+    applicantC to listOf(applicationsFromPrisonABC[2]),
+    applicantD to listOf(applicationsFromPrisonABC[3]),
+    applicantE to listOf(applicationsFromPrisonABC[6]),
   )
 
   val applicationsFromPrisonXYZ = listOf<Application>()
