@@ -291,6 +291,9 @@ abstract class ApplicationTestCase {
     expectedDateSortedList: List<String>? = null,
     expectedDateSortingOrder: String? = null,
     expectedClosingDateSortingOrder: String? = null,
+    expectedEmployerNameSortedList: List<String>? = null,
+    expectedLastNameSortedList: List<String?>? = null,
+    expectedFirstNameSortedList: List<String?>? = null,
   ) {
     val resultActions = mockMvc.get(url) {
       contentType = APPLICATION_JSON
@@ -369,6 +372,19 @@ abstract class ApplicationTestCase {
             }
           }
         }
+
+        val assertFieldsAreSorted: (String, List<String?>?) -> Unit = { fieldName, expectedList ->
+          expectedList?.let { sortedList ->
+            sortedList.forEachIndexed { index, expectedValue ->
+              jsonPath("$.content[$index].$fieldName", equalTo(expectedValue))
+            }
+          }
+        }
+        mapOf(
+          "employerName" to expectedEmployerNameSortedList,
+          "firstName" to expectedFirstNameSortedList,
+          "lastName" to expectedLastNameSortedList,
+        ).forEach { assertFieldsAreSorted(it.key, it.value) }
       }
     }
   }

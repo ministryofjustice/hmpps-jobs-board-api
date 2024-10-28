@@ -70,6 +70,26 @@ abstract class ApplicationsTestCase : JobsTestCase() {
   protected fun assertGetApplicationsIsOk(parameters: String? = null, expectedResponse: String? = null) =
     assertGetApplications(parameters, OK, expectedResponse)
 
+  protected fun assertGetApplicationsIsSortedByJobAndEmployer(
+    parameters: String? = null,
+    expectedJobTitleSortedList: List<String>? = null,
+    expectedEmployerNameSortedList: List<String>? = null,
+  ) = assertGetApplications(
+    parameters,
+    expectedJobTitleSortedList = expectedJobTitleSortedList,
+    expectedEmployerNameSortedList = expectedEmployerNameSortedList,
+  )
+
+  protected fun assertGetApplicationsIsSortedByPrisonerName(
+    parameters: String? = null,
+    expectedLastNameSortedList: List<String?>? = null,
+    expectedFirstNameSortedList: List<String?>? = null,
+  ) = assertGetApplications(
+    parameters,
+    expectedFirstNameSortedList = expectedFirstNameSortedList,
+    expectedLastNameSortedList = expectedLastNameSortedList,
+  )
+
   protected fun assertGetApplicationsFailedAsBadRequest(
     parameters: String? = null,
     expectedErrorMessage: String,
@@ -107,8 +127,8 @@ abstract class ApplicationsTestCase : JobsTestCase() {
         "jobId": "${it.job.id}",
         "prisonNumber": "${it.prisonNumber}",
         "prisonId": "${it.prisonId}",
-        "firstName": "${it.firstName}",
-        "lastName": "${it.lastName}",
+        "firstName": ${it.firstName?.asJson()},
+        "lastName": ${it.lastName?.asJson()},
         "employerName": "${it.job.employer.name}",
         "jobTitle": "${it.job.title}",
         "applicationStatus": "${it.status}",
@@ -137,11 +157,19 @@ abstract class ApplicationsTestCase : JobsTestCase() {
     parameters: String? = null,
     expectedStatus: HttpStatus = OK,
     expectedResponse: String? = null,
+    expectedJobTitleSortedList: List<String>? = null,
+    expectedEmployerNameSortedList: List<String>? = null,
+    expectedFirstNameSortedList: List<String?>? = null,
+    expectedLastNameSortedList: List<String?>? = null,
   ) {
     assertResponse(
       url = "$APPLICATIONS_ENDPOINT${parameters?.let { "?$it" } ?: ""}",
       expectedStatus = expectedStatus,
       expectedResponse = expectedResponse,
+      expectedJobTitleSortedList = expectedJobTitleSortedList,
+      expectedEmployerNameSortedList = expectedEmployerNameSortedList,
+      expectedLastNameSortedList = expectedLastNameSortedList,
+      expectedFirstNameSortedList = expectedFirstNameSortedList,
     )
   }
 }
