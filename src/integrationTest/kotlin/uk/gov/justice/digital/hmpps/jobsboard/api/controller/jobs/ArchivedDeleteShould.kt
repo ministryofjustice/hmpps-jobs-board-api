@@ -7,7 +7,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 
 class ArchivedDeleteShould : ArchivedTestCase() {
 
@@ -45,6 +48,21 @@ class ArchivedDeleteShould : ArchivedTestCase() {
           jobId = jobId,
           prisonNumber = nonExistentPrisonNumber,
           expectedStatus = NOT_FOUND,
+        )
+      }
+
+      @Transactional(propagation = Propagation.NOT_SUPPORTED)
+      @Test
+      fun `delete Archived, that is retained after the job updated`() {
+        val job = JobMother.builder().from(expectedJob).apply {
+          additionalSalaryInformation = "updated info about salary: ... "
+        }.build()
+        assertUpdateJobIsOk(jobId, job.requestBody)
+
+        assertDeleteArchived(
+          jobId = jobId,
+          prisonNumber = prisonNumber,
+          expectedStatus = NO_CONTENT,
         )
       }
     }

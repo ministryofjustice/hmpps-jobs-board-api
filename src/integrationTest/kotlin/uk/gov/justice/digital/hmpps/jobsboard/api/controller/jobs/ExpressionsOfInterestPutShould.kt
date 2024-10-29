@@ -7,7 +7,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 
 class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
 
@@ -42,6 +45,21 @@ class ExpressionsOfInterestPutShould : ExpressionsOfInterestTestCase() {
 
       @Test
       fun `do NOT create ExpressionOfInterest, when it exists`() {
+        assertAddExpressionOfInterest(
+          jobId = jobId,
+          prisonNumber = prisonNumber,
+          expectedStatus = OK,
+        )
+      }
+
+      @Transactional(propagation = Propagation.NOT_SUPPORTED)
+      @Test
+      fun `do NOT recreate ExpressionOfInterest, that is retained after the job updated`() {
+        val job = JobMother.builder().from(expectedJob).apply {
+          additionalSalaryInformation = "updated info about salary: ... "
+        }.build()
+        assertUpdateJobIsOk(jobId, job.requestBody)
+
         assertAddExpressionOfInterest(
           jobId = jobId,
           prisonNumber = prisonNumber,

@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationStatus
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicantA
@@ -19,6 +21,9 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.Applic
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.knownApplicant
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonABC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonMDI
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 
 class ApplicationsGetShould : ApplicationsTestCase() {
   private val defaultPageSize = 20
@@ -51,18 +56,34 @@ class ApplicationsGetShould : ApplicationsTestCase() {
 
     @Test
     fun `return a default paginated applications list, for given prison`() {
-      val prisonId = prisonMDI
-      val expectedPageSize = defaultPageSize
-      val expectedPage = 0
+      assertGetApplicationsByPrisonIdIsOk(prisonMDI, applicationsFromPrisonMDI)
+    }
 
+    private fun assertGetApplicationsByPrisonIdIsOk(
+      prisonId: String,
+      expectedApplications: List<Application> = listOf(),
+      expectedPageSize: Int = defaultPageSize,
+      expectedPage: Int = 0,
+    ) {
       assertGetApplicationsIsOk(
         parameters = "prisonId=$prisonId",
         expectedResponse = expectedResponseListOf(
           size = expectedPageSize,
           page = expectedPage,
-          elements = applicationsFromPrisonMDI.map { it.searchResponseBody }.toTypedArray(),
+          elements = expectedApplications.map { it.searchResponseBody }.toTypedArray(),
         ),
       )
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Test
+    fun `return applications list, that can be retained after the job updated, for given prison`() {
+      val job = JobMother.builder().from(amazonForkliftOperator).apply {
+        additionalSalaryInformation = "updated info about salary: ... "
+      }.build()
+      assertUpdateJobIsOk(job.id.id, job.requestBody)
+
+      assertGetApplicationsByPrisonIdIsOk(prisonMDI, applicationsFromPrisonMDI)
     }
 
     @Nested
