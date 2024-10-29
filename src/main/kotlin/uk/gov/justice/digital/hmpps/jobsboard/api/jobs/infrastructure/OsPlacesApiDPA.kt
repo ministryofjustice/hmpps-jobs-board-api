@@ -7,8 +7,8 @@ data class OsPlacesApiDPA(
   val postcode: String,
 
   @JsonProperty("X_COORDINATE")
-  val xCoordinate: Float?,
+  val xCoordinate: Double?,
 
   @JsonProperty("Y_COORDINATE")
-  val yCoordinate: Float?,
+  val yCoordinate: Double?,
 )

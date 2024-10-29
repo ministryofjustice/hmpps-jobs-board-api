@@ -39,8 +39,8 @@ class OsPlacesApiWebClientShould {
   fun `get coordinates when a valid postcode is provided`() {
     val expectedPostcode = OsPlacesApiDPA(
       postcode = amazonForkliftOperator.postcode,
-      xCoordinate = 1.23f,
-      yCoordinate = 4.56f,
+      xCoordinate = 1.23,
+      yCoordinate = 4.56,
     )
     val expectedSearchResult = OsPlacesApiResponse(
       results = listOf(

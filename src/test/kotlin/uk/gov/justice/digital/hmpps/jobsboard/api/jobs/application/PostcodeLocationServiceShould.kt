@@ -91,8 +91,8 @@ class PostcodeLocationServiceShould {
   private val expectedPostcode = Postcode(
     id = EntityId(postcodeId),
     code = amazonForkliftOperator.postcode,
-    xCoordinate = 1.23f,
-    yCoordinate = 4.56f,
+    xCoordinate = 1.23,
+    yCoordinate = 4.56,
   )
 
   private val expectedPostcodeWithNullCoordinates = Postcode(

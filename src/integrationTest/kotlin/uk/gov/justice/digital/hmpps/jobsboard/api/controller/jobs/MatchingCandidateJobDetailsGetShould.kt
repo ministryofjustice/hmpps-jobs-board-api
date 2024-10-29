@@ -18,12 +18,17 @@ class MatchingCandidateJobDetailsGetShould : MatchingCandidateJobDetailsTestCase
 
   @Test
   fun `retrieve details of a matching candidate job`() {
+    val releaseAreaPostcode = "S37BS"
+    val xCoordinate = 435169.9
+    val yCoordinate = 387721.29
+    osPlacesMockServer.stubGetAddressesForPostcode(releaseAreaPostcode, xCoordinate, yCoordinate)
+
     assertGetMatchingCandidateJobDetailsIsOK(
       id = tescoWarehouseHandler.id.id,
-      parameters = "prisonNumber=$prisonNumber",
+      parameters = "prisonNumber=$prisonNumber&postcode=$releaseAreaPostcode",
       expectedResponse = builder()
         .from(tescoWarehouseHandler)
-//        .withDistance(distanceInMiles)
+        .withDistanceInMiles(111.0f)
         .buildJobDetailsResponseBody(prisonNumber),
     )
   }
