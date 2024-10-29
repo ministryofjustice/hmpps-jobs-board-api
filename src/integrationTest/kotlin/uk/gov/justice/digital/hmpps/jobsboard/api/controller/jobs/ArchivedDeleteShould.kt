@@ -1,43 +1,66 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 
 class ArchivedDeleteShould : ArchivedTestCase() {
 
-  @Test
-  fun `delete Archived, when it exists`() {
-    val ids = givenAJobIsCreatedWithArchived()
-    val jobId = ids[0]
-    val prisonNumber = ids[1]
+  @Nested
+  @DisplayName("Given a job has been created")
+  inner class GivenAJobCreated {
 
-    assertDeleteArchived(
-      jobId = jobId,
-      prisonNumber = prisonNumber,
-      expectedStatus = NO_CONTENT,
-    )
+    @Nested
+    @DisplayName("And Job has been archived, for given prisoner")
+    inner class AndJobArchived {
+      private lateinit var jobId: String
+      private lateinit var prisonNumber: String
+      private val expectedJob = amazonForkliftOperator
+
+      @BeforeEach
+      fun setUp() {
+        givenAJobIsCreatedWithArchived().let { ids ->
+          jobId = ids[0]
+          prisonNumber = ids[1]
+        }
+      }
+
+      @Test
+      fun `delete Archived, when it exists`() {
+        assertDeleteArchived(
+          jobId = jobId,
+          prisonNumber = prisonNumber,
+          expectedStatus = NO_CONTENT,
+        )
+      }
+
+      @Test
+      fun `do NOT delete Archived, when it does NOT exist, and return error`() {
+        assertDeleteArchived(
+          jobId = jobId,
+          prisonNumber = nonExistentPrisonNumber,
+          expectedStatus = NOT_FOUND,
+        )
+      }
+    }
   }
 
-  @Test
-  fun `do NOT delete Archived, when it does NOT exist, and return error`() {
-    val jobId = givenAJobIsCreatedWithArchived().first()
-
-    assertDeleteArchived(
-      jobId = jobId,
-      prisonNumber = nonExistentPrisonNumber,
-      expectedStatus = NOT_FOUND,
-    )
-  }
-
-  @Test
-  fun `do NOT delete Archived with non-existent job, and return error`() {
-    assertDeleteArchived(
-      jobId = randomUUID(),
-      prisonNumber = randomPrisonNumber(),
-      expectedStatus = BAD_REQUEST,
-    )
+  @Nested
+  @DisplayName("Given no job")
+  inner class GivenNoJob {
+    @Test
+    fun `do NOT delete Archived with non-existent job, and return error`() {
+      assertDeleteArchived(
+        jobId = randomUUID(),
+        prisonNumber = randomPrisonNumber(),
+        expectedStatus = BAD_REQUEST,
+      )
+    }
   }
 
   @Test

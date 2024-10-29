@@ -1,42 +1,65 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 
 class ExpressionsOfInterestDeleteShould : ExpressionsOfInterestTestCase() {
-  @Test
-  fun `delete ExpressionOfInterest, when it exists`() {
-    val ids = givenAJobIsCreatedWithExpressionOfInterest()
-    val jobId = ids[0]
-    val prisonNumber = ids[1]
 
-    assertDeleteExpressionOfInterest(
-      jobId = jobId,
-      prisonNumber = prisonNumber,
-      expectedStatus = NO_CONTENT,
-    )
+  @Nested
+  @DisplayName("Given a job has been created")
+  inner class GivenAJobCreated {
+    @Nested
+    @DisplayName("And Interest has been expressed, for given prisoner")
+    inner class AndInterestExpressed {
+      private lateinit var jobId: String
+      private lateinit var prisonNumber: String
+      private val expectedJob = amazonForkliftOperator
+
+      @BeforeEach
+      fun setUp() {
+        givenAJobIsCreatedWithExpressionOfInterest().let { jobIdAndPrisonNumber ->
+          jobId = jobIdAndPrisonNumber[0]
+          prisonNumber = jobIdAndPrisonNumber[1]
+        }
+      }
+
+      @Test
+      fun `delete ExpressionOfInterest, when it exists`() {
+        assertDeleteExpressionOfInterest(
+          jobId = jobId,
+          prisonNumber = prisonNumber,
+          expectedStatus = NO_CONTENT,
+        )
+      }
+
+      @Test
+      fun `do NOT delete ExpressionOfInterest, when it does NOT exist, and return error`() {
+        assertDeleteExpressionOfInterest(
+          jobId = jobId,
+          prisonNumber = nonExistentPrisonNumber,
+          expectedStatus = NOT_FOUND,
+        )
+      }
+    }
   }
 
-  @Test
-  fun `do NOT delete ExpressionOfInterest, when it does NOT exist, and return error`() {
-    val jobId = givenAJobIsCreatedWithExpressionOfInterest().first()
-
-    assertDeleteExpressionOfInterest(
-      jobId = jobId,
-      prisonNumber = nonExistentPrisonNumber,
-      expectedStatus = NOT_FOUND,
-    )
-  }
-
-  @Test
-  fun `do NOT delete ExpressionOfInterest with non-existent job, and return error`() {
-    assertDeleteExpressionOfInterest(
-      jobId = randomUUID(),
-      prisonNumber = randomPrisonNumber(),
-      expectedStatus = BAD_REQUEST,
-    )
+  @Nested
+  @DisplayName("Given no job")
+  inner class GivenNoJob {
+    @Test
+    fun `do NOT delete ExpressionOfInterest with non-existent job, and return error`() {
+      assertDeleteExpressionOfInterest(
+        jobId = randomUUID(),
+        prisonNumber = randomPrisonNumber(),
+        expectedStatus = BAD_REQUEST,
+      )
+    }
   }
 
   @Test
