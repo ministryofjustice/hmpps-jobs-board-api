@@ -15,8 +15,20 @@ class JobCreator(
   private val employerRepository: EmployerRepository,
   private val postcodeLocationService: PostcodeLocationService,
 ) {
+  fun create(request: CreateJobRequest) {
+    save(request)
+  }
 
-  fun createOrUpdate(request: CreateJobRequest) {
+  fun update(request: CreateJobRequest) {
+    val job = jobRepository.findById(EntityId(request.id))
+      .orElseThrow { IllegalArgumentException("Job not found: id = ${request.id}") }
+    save(request, job)
+  }
+
+  private fun save(
+    request: CreateJobRequest,
+    originalJob: Job? = null,
+  ) {
     val employer = employerRepository.findById(EntityId(request.employerId))
       .orElseThrow { IllegalArgumentException("Employer not found: employerId = ${request.employerId}") }
 
@@ -55,6 +67,9 @@ class JobCreator(
         supportingDocumentationRequired = request.supportingDocumentationRequired?.joinToString(","),
         supportingDocumentationDetails = request.supportingDocumentationDetails,
         employer = employer,
+        expressionsOfInterest = originalJob?.expressionsOfInterest ?: mutableMapOf(),
+        archived = originalJob?.archived ?: mutableMapOf(),
+        applications = originalJob?.applications ?: listOf(),
       ),
     )
   }

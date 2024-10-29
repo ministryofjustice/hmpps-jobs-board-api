@@ -46,7 +46,7 @@ class JobCreatorShould : TestBase() {
     whenever(employerRepository.findById(amazon.id))
       .thenReturn(Optional.of(amazon))
 
-    jobCreator.createOrUpdate(amazonForkliftOperator.createJobRequest)
+    jobCreator.create(amazonForkliftOperator.createJobRequest)
 
     val postcodeCaptor = argumentCaptor<String>()
     verify(postcodeLocationService).save(postcodeCaptor.capture())
@@ -60,7 +60,7 @@ class JobCreatorShould : TestBase() {
     whenever(employerRepository.findById(amazon.id))
       .thenReturn(Optional.of(amazon))
 
-    jobCreator.createOrUpdate(amazonForkliftOperator.createJobRequest)
+    jobCreator.create(amazonForkliftOperator.createJobRequest)
 
     val jobCaptor = argumentCaptor<Job>()
     verify(jobRepository).save(jobCaptor.capture())
@@ -79,7 +79,7 @@ class JobCreatorShould : TestBase() {
       .buildCreateJobRequest()
 
     val exception = assertThrows<IllegalArgumentException> {
-      jobCreator.createOrUpdate(createJobRequest)
+      jobCreator.create(createJobRequest)
     }
 
     verify(jobRepository, never()).save(any(Job::class.java))
@@ -96,7 +96,7 @@ class JobCreatorShould : TestBase() {
       .buildCreateJobRequest()
 
     val exception = assertThrows<IllegalArgumentException> {
-      jobCreator.createOrUpdate(createJobRequest)
+      jobCreator.create(createJobRequest)
     }
 
     verify(jobRepository, never()).save(any(Job::class.java))
@@ -113,7 +113,7 @@ class JobCreatorShould : TestBase() {
       .buildCreateJobRequest()
 
     val exception = assertThrows<IllegalArgumentException> {
-      jobCreator.createOrUpdate(createJobRequest)
+      jobCreator.create(createJobRequest)
     }
 
     verify(jobRepository, never()).save(any(Job::class.java))
