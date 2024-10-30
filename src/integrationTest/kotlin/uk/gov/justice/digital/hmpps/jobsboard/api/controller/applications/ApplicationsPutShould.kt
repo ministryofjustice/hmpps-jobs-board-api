@@ -4,10 +4,15 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationStatus
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToAmazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationToTescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.knownApplicant
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 
 class ApplicationsPutShould : ApplicationsTestCase() {
@@ -51,18 +56,39 @@ class ApplicationsPutShould : ApplicationsTestCase() {
 
     @Test
     fun `create an application`() {
-      assertAddApplication(application)
+      assertAddApplicationIsCreated(application)
     }
 
-    @Test
-    fun `update an application`() {
-      assertAddApplication(application)
-      val updatedApplication = ApplicationMother.builder().from(application).apply {
-        this.additionalInformation = "PEL A: The candidate has been selected for interview in coming weeks (yet to book)."
-        this.status = "SELECTED_FOR_INTERVIEW"
-      }.build()
+    @Nested
+    @DisplayName("And an application has been made")
+    inner class AndAnApplicationMade {
+      @BeforeEach
+      fun setUp() {
+        assertAddApplicationIsCreated(application)
+      }
 
-      assertUpdateApplication(updatedApplication)
+      @Test
+      fun `update an application`() {
+        val updatedApplication = ApplicationMother.builder().from(application).apply {
+          this.additionalInformation = "PEL A: The candidate has been selected for interview in coming weeks (yet to book)."
+          this.status = "SELECTED_FOR_INTERVIEW"
+        }.build()
+        assertUpdateApplicationIsOk(updatedApplication)
+      }
+
+      @Transactional(propagation = Propagation.NOT_SUPPORTED)
+      @Test
+      fun `update an application, that is retained after the job updated`() {
+        val job = JobMother.builder().from(job).apply {
+          additionalSalaryInformation = "updated info about salary: ... "
+        }.build()
+        assertUpdateJobIsOk(job.id.id, job.requestBody)
+
+        val updatedApplication = ApplicationMother.builder().from(application).apply {
+          this.status = ApplicationStatus.INTERVIEW_BOOKED.name
+        }.build()
+        assertUpdateApplicationIsOk(updatedApplication)
+      }
     }
   }
 

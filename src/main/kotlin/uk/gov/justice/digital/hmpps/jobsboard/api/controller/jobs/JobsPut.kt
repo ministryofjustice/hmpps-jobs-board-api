@@ -32,12 +32,12 @@ class JobsPut(
     id: String,
     @Valid @RequestBody createJobRequest: CreateJobRequest,
   ): ResponseEntity<Void> {
-    val jobExists = jobCreator.existsById(id)
-    jobCreator.createOrUpdate(createJobRequest.copy(id = id))
-
-    return if (jobExists) {
+    val requestWithId = createJobRequest.copy(id = id)
+    return if (jobCreator.existsById(id)) {
+      jobCreator.update(requestWithId)
       ResponseEntity.ok().build()
     } else {
+      jobCreator.create(requestWithId)
       ResponseEntity.created(
         ServletUriComponentsBuilder
           .fromCurrentRequest()

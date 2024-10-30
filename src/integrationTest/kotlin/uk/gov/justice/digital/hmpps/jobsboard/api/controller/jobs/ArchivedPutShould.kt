@@ -1,51 +1,97 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 
 class ArchivedPutShould : ArchivedTestCase() {
-  @Test
-  fun `create Archived with valid Job ID and prisoner's prisonNumber, when it does NOT exist`() {
-    val jobId = obtainJobIdGivenAJobIsJustCreated()
+  @Nested
+  @DisplayName("Given a job has been created")
+  inner class GivenAJobCreated {
+    private lateinit var jobId: String
+    private val expectedJob = amazonForkliftOperator
 
-    assertAddArchived(
-      jobId = jobId,
-      expectedStatus = CREATED,
-      matchRedirectedUrl = true,
-    )
-  }
+    @BeforeEach
+    fun setUp() {
+      jobId = obtainJobIdGivenAJobIsJustCreated()
+    }
 
-  @Test
-  fun `do NOT create Archived, when it exists`() {
-    val jobIdAndPrisonNumber = obtainJodIdAndPrisonNumberGivenAJobWithArchivedJustCreated()
-    val jobId = jobIdAndPrisonNumber[0]
-    val prisonNumber = jobIdAndPrisonNumber[1]
+    @Test
+    fun `create Archived with valid Job ID and prisoner's prisonNumber, when it does NOT exist`() {
+      assertAddArchived(
+        jobId = jobId,
+        expectedStatus = CREATED,
+        matchRedirectedUrl = true,
+      )
+    }
 
-    assertAddArchived(
-      jobId = jobId,
-      prisonNumber = prisonNumber,
-      expectedStatus = OK,
-    )
-  }
+    @Nested
+    @DisplayName("And Job has been archived, for given prisoner")
+    inner class AndJobArchived {
+      private lateinit var prisonNumber: String
 
-  @Test
-  fun `do NOT create Archived with non-existent job, and return error`() {
-    val nonExistentJobId = randomUUID()
-
-    assertAddArchivedThrowsValidationOrIllegalArgumentError(
-      jobId = nonExistentJobId,
-      expectedResponse = """
-        {
-          "status": 400,
-          "errorCode": null,
-          "userMessage": "Illegal Argument: Job not found: jobId=$nonExistentJobId",
-          "developerMessage": "Job not found: jobId=$nonExistentJobId",
-          "moreInfo": null
+      @BeforeEach
+      fun setUp() {
+        assertAddArchived(jobId).let { jobIdAndPrisonNumber ->
+          jobId = jobIdAndPrisonNumber[0]
+          prisonNumber = jobIdAndPrisonNumber[1]
         }
-      """.trimIndent(),
-    )
+      }
+
+      @Test
+      fun `do NOT create Archived, when it exists`() {
+        assertAddArchived(
+          jobId = jobId,
+          prisonNumber = prisonNumber,
+          expectedStatus = OK,
+        )
+      }
+
+      @Transactional(propagation = Propagation.NOT_SUPPORTED)
+      @Test
+      fun `do NOT recreate Archived, that is retained after the job updated`() {
+        val job = JobMother.builder().from(expectedJob).apply {
+          additionalSalaryInformation = "updated info about salary: ... "
+        }.build()
+        assertUpdateJobIsOk(jobId, job.requestBody)
+
+        assertAddArchived(
+          jobId = jobId,
+          prisonNumber = prisonNumber,
+          expectedStatus = OK,
+        )
+      }
+    }
+  }
+
+  @Nested
+  @DisplayName("Given no job")
+  inner class GivenNoJob {
+    @Test
+    fun `do NOT create Archived with non-existent job, and return error`() {
+      val nonExistentJobId = randomUUID()
+
+      assertAddArchivedThrowsValidationOrIllegalArgumentError(
+        jobId = nonExistentJobId,
+        expectedResponse = """
+          {
+            "status": 400,
+            "errorCode": null,
+            "userMessage": "Illegal Argument: Job not found: jobId=$nonExistentJobId",
+            "developerMessage": "Job not found: jobId=$nonExistentJobId",
+            "moreInfo": null
+          }
+        """.trimIndent(),
+      )
+    }
   }
 
   @Test
