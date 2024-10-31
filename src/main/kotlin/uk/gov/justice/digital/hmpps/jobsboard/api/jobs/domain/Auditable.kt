@@ -18,7 +18,7 @@ abstract class Auditable {
   var createdBy: String? = null
 
   @LastModifiedBy
-  @Column(name = "last_modified_by", nullable = false, updatable = false)
+  @Column(name = "last_modified_by", nullable = false, updatable = true)
   var lastModifiedBy: String? = null
 
   @CreatedDate

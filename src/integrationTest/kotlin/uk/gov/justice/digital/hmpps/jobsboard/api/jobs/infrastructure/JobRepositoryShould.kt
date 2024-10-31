@@ -88,11 +88,19 @@ class JobRepositoryShould : JobRepositoryTestCase() {
   @Test
   fun `update lastModifiedBy attribute when updating an existing Job`() {
     employerRepository.save(amazon)
-    val savedJob = jobRepository.save(amazonForkliftOperator)
-    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(anotherUserTestName))
+    val savedJob = jobRepository.saveAndFlush(amazonForkliftOperator)
 
-    jobRepository.saveAndFlush(savedJob)
+    whenever(auditorProvider.currentAuditor).thenAnswer { Optional.of(anotherUserTestName) }
+    val updatedJob = savedJob.copy(
+      additionalSalaryInformation = "updated info(1)",
+    ).let {
+      jobRepository.saveAndFlush(it)
+    }.also {
+      entityManager.refresh(it)
+    }
 
-    assertThat(savedJob.lastModifiedBy).isEqualTo(anotherUserTestName)
+    assertThat(updatedJob.lastModifiedBy)
+      .isEqualTo(anotherUserTestName)
+      .isNotEqualTo(updatedJob.createdBy)
   }
 }

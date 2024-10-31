@@ -97,8 +97,16 @@ class EmployerRepositoryShould : EmployerRepositoryTestCase() {
     val savedEmployer = employerRepository.save(sainsburys)
     whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(anotherUserTestName))
 
-    employerRepository.saveAndFlush(savedEmployer)
+    val updatedEmployer = savedEmployer.copy(
+      description = "${savedEmployer.description} \r\n; updated (1)",
+    ).let {
+      employerRepository.saveAndFlush(it)
+    }.also {
+      entityManager.refresh(it)
+    }
 
-    assertThat(savedEmployer.lastModifiedBy).isEqualTo(anotherUserTestName)
+    assertThat(updatedEmployer.lastModifiedBy)
+      .isEqualTo(anotherUserTestName)
+      .isNotEqualTo(updatedEmployer.createdBy)
   }
 }
