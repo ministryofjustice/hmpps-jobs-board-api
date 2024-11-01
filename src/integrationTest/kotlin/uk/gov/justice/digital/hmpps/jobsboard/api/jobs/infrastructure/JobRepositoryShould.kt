@@ -90,7 +90,7 @@ class JobRepositoryShould : JobRepositoryTestCase() {
     employerRepository.save(amazon)
     val savedJob = jobRepository.saveAndFlush(amazonForkliftOperator)
 
-    whenever(auditorProvider.currentAuditor).thenAnswer { Optional.of(anotherUserTestName) }
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(anotherUserTestName))
     val updatedJob = savedJob.copy(
       additionalSalaryInformation = "updated info(1)",
     ).let {
