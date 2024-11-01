@@ -94,11 +94,19 @@ class EmployerRepositoryShould : EmployerRepositoryTestCase() {
 
   @Test
   fun `update lastModifiedBy attribute when updating an existing Employer`() {
-    val savedEmployer = employerRepository.save(sainsburys)
+    val savedEmployer = employerRepository.saveAndFlush(sainsburys)
     whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(anotherUserTestName))
 
-    employerRepository.saveAndFlush(savedEmployer)
+    val updatedEmployer = savedEmployer.copy(
+      description = "${savedEmployer.description} \r\n; updated (1)",
+    ).let {
+      employerRepository.saveAndFlush(it)
+    }.also {
+      entityManager.refresh(it)
+    }
 
-    assertThat(savedEmployer.lastModifiedBy).isEqualTo(anotherUserTestName)
+    assertThat(updatedEmployer.lastModifiedBy)
+      .isEqualTo(anotherUserTestName)
+      .isNotEqualTo(updatedEmployer.createdBy)
   }
 }
