@@ -48,10 +48,18 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
 
     @Test
     fun `return a default paginated matching candidate Jobs list`() {
+      val releaseAreaPostcode = "S37BS"
+      val xCoordinate = 435169.9
+      val yCoordinate = 387721.29
+      osPlacesMockServer.stubGetAddressesForPostcode(releaseAreaPostcode, xCoordinate, yCoordinate)
+
       assertGetMatchingCandidateJobsIsOK(
-        parameters = "prisonNumber=$prisonNumber",
+        parameters = "prisonNumber=$prisonNumber&location=$releaseAreaPostcode&distance=1000",
         expectedResponse = expectedResponseListOf(
-          tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+          builder()
+            .from(tescoWarehouseHandler)
+            .withDistanceInMiles(111.0f)
+            .buildCandidateMatchingItemListResponseBody(),
           amazonForkliftOperator.candidateMatchingItemListResponseBody,
           abcConstructionApprentice.candidateMatchingItemListResponseBody,
         ),

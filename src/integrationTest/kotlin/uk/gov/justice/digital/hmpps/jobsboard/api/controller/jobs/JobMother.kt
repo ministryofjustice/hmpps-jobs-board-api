@@ -393,6 +393,22 @@ class JobBuilder {
     )
   }
 
+  fun buildCandidateMatchingItemListResponseBody(): String {
+    return """
+      {
+        "id": "${this.id}",
+        "jobTitle": "${this.title}",
+        "employerName": "${this.employer.name}",
+        "sector": "${this.sector}",
+        "postcode": "${this.postcode}",
+        "distance": ${this.distance},
+        "closingDate": ${this.closingDate?.toString()?.asJson()},
+        "hasExpressedInterest": ${this.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
+        "createdAt": "$jobCreationTime"
+      }
+    """.trimIndent()
+  }
+
   fun buildJobDetailsResponseBody(prisonNumber: String): String {
     val optionalFields = StringBuilder()
     val appendOptionalFieldWithOrWithoutQuote: (String, Any?, Boolean) -> Unit =

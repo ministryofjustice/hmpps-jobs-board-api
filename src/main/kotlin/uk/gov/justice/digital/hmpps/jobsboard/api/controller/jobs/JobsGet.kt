@@ -81,6 +81,10 @@ class JobsGet(
     prisonNumber: String,
     @RequestParam(required = false)
     sectors: List<String>? = null,
+    @RequestParam(required = false)
+    location: String? = null,
+    @RequestParam(required = false)
+    distance: String? = null,
     @RequestParam(defaultValue = "title", required = false)
     sortBy: String?,
     @RequestParam(defaultValue = "asc", required = false)
