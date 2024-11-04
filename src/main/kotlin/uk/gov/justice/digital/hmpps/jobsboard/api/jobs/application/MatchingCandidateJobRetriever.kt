@@ -28,4 +28,8 @@ class MatchingCandidateJobRetriever(
       )
     }
   }
+
+  fun retrieveClosingJobsOfInterest(prisonNumber: String): List<GetJobsClosingSoonResponse> {
+    return matchingCandidateJobsRepository.findJobsOfInterestClosingSoon(prisonNumber, LocalDate.now())
+  }
 }

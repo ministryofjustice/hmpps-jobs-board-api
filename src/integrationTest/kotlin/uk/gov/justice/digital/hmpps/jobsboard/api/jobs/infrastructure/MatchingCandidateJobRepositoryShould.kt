@@ -38,8 +38,14 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   @DisplayName("Given no job has been created")
   inner class GivenNoJob {
     @Test
-    fun `retrieve an empty job list`() {
+    fun `retrieve an empty matched job list`() {
       val results = matchingCandidateJobRepository.findJobsClosingSoon(prisonNumber, null, today, defaultPageable)
+      assertThat(results).isEmpty()
+    }
+
+    @Test
+    fun `retrieve an empty job list of interest`() {
+      val results = matchingCandidateJobRepository.findJobsOfInterestClosingSoon(prisonNumber, today)
       assertThat(results).isEmpty()
     }
   }
@@ -55,11 +61,16 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     }
 
     @Test
-    fun `retrieve jobs closing soon`() {
+    fun `retrieve matched jobs closing soon`() {
       assertFindJobsClosingSoonIsExpected(
         expectedSize = allJobs.size,
         expectedJobs = allJobs,
       )
+    }
+
+    @Test
+    fun `retrieve empty job list of interest closing soon`() {
+      assertFindJobsOfInterestClosingSoonIsExpected(expectedSize = 0)
     }
 
     @Nested
@@ -68,7 +79,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       private val today = amazonForkliftOperator.closingDate!!.plusDays(1)
 
       @Test
-      fun `retrieve jobs closing soon, without closed job(s)`() {
+      fun `retrieve matched jobs closing soon, without closed job(s)`() {
         val expectedJobs = listOf(tescoWarehouseHandler, abcConstructionApprentice)
         assertFindJobsClosingSoonIsExpected(
           currentDate = today,
@@ -83,11 +94,11 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     inner class AndAJobArchived {
       @BeforeEach
       fun setup() {
-        archiveJob(tescoWarehouseHandler, prisonNumber)
+        archiveJob(prisonNumber, tescoWarehouseHandler)
       }
 
       @Test
-      fun `retrieve jobs closing soon, without archived job(s)`() {
+      fun `retrieve matched jobs closing soon, without archived job(s)`() {
         val expectedJobs = listOf(amazonForkliftOperator, abcConstructionApprentice)
         assertFindJobsClosingSoonIsExpected(
           expectedSize = expectedJobs.size,
@@ -101,13 +112,53 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     inner class AndExpressionOfInterest {
       @BeforeEach
       fun setup() {
-        expressInterestToJob(tescoWarehouseHandler, prisonNumber)
+        expressInterestToJob(prisonNumber, tescoWarehouseHandler)
       }
 
       @Test
-      fun `retrieve jobs closing soon, without archived job(s)`() {
+      fun `retrieve matched jobs closing soon, without job(s) of interest`() {
         val expectedJobs = listOf(amazonForkliftOperator, abcConstructionApprentice)
         assertFindJobsClosingSoonIsExpected(
+          expectedSize = expectedJobs.size,
+          expectedJobs = expectedJobs,
+        )
+      }
+    }
+
+    @Nested
+    @DisplayName("And some jobs of interest, for the given prisoner")
+    inner class AndSomeExpressionsOfInterest {
+      @BeforeEach
+      fun setUp() {
+        expressInterestToJob(prisonNumber, *allJobs.toTypedArray())
+      }
+
+      @Test
+      fun `retrieve jobs of interest closing soon`() {
+        val expectedJobs = allJobs
+        assertFindJobsOfInterestClosingSoonIsExpected(
+          expectedSize = expectedJobs.size,
+          expectedJobs = expectedJobs,
+        )
+      }
+
+      @Test
+      fun `retrieve jobs of interest closing soon, without closed job(s)`() {
+        val today = amazonForkliftOperator.closingDate!!.plusDays(1)
+        val expectedJobs = listOf(tescoWarehouseHandler, abcConstructionApprentice)
+
+        assertFindJobsOfInterestClosingSoonIsExpected(
+          currentDate = today,
+          expectedSize = expectedJobs.size,
+          expectedJobs = expectedJobs,
+        )
+      }
+
+      @Test
+      fun `retrieve jobs of interest closing soon, without archived job(s)`() {
+        archiveJob(prisonNumber, tescoWarehouseHandler)
+        val expectedJobs = listOf(amazonForkliftOperator, abcConstructionApprentice)
+        assertFindJobsOfInterestClosingSoonIsExpected(
           expectedSize = expectedJobs.size,
           expectedJobs = expectedJobs,
         )
@@ -118,14 +169,14 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     @DisplayName("And given another prisoner, with expressions of interest and archived job")
     inner class AndGivenAnotherPrisoner {
       @Test
-      fun `retrieve jobs closing soon, with job archived for another prisoner`() {
-        archiveJob(tescoWarehouseHandler, anotherPrisonNumber)
+      fun `retrieve matched jobs closing soon, with job archived for another prisoner`() {
+        archiveJob(anotherPrisonNumber, tescoWarehouseHandler)
         assertFindAllJobsClosingSoonIsExpected()
       }
 
       @Test
-      fun `retrieve jobs closing soon, with job of interest for another prisoner`() {
-        expressInterestToJob(abcConstructionApprentice, anotherPrisonNumber)
+      fun `retrieve matched jobs closing soon, with job of interest for another prisoner`() {
+        expressInterestToJob(anotherPrisonNumber, abcConstructionApprentice)
         assertFindAllJobsClosingSoonIsExpected()
       }
 
@@ -142,7 +193,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     @DisplayName("And custom filter or parameter has been specified")
     inner class AndCustomisation {
       @Test
-      fun `retrieve jobs closing soon, of specified sectors only`() {
+      fun `retrieve matched jobs closing soon, of specified sectors only`() {
         val sectors = listOf(tescoWarehouseHandler.sector, amazonForkliftOperator.sector).map { it.lowercase() }
         val expectedJobs = listOf(amazonForkliftOperator, tescoWarehouseHandler)
         assertFindJobsClosingSoonIsExpected(
@@ -152,7 +203,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       }
 
       @Test
-      fun `retrieve jobs closing soon, of first or top 1 only`() {
+      fun `retrieve matched jobs closing soon, of first or top 1 only`() {
         val expectedJobs = listOf(amazonForkliftOperator)
         assertFindJobsClosingSoonIsExpected(
           pageable = PageRequest.of(0, 1),
@@ -181,11 +232,29 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       }
     }
 
-    private fun archiveJob(job: Job, prisonNumber: String) = job.archivedBy(prisonNumber)
+    private fun assertFindJobsOfInterestClosingSoonIsExpected(
+      givenPrisonNumber: String = prisonNumber,
+      currentDate: LocalDate = today,
+      expectedSize: Int? = null,
+      expectedJobs: List<Job>? = null,
+    ) {
+      val results = matchingCandidateJobRepository.findJobsOfInterestClosingSoon(givenPrisonNumber, currentDate)
+      expectedSize?.let {
+        assertThat(results).hasSize(expectedSize)
+      }
+      expectedJobs?.let {
+        val expectedResults = expectedJobs.map { it.closingSoonResponse() }
+        assertThat(results).usingRecursiveComparison().ignoringFields("createdAt").isEqualTo(expectedResults)
+      }
+    }
+
+    private fun archiveJob(prisonNumber: String, job: Job) = job.archivedBy(prisonNumber)
       .also { archivedRepository.saveAndFlush(it) }
 
-    private fun expressInterestToJob(job: Job, prisonNumber: String) = job.registerExpressionOfInterest(prisonNumber)
-      .also { expressionOfInterestRepository.saveAndFlush(it) }
+    private fun expressInterestToJob(prisonNumber: String, vararg jobs: Job) = jobs.forEach { job ->
+      job.registerExpressionOfInterest(prisonNumber)
+        .also { expressionOfInterestRepository.saveAndFlush(it) }
+    }
   }
 
   private fun Job.closingSoonResponse() = GetJobsClosingSoonResponse.from(this)
