@@ -26,12 +26,14 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.closingDate,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
-      0.0f
+      CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT)
     )
     FROM Job j
     LEFT JOIN ExpressionOfInterest eoi ON eoi.job.id.id = j.id.id AND eoi.id.prisonNumber = :prisonNumber
     LEFT JOIN Employer e ON j.employer.id.id = e.id.id
     LEFT JOIN Archived a ON a.job.id.id = j.id.id AND a.id.prisonNumber = :prisonNumber
+    LEFT JOIN Postcode pos1 ON j.postcode = pos1.code
+    LEFT JOIN Postcode pos2 ON pos2.code = :location
     WHERE (:sectors IS NULL OR LOWER(j.sector) IN :sectors)
     AND a.id IS NULL
   """,
@@ -39,6 +41,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
   fun findAll(
     @Param("prisonNumber") prisonNumber: String,
     @Param("sectors") sectors: List<String>?,
+    @Param("location") location: String? = null,
     pageable: Pageable,
   ): Page<GetMatchingCandidateJobsResponse>
 

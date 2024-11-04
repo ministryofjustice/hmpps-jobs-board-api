@@ -10,10 +10,12 @@ import java.time.LocalDate
 @Service
 class MatchingCandidateJobRetriever(
   private val matchingCandidateJobsRepository: MatchingCandidateJobRepository,
+  private val postcodeLocationService: PostcodeLocationService,
 ) {
 
-  fun retrieveAllJobs(prisonNumber: String, sectors: List<String>?, pageable: Pageable): Page<GetMatchingCandidateJobsResponse> {
-    return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, pageable)
+  fun retrieveAllJobs(prisonNumber: String, sectors: List<String>?, location: String?, distance: Float?, pageable: Pageable): Page<GetMatchingCandidateJobsResponse> {
+    location?.let { postcodeLocationService.save(it) }
+    return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, location, pageable)
   }
 
   fun retrieveClosingJobs(prisonNumber: String, sectors: List<String>?, size: Int): List<GetJobsClosingSoonResponse> {

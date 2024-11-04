@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus.OK
 const val MATCHING_CANDIDATE_ENDPOINT = "${JOBS_ENDPOINT}/matching-candidate"
 
 abstract class MatchingCandidateTestCase : JobsTestCase() {
-  val releaseAreaPostcode = "AG121RW"
 
   protected fun assertGetMatchingCandidateJobsIsOK(
     parameters: String? = null,
