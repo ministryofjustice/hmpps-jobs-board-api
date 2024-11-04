@@ -94,7 +94,8 @@ abstract class ApplicationTestCase {
 
   private val countOfGettingCurrentTime = intArrayOf(0)
 
-  val defaultCurrentTime = Instant.parse("2024-01-01T00:00:00Z")
+  val defaultCurrentTime: Instant = Instant.parse("2024-01-01T00:00:00Z")
+  val releaseAreaPostcode = "AG121RW"
 
   private object Holder {
     val random: SecureRandom by lazy { SecureRandom() }
@@ -152,8 +153,10 @@ abstract class ApplicationTestCase {
     jobRepository.deleteAll()
     employerRepository.deleteAll()
     osPlacesMockServer.resetAll()
-    osPlacesMockServer.stubGetAddressesForPostcode("LS12", 426316.0, 432027.0)
-    osPlacesMockServer.stubGetAddressesForPostcode("NE157LR", 418788.0, 565604.0)
+    osPlacesMockServer.stubGetAddressesForPostcode("LS12", 1100.0, 1100.0)
+    osPlacesMockServer.stubGetAddressesForPostcode("NE157LR", 1100.0, 1100.0)
+    osPlacesMockServer.stubGetAddressesForPostcode(releaseAreaPostcode, 0.0, 0.0)
+
     whenever(timeProvider.now()).thenCallRealMethod()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCurrentTime))
     countOfGettingCurrentTime[0] = 0

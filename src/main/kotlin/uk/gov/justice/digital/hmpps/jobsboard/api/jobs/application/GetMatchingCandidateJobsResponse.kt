@@ -12,5 +12,5 @@ data class GetMatchingCandidateJobsResponse(
   val closingDate: LocalDate? = null,
   val hasExpressedInterest: Boolean = false,
   val createdAt: Instant? = null,
-  val distance: Float = 0f,
+  val distance: Float?,
 )

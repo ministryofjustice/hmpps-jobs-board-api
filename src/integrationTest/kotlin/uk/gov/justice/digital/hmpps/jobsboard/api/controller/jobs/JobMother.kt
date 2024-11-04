@@ -221,7 +221,7 @@ object JobMother {
           "employerName": "${job.employer.name}",
           "sector": "${job.sector}",
           "postcode": "${job.postcode}",
-          "distance": 0,
+          "distance": 1.0,
           "closingDate": ${job.closingDate?.toString()?.asJson()},
           "hasExpressedInterest": ${job.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
           "createdAt": "$jobCreationTime"
