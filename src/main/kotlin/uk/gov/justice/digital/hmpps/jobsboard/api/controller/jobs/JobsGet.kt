@@ -82,9 +82,9 @@ class JobsGet(
     @RequestParam(required = false)
     sectors: List<String>? = null,
     @RequestParam(required = false)
-    location: String? = null,
+    releaseArea: String? = null,
     @RequestParam(required = false)
-    distance: Float? = null,
+    searchRadius: Float? = null,
     @RequestParam(defaultValue = "title", required = false)
     sortBy: String?,
     @RequestParam(defaultValue = "asc", required = false)
@@ -101,7 +101,7 @@ class JobsGet(
     val lowerCaseSectors = sectors?.map { it.lowercase() }
     val direction = if (sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
     val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortedBy))
-    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(prisonNumber, lowerCaseSectors, location, distance, pageable)
+    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(prisonNumber, lowerCaseSectors, releaseArea, searchRadius, pageable)
     return ResponseEntity.ok(jobList)
   }
 
@@ -141,9 +141,9 @@ class JobsGet(
     prisonNumber: String?,
     @RequestParam(required = false)
     @Parameter(description = "The release area’s postcode of the given prisoner")
-    postcode: String?,
+    releaseArea: String?,
   ): ResponseEntity<GetMatchingCandidateJobResponse> {
-    val details = matchingCandidateJobDetailsRetriever.retrieve(id, prisonNumber, postcode)
+    val details = matchingCandidateJobDetailsRetriever.retrieve(id, prisonNumber, releaseArea)
     return when {
       details != null -> ResponseEntity.ok(details)
       else -> ResponseEntity.notFound().build()

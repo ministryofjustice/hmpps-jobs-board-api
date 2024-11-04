@@ -20,7 +20,7 @@ class MatchingCandidateJobDetailsGetShould : MatchingCandidateJobDetailsTestCase
   fun `retrieve details of a matching candidate job`() {
     assertGetMatchingCandidateJobDetailsIsOK(
       id = tescoWarehouseHandler.id.id,
-      parameters = "prisonNumber=$prisonNumber&postcode=$releaseAreaPostcode",
+      parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode",
       expectedResponse = builder()
         .from(tescoWarehouseHandler)
         .withDistanceInMiles(1.0f)
