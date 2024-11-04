@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsClosingSoonResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
@@ -140,6 +143,48 @@ class JobsGet(
     return when {
       details != null -> ResponseEntity.ok(details)
       else -> ResponseEntity.notFound().build()
+    }
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("/matching-candidate/closing-soon")
+  @Operation(
+    summary = "Retrieve jobs closing soon, matching the given prisoner",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "The failure status is set when the request is invalid. An error response will be provided.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Error: Unauthorised. The error status is set as the required authorisation was not provided.",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
+        content = [Content()],
+      ),
+    ],
+  )
+  fun retrieveClosingJobs(
+    @RequestParam(required = true)
+    @Parameter(description = "The identifier (prison number) of the given prisoner")
+    prisonNumber: String,
+    @RequestParam(required = false)
+    @Parameter(description = "A list of provided types of work. Known as the job sector.")
+    sectors: List<String>? = null,
+    @RequestParam(defaultValue = "3")
+    @Parameter(description = "Restricted size of the results; default size is 3. Results will be restricted to only top-size jobs.")
+    size: Int,
+  ): ResponseEntity<List<GetJobsClosingSoonResponse>> {
+    return matchingCandidateJobRetriever.retrieveClosingJobs(prisonNumber, sectors, size).let {
+      ResponseEntity.ok(it)
     }
   }
 }

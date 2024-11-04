@@ -149,6 +149,7 @@ object JobMother {
   val Job.responseBody: String get() = jobResponseBody(this)
   val Job.itemListResponseBody: String get() = jobItemListResponseBody(this)
   val Job.candidateMatchingItemListResponseBody: String get() = matchingCandidateJobItemListResponseBody(this)
+  val Job.closingSoonListResponseBody: String get() = closingSoonListResponseBody(this)
 
   private fun jobRequestBody(job: Job): String {
     return jobBody(job)
@@ -225,6 +226,19 @@ object JobMother {
           "hasExpressedInterest": ${job.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
           "createdAt": "$jobCreationTime"
         }
+    """.trimIndent()
+  }
+
+  private fun closingSoonListResponseBody(job: Job): String {
+    return """
+      {
+        "id":"${job.id}",
+        "employerName":"${job.employer.name}",
+        "jobTitle":"${job.title}",
+        "closingDate":${job.closingDate?.toString()?.asJson()},
+        "sector":"${job.sector}",
+        "createdAt":"$jobCreationTime"
+      }
     """.trimIndent()
   }
 }
