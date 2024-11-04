@@ -49,7 +49,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     @Test
     fun `return a default paginated matching candidate Jobs list`() {
       assertGetMatchingCandidateJobsIsOK(
-        parameters = "prisonNumber=$prisonNumber&location=$releaseAreaPostcode",
+        parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode",
         expectedResponse = expectedResponseListOf(
           abcConstructionApprentice.candidateMatchingItemListResponseBody,
           amazonForkliftOperator.candidateMatchingItemListResponseBody,
@@ -68,7 +68,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&location=$releaseAreaPostcode",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingItemListResponseBody,
             abcConstructionApprentice.candidateMatchingItemListResponseBody,
@@ -87,7 +87,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&location=$releaseAreaPostcode",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingItemListResponseBody,
             amazonForkliftOperator.candidateMatchingItemListResponseBody,
@@ -104,7 +104,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return a custom paginated matching candidate Jobs list`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&location=$releaseAreaPostcode&page=1&size=1",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&page=1&size=1",
           expectedResponse = expectedResponseListOf(
             size = 1,
             page = 1,
@@ -121,7 +121,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs filtered by job sector`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&location=$releaseAreaPostcode&sectors=retail",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&sectors=retail",
           expectedResponse = expectedResponseListOf(
             amazonForkliftOperator.candidateMatchingItemListResponseBody,
           ),
@@ -131,7 +131,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs filtered by various job sectors`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&location=$releaseAreaPostcode&sectors=retail,warehousing",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&sectors=retail,warehousing",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingItemListResponseBody,
             amazonForkliftOperator.candidateMatchingItemListResponseBody,
@@ -146,7 +146,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs list sorted by job title, in ascending order`() {
         assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
-          parameters = "prisonNumber=$prisonNumber&location=$releaseAreaPostcode&sortBy=jobTitle&sortOrder=asc",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&sortBy=jobTitle&sortOrder=asc",
           expectedJobTitlesSorted = listOf(
             "Apprentice plasterer",
             "Forklift operator",
