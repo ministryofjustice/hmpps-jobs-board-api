@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 class MatchedJobsClosingSoonGetShould : MatchedJobClosingSoonTestCase() {
   @Test
   fun `return BAD REQUEST error when prison number is missing`() {
-    assertGetMatchingCandidateJobsReturnsBadRequestError(
+    assertGetMatchedJobClosingSoonReturnsBadRequestError(
       expectedResponse = """
         {
             "status": 400,
