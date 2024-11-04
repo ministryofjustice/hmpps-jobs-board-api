@@ -28,6 +28,11 @@ abstract class JobRepositoryTestCase : RepositoryTestCase() {
     return jobRepository.saveAndFlush(amazonForkliftOperator)
   }
 
+  protected fun givenJobsHaveBeenCreated(vararg jobs: Job) {
+    jobs.map { it.employer }.toSet().forEach { employerRepository.save(it) }
+    jobs.forEach { jobRepository.save(it) }
+  }
+
   protected fun Job.archivedBy(prisonNumber: String): Archived =
     Archived(id = JobPrisonerId(this.id, prisonNumber), job = this)
 

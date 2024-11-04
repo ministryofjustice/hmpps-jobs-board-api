@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsClosingSoonResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
+import java.time.LocalDate
 
 @Repository
 interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
@@ -126,4 +128,32 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("prisonNumber") prisonNumber: String,
     @Param("releaseAreaPostcode") releaseAreaPostcode: String?,
   ): List<GetMatchingCandidateJobResponse>
+
+  @Query(
+    """
+    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsClosingSoonResponse(
+      j.id.id,
+      e.name,
+      j.title,
+      j.closingDate,
+      j.sector, 
+      j.createdAt
+    )
+    FROM Job j
+    JOIN j.employer e
+    LEFT JOIN j.expressionsOfInterest eoi ON eoi.id.prisonNumber = :prisonNumber
+    LEFT JOIN j.archived a ON a.id.prisonNumber = :prisonNumber
+    WHERE (j.closingDate >= :currentDate OR j.closingDate IS NULL)
+    AND eoi.id IS NULL 
+    AND a.id IS NULL
+    AND (LOWER(j.sector) IN :sectors OR :sectors IS NULL)
+    ORDER BY j.closingDate ASC NULLS LAST
+  """,
+  )
+  fun findJobsClosingSoon(
+    @Param("prisonNumber") prisonNumber: String,
+    @Param("sectors") sectors: List<String>?,
+    @Param("currentDate") currentDate: LocalDate,
+    pageable: Pageable,
+  ): List<GetJobsClosingSoonResponse>
 }
