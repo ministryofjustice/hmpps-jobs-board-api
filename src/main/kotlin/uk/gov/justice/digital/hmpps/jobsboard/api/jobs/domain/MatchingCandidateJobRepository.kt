@@ -159,4 +159,29 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("currentDate") currentDate: LocalDate,
     pageable: Pageable,
   ): List<GetJobsClosingSoonResponse>
+
+  @Query(
+    """
+    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsClosingSoonResponse(
+      j.id.id,
+      e.name,
+      j.title,
+      j.closingDate,
+      j.sector, 
+      j.createdAt
+    )
+    FROM Job j
+    JOIN j.employer e
+    LEFT JOIN j.expressionsOfInterest eoi ON eoi.id.prisonNumber = :prisonNumber
+    LEFT JOIN j.archived a ON a.id.prisonNumber = :prisonNumber
+    WHERE (j.closingDate >= :currentDate OR j.closingDate IS NULL)
+    AND eoi.id IS NOT NULL 
+    AND a.id IS NULL
+    ORDER BY j.closingDate ASC NULLS LAST
+  """,
+  )
+  fun findJobsOfInterestClosingSoon(
+    @Param("prisonNumber") prisonNumber: String,
+    @Param("currentDate") currentDate: LocalDate,
+  ): List<GetJobsClosingSoonResponse>
 }

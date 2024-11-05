@@ -191,4 +191,40 @@ class JobsGet(
       ResponseEntity.ok(it)
     }
   }
+
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("/expressed-interest/closing-soon")
+  @Operation(
+    summary = "Retrieve jobs of interest closing soon, for the given prisoner",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "The failure status is set when the request is invalid. An error response will be provided.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Error: Unauthorised. The error status is set as the required authorisation was not provided.",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
+        content = [Content()],
+      ),
+    ],
+  )
+  fun retrieveClosingJobsOfInterest(
+    @RequestParam(required = true)
+    @Parameter(description = "The identifier (prison number) of the given prisoner")
+    prisonNumber: String,
+  ): ResponseEntity<List<GetJobsClosingSoonResponse>> {
+    return matchingCandidateJobRetriever.retrieveClosingJobsOfInterest(prisonNumber).let {
+      ResponseEntity.ok(it)
+    }
+  }
 }
