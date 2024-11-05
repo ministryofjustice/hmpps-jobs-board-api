@@ -32,4 +32,18 @@ class MatchingCandidateJobRetriever(
   fun retrieveClosingJobsOfInterest(prisonNumber: String): List<GetJobsClosingSoonResponse> {
     return matchingCandidateJobsRepository.findJobsOfInterestClosingSoon(prisonNumber, LocalDate.now())
   }
+
+  fun retrieveJobsOfInterest(
+    prisonNumber: String,
+    releaseAreaPostcode: String?,
+    pageable: Pageable,
+  ): Page<GetMatchingCandidateJobsResponse> {
+    releaseAreaPostcode?.let { postcodeLocationService.save(it) }
+    return matchingCandidateJobsRepository.findJobsOfInterest(
+      prisonNumber = prisonNumber,
+      releaseAreaPostcode = releaseAreaPostcode,
+      currentDate = LocalDate.now(),
+      pageable = pageable,
+    )
+  }
 }

@@ -184,4 +184,34 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("prisonNumber") prisonNumber: String,
     @Param("currentDate") currentDate: LocalDate,
   ): List<GetJobsClosingSoonResponse>
+
+  @Query(
+    """
+    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse(
+      j.id.id,
+      j.title,
+      e.name,
+      j.sector,
+      j.postcode,
+      j.closingDate,
+      CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
+      j.createdAt,
+      CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT)
+    )
+    FROM Job j
+    JOIN j.expressionsOfInterest eoi ON eoi.id.prisonNumber = :prisonNumber
+    JOIN j.employer e
+    LEFT JOIN j.archived a ON a.id.prisonNumber = :prisonNumber
+    LEFT JOIN Postcode pos1 ON j.postcode = pos1.code
+    LEFT JOIN Postcode pos2 ON pos2.code = :releaseAreaPostcode
+    WHERE (j.closingDate >= :currentDate OR j.closingDate IS NULL) 
+    AND a.id IS NULL
+  """,
+  )
+  fun findJobsOfInterest(
+    @Param("prisonNumber") prisonNumber: String,
+    @Param("releaseAreaPostcode") releaseAreaPostcode: String?,
+    @Param("currentDate") currentDate: LocalDate,
+    pageable: Pageable,
+  ): Page<GetMatchingCandidateJobsResponse>
 }
