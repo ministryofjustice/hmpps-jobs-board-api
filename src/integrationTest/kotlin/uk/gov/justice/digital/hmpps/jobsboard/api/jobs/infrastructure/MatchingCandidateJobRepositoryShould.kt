@@ -75,7 +75,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
     @BeforeEach
     fun setUp() {
-      allJobs.toTypedArray().let { givenJobsHaveBeenCreated(*it) }
+      givenJobsHaveBeenCreated(*allJobs.toTypedArray())
     }
 
     @Test
