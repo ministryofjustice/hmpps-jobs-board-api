@@ -40,9 +40,10 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   private val prisonNumber = "A1234BC"
   private val anotherPrisonNumber = "X9876YZ"
 
-  private val defaultPageable = PageRequest.of(0, 10)
-  private val closingSoonPageable = PageRequest.of(0, 3)
-  private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "closingDate", "title"))
+  private val defaultSort = Sort.by(Sort.Direction.ASC, "closingDate", "title")
+  private val defaultPageable = PageRequest.of(0, 10, defaultSort)
+  private val closingSoonPageable = PageRequest.of(0, 3, defaultSort)
+  private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, defaultSort)
   private val today = LocalDate.now()
 
   @Nested
@@ -115,6 +116,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
         val expectedJobs = listOf(tescoWarehouseHandler, abcConstructionApprentice)
         assertFindAllJobsIsExpected(
           currentDate = today,
+          pageable = paginatedSortByClosingDateAsc,
           expectedSize = expectedJobs.size,
           expectedJobs = expectedJobs,
         )
