@@ -39,12 +39,14 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     WHERE  (j.closingDate >= :currentDate OR j.closingDate IS NULL)
     AND (LOWER(j.sector) IN :sectors OR :sectors IS NULL )
     AND a.id IS NULL
+    AND SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34 <= :searchRadius
   """,
   )
   fun findAll(
     @Param("prisonNumber") prisonNumber: String,
     @Param("sectors") sectors: List<String>?,
     @Param("location") location: String? = null,
+    @Param("searchRadius") searchRadius: Int,
     @Param("currentDate") currentDate: LocalDate,
     pageable: Pageable,
   ): Page<GetMatchingCandidateJobsResponse>

@@ -50,7 +50,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     @Test
     fun `return a default paginated matching candidate Jobs list`() {
       assertGetMatchingCandidateJobsIsOK(
-        parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
+        parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50",
         expectedResponse = expectedResponseListOf(
           builder().from(abcConstructionApprentice)
             .withDistanceInMiles(22.0f)
@@ -73,7 +73,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             builder().from(abcConstructionApprentice)
@@ -94,7 +94,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             builder().from(amazonForkliftOperator)
@@ -116,7 +116,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return a custom paginated matching candidate Jobs list`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&page=1&size=1",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&page=1&size=1",
           expectedResponse = expectedResponseListOf(
             size = 1,
             page = 1,
@@ -135,7 +135,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs filtered by job sector`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&sectors=retail",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sectors=retail",
           expectedResponse = expectedResponseListOf(
             builder().from(amazonForkliftOperator)
               .withDistanceInMiles(20.0f)
@@ -147,7 +147,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs filtered by various job sectors`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&sectors=retail,warehousing",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sectors=retail,warehousing",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             builder().from(amazonForkliftOperator)
@@ -176,7 +176,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs list sorted by job title, in ascending order`() {
         assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&sortBy=jobTitle&sortOrder=asc",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=jobTitle&sortOrder=asc",
           expectedJobTitlesSorted = listOf(
             "Apprentice plasterer",
             "Forklift operator",
@@ -188,7 +188,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs sorted by job title, in descending order`() {
         assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
-          parameters = "prisonNumber=$prisonNumber&sortBy=jobTitle&sortOrder=desc",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=jobTitle&sortOrder=desc",
           expectedJobTitlesSorted = listOf(
             "Warehouse handler",
             "Forklift operator",
@@ -200,7 +200,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs sorted by closing date, in ascending order, by default`() {
         assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-          parameters = "prisonNumber=$prisonNumber&sortBy=closingDate",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=closingDate",
           expectedSortingOrder = "asc",
         )
       }
@@ -208,7 +208,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs sorted by closing date, in ascending order`() {
         assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-          parameters = "prisonNumber=$prisonNumber&sortBy=closingDate&sortOrder=asc",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=closingDate&sortOrder=asc",
           expectedSortingOrder = "asc",
         )
       }
@@ -216,7 +216,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs sorted by closing date, in descending order`() {
         assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-          parameters = "prisonNumber=$prisonNumber&sortBy=closingDate&sortOrder=desc",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=closingDate&sortOrder=desc",
           expectedSortingOrder = "desc",
         )
       }
