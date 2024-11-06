@@ -36,7 +36,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     LEFT JOIN Archived a ON a.job.id.id = j.id.id AND a.id.prisonNumber = :prisonNumber
     LEFT JOIN Postcode pos1 ON j.postcode = pos1.code
     LEFT JOIN Postcode pos2 ON pos2.code = :location
-    WHERE (:sectors IS NULL OR LOWER(j.sector) IN :sectors)
+    WHERE  (j.closingDate >= :currentDate OR j.closingDate IS NULL)
+    AND (LOWER(j.sector) IN :sectors OR :sectors IS NULL )
     AND a.id IS NULL
   """,
   )
@@ -44,6 +45,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("prisonNumber") prisonNumber: String,
     @Param("sectors") sectors: List<String>?,
     @Param("location") location: String? = null,
+    @Param("currentDate") currentDate: LocalDate,
     pageable: Pageable,
   ): Page<GetMatchingCandidateJobsResponse>
 
