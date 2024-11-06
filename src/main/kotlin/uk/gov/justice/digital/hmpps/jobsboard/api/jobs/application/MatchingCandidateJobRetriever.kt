@@ -52,5 +52,19 @@ class MatchingCandidateJobRetriever(
     )
   }
 
+  fun retrieveArchivedJobs(
+    prisonNumber: String,
+    releaseAreaPostcode: String?,
+    pageable: Pageable,
+  ): Page<GetMatchingCandidateJobsResponse> {
+    releaseAreaPostcode?.let { postcodeLocationService.save(it) }
+    return matchingCandidateJobsRepository.findArchivedJobs(
+      prisonNumber = prisonNumber,
+      releaseAreaPostcode = releaseAreaPostcode,
+      currentDate = today,
+      pageable = pageable,
+    )
+  }
+
   fun sortByDistance(direction: Direction = Direction.ASC): Sort = JpaSort.unsafe(direction, CALC_DISTANCE_EXPRESSION)
 }

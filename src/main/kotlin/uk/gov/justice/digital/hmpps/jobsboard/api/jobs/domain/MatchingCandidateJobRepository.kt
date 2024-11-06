@@ -218,4 +218,33 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("currentDate") currentDate: LocalDate,
     pageable: Pageable,
   ): Page<GetMatchingCandidateJobsResponse>
+
+  @Query(
+    """
+    SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse(
+      j.id.id,
+      j.title,
+      e.name,
+      j.sector,
+      j.postcode,
+      j.closingDate,
+      CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
+      j.createdAt,
+      $CALC_DISTANCE_EXPRESSION
+    )
+    FROM Job j
+    JOIN j.employer e
+    JOIN j.archived a ON a.id.prisonNumber = :prisonNumber
+    LEFT JOIN j.expressionsOfInterest eoi ON eoi.id.prisonNumber = :prisonNumber
+    LEFT JOIN Postcode pos1 ON j.postcode = pos1.code
+    LEFT JOIN Postcode pos2 ON pos2.code = :releaseAreaPostcode
+    WHERE (j.closingDate >= :currentDate OR j.closingDate IS NULL)
+  """,
+  )
+  fun findArchivedJobs(
+    @Param("prisonNumber") prisonNumber: String,
+    @Param("releaseAreaPostcode") releaseAreaPostcode: String?,
+    @Param("currentDate") currentDate: LocalDate,
+    pageable: Pageable,
+  ): Page<GetMatchingCandidateJobsResponse>
 }

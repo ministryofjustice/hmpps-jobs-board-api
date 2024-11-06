@@ -302,16 +302,103 @@ class JobsGet(
     @Parameter(description = "Number of items expected per page")
     size: Int,
   ): ResponseEntity<Page<GetMatchingCandidateJobsResponse>> {
+    val pageable = pageableSortByJobRoleLocationOrClosingDate(page, size, sortBy, sortOrder)
+    return matchingCandidateJobRetriever.retrieveJobsOfInterest(prisonNumber, releaseArea, pageable).let {
+      ResponseEntity.ok(it)
+    }
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("/archived")
+  @Operation(
+    summary = "Retrieve archived jobs, for the given prisoner",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "The failure status is set when the request is invalid. An error response will be provided.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Error: Unauthorised. The error status is set as the required authorisation was not provided.",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
+        content = [Content()],
+      ),
+    ],
+  )
+  fun retrieveArchivedJobs(
+    @RequestParam(required = true)
+    @Parameter(description = "The identifier (prison number) of the given prisoner")
+    prisonNumber: String,
+    @RequestParam(required = false)
+    @Parameter(description = "The release area's postcode of the given prisoner")
+    releaseArea: String? = null,
+    @RequestParam(defaultValue = "closingDate")
+    @Parameter(
+      description = "Defines the attribute used to sort the Job list",
+      example = "closingDate",
+      examples = [
+        ExampleObject(
+          name = "jobAndEmployer",
+          value = "jobAndEmployer",
+          description = "Sort by Job Title, Employer Name",
+        ),
+        ExampleObject(
+          name = "location",
+          value = "location",
+          description = "Sort by job's location (distance to release area)",
+        ),
+        ExampleObject(
+          name = "closingDate",
+          value = "closingDate",
+          description = "Sort by job's closing date",
+        ),
+      ],
+    )
+    sortBy: String?,
+    @RequestParam(defaultValue = "asc")
+    @Parameter(
+      description = "Defines the sorting order",
+      example = "asc",
+      examples = [
+        ExampleObject(name = "asc", value = "asc", description = "ascending order"),
+        ExampleObject(name = "desc", value = "desc", description = "descending order"),
+      ],
+    )
+    sortOrder: String?,
+    @RequestParam(defaultValue = "0")
+    @Parameter(description = "Which page to be returned. 0-based index (Page 0 is first page)")
+    page: Int,
+    @RequestParam(defaultValue = "20")
+    @Parameter(description = "Number of items expected per page")
+    size: Int,
+  ): ResponseEntity<Page<GetMatchingCandidateJobsResponse>> {
+    val pageable = pageableSortByJobRoleLocationOrClosingDate(page, size, sortBy, sortOrder)
+    return matchingCandidateJobRetriever.retrieveArchivedJobs(prisonNumber, releaseArea, pageable).let {
+      ResponseEntity.ok(it)
+    }
+  }
+
+  private fun pageableSortByJobRoleLocationOrClosingDate(
+    page: Int,
+    size: Int,
+    sortBy: String?,
+    sortOrder: String?,
+  ): Pageable {
     val direction = if (sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
     val sort = when (sortBy?.lowercase()) {
       "jobAndEmployer".lowercase() -> Sort.by(direction, "title", "employer.name")
       "location" -> matchingCandidateJobRetriever.sortByDistance(direction)
       else -> Sort.by(direction, "closingDate")
     }
-    val pageable: Pageable = PageRequest.of(page, size, sort)
-
-    return matchingCandidateJobRetriever.retrieveJobsOfInterest(prisonNumber, releaseArea, pageable).let {
-      ResponseEntity.ok(it)
-    }
+    return PageRequest.of(page, size, sort)
   }
 }
