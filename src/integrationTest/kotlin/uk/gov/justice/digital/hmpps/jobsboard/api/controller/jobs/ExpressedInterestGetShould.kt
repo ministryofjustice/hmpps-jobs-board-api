@@ -143,7 +143,7 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
               "ABC Construction",
               "Amazon",
               "Tesco",
-            )
+            ),
           )
         }
 
@@ -160,7 +160,7 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
               "Tesco",
               "Amazon",
               "ABC Construction",
-            )
+            ),
           )
         }
 

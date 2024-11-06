@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCa
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
 import java.time.LocalDate
 
+const val CALC_DISTANCE_EXPRESSION = "CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT)"
+
 @Repository
 interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
 
@@ -196,7 +198,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.closingDate,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
-      CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT)
+      $CALC_DISTANCE_EXPRESSION
     )
     FROM Job j
     JOIN j.expressionsOfInterest eoi ON eoi.id.prisonNumber = :prisonNumber
