@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
 import java.util.*
 
 class MatchingCandidateJobDetailsGetShould : MatchingCandidateJobDetailsTestCase() {
@@ -20,7 +21,7 @@ class MatchingCandidateJobDetailsGetShould : MatchingCandidateJobDetailsTestCase
   fun `retrieve details of a matching candidate job`() {
     assertGetMatchingCandidateJobDetailsIsOK(
       id = tescoWarehouseHandler.id.id,
-      parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode",
+      parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
       expectedResponse = builder()
         .from(tescoWarehouseHandler)
         .withDistanceInMiles(1.0f)

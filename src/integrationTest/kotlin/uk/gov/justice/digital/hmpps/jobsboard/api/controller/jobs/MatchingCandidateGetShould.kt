@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amaz
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingItemListResponseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
 
 @DisplayName("Matching Candidate GET Should")
 class MatchingCandidateGetShould : MatchingCandidateTestCase() {
@@ -49,10 +50,12 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     @Test
     fun `return a default paginated matching candidate Jobs list`() {
       assertGetMatchingCandidateJobsIsOK(
-        parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode",
+        parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
         expectedResponse = expectedResponseListOf(
           abcConstructionApprentice.candidateMatchingItemListResponseBody,
-          amazonForkliftOperator.candidateMatchingItemListResponseBody,
+          builder().from(amazonForkliftOperator)
+            .withDistanceInMiles(20.0f)
+            .buildCandidateMatchingItemListResponseBody(),
           tescoWarehouseHandler.candidateMatchingItemListResponseBody,
         ),
       )
@@ -68,7 +71,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingItemListResponseBody,
             abcConstructionApprentice.candidateMatchingItemListResponseBody,
@@ -87,10 +90,12 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingItemListResponseBody,
-            amazonForkliftOperator.candidateMatchingItemListResponseBody,
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(20.0f)
+              .buildCandidateMatchingItemListResponseBody(),
             builder().from(abcConstructionApprentice).withExpressionOfInterestFrom(prisonNumber)
               .build().candidateMatchingItemListResponseBody,
           ),
@@ -104,12 +109,14 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return a custom paginated matching candidate Jobs list`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&page=1&size=1",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&page=1&size=1",
           expectedResponse = expectedResponseListOf(
             size = 1,
             page = 1,
             totalElements = 3,
-            amazonForkliftOperator.candidateMatchingItemListResponseBody,
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(20.0f)
+              .buildCandidateMatchingItemListResponseBody(),
           ),
         )
       }
@@ -121,9 +128,11 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs filtered by job sector`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&sectors=retail",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&sectors=retail",
           expectedResponse = expectedResponseListOf(
-            amazonForkliftOperator.candidateMatchingItemListResponseBody,
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(20.0f)
+              .buildCandidateMatchingItemListResponseBody(),
           ),
         )
       }
@@ -131,10 +140,12 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs filtered by various job sectors`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&sectors=retail,warehousing",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&sectors=retail,warehousing",
           expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingItemListResponseBody,
-            amazonForkliftOperator.candidateMatchingItemListResponseBody,
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(20.0f)
+              .buildCandidateMatchingItemListResponseBody(),
           ),
         )
       }
@@ -146,7 +157,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       @Test
       fun `return Jobs list sorted by job title, in ascending order`() {
         assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&sortBy=jobTitle&sortOrder=asc",
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&sortBy=jobTitle&sortOrder=asc",
           expectedJobTitlesSorted = listOf(
             "Apprentice plasterer",
             "Forklift operator",

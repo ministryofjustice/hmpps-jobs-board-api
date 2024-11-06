@@ -4,15 +4,20 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import org.slf4j.LoggerFactory
+import org.springframework.web.util.UriComponentsBuilder
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
 
 private const val OS_PLACES_WIREMOCK_PORT = 8093
 
 class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_WIREMOCK_PORT) {
-  fun stubGetAddressesForPostcode(postcode: String, xCoordinate: Double? = 401024.0, yCoordinate: Double? = 154112.0) {
+  private val log = LoggerFactory.getLogger(this::class.java)
+
+  fun stubGetAddressesForPostcode(postcode: Postcode) {
     val json = """{
       "header": {
-        "uri": "https://api.os.uk/search/places/v1/postcode?postcode=$postcode",
-        "query": "postcode=$postcode",
+        "uri": "https://api.os.uk/search/places/v1/postcode?postcode=${postcode.code}",
+        "query": "postcode=${postcode.code}",
         "offset": 0,
         "totalresults": 29,
         "format": "JSON",
@@ -33,10 +38,10 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
             "THOROUGHFARE_NAME": "THE STREET",
             "DEPENDENT_LOCALITY": "MORTIMER",
             "POST_TOWN": "READING",
-            "POSTCODE": "$postcode",
+            "POSTCODE": "${postcode.code}",
             "RPC": "1",
-            "X_COORDINATE": $xCoordinate,
-            "Y_COORDINATE": $yCoordinate,
+            "X_COORDINATE": ${postcode.xCoordinate},
+            "Y_COORDINATE": ${postcode.yCoordinate},
             "STATUS": "APPROVED",
             "LOGICAL_STATUS_CODE": "1",
             "CLASSIFICATION_CODE": "RD03",
@@ -70,7 +75,7 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
             "THOROUGHFARE_NAME": "A ROAD",
             "DEPENDENT_LOCALITY": "EASTERTON",
             "POST_TOWN": "READING",
-            "POSTCODE": "$postcode",
+            "POSTCODE": "${postcode.code}",
             "RPC": "1",
             "X_COORDINATE": 401017.0,
             "Y_COORDINATE": 154112.0,
@@ -107,7 +112,7 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
             "THOROUGHFARE_NAME": "PARK ROAD",
             "DEPENDENT_LOCALITY": "WHITLEY",
             "POST_TOWN": "READING",
-            "POSTCODE": "$postcode",
+            "POSTCODE": "${postcode.code}",
             "RPC": "1",
             "X_COORDINATE": 401003.0,
             "Y_COORDINATE": 154111.0,
@@ -138,8 +143,16 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
       ]}
     """.trimIndent()
 
+    val uri = UriComponentsBuilder
+      .fromPath("/postcode")
+      .queryParam("postcode", postcode.code)
+      .queryParam("key", apiKey)
+      .encode()
+      .build()
+      .toUriString()
+
     stubFor(
-      get(urlEqualTo("/postcode?postcode=$postcode&key=$apiKey"))
+      get(urlEqualTo(uri))
         .willReturn(
           WireMock.aResponse().withHeader(
             "Content-Type",
@@ -149,5 +162,7 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
           ).withStatus(200),
         ),
     )
+
+    log.info("Wiremock endpoint set to: $uri")
   }
 }
