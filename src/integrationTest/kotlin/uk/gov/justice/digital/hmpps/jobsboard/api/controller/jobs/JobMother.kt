@@ -43,8 +43,8 @@ object JobMother {
     offenceExclusions = "[\"CASE_BY_CASE\", \"OTHER\"]",
     offenceExclusionsDetails = null,
     howToApply = "How to applyHow to apply",
-    closingDate = null,
-    startDate = null,
+    closingDate = LocalDate.parse("2025-07-01"),
+    startDate = LocalDate.parse("2025-12-31"),
     isRollingOpportunity = false,
     isOnlyForPrisonLeavers = false,
     supportingDocumentationRequired = "[\"DISCLOSURE_LETTER\", \"OTHER\"]",
@@ -151,6 +151,10 @@ object JobMother {
   val Job.candidateMatchingItemListResponseBody: String get() = matchingCandidateJobItemListResponseBody(this)
   val Job.closingSoonListResponseBody: String get() = closingSoonListResponseBody(this)
 
+  fun Job.candidateMatchingItemListResponseBody(prisonNumber: String, distance: Double): String {
+    return matchingCandidateJobItemListResponseBody(this, prisonNumber, distance)
+  }
+
   private fun jobRequestBody(job: Job): String {
     return jobBody(job)
   }
@@ -213,7 +217,11 @@ object JobMother {
     """.trimIndent()
   }
 
-  private fun matchingCandidateJobItemListResponseBody(job: Job): String {
+  private fun matchingCandidateJobItemListResponseBody(
+    job: Job,
+    prisonNumber: String = VALID_PRISON_NUMBER,
+    distance: Double = 1.0,
+  ): String {
     return """
         {
           "id": "${job.id}",
@@ -221,9 +229,9 @@ object JobMother {
           "employerName": "${job.employer.name}",
           "sector": "${job.sector}",
           "postcode": "${job.postcode}",
-          "distance": 1.0,
+          "distance": $distance,
           "closingDate": ${job.closingDate?.toString()?.asJson()},
-          "hasExpressedInterest": ${job.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
+          "hasExpressedInterest": ${job.expressionsOfInterest.containsKey(prisonNumber)},
           "createdAt": "$jobCreationTime"
         }
     """.trimIndent()
