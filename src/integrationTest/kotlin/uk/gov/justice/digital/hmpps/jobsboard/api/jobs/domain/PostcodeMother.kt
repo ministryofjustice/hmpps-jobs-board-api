@@ -6,7 +6,9 @@ object PostcodeMother {
   val postcodeMap = listOf(
     postcode("LS12", 428877.0, 432882.0),
     postcode("NE157LR", 418688.0, 565599.0),
+    postcode("NE15 7LR", 418688.0, 565599.0),
     postcode("LS110AN", 429017.0, 431869.0),
+    postcode("LS11 0AN", 429017.0, 431869.0),
     postcode("M4 5BD", 385003.00, 398558.00),
     postcode("NW1 6XE", 527870.40, 182081.17),
     postcode("NG1 1AA", 457804.00, 340087.00),

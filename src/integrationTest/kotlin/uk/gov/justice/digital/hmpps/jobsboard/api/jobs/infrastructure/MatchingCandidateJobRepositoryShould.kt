@@ -40,8 +40,10 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   private val prisonNumber = "A1234BC"
   private val anotherPrisonNumber = "X9876YZ"
 
-  private val defaultPageable = PageRequest.of(0, 3)
-  private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "closingDate", "title"))
+  private val defaultSort = Sort.by(Sort.Direction.ASC, "closingDate", "title")
+  private val defaultPageable = PageRequest.of(0, 10, defaultSort)
+  private val closingSoonPageable = PageRequest.of(0, 3, defaultSort)
+  private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, defaultSort)
   private val today = LocalDate.now()
 
   @Nested
@@ -49,7 +51,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   inner class GivenNoJob {
     @Test
     fun `retrieve an empty list of matched jobs closing soon`() {
-      val results = matchingCandidateJobRepository.findJobsClosingSoon(prisonNumber, null, today, defaultPageable)
+      val results = matchingCandidateJobRepository.findJobsClosingSoon(prisonNumber, null, today, closingSoonPageable)
       assertThat(results).isEmpty()
     }
 
@@ -61,7 +63,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
     @Test
     fun `retrieve an empty list of jobs of interest`() {
-      val results = matchingCandidateJobRepository.findJobsOfInterest(prisonNumber, null, today, defaultPageable)
+      val results = matchingCandidateJobRepository.findJobsOfInterest(prisonNumber, null, today, paginatedSortByClosingDateAsc)
       assertThat(results).isEmpty()
     }
   }
@@ -73,7 +75,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
     @BeforeEach
     fun setUp() {
-      allJobs.toTypedArray().let { givenJobsHaveBeenCreated(*it) }
+      givenJobsHaveBeenCreated(*allJobs.toTypedArray())
     }
 
     @Test
@@ -104,6 +106,17 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
         val expectedJobs = listOf(tescoWarehouseHandler, abcConstructionApprentice)
         assertFindJobsClosingSoonIsExpected(
           currentDate = today,
+          expectedSize = expectedJobs.size,
+          expectedJobs = expectedJobs,
+        )
+      }
+
+      @Test
+      fun `retrieve matched jobs, without closed job(s)`() {
+        val expectedJobs = listOf(tescoWarehouseHandler, abcConstructionApprentice)
+        assertFindAllJobsIsExpected(
+          currentDate = today,
+          pageable = paginatedSortByClosingDateAsc,
           expectedSize = expectedJobs.size,
           expectedJobs = expectedJobs,
         )
@@ -229,7 +242,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       inner class AndReleaseArea {
         private lateinit var expectedJobs: List<Job>
         private lateinit var expectedResults: List<GetMatchingCandidateJobsResponse>
-        private val releaseArea = "LS110AN"
+        private val releaseArea = "LS11 0AN"
 
         @BeforeEach
         fun setUp() {
@@ -262,7 +275,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
             tescoWarehouseHandler.listResponse(true, 83.3f),
           )
           val sort = CALC_DISTANCE_EXPRESSION.let {
-            JpaSort.unsafe(Sort.Direction.ASC, it)
+            JpaSort.unsafe(Sort.Direction.ASC, it, "title")
           }
           val pageableSortByDistance = PageRequest.of(0, 20, sort)
           assertFindJobsOfInterestIsExpected(
@@ -328,7 +341,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       givenPrisonNumber: String = prisonNumber,
       sectors: List<String>? = null,
       currentDate: LocalDate = today,
-      pageable: Pageable = defaultPageable,
+      pageable: Pageable = closingSoonPageable,
       expectedSize: Int? = null,
       expectedJobs: List<Job>? = null,
     ) {
@@ -388,6 +401,26 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     private fun givenSomePostcodes() {
       PostcodeMother.postcodeMap.values.let {
         postcodesRepository.saveAllAndFlush(it)
+      }
+    }
+
+    private fun assertFindAllJobsIsExpected(
+      givenPrisonNumber: String = prisonNumber,
+      sectors: List<String>? = null,
+      location: String? = null,
+      currentDate: LocalDate = today,
+      pageable: Pageable = defaultPageable,
+      expectedSize: Int? = null,
+      expectedJobs: List<Job>? = null,
+    ) {
+      val results = matchingCandidateJobRepository.findAll(givenPrisonNumber, sectors, location, currentDate, pageable)
+
+      expectedSize?.let {
+        assertThat(results).hasSize(expectedSize)
+      }
+      expectedJobs?.let {
+        val expectedResults = expectedJobs.map { it.listResponse() }
+        assertThat(results.content).usingRecursiveComparison().ignoringFields("createdAt").isEqualTo(expectedResults)
       }
     }
   }
