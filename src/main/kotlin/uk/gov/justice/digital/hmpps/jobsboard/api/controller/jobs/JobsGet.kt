@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.data.domain.Page
@@ -262,10 +263,37 @@ class JobsGet(
     @Parameter(description = "The release area's postcode of the given prisoner")
     releaseArea: String? = null,
     @RequestParam(defaultValue = "closingDate")
-    @Parameter(description = "Defines the attribute used to sort the Job list")
+    @Parameter(
+      description = "Defines the attribute used to sort the Job list",
+      example = "closingDate",
+      examples = [
+        ExampleObject(
+          name = "jobAndEmployer",
+          value = "jobAndEmployer",
+          description = "Sort by Job Title, Employer Name",
+        ),
+        ExampleObject(
+          name = "location",
+          value = "location",
+          description = "Sort by job's location (distance to release area)",
+        ),
+        ExampleObject(
+          name = "closingDate",
+          value = "closingDate",
+          description = "Sort by job's closing date",
+        ),
+      ],
+    )
     sortBy: String?,
     @RequestParam(defaultValue = "asc")
-    @Parameter(description = "Defines the sorting order")
+    @Parameter(
+      description = "Defines the sorting order",
+      example = "asc",
+      examples = [
+        ExampleObject(name = "asc", value = "asc", description = "ascending order"),
+        ExampleObject(name = "desc", value = "desc", description = "descending order"),
+      ],
+    )
     sortOrder: String?,
     @RequestParam(defaultValue = "0")
     @Parameter(description = "Which page to be returned. 0-based index (Page 0 is first page)")
