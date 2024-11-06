@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.JpaSort
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsClosingSoonResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.CALC_DISTANCE_EXPRESSION
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
@@ -247,6 +249,21 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
           assertFindJobsOfInterestIsExpected(
             currentDate = today,
             releaseAreaPostcode = releaseArea,
+            expectedSize = expectedJobs.size,
+            expectedResults = expectedResults,
+          )
+        }
+
+        @Test
+        fun `retrieve jobs of interest with distance, sorted by distance`() {
+          val sort = CALC_DISTANCE_EXPRESSION.let {
+            JpaSort.unsafe(Sort.Direction.ASC, it)
+          }
+          val pageableSortByDistance = PageRequest.of(0, 20, sort)
+          assertFindJobsOfInterestIsExpected(
+            currentDate = today,
+            releaseAreaPostcode = releaseArea,
+            pageable = pageableSortByDistance,
             expectedSize = expectedJobs.size,
             expectedResults = expectedResults,
           )

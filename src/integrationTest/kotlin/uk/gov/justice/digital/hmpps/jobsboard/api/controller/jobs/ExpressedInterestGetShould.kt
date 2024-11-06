@@ -4,14 +4,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingItemListResponseBody
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 
 class ExpressedInterestGetShould : ExpressedInterestTestCase() {
@@ -45,12 +42,35 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
   @Nested
   @DisplayName("Given some jobs have been created")
   inner class GivenSomeJobs {
-    private val allJobs = listOf(tescoWarehouseHandler, amazonForkliftOperator, abcConstructionApprentice)
     private val anotherPrisonNumber = "X1234YZ"
+
+    private lateinit var allJobs: List<Job>
+    private lateinit var postcodes: Array<String>
+    private lateinit var distances: Map<EntityId, Double>
+    private lateinit var releaseAreaPostcode: String
+
+    private lateinit var tescoWarehouseHandler: Job
+    private lateinit var amazonForkliftOperator: Job
+    private lateinit var abcConstructionApprentice: Job
 
     @BeforeEach
     fun setUp() {
-      givenThreeJobsAreCreated()
+      postcodes = listOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { it.replace(" ", "") }.toTypedArray()
+      releaseAreaPostcode = postcodes.first()
+      with(JobMother) {
+        allJobs = listOf(tescoWarehouseHandler, amazonForkliftOperator, abcConstructionApprentice)
+          .mapIndexed { i, it -> builder().from(it).apply { this.postcode = postcodes[i] }.build() }
+      }
+      tescoWarehouseHandler = allJobs[0]
+      amazonForkliftOperator = allJobs[1]
+      abcConstructionApprentice = allJobs[2]
+      distances = mapOf(
+        tescoWarehouseHandler.id to 0.0,
+        amazonForkliftOperator.id to 161.2,
+        abcConstructionApprentice.id to 58.0,
+      )
+
+      givenJobsAreCreated(*allJobs.toTypedArray())
     }
 
     @Test
@@ -74,7 +94,7 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
 
       @Test
       fun `return jobs list of interest, for given prisoner`() {
-        val expectedResponses = expectedJobs.map { it.candidateMatchingItemListResponseBody }
+        val expectedResponses = expectedResponses(expectedJobs)
         assertGetExpressedInterestIsOk(
           prisonNumber = prisonNumber,
           releaseArea = releaseAreaPostcode,
@@ -97,7 +117,7 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
               tesco.name, amazon.name -> true
               else -> false
             }
-          }.map { it.candidateMatchingItemListResponseBody }
+          }.let { expectedResponses(it) }
 
           assertGetExpressedInterestIsOk(
             prisonNumber = prisonNumber,
@@ -112,8 +132,8 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
       inner class CustomPagination {
         @Test
         fun `return a custom paginated jobs list of interest`() {
-          val expectedResponses = expectedJobs.filter { it.employer.name.equals(abcConstruction.name) }
-            .map { it.candidateMatchingItemListResponseBody }
+          val expectedResponses = expectedJobs.filter { it.employer.name.equals(tesco.name) }
+            .let { expectedResponses(it) }
 
           assertGetExpressedInterestIsOk(
             parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&page=1&size=1",
@@ -187,6 +207,32 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
             expectedSortingOrder = "desc",
           )
         }
+
+        @Test
+        fun `return Jobs sorted by location, without releaseArea specified`() {
+          assertGetExpressedInterestIsOKAndSortedByLocation(
+            parameters = "prisonNumber=$prisonNumber&sortBy=location&sortOrder=asc",
+            expectedDistanceSortedList = List(3) { null },
+          )
+        }
+
+        @Test
+        fun `return Jobs sorted by location, in ascending order`() {
+          val expectedDistance = distances.values.sorted()
+          assertGetExpressedInterestIsOKAndSortedByLocation(
+            parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&sortBy=location&sortOrder=asc",
+            expectedDistanceSortedList = expectedDistance,
+          )
+        }
+
+        @Test
+        fun `return Jobs sorted by location, in descending order`() {
+          val expectedDistance = distances.values.sortedDescending()
+          assertGetExpressedInterestIsOKAndSortedByLocation(
+            parameters = "prisonNumber=$prisonNumber&releaseArea=$releaseAreaPostcode&sortBy=location&sortOrder=desc",
+            expectedDistanceSortedList = expectedDistance,
+          )
+        }
       }
     }
 
@@ -218,8 +264,8 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
 
       @Test
       fun `return jobs list of interest, excluding job of interest from another prisoner`() {
-        val expectedResponses = listOf(expectedTescoWarehouseHandler, expectedAbcConstructionApprentice)
-          .map { it.candidateMatchingItemListResponseBody }
+        val expectedResponses = expectedResponses(expectedTescoWarehouseHandler, expectedAbcConstructionApprentice)
+
         assertGetExpressedInterestIsOk(
           prisonNumber = prisonNumber,
           releaseArea = releaseAreaPostcode,
@@ -231,14 +277,24 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
       fun `return jobs list of interest, including job archived for another prisoner`() {
         archiveJobs(anotherPrisonNumber, abcConstructionApprentice)
 
-        val expectedResponses = listOf(expectedTescoWarehouseHandler, expectedAbcConstructionApprentice)
-          .map { it.candidateMatchingItemListResponseBody }
+        val expectedResponses = expectedResponses(expectedTescoWarehouseHandler, expectedAbcConstructionApprentice)
 
         assertGetExpressedInterestIsOk(
           prisonNumber = prisonNumber,
           releaseArea = releaseAreaPostcode,
           expectedResponses = expectedResponseListOf(*expectedResponses.toTypedArray()),
         )
+      }
+    }
+
+    private fun expectedResponses(jobs: List<Job>) =
+      expectedResponses(prisonNumber, *jobs.toTypedArray())
+
+    private fun expectedResponses(vararg jobs: Job): List<String> = expectedResponses(prisonNumber, *jobs)
+
+    private fun expectedResponses(prisonNumber: String, vararg jobs: Job): List<String> {
+      return jobs.map {
+        it.candidateMatchingItemListResponseBody(prisonNumber, distances[it.id]!!)
       }
     }
   }

@@ -49,6 +49,19 @@ abstract class ExpressedInterestTestCase : JobsTestCase() {
     )
   }
 
+  protected fun assertGetExpressedInterestIsOKAndSortedByLocation(
+    parameters: String? = null,
+    expectedDistanceSortedList: List<Double?>,
+  ) {
+    var url = EXPRESSED_INTEREST_ENDPOINT
+    parameters?.let { url = "$url?$it" }
+    assertResponse(
+      url = url,
+      expectedStatus = OK,
+      expectedDistanceSortedList = expectedDistanceSortedList,
+    )
+  }
+
   protected fun assertGetExpressedInterestReturnsBadRequestError(
     expectedResponse: String? = null,
   ) {

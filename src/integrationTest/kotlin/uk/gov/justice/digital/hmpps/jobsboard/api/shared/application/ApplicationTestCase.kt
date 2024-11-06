@@ -46,6 +46,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodeMother.postcodeMap
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.OSPlacesMockServer
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
@@ -156,6 +157,9 @@ abstract class ApplicationTestCase {
     osPlacesMockServer.stubGetAddressesForPostcode("LS12", 1100.0, 1100.0)
     osPlacesMockServer.stubGetAddressesForPostcode("NE157LR", 1100.0, 1100.0)
     osPlacesMockServer.stubGetAddressesForPostcode(releaseAreaPostcode, 0.0, 0.0)
+    arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
+      osPlacesMockServer.stubGetAddressesForPostcode(it.code.replace(" ", ""), it.xCoordinate, it.yCoordinate)
+    }
 
     whenever(timeProvider.now()).thenCallRealMethod()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCurrentTime))
@@ -297,6 +301,7 @@ abstract class ApplicationTestCase {
     expectedEmployerNameSortedList: List<String>? = null,
     expectedLastNameSortedList: List<String?>? = null,
     expectedFirstNameSortedList: List<String?>? = null,
+    expectedDistanceSortedList: List<Double?>? = null,
   ) {
     val resultActions = mockMvc.get(url) {
       contentType = APPLICATION_JSON
@@ -376,7 +381,7 @@ abstract class ApplicationTestCase {
           }
         }
 
-        val assertFieldsAreSorted: (String, List<String?>?) -> Unit = { fieldName, expectedList ->
+        val assertFieldsAreSorted: (String, List<Comparable<*>?>?) -> Unit = { fieldName, expectedList ->
           expectedList?.let { sortedList ->
             sortedList.forEachIndexed { index, expectedValue ->
               jsonPath("$.content[$index].$fieldName", equalTo(expectedValue))
@@ -387,6 +392,7 @@ abstract class ApplicationTestCase {
           "employerName" to expectedEmployerNameSortedList,
           "firstName" to expectedFirstNameSortedList,
           "lastName" to expectedLastNameSortedList,
+          "distance" to expectedDistanceSortedList,
         ).forEach { assertFieldsAreSorted(it.key, it.value) }
       }
     }
