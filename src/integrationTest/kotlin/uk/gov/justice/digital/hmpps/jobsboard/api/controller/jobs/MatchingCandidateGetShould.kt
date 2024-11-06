@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
-import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingItemListResponseBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingListItemResponseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
 
@@ -52,11 +52,13 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       assertGetMatchingCandidateJobsIsOK(
         parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
         expectedResponse = expectedResponseListOf(
-          abcConstructionApprentice.candidateMatchingItemListResponseBody,
+          builder().from(abcConstructionApprentice)
+            .withDistanceInMiles(22.0f)
+            .buildCandidateMatchingListItemResponseBody(),
           builder().from(amazonForkliftOperator)
             .withDistanceInMiles(20.0f)
-            .buildCandidateMatchingItemListResponseBody(),
-          tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+            .buildCandidateMatchingListItemResponseBody(),
+          tescoWarehouseHandler.candidateMatchingListItemResponseBody,
         ),
       )
     }
@@ -73,8 +75,10 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertGetMatchingCandidateJobsIsOK(
           parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
           expectedResponse = expectedResponseListOf(
-            tescoWarehouseHandler.candidateMatchingItemListResponseBody,
-            abcConstructionApprentice.candidateMatchingItemListResponseBody,
+            tescoWarehouseHandler.candidateMatchingListItemResponseBody,
+            builder().from(abcConstructionApprentice)
+              .withDistanceInMiles(22.0f)
+              .buildCandidateMatchingListItemResponseBody(),
           ),
         )
       }
@@ -92,12 +96,15 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertGetMatchingCandidateJobsIsOK(
           parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE",
           expectedResponse = expectedResponseListOf(
-            tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+            tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             builder().from(amazonForkliftOperator)
               .withDistanceInMiles(20.0f)
-              .buildCandidateMatchingItemListResponseBody(),
-            builder().from(abcConstructionApprentice).withExpressionOfInterestFrom(prisonNumber)
-              .build().candidateMatchingItemListResponseBody,
+              .buildCandidateMatchingListItemResponseBody(),
+            builder()
+              .from(abcConstructionApprentice)
+              .withDistanceInMiles(22.0f)
+              .withExpressionOfInterestFrom(prisonNumber)
+              .buildCandidateMatchingListItemResponseBody(),
           ),
         )
       }
@@ -116,7 +123,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             totalElements = 3,
             builder().from(amazonForkliftOperator)
               .withDistanceInMiles(20.0f)
-              .buildCandidateMatchingItemListResponseBody(),
+              .buildCandidateMatchingListItemResponseBody(),
           ),
         )
       }
@@ -132,7 +139,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
           expectedResponse = expectedResponseListOf(
             builder().from(amazonForkliftOperator)
               .withDistanceInMiles(20.0f)
-              .buildCandidateMatchingItemListResponseBody(),
+              .buildCandidateMatchingListItemResponseBody(),
           ),
         )
       }
@@ -142,10 +149,22 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         assertGetMatchingCandidateJobsIsOK(
           parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&sectors=retail,warehousing",
           expectedResponse = expectedResponseListOf(
-            tescoWarehouseHandler.candidateMatchingItemListResponseBody,
+            tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             builder().from(amazonForkliftOperator)
               .withDistanceInMiles(20.0f)
-              .buildCandidateMatchingItemListResponseBody(),
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+
+      @Test
+      fun `return Jobs filtered by search radius`() {
+        val searchRadiusInMiles = 10
+
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=$searchRadiusInMiles",
+          expectedResponse = expectedResponseListOf(
+            tescoWarehouseHandler.candidateMatchingListItemResponseBody,
           ),
         )
       }

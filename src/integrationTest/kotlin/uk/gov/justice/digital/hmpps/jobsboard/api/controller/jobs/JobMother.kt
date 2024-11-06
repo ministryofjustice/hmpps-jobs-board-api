@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Com
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import java.time.Instant
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID.randomUUID
 
 object JobMother {
 
@@ -116,7 +116,7 @@ object JobMother {
     sourcePrimary = "DWP",
     sourceSecondary = null,
     charityName = null,
-    postcode = "NE157LR",
+    postcode = "GU3 3DU",
     salaryFrom = 99f,
     salaryTo = null,
     salaryPeriod = "PER_DAY",
@@ -148,7 +148,7 @@ object JobMother {
   val Job.requestBody: String get() = jobRequestBody(this)
   val Job.responseBody: String get() = jobResponseBody(this)
   val Job.itemListResponseBody: String get() = jobItemListResponseBody(this)
-  val Job.candidateMatchingItemListResponseBody: String get() = matchingCandidateJobItemListResponseBody(this)
+  val Job.candidateMatchingListItemResponseBody: String get() = matchingCandidateJobItemListResponseBody(this)
   val Job.closingSoonListResponseBody: String get() = closingSoonListResponseBody(this)
 
   fun Job.candidateMatchingItemListResponseBody(prisonNumber: String, distance: Double): String {
@@ -252,7 +252,7 @@ object JobMother {
 }
 
 class JobBuilder {
-  var id: EntityId = EntityId(UUID.randomUUID().toString())
+  var id: EntityId = EntityId(randomUUID().toString())
   var title: String = "Service Colleague"
   var sector: String = "RETAIL"
   var industrySector: String = "RETAIL"
@@ -284,7 +284,7 @@ class JobBuilder {
   var supportingDocumentationDetails: String? = null
   var expressionsOfInterest: MutableMap<String, ExpressionOfInterest> = mutableMapOf()
   var employer: Employer = Employer(
-    id = EntityId(UUID.randomUUID().toString()),
+    id = EntityId(randomUUID().toString()),
     name = "ASDA",
     description = "Asda and often styled as ASDA, is a British supermarket and petrol station chain. Its headquarters are in Leeds, England.",
     sector = "RETAIL",
@@ -401,7 +401,7 @@ class JobBuilder {
     )
   }
 
-  fun buildCandidateMatchingItemListResponseBody(): String {
+  fun buildCandidateMatchingListItemResponseBody(): String {
     return """
       {
         "id": "${this.id}",

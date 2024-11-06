@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
@@ -11,10 +12,15 @@ class OsPlacesApiWebClient(
   private val osPlacesWebClient: WebClient,
   private val osPlacesAPIProperties: OsPlacesApiProperties,
 ) : OsPlacesApiClient {
+  private val log = LoggerFactory.getLogger(this::class.java)
+
   override fun getAddressesFor(postcode: String): OsPlacesApiDPA {
+    val uri = "/postcode?postcode=$postcode&key=${osPlacesAPIProperties.key}"
+    log.debug("Calling operation for $uri")
+
     val searchResult = osPlacesWebClient
       .get()
-      .uri("/postcode?postcode=$postcode&key=${osPlacesAPIProperties.key}")
+      .uri(uri)
       .accept(APPLICATION_JSON)
       .retrieve()
       .bodyToMono(OsPlacesApiResponse::class.java)
