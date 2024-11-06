@@ -41,7 +41,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   private val anotherPrisonNumber = "X9876YZ"
 
   private val defaultPageable = PageRequest.of(0, 3)
-  private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "closingDate"))
+  private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "closingDate", "title"))
   private val today = LocalDate.now()
 
   @Nested
@@ -256,6 +256,11 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
         @Test
         fun `retrieve jobs of interest with distance, sorted by distance`() {
+          expectedResults = listOf(
+            amazonForkliftOperator.listResponse(true, 0.6f),
+            abcConstructionApprentice.listResponse(true, 83.3f),
+            tescoWarehouseHandler.listResponse(true, 83.3f),
+          )
           val sort = CALC_DISTANCE_EXPRESSION.let {
             JpaSort.unsafe(Sort.Direction.ASC, it)
           }
