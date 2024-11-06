@@ -229,7 +229,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       inner class AndReleaseArea {
         private lateinit var expectedJobs: List<Job>
         private lateinit var expectedResults: List<GetMatchingCandidateJobsResponse>
-        private val releaseArea = "LS110AN"
+        private val releaseArea = "LS11 0AN"
 
         @BeforeEach
         fun setUp() {

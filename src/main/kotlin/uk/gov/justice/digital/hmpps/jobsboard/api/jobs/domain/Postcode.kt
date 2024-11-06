@@ -12,7 +12,7 @@ data class Postcode(
   @Id
   var id: EntityId,
 
-  @Column(name = "code", length = 7, nullable = false)
+  @Column(name = "code", length = 8, nullable = false)
   var code: String,
 
   @Column(name = "x_coordinate", nullable = true)
