@@ -44,7 +44,10 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   private val defaultPageable = PageRequest.of(0, 10, defaultSort)
   private val closingSoonPageable = PageRequest.of(0, 3, defaultSort)
   private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, defaultSort)
-  private val today = LocalDate.now()
+  private val sortByDistanceAndJobTitle =
+    CALC_DISTANCE_EXPRESSION.let { JpaSort.unsafe(Sort.Direction.ASC, it, "title") }
+  private val paginatedSortByDistanceAsc = PageRequest.of(0, 20, sortByDistanceAndJobTitle)
+  private val today = LocalDate.of(2024, 10, 1)
 
   @Nested
   @DisplayName("Given no job has been created")
@@ -64,6 +67,12 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     @Test
     fun `retrieve an empty list of jobs of interest`() {
       val results = matchingCandidateJobRepository.findJobsOfInterest(prisonNumber, null, today, paginatedSortByClosingDateAsc)
+      assertThat(results).isEmpty()
+    }
+
+    @Test
+    fun `retrieve an empty list of archived jobs`() {
+      val results = matchingCandidateJobRepository.findArchivedJobs(prisonNumber, null, today, paginatedSortByClosingDateAsc)
       assertThat(results).isEmpty()
     }
   }
@@ -94,6 +103,11 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     @Test
     fun `retrieve empty job list of interest`() {
       assertFindJobsOfInterestIsExpected(expectedSize = 0)
+    }
+
+    @Test
+    fun `retrieve empty list of archived jobs`() {
+      assertFindArchivedJobsIsExpected(expectedSize = 0)
     }
 
     @Nested
@@ -139,6 +153,16 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
           expectedJobs = expectedJobs,
         )
       }
+
+      @Test
+      fun `retrieve archived jobs, for the given prisoner`() {
+        val expectedResults = listOf(tescoWarehouseHandler).map { it.listResponse() }
+
+        assertFindArchivedJobsIsExpected(
+          expectedSize = expectedResults.size,
+          expectedResults = expectedResults,
+        )
+      }
     }
 
     @Nested
@@ -156,6 +180,86 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
           expectedSize = expectedJobs.size,
           expectedJobs = expectedJobs,
         )
+      }
+    }
+
+    @Nested
+    @DisplayName("And some archived jobs, for the given prisoner")
+    inner class AndSomeArchivedJobs {
+      @BeforeEach
+      fun setup() {
+        archiveJob(prisonNumber, *allJobs.toTypedArray())
+      }
+
+      @Nested
+      @DisplayName("And an archived job has been closed")
+      inner class AndAJobClosed {
+        private lateinit var today: LocalDate
+        private lateinit var expectedJobs: List<Job>
+
+        @BeforeEach
+        fun setUp() {
+          expectedJobs = listOf(tescoWarehouseHandler, abcConstructionApprentice)
+          today = amazonForkliftOperator.closingDate!!.plusDays(1)
+        }
+
+        @Test
+        fun `retrieve archived jobs, without closed job(s)`() {
+          val expectedResults = expectedJobs.map { it.listResponse() }
+          assertFindArchivedJobsIsExpected(
+            currentDate = today,
+            expectedSize = expectedJobs.size,
+            expectedResults = expectedResults,
+          )
+        }
+      }
+
+      @Nested
+      @DisplayName("And release area has been specified, for the given prisoner")
+      inner class AndReleaseArea {
+        private lateinit var expectedJobs: List<Job>
+        private lateinit var expectedResults: List<GetMatchingCandidateJobsResponse>
+        private val releaseArea = "LS11 0AN"
+
+        @BeforeEach
+        fun setUp() {
+          postcodesRepository.deleteAll()
+          givenSomePostcodes()
+
+          expectedJobs = allJobs
+          expectedResults = listOf(
+            amazonForkliftOperator.listResponse(distance = 0.6f),
+            tescoWarehouseHandler.listResponse(distance = 83.3f),
+            abcConstructionApprentice.listResponse(distance = 83.3f),
+          )
+        }
+
+        @Test
+        fun `retrieve archived jobs of interest with distance`() {
+          assertFindArchivedJobsIsExpected(
+            currentDate = today,
+            releaseAreaPostcode = releaseArea,
+            expectedSize = expectedJobs.size,
+            expectedResults = expectedResults,
+          )
+        }
+
+        @Test
+        fun `retrieve archived jobs with distance, sorted by distance`() {
+          expectedResults = listOf(
+            amazonForkliftOperator.listResponse(distance = 0.6f),
+            abcConstructionApprentice.listResponse(distance = 83.3f),
+            tescoWarehouseHandler.listResponse(distance = 83.3f),
+          )
+
+          assertFindArchivedJobsIsExpected(
+            currentDate = today,
+            releaseAreaPostcode = releaseArea,
+            pageable = paginatedSortByDistanceAsc,
+            expectedSize = expectedJobs.size,
+            expectedResults = expectedResults,
+          )
+        }
       }
     }
 
@@ -274,14 +378,11 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
             abcConstructionApprentice.listResponse(true, 83.3f),
             tescoWarehouseHandler.listResponse(true, 83.3f),
           )
-          val sort = CALC_DISTANCE_EXPRESSION.let {
-            JpaSort.unsafe(Sort.Direction.ASC, it, "title")
-          }
-          val pageableSortByDistance = PageRequest.of(0, 20, sort)
+
           assertFindJobsOfInterestIsExpected(
             currentDate = today,
             releaseAreaPostcode = releaseArea,
-            pageable = pageableSortByDistance,
+            pageable = paginatedSortByDistanceAsc,
             expectedSize = expectedJobs.size,
             expectedResults = expectedResults,
           )
@@ -372,8 +473,10 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       }
     }
 
-    private fun archiveJob(prisonNumber: String, job: Job) = job.archivedBy(prisonNumber)
-      .also { archivedRepository.saveAndFlush(it) }
+    private fun archiveJob(prisonNumber: String, vararg jobs: Job) = jobs.forEach { job ->
+      job.archivedBy(prisonNumber)
+        .also { archivedRepository.saveAndFlush(it) }
+    }
 
     private fun expressInterestToJob(prisonNumber: String, vararg jobs: Job) = jobs.forEach { job ->
       job.registerExpressionOfInterest(prisonNumber)
@@ -420,6 +523,24 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       }
       expectedJobs?.let {
         val expectedResults = expectedJobs.map { it.listResponse() }
+        assertThat(results.content).usingRecursiveComparison().ignoringFields("createdAt").isEqualTo(expectedResults)
+      }
+    }
+
+    private fun assertFindArchivedJobsIsExpected(
+      givenPrisonNumber: String = prisonNumber,
+      releaseAreaPostcode: String? = null,
+      currentDate: LocalDate = today,
+      pageable: Pageable = paginatedSortByClosingDateAsc,
+      expectedSize: Int? = null,
+      expectedResults: List<GetMatchingCandidateJobsResponse>? = null,
+    ) {
+      val results =
+        matchingCandidateJobRepository.findArchivedJobs(givenPrisonNumber, releaseAreaPostcode, currentDate, pageable)
+      expectedSize?.let {
+        assertThat(results).hasSize(expectedSize)
+      }
+      expectedResults?.let {
         assertThat(results.content).usingRecursiveComparison().ignoringFields("createdAt").isEqualTo(expectedResults)
       }
     }
