@@ -262,7 +262,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
             tescoWarehouseHandler.listResponse(true, 83.3f),
           )
           val sort = CALC_DISTANCE_EXPRESSION.let {
-            JpaSort.unsafe(Sort.Direction.ASC, it)
+            JpaSort.unsafe(Sort.Direction.ASC, it, "title")
           }
           val pageableSortByDistance = PageRequest.of(0, 20, sort)
           assertFindJobsOfInterestIsExpected(
