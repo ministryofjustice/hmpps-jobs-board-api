@@ -22,7 +22,7 @@ class MatchingCandidateJobRetriever(
     prisonNumber: String,
     sectors: List<String>?,
     releaseArea: String?,
-    searchRadius: Int,
+    searchRadius: Int?,
     pageable: Pageable,
   ): Page<GetMatchingCandidateJobsResponse> {
     releaseArea?.let { postcodeLocationService.save(it) }

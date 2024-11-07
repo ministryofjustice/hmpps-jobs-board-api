@@ -13,6 +13,13 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother
 
 @DisplayName("Matching Candidate GET Should")
 class MatchingCandidateGetShould : MatchingCandidateTestCase() {
+  private val requestParams = StringBuilder()
+
+  @BeforeEach
+  fun setUp() {
+    requestParams.clear()
+    requestParams.append("prisonNumber=$prisonNumber")
+  }
 
   @Nested
   @DisplayName("Given Job Board has no jobs")
@@ -20,7 +27,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     @Test
     fun `return a default paginated empty matching candidate Jobs list`() {
       assertGetMatchingCandidateJobsIsOK(
-        parameters = "prisonNumber=$prisonNumber",
+        parameters = requestParams.toString(),
         expectedResponse = expectedResponseListOf(),
       )
     }
@@ -33,199 +40,224 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     fun beforeEach() = givenThreeJobsAreCreated()
 
     @Test
-    fun `return a default paginated matching candidate Jobs list`() {
+    fun `return Jobs list without calculating distance`() {
       assertGetMatchingCandidateJobsIsOK(
-        parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50",
+        parameters = requestParams.toString(),
         expectedResponse = expectedResponseListOf(
           builder().from(abcConstructionApprentice)
-            .withDistanceInMiles(22.0f)
+            .withDistanceInMiles(null)
             .buildCandidateMatchingListItemResponseBody(),
           builder().from(amazonForkliftOperator)
-            .withDistanceInMiles(20.0f)
+            .withDistanceInMiles(null)
             .buildCandidateMatchingListItemResponseBody(),
-          tescoWarehouseHandler.candidateMatchingListItemResponseBody,
+          builder().from(tescoWarehouseHandler)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
         ),
       )
     }
 
     @Nested
-    @DisplayName("And optional request parameters have not been provided")
-    inner class AndMissingOptionalRequestParameters {
-      @Test
-      fun `return Jobs list without considering distance when release area is not provided`() {
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&searchRadius=50",
-          expectedResponse = expectedResponseListOf(
-            builder().from(abcConstructionApprentice)
-              .withDistanceInMiles(null)
-              .buildCandidateMatchingListItemResponseBody(),
-            builder().from(amazonForkliftOperator)
-              .withDistanceInMiles(null)
-              .buildCandidateMatchingListItemResponseBody(),
-            builder().from(tescoWarehouseHandler)
-              .withDistanceInMiles(null)
-              .buildCandidateMatchingListItemResponseBody(),
-          ),
-        )
+    @DisplayName("And a release area postcode has been provided")
+    inner class AndReleaseAreaHasBeenProvided {
+      @BeforeEach
+      fun setUp() {
+        requestParams.append("&releaseArea=$RELEASE_AREA_POSTCODE")
       }
-    }
 
-    @Nested
-    @DisplayName("And jobs have been archived for the candidate")
-    inner class AndJobsHasBeenArchived {
       @Test
-      fun `return Jobs that have not been archived for the candidate`() {
-        assertAddArchived(amazonForkliftOperator.id.id, prisonNumber)
-        assertAddArchived(amazonForkliftOperator.id.id, anotherPrisonNumber)
-        assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
-
+      fun `return Jobs list with calculated distance`() {
         assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50",
+          parameters = requestParams.toString(),
           expectedResponse = expectedResponseListOf(
-            tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             builder().from(abcConstructionApprentice)
               .withDistanceInMiles(22.0f)
               .buildCandidateMatchingListItemResponseBody(),
-          ),
-        )
-      }
-    }
-
-    @Nested
-    @DisplayName("And candidates have expressed interest")
-    inner class AndCandidatesExpressed {
-      @Test
-      fun `return Jobs tagged with candidate's interest`() {
-        assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
-        assertAddExpressionOfInterest(abcConstructionApprentice.id.id, anotherPrisonNumber)
-        assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
-
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50",
-          expectedResponse = expectedResponseListOf(
-            tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             builder().from(amazonForkliftOperator)
               .withDistanceInMiles(20.0f)
               .buildCandidateMatchingListItemResponseBody(),
-            builder()
-              .from(abcConstructionApprentice)
-              .withDistanceInMiles(22.0f)
-              .withExpressionOfInterestFrom(prisonNumber)
-              .buildCandidateMatchingListItemResponseBody(),
-          ),
-        )
-      }
-    }
-
-    @Nested
-    @DisplayName("And a custom pagination has been set")
-    inner class CustomPagination {
-      @Test
-      fun `return a custom paginated matching candidate Jobs list`() {
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&page=1&size=1",
-          expectedResponse = expectedResponseListOf(
-            size = 1,
-            page = 1,
-            totalElements = 3,
-            builder().from(amazonForkliftOperator)
-              .withDistanceInMiles(20.0f)
-              .buildCandidateMatchingListItemResponseBody(),
-          ),
-        )
-      }
-    }
-
-    @Nested
-    @DisplayName("And a custom filter has been set")
-    inner class CustomFilter {
-      @Test
-      fun `return Jobs filtered by job sector`() {
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sectors=retail",
-          expectedResponse = expectedResponseListOf(
-            builder().from(amazonForkliftOperator)
-              .withDistanceInMiles(20.0f)
-              .buildCandidateMatchingListItemResponseBody(),
-          ),
-        )
-      }
-
-      @Test
-      fun `return Jobs filtered by various job sectors`() {
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sectors=retail,warehousing",
-          expectedResponse = expectedResponseListOf(
-            tescoWarehouseHandler.candidateMatchingListItemResponseBody,
-            builder().from(amazonForkliftOperator)
-              .withDistanceInMiles(20.0f)
-              .buildCandidateMatchingListItemResponseBody(),
-          ),
-        )
-      }
-
-      @Test
-      fun `return Jobs filtered by search radius`() {
-        val searchRadiusInMiles = 10
-
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=$searchRadiusInMiles",
-          expectedResponse = expectedResponseListOf(
             tescoWarehouseHandler.candidateMatchingListItemResponseBody,
           ),
         )
       }
-    }
 
-    @Nested
-    @DisplayName("And a custom sorting order has been set")
-    inner class AndOrderHasBeenSet {
-      @Test
-      fun `return Jobs list sorted by job title, in ascending order`() {
-        assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=jobTitle&sortOrder=asc",
-          expectedJobTitlesSorted = listOf(
-            "Apprentice plasterer",
-            "Forklift operator",
-            "Warehouse handler",
-          ),
-        )
-      }
+      @Nested
+      @DisplayName("And a search radius has been provided")
+      inner class AndSearchRadiusHasBeenProvided {
+        @BeforeEach
+        fun setUp() {
+          val searchRadiusInMiles = 20
+          requestParams.append("&searchRadius=$searchRadiusInMiles")
+        }
 
-      @Test
-      fun `return Jobs sorted by job title, in descending order`() {
-        assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=jobTitle&sortOrder=desc",
-          expectedJobTitlesSorted = listOf(
-            "Warehouse handler",
-            "Forklift operator",
-            "Apprentice plasterer",
-          ),
-        )
-      }
+        @Test
+        fun `return Jobs filtered by search radius`() {
+          assertGetMatchingCandidateJobsIsOK(
+            parameters = requestParams.toString(),
+            expectedResponse = expectedResponseListOf(
+              builder().from(amazonForkliftOperator)
+                .withDistanceInMiles(20.0f)
+                .buildCandidateMatchingListItemResponseBody(),
+              tescoWarehouseHandler.candidateMatchingListItemResponseBody,
+            ),
+          )
+        }
 
-      @Test
-      fun `return Jobs sorted by closing date, in ascending order, by default`() {
-        assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=closingDate",
-          expectedSortingOrder = "asc",
-        )
-      }
+        @Nested
+        @DisplayName("And jobs have been archived for the candidate")
+        inner class AndJobsHasBeenArchived {
+          @Test
+          fun `return Jobs that have not been archived for the candidate`() {
+            assertAddArchived(amazonForkliftOperator.id.id, prisonNumber)
+            assertAddArchived(amazonForkliftOperator.id.id, anotherPrisonNumber)
+            assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
 
-      @Test
-      fun `return Jobs sorted by closing date, in ascending order`() {
-        assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=closingDate&sortOrder=asc",
-          expectedSortingOrder = "asc",
-        )
-      }
+            assertGetMatchingCandidateJobsIsOK(
+              parameters = requestParams.toString(),
+              expectedResponse = expectedResponseListOf(
+                tescoWarehouseHandler.candidateMatchingListItemResponseBody,
+              ),
+            )
+          }
+        }
 
-      @Test
-      fun `return Jobs sorted by closing date, in descending order`() {
-        assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
-          parameters = "prisonNumber=$prisonNumber&releaseArea=$RELEASE_AREA_POSTCODE&searchRadius=50&sortBy=closingDate&sortOrder=desc",
-          expectedSortingOrder = "desc",
-        )
+        @Nested
+        @DisplayName("And candidates have expressed interest")
+        inner class AndCandidatesExpressed {
+          @Test
+          fun `return Jobs tagged with candidate's interest`() {
+            assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
+            assertAddExpressionOfInterest(abcConstructionApprentice.id.id, anotherPrisonNumber)
+            assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
+
+            assertGetMatchingCandidateJobsIsOK(
+              parameters = requestParams.toString(),
+              expectedResponse = expectedResponseListOf(
+                builder().from(amazonForkliftOperator)
+                  .withDistanceInMiles(20.0f)
+                  .buildCandidateMatchingListItemResponseBody(),
+                tescoWarehouseHandler.candidateMatchingListItemResponseBody,
+              ),
+            )
+          }
+        }
+
+        @Nested
+        @DisplayName("And a custom pagination has been set")
+        inner class CustomPagination {
+          @BeforeEach
+          fun setUp() {
+            requestParams.append("&page=1&size=1")
+          }
+
+          @Test
+          fun `return a custom paginated matching candidate Jobs list`() {
+            assertGetMatchingCandidateJobsIsOK(
+              parameters = requestParams.toString(),
+              expectedResponse = expectedResponseListOf(
+                size = 1,
+                page = 1,
+                totalElements = 2,
+                builder().from(tescoWarehouseHandler)
+                  .withDistanceInMiles(1.0f)
+                  .buildCandidateMatchingListItemResponseBody(),
+              ),
+            )
+          }
+        }
+
+        @Nested
+        @DisplayName("And a custom filter has been set")
+        inner class CustomFilter {
+          @Test
+          fun `return Jobs filtered by job sector`() {
+            requestParams.append("&sectors=retail")
+
+            assertGetMatchingCandidateJobsIsOK(
+              parameters = requestParams.toString(),
+              expectedResponse = expectedResponseListOf(
+                builder().from(amazonForkliftOperator)
+                  .withDistanceInMiles(20.0f)
+                  .buildCandidateMatchingListItemResponseBody(),
+              ),
+            )
+          }
+
+          @Test
+          fun `return Jobs filtered by various job sectors`() {
+            requestParams.append("&sectors=retail,warehousing")
+
+            assertGetMatchingCandidateJobsIsOK(
+              parameters = requestParams.toString(),
+              expectedResponse = expectedResponseListOf(
+                tescoWarehouseHandler.candidateMatchingListItemResponseBody,
+                builder().from(amazonForkliftOperator)
+                  .withDistanceInMiles(20.0f)
+                  .buildCandidateMatchingListItemResponseBody(),
+              ),
+            )
+          }
+        }
+
+        @Nested
+        @DisplayName("And a custom sorting order has been set")
+        inner class AndOrderHasBeenSet {
+          @Test
+          fun `return Jobs list sorted by job title, in ascending order`() {
+            requestParams.append("&sortBy=jobTitle&sortOrder=asc")
+
+            assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
+              parameters = requestParams.toString(),
+              expectedJobTitlesSorted = listOf(
+                "Forklift operator",
+                "Warehouse handler",
+              ),
+            )
+          }
+
+          @Test
+          fun `return Jobs sorted by job title, in descending order`() {
+            requestParams.append("&sortBy=jobTitle&sortOrder=desc")
+
+            assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
+              parameters = requestParams.toString(),
+              expectedJobTitlesSorted = listOf(
+                "Warehouse handler",
+                "Forklift operator",
+              ),
+            )
+          }
+
+          @Test
+          fun `return Jobs sorted by closing date, in ascending order, by default`() {
+            requestParams.append("&sortBy=closingDate")
+
+            assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
+              parameters = requestParams.toString(),
+              expectedSortingOrder = "asc",
+            )
+          }
+
+          @Test
+          fun `return Jobs sorted by closing date, in ascending order`() {
+            requestParams.append("&sortBy=closingDate&sortOrder=asc")
+
+            assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
+              parameters = requestParams.toString(),
+              expectedSortingOrder = "asc",
+            )
+          }
+
+          @Test
+          fun `return Jobs sorted by closing date, in descending order`() {
+            requestParams.append("&sortBy=closingDate&sortOrder=desc")
+
+            assertGetMatchingCandidateJobsIsOKAndSortedByClosingDate(
+              parameters = requestParams.toString(),
+              expectedSortingOrder = "desc",
+            )
+          }
+        }
       }
     }
   }
@@ -244,7 +276,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             "developerMessage": "Required request parameter 'prisonNumber' for method parameter type String is not present",
             "moreInfo": null
         }
-      """.trimIndent(),
+        """.trimIndent(),
       )
     }
   }
