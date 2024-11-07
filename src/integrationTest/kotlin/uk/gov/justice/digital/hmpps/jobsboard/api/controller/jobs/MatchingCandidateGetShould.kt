@@ -14,21 +14,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother
 @DisplayName("Matching Candidate GET Should")
 class MatchingCandidateGetShould : MatchingCandidateTestCase() {
 
-  @Test
-  fun `return BAD REQUEST error when prison number is missing`() {
-    assertGetMatchingCandidateJobsReturnsBadRequestError(
-      expectedResponse = """
-        {
-            "status": 400,
-            "errorCode": null,
-            "userMessage": "Missing required parameter: Required request parameter 'prisonNumber' for method parameter type String is not present",
-            "developerMessage": "Required request parameter 'prisonNumber' for method parameter type String is not present",
-            "moreInfo": null
-        }
-      """.trimIndent(),
-    )
-  }
-
   @Nested
   @DisplayName("Given Job Board has no jobs")
   inner class GivenJobBoardHasNoJobs {
@@ -64,7 +49,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     }
 
     @Nested
-    @DisplayName("And jobs has been archived")
+    @DisplayName("And jobs have been archived for the candidate")
     inner class AndJobsHasBeenArchived {
       @Test
       fun `return Jobs that have not been archived for the candidate`() {
@@ -85,7 +70,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     }
 
     @Nested
-    @DisplayName("And candidates expressed interest")
+    @DisplayName("And candidates have expressed interest")
     inner class AndCandidatesExpressed {
       @Test
       fun `return Jobs tagged with candidate's interest`() {
@@ -220,6 +205,25 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
           expectedSortingOrder = "desc",
         )
       }
+    }
+  }
+
+  @Nested
+  @DisplayName("Given not all mandatory parameters have been provided")
+  inner class GivenMissingMandatoryParameters {
+    @Test
+    fun `return 400 Bad Request error message when prison number is missing`() {
+      assertGetMatchingCandidateJobsReturnsBadRequestError(
+        expectedResponse = """
+        {
+            "status": 400,
+            "errorCode": null,
+            "userMessage": "Missing required parameter: Required request parameter 'prisonNumber' for method parameter type String is not present",
+            "developerMessage": "Required request parameter 'prisonNumber' for method parameter type String is not present",
+            "moreInfo": null
+        }
+      """.trimIndent(),
+      )
     }
   }
 }
