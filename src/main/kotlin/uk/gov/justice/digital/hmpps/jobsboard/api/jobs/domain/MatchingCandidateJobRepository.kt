@@ -39,7 +39,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     WHERE  (j.closingDate >= :currentDate OR j.closingDate IS NULL)
     AND (LOWER(j.sector) IN :sectors OR :sectors IS NULL )
     AND a.id IS NULL
-    AND SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34 <= :searchRadius
+    AND (CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT) <= :searchRadius
+    OR pos1.code IS NULL)
   """,
   )
   fun findAll(

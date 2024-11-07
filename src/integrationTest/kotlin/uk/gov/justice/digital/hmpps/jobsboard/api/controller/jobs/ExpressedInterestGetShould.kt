@@ -55,7 +55,7 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
 
     @BeforeEach
     fun setUp() {
-      postcodes = listOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { it.replace(" ", "") }.toTypedArray()
+      postcodes = listOf("M4 5BD", "NW1 6XE", "NG1 1AA").toTypedArray()
       releaseAreaPostcode = postcodes.first()
       with(JobMother) {
         allJobs = listOf(tescoWarehouseHandler, amazonForkliftOperator, abcConstructionApprentice)

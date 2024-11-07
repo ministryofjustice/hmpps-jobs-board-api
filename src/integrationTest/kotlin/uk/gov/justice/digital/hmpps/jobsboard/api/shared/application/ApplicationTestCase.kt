@@ -48,10 +48,10 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amaz
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.Builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.postcodeMap
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodeMother.postcodeMap
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.OSPlacesMockServer
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
@@ -162,9 +162,9 @@ abstract class ApplicationTestCase {
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(amazonForkliftOperator.postcode).build())
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(tescoWarehouseHandler.postcode).build())
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(RELEASE_AREA_POSTCODE).build())
-//    arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
-//      osPlacesMockServer.stubGetAddressesForPostcode(it.code.replace(" ", ""), it.xCoordinate, it.yCoordinate)
-//    }
+    arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
+      osPlacesMockServer.stubGetAddressesForPostcode(it)
+    }
 
     whenever(timeProvider.now()).thenCallRealMethod()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCurrentTime))
