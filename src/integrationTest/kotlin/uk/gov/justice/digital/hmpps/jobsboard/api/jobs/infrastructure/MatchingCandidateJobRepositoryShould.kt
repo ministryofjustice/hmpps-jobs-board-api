@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.JpaSort
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsClosingSoonResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
@@ -20,7 +22,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.CALC_DISTANCE_EXPR
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodeMother
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
 import java.time.LocalDate
 
@@ -219,7 +220,6 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       inner class AndReleaseArea {
         private lateinit var expectedJobs: List<Job>
         private lateinit var expectedResults: List<GetMatchingCandidateJobsResponse>
-        private val releaseArea = "LS11 0AN"
 
         @BeforeEach
         fun setUp() {
@@ -236,9 +236,15 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
         @Test
         fun `retrieve archived jobs of interest with distance`() {
+          expectedResults = listOf(
+            amazonForkliftOperator.listResponse(distance = 20.0f),
+            tescoWarehouseHandler.listResponse(distance = 1.0f),
+            abcConstructionApprentice.listResponse(distance = 22.0f),
+          )
+
           assertFindArchivedJobsIsExpected(
             currentDate = today,
-            releaseAreaPostcode = releaseArea,
+            releaseAreaPostcode = RELEASE_AREA_POSTCODE,
             expectedSize = expectedJobs.size,
             expectedResults = expectedResults,
           )
@@ -247,14 +253,14 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
         @Test
         fun `retrieve archived jobs with distance, sorted by distance`() {
           expectedResults = listOf(
-            amazonForkliftOperator.listResponse(distance = 0.6f),
-            abcConstructionApprentice.listResponse(distance = 83.3f),
-            tescoWarehouseHandler.listResponse(distance = 83.3f),
+            tescoWarehouseHandler.listResponse(distance = 1.0f),
+            amazonForkliftOperator.listResponse(distance = 20.0f),
+            abcConstructionApprentice.listResponse(distance = 22.0f),
           )
 
           assertFindArchivedJobsIsExpected(
             currentDate = today,
-            releaseAreaPostcode = releaseArea,
+            releaseAreaPostcode = RELEASE_AREA_POSTCODE,
             pageable = paginatedSortByDistanceAsc,
             expectedSize = expectedJobs.size,
             expectedResults = expectedResults,
@@ -346,7 +352,6 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       inner class AndReleaseArea {
         private lateinit var expectedJobs: List<Job>
         private lateinit var expectedResults: List<GetMatchingCandidateJobsResponse>
-        private val releaseArea = "LS11 0AN"
 
         @BeforeEach
         fun setUp() {
@@ -363,9 +368,15 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
         @Test
         fun `retrieve jobs of interest with distance`() {
+          expectedResults = listOf(
+            amazonForkliftOperator.listResponse(true, 20.0f),
+            tescoWarehouseHandler.listResponse(true, 1.0f),
+            abcConstructionApprentice.listResponse(true, 22.0f),
+          )
+
           assertFindJobsOfInterestIsExpected(
             currentDate = today,
-            releaseAreaPostcode = releaseArea,
+            releaseAreaPostcode = RELEASE_AREA_POSTCODE,
             expectedSize = expectedJobs.size,
             expectedResults = expectedResults,
           )
@@ -374,14 +385,14 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
         @Test
         fun `retrieve jobs of interest with distance, sorted by distance`() {
           expectedResults = listOf(
-            amazonForkliftOperator.listResponse(true, 0.6f),
-            abcConstructionApprentice.listResponse(true, 83.3f),
-            tescoWarehouseHandler.listResponse(true, 83.3f),
+            tescoWarehouseHandler.listResponse(true, 1.0f),
+            amazonForkliftOperator.listResponse(true, 20.0f),
+            abcConstructionApprentice.listResponse(true, 22.0f),
           )
 
           assertFindJobsOfInterestIsExpected(
             currentDate = today,
-            releaseAreaPostcode = releaseArea,
+            releaseAreaPostcode = RELEASE_AREA_POSTCODE,
             pageable = paginatedSortByDistanceAsc,
             expectedSize = expectedJobs.size,
             expectedResults = expectedResults,
@@ -511,12 +522,13 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       givenPrisonNumber: String = prisonNumber,
       sectors: List<String>? = null,
       location: String? = null,
+      searchRadius: Int = 50,
       currentDate: LocalDate = today,
       pageable: Pageable = defaultPageable,
       expectedSize: Int? = null,
       expectedJobs: List<Job>? = null,
     ) {
-      val results = matchingCandidateJobRepository.findAll(givenPrisonNumber, sectors, location, currentDate, pageable)
+      val results = matchingCandidateJobRepository.findAll(givenPrisonNumber, sectors, location, searchRadius, currentDate, pageable)
 
       expectedSize?.let {
         assertThat(results).hasSize(expectedSize)

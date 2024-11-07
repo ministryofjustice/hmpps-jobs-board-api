@@ -53,10 +53,12 @@ class OsPlacesApiWebClientShould {
     val requestHeadersMock = mock(WebClient.RequestHeadersSpec::class.java)
     val responseSpecMock = mock(WebClient.ResponseSpec::class.java)
     whenever(osPlacesWebClient.get()).thenReturn(requestUriMock)
-    whenever(requestUriMock.uri("/postcode?postcode=${amazonForkliftOperator.postcode}&key=$API_KEY")).thenReturn(requestHeadersMock)
+    whenever(requestUriMock.uri("/postcode?postcode=${amazonForkliftOperator.postcode}&key=$API_KEY"))
+      .thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.accept(APPLICATION_JSON)).thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.retrieve()).thenReturn(responseSpecMock)
-    whenever(responseSpecMock.bodyToMono(OsPlacesApiResponse::class.java)).thenReturn(Mono.just(expectedSearchResult))
+    whenever(responseSpecMock.bodyToMono(OsPlacesApiResponse::class.java))
+      .thenReturn(Mono.just(expectedSearchResult))
 
     val postcode = osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
 

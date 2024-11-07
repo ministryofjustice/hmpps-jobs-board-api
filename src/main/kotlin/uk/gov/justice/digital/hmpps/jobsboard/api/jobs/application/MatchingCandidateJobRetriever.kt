@@ -18,9 +18,15 @@ class MatchingCandidateJobRetriever(
 ) {
   private val today: LocalDate get() = LocalDate.now()
 
-  fun retrieveAllJobs(prisonNumber: String, sectors: List<String>?, location: String?, distance: Float?, pageable: Pageable): Page<GetMatchingCandidateJobsResponse> {
-    location?.let { postcodeLocationService.save(it) }
-    return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, location, today, pageable)
+  fun retrieveAllJobs(
+    prisonNumber: String,
+    sectors: List<String>?,
+    releaseArea: String?,
+    searchRadius: Int,
+    pageable: Pageable,
+  ): Page<GetMatchingCandidateJobsResponse> {
+    releaseArea?.let { postcodeLocationService.save(it) }
+    return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, releaseArea, searchRadius, today, pageable)
   }
 
   fun retrieveClosingJobs(prisonNumber: String, sectors: List<String>?, size: Int): List<GetJobsClosingSoonResponse> {

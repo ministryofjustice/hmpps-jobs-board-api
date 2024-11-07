@@ -43,10 +43,15 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.ARCHIVED_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.EXPRESSIONS_OF_INTEREST_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.Builder
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.postcodeMap
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodeMother.postcodeMap
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.OSPlacesMockServer
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
@@ -96,7 +101,6 @@ abstract class ApplicationTestCase {
   private val countOfGettingCurrentTime = intArrayOf(0)
 
   val defaultCurrentTime: Instant = Instant.parse("2024-01-01T00:00:00Z")
-  val releaseAreaPostcode = "AG121RW"
 
   private object Holder {
     val random: SecureRandom by lazy { SecureRandom() }
@@ -154,11 +158,12 @@ abstract class ApplicationTestCase {
     jobRepository.deleteAll()
     employerRepository.deleteAll()
     osPlacesMockServer.resetAll()
-    osPlacesMockServer.stubGetAddressesForPostcode("LS12", 1100.0, 1100.0)
-    osPlacesMockServer.stubGetAddressesForPostcode("NE157LR", 1100.0, 1100.0)
-    osPlacesMockServer.stubGetAddressesForPostcode(releaseAreaPostcode, 0.0, 0.0)
+    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(abcConstructionApprentice.postcode).build())
+    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(amazonForkliftOperator.postcode).build())
+    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(tescoWarehouseHandler.postcode).build())
+    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(RELEASE_AREA_POSTCODE).build())
     arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
-      osPlacesMockServer.stubGetAddressesForPostcode(it.code.replace(" ", ""), it.xCoordinate, it.yCoordinate)
+      osPlacesMockServer.stubGetAddressesForPostcode(it)
     }
 
     whenever(timeProvider.now()).thenCallRealMethod()

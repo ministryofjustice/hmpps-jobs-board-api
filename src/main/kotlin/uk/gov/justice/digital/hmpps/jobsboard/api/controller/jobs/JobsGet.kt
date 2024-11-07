@@ -84,8 +84,8 @@ class JobsGet(
     sectors: List<String>? = null,
     @RequestParam(required = false)
     releaseArea: String? = null,
-    @RequestParam(required = false)
-    searchRadius: Float? = null,
+    @RequestParam(defaultValue = "10", required = false)
+    searchRadius: Int,
     @RequestParam(defaultValue = "title", required = false)
     sortBy: String?,
     @RequestParam(defaultValue = "asc", required = false)
