@@ -35,19 +35,19 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     LEFT JOIN Employer e ON j.employer.id.id = e.id.id
     LEFT JOIN Archived a ON a.job.id.id = j.id.id AND a.id.prisonNumber = :prisonNumber
     LEFT JOIN Postcode pos1 ON j.postcode = pos1.code
-    LEFT JOIN Postcode pos2 ON pos2.code = :location
+    LEFT JOIN Postcode pos2 ON pos2.code = :releaseArea
     WHERE  (j.closingDate >= :currentDate OR j.closingDate IS NULL)
     AND (LOWER(j.sector) IN :sectors OR :sectors IS NULL )
     AND a.id IS NULL
     AND (CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT) <= :searchRadius
-    OR pos1.code IS NULL)
+    OR pos1.code IS NULL OR pos2.code IS NULL OR :searchRadius IS NULL)
   """,
   )
   fun findAll(
     @Param("prisonNumber") prisonNumber: String,
     @Param("sectors") sectors: List<String>?,
-    @Param("location") location: String? = null,
-    @Param("searchRadius") searchRadius: Int,
+    @Param("releaseArea") releaseArea: String? = null,
+    @Param("searchRadius") searchRadius: Int? = null,
     @Param("currentDate") currentDate: LocalDate,
     pageable: Pageable,
   ): Page<GetMatchingCandidateJobsResponse>
