@@ -49,6 +49,28 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     }
 
     @Nested
+    @DisplayName("And optional request parameters have not been provided")
+    inner class AndMissingOptionalRequestParameters {
+      @Test
+      fun `return Jobs list without considering distance when release area is not provided`() {
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = "prisonNumber=$prisonNumber&searchRadius=50",
+          expectedResponse = expectedResponseListOf(
+            builder().from(abcConstructionApprentice)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(tescoWarehouseHandler)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+    }
+
+    @Nested
     @DisplayName("And jobs have been archived for the candidate")
     inner class AndJobsHasBeenArchived {
       @Test
@@ -209,7 +231,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   }
 
   @Nested
-  @DisplayName("Given not all mandatory parameters have been provided")
+  @DisplayName("Given not all mandatory request parameters have been provided")
   inner class GivenMissingMandatoryParameters {
     @Test
     fun `return 400 Bad Request error message when prison number is missing`() {
