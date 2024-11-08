@@ -71,23 +71,22 @@ class OsPlacesApiWebClientShould {
 
   @Test
   fun `return a fallback object when unexpected error calling OS Places API`() {
-    val postcode = "INVALID"
     val body = ByteArray(0)
     val charset = null
     val responseException = WebClientResponseException
-      .create(404, "Bad Request", EMPTY, body, charset)
+      .create(401, "Unauthorized", EMPTY, body, charset)
 
     val requestUriMock = mock(WebClient.RequestHeadersUriSpec::class.java)
     val requestHeadersMock = mock(WebClient.RequestHeadersSpec::class.java)
     whenever(osPlacesWebClient.get()).thenReturn(requestUriMock)
-    whenever(requestUriMock.uri("/postcode?postcode=$postcode&key=test-api-key"))
+    whenever(requestUriMock.uri("/postcode?postcode=${amazonForkliftOperator.postcode}&key=$API_KEY"))
       .thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.accept(APPLICATION_JSON)).thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.retrieve()).thenThrow(responseException)
 
-    val result = osPlacesAPIWebClient.getAddressesFor(postcode)
+    val result = osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
 
-    assertEquals(postcode, result.postcode)
+    assertEquals(amazonForkliftOperator.postcode, result.postcode)
     assertNull(result.xCoordinate)
     assertNull(result.yCoordinate)
   }
