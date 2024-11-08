@@ -18,18 +18,27 @@ class OsPlacesApiWebClient(
     val uri = "/postcode?postcode=$postcode&key=${osPlacesAPIProperties.key}"
     log.debug("Calling operation for $uri")
 
-    val searchResult = osPlacesWebClient
-      .get()
-      .uri(uri)
-      .accept(APPLICATION_JSON)
-      .retrieve()
-      .bodyToMono(OsPlacesApiResponse::class.java)
-      .block()
+    return try {
+      val searchResult = osPlacesWebClient
+        .get()
+        .uri(uri)
+        .accept(APPLICATION_JSON)
+        .retrieve()
+        .bodyToMono(OsPlacesApiResponse::class.java)
+        .block()
 
-    return searchResult?.results?.first()?.dpa ?: OsPlacesApiDPA(
-      postcode = postcode,
-      xCoordinate = null,
-      yCoordinate = null,
-    )
+      searchResult?.results?.first()?.dpa ?: OsPlacesApiDPA(
+        postcode = postcode,
+        xCoordinate = null,
+        yCoordinate = null,
+      )
+    } catch (exception: Exception) {
+      log.error("Unexpected error while calling OS Places API for postcode: $postcode", exception)
+      OsPlacesApiDPA(
+        postcode = postcode,
+        xCoordinate = null,
+        yCoordinate = null,
+      )
+    }
   }
 }

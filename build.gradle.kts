@@ -27,6 +27,7 @@ dependencies {
   }
   testImplementation("org.testcontainers:postgresql")
   testImplementation("org.testcontainers:junit-jupiter")
+  testImplementation("io.github.hakky54:logcaptor:2.9.3")
 
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
