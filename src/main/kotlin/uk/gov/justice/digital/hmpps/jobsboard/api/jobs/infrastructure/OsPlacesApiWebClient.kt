@@ -33,6 +33,7 @@ class OsPlacesApiWebClient(
         yCoordinate = null,
       )
     } catch (exception: Exception) {
+      log.error("Unexpected error while calling OS Places API for postcode: $postcode", exception)
       OsPlacesApiDPA(
         postcode = postcode,
         xCoordinate = null,

@@ -123,15 +123,14 @@ class OsPlacesApiWebClientShould {
         logEvent.throwable.isPresent
         logEvent.throwable.get().message!!.contains(responseException.message.toString())
       },
-      "Expected error log to contain the expected exception message: ${responseException.message}"
+      "Expected error log to contain the expected exception message: ${responseException.message}",
     )
 
     assertTrue(
       logCaptor.errorLogs.any { log ->
         log.contains("Unexpected error while calling OS Places API for postcode: ${amazonForkliftOperator.postcode}")
       },
-      "Expected error log when unexpected error calling OS Places API not found"
+      "Expected error log when unexpected error calling OS Places API not found",
     )
-
   }
 }
