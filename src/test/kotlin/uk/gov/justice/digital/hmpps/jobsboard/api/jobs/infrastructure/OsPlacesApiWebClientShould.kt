@@ -18,8 +18,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.OsPlacesApiProperties
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @ExtendWith(MockitoExtension::class)
@@ -39,9 +37,19 @@ class OsPlacesApiWebClientShould {
     val API_KEY = "test-api-key"
   }
 
+  val requestUriMock = mock(WebClient.RequestHeadersUriSpec::class.java)
+  val requestHeadersMock = mock(WebClient.RequestHeadersSpec::class.java)
+  val responseSpecMock = mock(WebClient.ResponseSpec::class.java)
+
   @BeforeEach
   fun setup() {
     whenever(osPlacesAPIProperties.key).thenReturn(API_KEY)
+
+    whenever(osPlacesWebClient.get()).thenReturn(requestUriMock)
+    whenever(requestUriMock.uri("/postcode?postcode=${amazonForkliftOperator.postcode}&key=$API_KEY"))
+      .thenReturn(requestHeadersMock)
+    whenever(requestHeadersMock.accept(APPLICATION_JSON)).thenReturn(requestHeadersMock)
+
     logCaptor = LogCaptor.forClass(OsPlacesApiWebClient::class.java)
     logCaptor.clearLogs()
   }
@@ -60,13 +68,6 @@ class OsPlacesApiWebClientShould {
         ),
       ),
     )
-    val requestUriMock = mock(WebClient.RequestHeadersUriSpec::class.java)
-    val requestHeadersMock = mock(WebClient.RequestHeadersSpec::class.java)
-    val responseSpecMock = mock(WebClient.ResponseSpec::class.java)
-    whenever(osPlacesWebClient.get()).thenReturn(requestUriMock)
-    whenever(requestUriMock.uri("/postcode?postcode=${amazonForkliftOperator.postcode}&key=$API_KEY"))
-      .thenReturn(requestHeadersMock)
-    whenever(requestHeadersMock.accept(APPLICATION_JSON)).thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.retrieve()).thenReturn(responseSpecMock)
     whenever(responseSpecMock.bodyToMono(OsPlacesApiResponse::class.java))
       .thenReturn(Mono.just(expectedSearchResult))
@@ -78,24 +79,21 @@ class OsPlacesApiWebClientShould {
 
   @Test
   fun `return a fallback object when unexpected error calling OS Places API`() {
+    val expectedPostcode = OsPlacesApiDPA(
+      postcode = amazonForkliftOperator.postcode,
+      xCoordinate = null,
+      yCoordinate = null,
+    )
     val body = ByteArray(0)
     val charset = null
     val responseException = WebClientResponseException
       .create(401, "Unauthorized", EMPTY, body, charset)
 
-    val requestUriMock = mock(WebClient.RequestHeadersUriSpec::class.java)
-    val requestHeadersMock = mock(WebClient.RequestHeadersSpec::class.java)
-    whenever(osPlacesWebClient.get()).thenReturn(requestUriMock)
-    whenever(requestUriMock.uri("/postcode?postcode=${amazonForkliftOperator.postcode}&key=$API_KEY"))
-      .thenReturn(requestHeadersMock)
-    whenever(requestHeadersMock.accept(APPLICATION_JSON)).thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.retrieve()).thenThrow(responseException)
 
-    val result = osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
+    val postcode = osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
 
-    assertEquals(amazonForkliftOperator.postcode, result.postcode)
-    assertNull(result.xCoordinate)
-    assertNull(result.yCoordinate)
+    assertThat(postcode).isEqualTo(expectedPostcode)
   }
 
   @Test
@@ -105,12 +103,6 @@ class OsPlacesApiWebClientShould {
     val responseException = WebClientResponseException
       .create(401, "Unauthorized", EMPTY, body, charset)
 
-    val requestUriMock = mock(WebClient.RequestHeadersUriSpec::class.java)
-    val requestHeadersMock = mock(WebClient.RequestHeadersSpec::class.java)
-    whenever(osPlacesWebClient.get()).thenReturn(requestUriMock)
-    whenever(requestUriMock.uri("/postcode?postcode=${amazonForkliftOperator.postcode}&key=$API_KEY"))
-      .thenReturn(requestHeadersMock)
-    whenever(requestHeadersMock.accept(APPLICATION_JSON)).thenReturn(requestHeadersMock)
     whenever(requestHeadersMock.retrieve()).thenThrow(responseException)
 
     osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
