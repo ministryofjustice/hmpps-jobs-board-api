@@ -9,11 +9,15 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import org.springframework.http.HttpHeaders.EMPTY
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.OsPlacesApiProperties
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 @ExtendWith(MockitoExtension::class)
 class OsPlacesApiWebClientShould {
@@ -63,5 +67,28 @@ class OsPlacesApiWebClientShould {
     val postcode = osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
 
     assertThat(postcode).isEqualTo(expectedPostcode)
+  }
+
+  @Test
+  fun `return a fallback object when unexpected error calling OS Places API`() {
+    val postcode = "INVALID"
+    val body = ByteArray(0)
+    val charset = null
+    val responseException = WebClientResponseException
+      .create(404, "Bad Request", EMPTY, body, charset)
+
+    val requestUriMock = mock(WebClient.RequestHeadersUriSpec::class.java)
+    val requestHeadersMock = mock(WebClient.RequestHeadersSpec::class.java)
+    whenever(osPlacesWebClient.get()).thenReturn(requestUriMock)
+    whenever(requestUriMock.uri("/postcode?postcode=$postcode&key=test-api-key"))
+      .thenReturn(requestHeadersMock)
+    whenever(requestHeadersMock.accept(APPLICATION_JSON)).thenReturn(requestHeadersMock)
+    whenever(requestHeadersMock.retrieve()).thenThrow(responseException)
+
+    val result = osPlacesAPIWebClient.getAddressesFor(postcode)
+
+    assertEquals(postcode, result.postcode)
+    assertNull(result.xCoordinate)
+    assertNull(result.yCoordinate)
   }
 }
