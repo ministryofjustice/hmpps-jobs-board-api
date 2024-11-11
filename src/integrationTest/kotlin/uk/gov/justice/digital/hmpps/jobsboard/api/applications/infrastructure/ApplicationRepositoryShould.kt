@@ -171,6 +171,28 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
         }
       }
     }
+
+    @Nested
+    @DisplayName("And a long username")
+    inner class AndALongUsername {
+      private val longUsername = "${"A".repeat(234)}@a.com"
+
+      @BeforeEach
+      fun setUp() {
+        setCurrentAuditor(longUsername)
+      }
+
+      @Test
+      fun `create new employer with a long username`() {
+        val application = ApplicationMother.builder().apply { job = givenAJobHasBeenCreated() }.build()
+        val savedApplication = applicationRepository.saveAndFlush(application)
+
+        with(savedApplication) {
+          assertThat(createdBy).hasSize(240)
+          assertThat(lastModifiedBy).hasSize(240)
+        }
+      }
+    }
   }
 
   @Nested

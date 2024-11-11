@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
@@ -102,5 +105,27 @@ class JobRepositoryShould : JobRepositoryTestCase() {
     assertThat(updatedJob.lastModifiedBy)
       .isEqualTo(anotherUserTestName)
       .isNotEqualTo(updatedJob.createdBy)
+  }
+
+  @Nested
+  @DisplayName("Given a long username")
+  inner class GivenALongUsername {
+    private val longUsername = "${"A".repeat(234)}@a.com"
+
+    @BeforeEach
+    fun setUp() {
+      whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(longUsername))
+    }
+
+    @Test
+    fun `create new job with a long username`() {
+      employerRepository.save(amazon)
+
+      val savedJob = jobRepository.save(amazonForkliftOperator)
+      with(savedJob) {
+        assertThat(createdBy).hasSize(240)
+        assertThat(lastModifiedBy).hasSize(240)
+      }
+    }
   }
 }
