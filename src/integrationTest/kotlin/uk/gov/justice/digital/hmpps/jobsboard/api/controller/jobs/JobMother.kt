@@ -305,7 +305,8 @@ class JobBuilder {
       prisonNumber,
       ExpressionOfInterest(
         JobPrisonerId(jobId = this.id, prisonNumber),
-        null,
+        createdBy = null,
+        createdAt = null,
         this.build(),
       ),
     )

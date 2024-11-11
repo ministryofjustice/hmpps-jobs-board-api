@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.MapsId
 import jakarta.persistence.Table
+import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
@@ -20,6 +21,10 @@ data class ExpressionOfInterest(
 
   @EmbeddedId
   var id: JobPrisonerId,
+
+  @CreatedBy
+  @Column(name = "created_by", nullable = false, updatable = false, length = 240)
+  var createdBy: String? = null,
 
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)

@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.whenever
@@ -13,9 +16,11 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfIntere
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.VALID_PRISON_NUMBER
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.anotherUserTestName
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobRegisterExpressionOfInterestTime
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.nonExistentJob
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.longUsername
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
 import java.time.temporal.ChronoUnit.DAYS
 import java.util.*
 
@@ -37,14 +42,17 @@ class ExpressionOfInterestRepositoryShould : JobRepositoryTestCase() {
   }
 
   @Test
-  fun `set createdAt attribute, when saving a new ExpressionOfInterest`() {
+  fun `set audit attributes, when saving a new ExpressionOfInterest`() {
     val job = obtainTheJobJustCreated()
 
     val expressionOfInterest = makeExpressionOfInterest(job, VALID_PRISON_NUMBER)
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime))
     val savedExpressionOfInterest = expressionOfInterestRepository.saveAndFlush(expressionOfInterest)
 
-    assertThat(savedExpressionOfInterest.createdAt).isEqualTo(jobRegisterExpressionOfInterestTime)
+    with(savedExpressionOfInterest) {
+      assertThat(createdAt).isEqualTo(jobRegisterExpressionOfInterestTime)
+      assertThat(createdBy).isEqualTo(userTestName)
+    }
   }
 
   @Test
@@ -74,12 +82,16 @@ class ExpressionOfInterestRepositoryShould : JobRepositoryTestCase() {
       prisonNumber = savedExpressionOfInterest.id.prisonNumber,
     )
     whenever(dateTimeProvider.now).thenReturn(Optional.of(jobRegisterExpressionOfInterestTime.plus(1, DAYS)))
+    setCurrentAuditor(anotherUserTestName)
     val updatedExpressionOfInterest = expressionOfInterestRepository.saveAndFlush(duplicateExpressionOfInterest).also {
       entityManager.refresh(it)
     }
 
-    assertThat(updatedExpressionOfInterest).usingRecursiveComparison().isEqualTo(savedExpressionOfInterest)
-    assertThat(updatedExpressionOfInterest.createdAt).isEqualTo(jobRegisterExpressionOfInterestTime)
+    with(updatedExpressionOfInterest) {
+      assertThat(createdAt).isEqualTo(jobRegisterExpressionOfInterestTime)
+      assertThat(createdBy).isEqualTo(userTestName)
+      assertThat(this).usingRecursiveComparison().isEqualTo(savedExpressionOfInterest)
+    }
   }
 
   @Test
@@ -124,6 +136,29 @@ class ExpressionOfInterestRepositoryShould : JobRepositoryTestCase() {
 
     val searchJob = jobRepository.findById(job.id).orElseThrow()
     assertThat(searchJob).usingRecursiveComparison().isEqualTo(job)
+  }
+
+  @Nested
+  @DisplayName("Given a long username")
+  inner class GivenALongUsername {
+    @BeforeEach
+    fun setUp() {
+      setCurrentAuditor(longUsername)
+    }
+
+    @Test
+    fun `save prisoner's ExpressionOfInterest to an existing job, with a long username`() {
+      val job = obtainTheJobJustCreated()
+
+      val savedExpressionOfInterest = makeExpressionOfInterest(job, VALID_PRISON_NUMBER).let { expressionOfInterest ->
+        expressionOfInterestRepository.saveAndFlush(expressionOfInterest)
+      }
+
+      val expressionOfInterestFreshCopy =
+        expressionOfInterestRepository.findById(savedExpressionOfInterest.id).orElseThrow()
+
+      assertThat(expressionOfInterestFreshCopy.createdBy).hasSize(240)
+    }
   }
 
   private fun obtainTheJobJustCreated(): Job {

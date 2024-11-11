@@ -54,6 +54,10 @@ abstract class RepositoryTestCase {
     whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
   }
 
+  protected fun setCurrentAuditor(username: String) {
+    whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(username))
+  }
+
   companion object {
     private val postgresContainer = PostgresContainer.repositoryContainer
 
