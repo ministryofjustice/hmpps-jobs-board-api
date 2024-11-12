@@ -98,7 +98,7 @@ class JobsGet(
     val direction = if (sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
     val sortedBy = when (sortBy) {
       "jobTitle" -> Sort.by(direction, "title")
-      "distance" -> matchingCandidateJobRetriever.sortByDistance(ASC)
+      "distance" -> matchingCandidateJobRetriever.sortByDistance(direction)
       else -> Sort.by(direction, sortBy)
     }
     val lowerCaseSectors = sectors?.map { it.lowercase() }
