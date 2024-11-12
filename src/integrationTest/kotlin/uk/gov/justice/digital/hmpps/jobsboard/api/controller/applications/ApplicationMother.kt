@@ -9,10 +9,12 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tesc
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.asJson
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import java.time.Instant
 import java.util.*
 
 object ApplicationMother {
+  val username = "test-client"
   val createdBy = "CCOLUMBUS_GEN"
   val lastModifiedBy = "JSMITH_GEN"
 
@@ -95,11 +97,28 @@ object ApplicationMother {
 
   val Application.requestBody get() = applicationRequestBody(this)
 
+  val Application.historyResponseBody get() = applicationHistoryResponse(this)
+
   private fun applicationRequestBody(application: Application): String {
     return application.let {
       """
       {
         ${applicationBodyCommonFields(it)}
+      }
+      """.trimIndent()
+    }
+  }
+
+  private fun applicationHistoryResponse(application: Application): Any {
+    return application.let {
+      """
+      {
+        "id": "${it.id.id}",
+        ${applicationBodyCommonFields(it)},
+        "createdBy": "$username",
+        "createdAt": "$jobCreationTime",
+        "modifiedBy": "$username",
+        "modifiedAt": "$jobCreationTime"
       }
       """.trimIndent()
     }

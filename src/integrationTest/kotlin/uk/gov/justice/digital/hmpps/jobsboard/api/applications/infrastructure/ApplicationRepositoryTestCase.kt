@@ -30,17 +30,22 @@ abstract class ApplicationRepositoryTestCase : JobRepositoryTestCase() {
   protected fun givenApplicationsMade(applications: List<Application>): List<Application> {
     val savedApplications = mutableListOf<Application>()
     applications.forEach {
-      employerRepository.save(it.job.employer)
-      val job = jobRepository.saveAndFlush(it.job)
-      val savedApplication = ApplicationMother.builder().from(it).apply { this.job = job }.build().run {
-        applicationRepository.saveAndFlush(this)
+      givenApplicationMade(it).let {
+        savedApplications.add(it)
       }
-      savedApplications.add(savedApplication)
     }
     return savedApplications
   }
 
-  private fun applicationBuilder(job: Job? = null) = ApplicationMother.builder().apply {
+  protected fun givenApplicationMade(application: Application): Application {
+    employerRepository.save(application.job.employer)
+    val job = jobRepository.saveAndFlush(application.job)
+    return ApplicationMother.builder().from(application).apply { this.job = job }.build().run {
+      applicationRepository.saveAndFlush(this)
+    }
+  }
+
+  protected fun applicationBuilder(job: Job? = null) = ApplicationMother.builder().apply {
     ApplicationMother.knownApplicant.let {
       prisonNumber = it.prisonNumber
       firstName = it.firstName
