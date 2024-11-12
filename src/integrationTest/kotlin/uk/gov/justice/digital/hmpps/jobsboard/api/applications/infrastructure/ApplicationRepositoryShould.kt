@@ -10,8 +10,14 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.domain.Sort.Direction.ASC
+import org.springframework.data.history.Revision
+import org.springframework.data.history.RevisionMetadata.RevisionType
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationStatus
+import uk.gov.justice.digital.hmpps.jobsboard.api.audit.domain.RevisionInfo
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationBuilder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonABC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonMDI
@@ -46,7 +52,7 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
   }
 
   @Nested
-  @DisplayName("Given the known application")
+  @DisplayName("Given the known applicant")
   inner class GivenTheKnownApplicant {
     private val knownApplicant = ApplicationMother.knownApplicant
 
@@ -65,6 +71,7 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
 
       @BeforeEach
       fun beforeEach() {
+        setCurrentAuditor(firstAuditor)
         this.application = givenAnApplicationMade()
       }
 
@@ -81,50 +88,55 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
         assertEquals(actualApplication.get(), application)
       }
 
-// //      @Test
-// //      fun `retrieve the latest revision of the application`() {
-// //        val revisions = applicationRepository.findRevisions(application.id)
-// //
-// //        assertThat(revisions).isNotEmpty
-// //        revisions.latestRevision.let { latest ->
-// //          with(latest.metadata) {
-// //            assertThat(revisionType).isEqualTo(RevisionType.INSERT)
-// //            assertThat(getDelegate<RevisionInfo>().createdBy).isEqualTo(currentAuditor)
-// //          }
-// //          assertEquals(latest.entity, this.application)
-// //          with(latest.entity) {
-// //            assertThat(createdBy).isNotNull
-// //            assertThat(lastModifiedBy).isNotNull
-// //            assertThat(createdAt).isNotNull
-// //            assertThat(lastModifiedAt).isNotNull
-// //          }
-// //        }
-// //      }
-//
-// //      @Test
-// //      fun `retrieve all revisions of the application, when it has been updated multiple times`() {
-// //        setCurrentAuditor(subsequentAuditor)
-// //        val updateCount = 3
-// //        repeat(updateCount) { index ->
-// //          ApplicationBuilder().from(application).apply {
-// //            additionalInformation = "updating info: ${index + 1}"
-// //          }.build().let {
-// //            application = applicationRepository.saveAndFlush(it)
-// //          }
-// //        }
-// //        val expectedRevisionCount = updateCount + 1
-// //
-// //        val revisions = applicationRepository.findRevisions(application.id)
-// //        assertThat(revisions).isNotEmpty
-// //        assertThat(revisions.content.count()).isEqualTo(expectedRevisionCount)
-// //        assertRevisionMetadata(RevisionType.UPDATE, currentAuditor, revisions.latestRevision)
-// //        assertRevisionMetadata(RevisionType.INSERT, firstAuditor, revisions.content[0])
-// //        assertRevisionMetadata(
-// //          expectedRevisionType = RevisionType.UPDATE,
-// //          expectedCreator = subsequentAuditor,
-// //          revisions = revisions.content.subList(1, revisions.content.size).toTypedArray(),
-// //        )
-//    }
+      @Nested
+      @DisplayName("And revision(s) of the application has/have been maintained")
+      @Transactional(propagation = Propagation.NOT_SUPPORTED)
+      inner class AndRevisionOfApplicationMaintained {
+        @Test
+        fun `retrieve the latest revision of the application`() {
+          val revisions = applicationRepository.findRevisions(application.id)
+
+          assertThat(revisions).isNotEmpty
+          revisions.latestRevision.let { latest ->
+            with(latest.metadata) {
+              assertThat(revisionType).isEqualTo(RevisionType.INSERT)
+              assertThat(getDelegate<RevisionInfo>().createdBy).isEqualTo(currentAuditor)
+            }
+            assertEquals(latest.entity, application)
+            with(latest.entity) {
+              assertThat(createdBy).isNotNull
+              assertThat(lastModifiedBy).isNotNull
+              assertThat(createdAt).isNotNull
+              assertThat(lastModifiedAt).isNotNull
+            }
+          }
+        }
+
+        @Test
+        fun `retrieve all revisions of the application, when it has been updated multiple times`() {
+          setCurrentAuditor(subsequentAuditor)
+          val updateCount = 3
+          repeat(updateCount) { index ->
+            ApplicationBuilder().from(application).apply {
+              additionalInformation = "updating info: ${index + 1}"
+            }.build().let {
+              application = applicationRepository.saveAndFlush(it)
+            }
+          }
+          val expectedRevisionCount = updateCount + 1
+
+          val revisions = applicationRepository.findRevisions(application.id)
+          assertThat(revisions).isNotEmpty
+          assertThat(revisions.content.count()).isEqualTo(expectedRevisionCount)
+          assertRevisionMetadata(RevisionType.UPDATE, currentAuditor, revisions.latestRevision)
+          assertRevisionMetadata(RevisionType.INSERT, firstAuditor, revisions.content[0])
+          assertRevisionMetadata(
+            expectedRevisionType = RevisionType.UPDATE,
+            expectedCreator = subsequentAuditor,
+            revisions = revisions.content.subList(1, revisions.content.size).toTypedArray(),
+          )
+        }
+      }
     }
 
     @Nested
@@ -183,7 +195,7 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
       }
 
       @Test
-      fun `create new employer with a long username`() {
+      fun `create new application with a long username`() {
         val application = ApplicationMother.builder().apply { job = givenAJobHasBeenCreated() }.build()
         val savedApplication = applicationRepository.saveAndFlush(application)
 
@@ -385,18 +397,18 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
     }
   }
 
-//  private fun assertRevisionMetadata(
-//    expectedRevisionType: RevisionType,
-//    expectedCreator: String?,
-//    vararg revisions: Revision<Long, Application>,
-//  ) {
-//    revisions.forEach { revision ->
-//      with(revision.metadata) {
-//        assertThat(revisionType).isEqualTo(expectedRevisionType)
-//        expectedCreator?.let { assertThat(getDelegate<RevisionInfo>().createdBy).isEqualTo(expectedCreator) }
-//      }
-//    }
-//  }
+  private fun assertRevisionMetadata(
+    expectedRevisionType: RevisionType,
+    expectedCreator: String?,
+    vararg revisions: Revision<Long, Application>,
+  ) {
+    revisions.forEach { revision ->
+      with(revision.metadata) {
+        assertThat(revisionType).isEqualTo(expectedRevisionType)
+        expectedCreator?.let { assertThat(getDelegate<RevisionInfo>().createdBy).isEqualTo(expectedCreator) }
+      }
+    }
+  }
 
   private fun assertEquals(actual: Application, expected: Application) {
     assertThat(actual).usingRecursiveComparison()
