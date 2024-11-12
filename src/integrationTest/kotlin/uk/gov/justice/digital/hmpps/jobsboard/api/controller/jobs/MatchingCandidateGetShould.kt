@@ -268,6 +268,17 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
               expectedSortingOrder = order,
             )
           }
+
+          @Test
+          fun `return Jobs sorted by distance, in descending order`() {
+            val order = "desc"
+            requestParams.append("&sortBy=distance&sortOrder=$order")
+
+            assertGetMatchingCandidateJobsIsOKAndSortedByDistance(
+              parameters = requestParams.toString(),
+              expectedSortingOrder = order,
+            )
+          }
         }
       }
     }
