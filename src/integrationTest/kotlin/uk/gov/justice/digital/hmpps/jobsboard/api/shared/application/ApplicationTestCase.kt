@@ -303,6 +303,7 @@ abstract class ApplicationTestCase {
     expectedDateSortedList: List<String>? = null,
     expectedDateSortingOrder: String? = null,
     expectedClosingDateSortingOrder: String? = null,
+    expectedDistanceSortingOrder: String? = null,
     expectedEmployerNameSortedList: List<String>? = null,
     expectedLastNameSortedList: List<String?>? = null,
     expectedFirstNameSortedList: List<String?>? = null,
@@ -363,6 +364,7 @@ abstract class ApplicationTestCase {
             }
           }
         }
+
         expectedClosingDateSortingOrder?.let { sortingOrder ->
           val closingDates = (
             JsonPath.parse(resultActions.andReturn().response.contentAsString)
@@ -382,6 +384,25 @@ abstract class ApplicationTestCase {
           resultActions.andExpect {
             content {
               jsonPath("$.content[*].closingDate", contains(*closingDates))
+            }
+          }
+        }
+
+        expectedDistanceSortingOrder?.let { sortingOrder ->
+          val distances = (
+            JsonPath.parse(resultActions.andReturn().response.contentAsString)
+              .read("$.content[*].distance") as List<Double?>
+            ).run {
+            when (sortingOrder) {
+              "asc" -> this.filterNotNull().sorted() + this.filter { it == null }
+              "desc" -> this.filter { it == null } + this.filterNotNull().sortedDescending()
+              else -> this
+            }
+          }.toTypedArray()
+
+          resultActions.andExpect {
+            content {
+              jsonPath("$.content[*].distance", contains(*distances))
             }
           }
         }

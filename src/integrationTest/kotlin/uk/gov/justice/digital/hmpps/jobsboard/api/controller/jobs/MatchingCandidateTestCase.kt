@@ -47,6 +47,19 @@ abstract class MatchingCandidateTestCase : JobsTestCase() {
     )
   }
 
+  protected fun assertGetMatchingCandidateJobsIsOKAndSortedByDistance(
+    parameters: String? = null,
+    expectedSortingOrder: String = "asc",
+  ) {
+    var url = MATCHING_CANDIDATE_ENDPOINT
+    parameters?.let { url = "$url?$it" }
+    assertResponse(
+      url = url,
+      expectedStatus = OK,
+      expectedDistanceSortingOrder = expectedSortingOrder,
+    )
+  }
+
   protected fun assertGetMatchingCandidateJobsReturnsBadRequestError(
     expectedResponse: String? = null,
   ) {
