@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amaz
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingListItemResponseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.NO_FIXED_ABODE_POSTCODE
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
 
 @DisplayName("Matching Candidate GET Should")
@@ -58,8 +59,63 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
     }
 
     @Nested
-    @DisplayName("And a release area postcode has been provided")
-    inner class AndReleaseAreaHasBeenProvided {
+    @DisplayName("And a 'no fixed abode' release area postcode has been provided")
+    inner class AndNoFixedAbodeReleaseAreaPostcodeHasBeenProvided {
+      @BeforeEach
+      fun setUp() {
+        requestParams.append("&releaseArea=$NO_FIXED_ABODE_POSTCODE")
+      }
+
+      @Test
+      fun `return Jobs list without calculating distance`() {
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = requestParams.toString(),
+          expectedResponse = expectedResponseListOf(
+            builder().from(abcConstructionApprentice)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(tescoWarehouseHandler)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+
+      @Nested
+      @DisplayName("And a search radius has been provided")
+      inner class AndSearchRadiusHasBeenProvided {
+        @BeforeEach
+        fun setUp() {
+          val searchRadiusInMiles = 20
+          requestParams.append("&searchRadius=$searchRadiusInMiles")
+        }
+
+        @Test
+        fun `return Jobs list without calculating distance`() {
+          assertGetMatchingCandidateJobsIsOK(
+            parameters = requestParams.toString(),
+            expectedResponse = expectedResponseListOf(
+              builder().from(abcConstructionApprentice)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(amazonForkliftOperator)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(tescoWarehouseHandler)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+            ),
+          )
+        }
+      }
+    }
+
+    @Nested
+    @DisplayName("And a regular valid release area postcode has been provided")
+    inner class AndReleaseAreaPostcodeHasBeenProvided {
       @BeforeEach
       fun setUp() {
         requestParams.append("&releaseArea=$RELEASE_AREA_POSTCODE")
