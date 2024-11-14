@@ -10,6 +10,7 @@ import java.util.UUID.randomUUID
 object PostcodeMother {
 
   const val RELEASE_AREA_POSTCODE = "AG121RW"
+  const val NO_FIXED_ABODE_POSTCODE = "NF1 1NF"
 
   val postcodeMap = listOf(
     postcode(RELEASE_AREA_POSTCODE, 0.0, 0.0),
