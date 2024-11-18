@@ -16,6 +16,7 @@ class TestPrototypes {
     val jobRegisterExpressionOfInterestTime = Instant.parse("2025-03-01T01:00:00Z")
     val userTestName = "user-test-name"
     val anotherUserTestName = "another-user-test-name"
+    val longUsername = "${"A".repeat(234)}@a.com"
 
     private val nonExistentEmployer = Employer(
       id = EntityId("b9c925c1-c0d3-460d-8142-f79e7c292fce"),
