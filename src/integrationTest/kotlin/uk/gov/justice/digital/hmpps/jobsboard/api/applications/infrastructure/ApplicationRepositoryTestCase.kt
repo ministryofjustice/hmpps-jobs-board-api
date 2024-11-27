@@ -14,6 +14,14 @@ abstract class ApplicationRepositoryTestCase : JobRepositoryTestCase() {
   @Autowired
   protected lateinit var applicationRepository: ApplicationRepository
 
+  @Autowired
+  protected lateinit var applicationAuditCleaner: ApplicationAuditCleaner
+
+  override fun setUp() {
+    super.setUp()
+    applicationAuditCleaner.deleteAllRevisions()
+  }
+
   protected fun givenAnApplicationMade(): Application {
     val application = applicationBuilder(job = givenAJobHasBeenCreated()).build()
     return applicationRepository.saveAndFlush(application)

@@ -21,6 +21,7 @@ object ApplicationMother {
   val prisonMDI = "MDI"
   val prisonABC = "ABC"
   val prisonXYZ = "XYZ"
+  val prisonDSB = "DSB"
 
   val knownApplicant = Applicant(
     prisonNumber = "GC12HDK",
@@ -34,6 +35,9 @@ object ApplicationMother {
   val applicantC = Applicant.from("C3333CC", prisonABC, "Three", "Half")
   val applicantD = Applicant.from("D4444DD", prisonABC, lastName = "Three Half")
   val applicantE = Applicant.from("E5555EE", prisonABC, firstName = "Half Three")
+
+  val applicantDP1 = Applicant.from("D9999SB", prisonDSB, firstName = "Dashboard1", lastName = "Person")
+  val applicantDP2 = Applicant.from("D8888SB", prisonDSB, firstName = "Dashboard2", lastName = "Person")
 
   val applicationToTescoWarehouseHandler = Application(
     id = EntityId("0ed3d1f1-2d21-450a-8e73-e5fd5477695d"),
@@ -92,6 +96,13 @@ object ApplicationMother {
   )
 
   val applicationsFromPrisonXYZ = listOf<Application>()
+
+  val applicationsFromPrisonDSB: List<Application> get() = listOf(
+    makeApplication(applicantDP1, amazonForkliftOperator, ApplicationStatus.APPLICATION_MADE),
+    makeApplication(applicantDP1, tescoWarehouseHandler, ApplicationStatus.APPLICATION_MADE),
+    makeApplication(applicantDP2, tescoWarehouseHandler, ApplicationStatus.APPLICATION_MADE),
+    makeApplication(applicantDP2, abcConstructionApprentice, ApplicationStatus.APPLICATION_MADE),
+  )
 
   fun builder() = ApplicationBuilder()
 
