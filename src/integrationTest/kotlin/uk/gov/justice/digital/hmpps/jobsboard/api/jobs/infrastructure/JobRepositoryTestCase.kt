@@ -11,19 +11,16 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.RepositoryTestCase
-import java.time.Instant
 import java.util.*
 
 abstract class JobRepositoryTestCase : RepositoryTestCase() {
   protected final val expectedPrisonNumber = TestPrototypes.VALID_PRISON_NUMBER
   protected final val nonExistentJob = TestPrototypes.nonExistentJob
 
-  protected val currentTime: Instant get() = jobCreationTime
-
   @BeforeEach
   override fun setUp() {
     super.setUp()
-    whenever(dateTimeProvider.now).thenAnswer { Optional.of(currentTime) }
+    whenever(dateTimeProvider.now).thenReturn(Optional.of(jobCreationTime))
   }
 
   protected fun givenAJobHasBeenCreated(): Job {

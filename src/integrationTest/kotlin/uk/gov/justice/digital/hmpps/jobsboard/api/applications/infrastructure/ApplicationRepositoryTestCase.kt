@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure
 
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationRepository
@@ -9,6 +10,9 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.Applic
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationsFromPrisonXYZ
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.infrastructure.JobRepositoryTestCase
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.TestClock
+import java.time.Instant
+import java.util.*
 
 abstract class ApplicationRepositoryTestCase : JobRepositoryTestCase() {
   @Autowired
@@ -17,9 +21,13 @@ abstract class ApplicationRepositoryTestCase : JobRepositoryTestCase() {
   @Autowired
   protected lateinit var applicationAuditCleaner: ApplicationAuditCleaner
 
+  protected val testClock: TestClock = TestClock.defaultClock()
+  protected val currentTime: Instant get() = testClock.instant
+
   override fun setUp() {
     super.setUp()
     applicationAuditCleaner.deleteAllRevisions()
+    whenever(dateTimeProvider.now).thenAnswer { Optional.of(currentTime) }
   }
 
   protected fun givenAnApplicationMade(): Application {

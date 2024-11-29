@@ -30,6 +30,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.TestClock
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -40,9 +41,10 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
 
   private var currentAuditor = firstAuditor
 
-  private var currentTimeslot: Int = 0
   private val startOfTime = Instant.parse("2024-01-31T00:00:00Z")
-  override val currentTime: Instant get() = timeslotToTime(currentTimeslot)
+  private val timeslotClock = TestClock.timeslotClock(startOfTime)
+
+  override val testClock: TestClock get() = timeslotClock
 
   @BeforeEach
   override fun setUp() {
@@ -484,7 +486,7 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
         10 to emptyList(),
       )
       updatesAtTimeT.forEach { time, apps ->
-        currentTimeslot = time
+        timeslotClock.timeslot.set(time.toLong())
         applicationRepository.saveAllAndFlush(apps).onEach { applicationMap[it.id] = it }
       }
     }
