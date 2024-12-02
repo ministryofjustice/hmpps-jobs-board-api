@@ -409,19 +409,65 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
     @DisplayName("And Audit/Revisions have been recorded")
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     inner class AndAuditRevisionsEnabled {
-      @Test
-      fun `return correct counts at metric summary, when some of the applications were made with given prison ID`() {
-        assertCountApplicantAndJobByPrisonId(prisonMDI, 1, 3)
+      @Nested
+      @DisplayName("And some of the applications were made by single applicant with given prison ID")
+      inner class AndSomeApplicationsBySingleApplicant {
+        private val prisonId = prisonMDI
+
+        @Test
+        fun `return correct counts at metric summary`() {
+          assertCountApplicantAndJobByPrisonId(prisonId, 1, 3)
+        }
+
+        @Test
+        fun `return correct counts at metric total applications`() {
+          val expectedCountsByStage: Map<String, Long> = mapOf(
+            ApplicationStatus.APPLICATION_MADE to 3L,
+            ApplicationStatus.UNSUCCESSFUL_AT_INTERVIEW to 1,
+          ).mapKeys { it.key.name }
+          assertCountApplicationStagesByPrisonId(prisonId, expectedCountsByStage)
+        }
       }
 
-      @Test
-      fun `return zeroes at metric summary, when all applications were made with other prison ID(s)`() {
-        assertCountApplicantAndJobByPrisonId(prisonXYZ, 0, 0)
+      @Nested
+      @DisplayName("And all applications were made with other prison ID(s)")
+      inner class AndAllApplicationsWithOtherPrison {
+        private val prisonId = prisonXYZ
+
+        @Test
+        fun `return zeroes at metric summary`() {
+          assertCountApplicantAndJobByPrisonId(prisonId, 0, 0)
+        }
+
+        @Test
+        fun `return empty at metric total applications`() {
+          val expectedCountsByStage: Map<String, Long> = emptyMap()
+          assertCountApplicationStagesByPrisonId(prisonId, expectedCountsByStage)
+        }
       }
 
-      @Test
-      fun `return correct counts at metric summary, when applications were made by multiple applicants of given prison ID`() {
-        assertCountApplicantAndJobByPrisonId(prisonABC, 5, 3)
+      @Nested
+      @DisplayName("And applications were made by multiple applicants of given prison ID")
+      inner class AndApplicationsByMultipleApplicants {
+        private val prisonId = prisonABC
+
+        @Test
+        fun `return correct counts at metric summary`() {
+          assertCountApplicantAndJobByPrisonId(prisonId, 5, 3)
+        }
+
+        @Test
+        fun `return correct counts at metric total applications`() {
+          val expectedCountsByStage: Map<String, Long> = mapOf(
+            ApplicationStatus.APPLICATION_MADE to 9L,
+            ApplicationStatus.APPLICATION_UNSUCCESSFUL to 1,
+            ApplicationStatus.SELECTED_FOR_INTERVIEW to 1,
+            ApplicationStatus.INTERVIEW_BOOKED to 1,
+            ApplicationStatus.UNSUCCESSFUL_AT_INTERVIEW to 1,
+            ApplicationStatus.JOB_OFFER to 1,
+          ).mapKeys { it.key.name }
+          assertCountApplicationStagesByPrisonId(prisonId, expectedCountsByStage)
+        }
       }
     }
   }
@@ -439,26 +485,143 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
       givenApplicationsMadeOrUpdatedInTenTimeslots()
     }
 
-    @Test
-    fun `return correct counts at metric summary, when reporting period covers all`() {
-      assertCountApplicantAndJobByPrisonIdAndReportingPeriod(
-        prisonId = prisonId,
-        startTime = timeslotToTime(1),
-        endTime = timeslotToTime(10),
-        expectedApplicantCount = 2,
-        expectedJobCount = 3,
-      )
+    @Nested
+    @DisplayName("And reporting period covers all timeslots")
+    inner class AndReportingPeriodOfAllTime {
+      private val startTime = timeslotToTime(1)
+      private val endTime = timeslotToTime(10)
+
+      @Test
+      fun `return correct counts at metric summary`() {
+        assertCountApplicantAndJobByPrisonIdAndReportingPeriod(
+          prisonId,
+          startTime,
+          endTime,
+          expectedApplicantCount = 2,
+          expectedJobCount = 3,
+        )
+      }
+
+      @Test
+      fun `return correct counts at metric total applications`() {
+        val expectedCountsByStage: Map<String, Long> = mapOf(
+          ApplicationStatus.APPLICATION_MADE to 4L,
+          ApplicationStatus.APPLICATION_UNSUCCESSFUL to 1,
+          ApplicationStatus.SELECTED_FOR_INTERVIEW to 2,
+          ApplicationStatus.INTERVIEW_BOOKED to 2,
+          ApplicationStatus.UNSUCCESSFUL_AT_INTERVIEW to 1,
+          ApplicationStatus.JOB_OFFER to 1,
+        ).mapKeys { it.key.name }
+
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, startTime, endTime, expectedCountsByStage)
+      }
     }
 
-    @Test
-    fun `return correct counts at metric summary, when reporting period last few timeslots only`() {
-      assertCountApplicantAndJobByPrisonIdAndReportingPeriod(
-        prisonId = prisonId,
-        startTime = timeslotToTime(8),
-        endTime = timeslotToTime(10),
-        expectedApplicantCount = 1,
-        expectedJobCount = 1,
-      )
+    @Nested
+    @DisplayName("And reporting period covers some timeslots")
+    inner class AndReportingPeriodOfSomeTimeslots {
+      @Test
+      fun `return correct counts at metric summary, last few timeslots only`() {
+        assertCountApplicantAndJobByPrisonIdAndReportingPeriod(
+          prisonId = prisonId,
+          startTime = timeslotToTime(8),
+          endTime = timeslotToTime(10),
+          expectedApplicantCount = 1,
+          expectedJobCount = 1,
+        )
+      }
+
+      @Test
+      fun `return empty at metric total applications, last few timeslots only`() {
+        val startTime = timeslotToTime(8)
+        val endTime = timeslotToTime(10)
+        val expectedCountsByStage: Map<String, Long> = emptyMap()
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, startTime, endTime, expectedCountsByStage)
+      }
+
+      @Test
+      fun `return correct counts at metric total applications, a few timeslots after middle of the timeline`() {
+        val startTime = timeslotToTime(6)
+        val endTime = timeslotToTime(8)
+        val expectedCountsByStage: Map<String, Long> = mapOf(
+          ApplicationStatus.APPLICATION_MADE to 2L,
+          ApplicationStatus.APPLICATION_UNSUCCESSFUL to 1,
+          ApplicationStatus.SELECTED_FOR_INTERVIEW to 0,
+          ApplicationStatus.INTERVIEW_BOOKED to 1,
+          ApplicationStatus.UNSUCCESSFUL_AT_INTERVIEW to 1,
+          ApplicationStatus.JOB_OFFER to 0,
+        ).toCountMap()
+
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, startTime, endTime, expectedCountsByStage)
+      }
+
+      @Test
+      fun `return correct counts at metric total applications, near end of the timeline`() {
+        val startTime = timeslotToTime(7)
+        val endTime = timeslotToTime(10)
+        val expectedCountsByStage: Map<String, Long> = mapOf(
+          ApplicationStatus.APPLICATION_MADE to 2L,
+          ApplicationStatus.APPLICATION_UNSUCCESSFUL to 1,
+          ApplicationStatus.SELECTED_FOR_INTERVIEW to 0,
+          ApplicationStatus.INTERVIEW_BOOKED to 0,
+          ApplicationStatus.UNSUCCESSFUL_AT_INTERVIEW to 0,
+          ApplicationStatus.JOB_OFFER to 0,
+        ).toCountMap()
+
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, startTime, endTime, expectedCountsByStage)
+      }
+    }
+
+    @Nested
+    @DisplayName("And reporting period is short")
+    inner class AndReportingPeriodIsShort {
+      @Test
+      fun `return correct counts at metric total applications, at timeslot 1`() {
+        val time = timeslotToTime(1)
+        val expectedCountsByStage: Map<String, Long> = mapOf(
+          ApplicationStatus.APPLICATION_MADE to 2L,
+        ).toCountMap()
+
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, time, time, expectedCountsByStage)
+      }
+
+      @Test
+      fun `return correct counts at metric total applications, at timeslot 2`() {
+        val time = timeslotToTime(2)
+        val expectedCountsByStage: Map<String, Long> = emptyMap()
+
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, time, time, expectedCountsByStage)
+      }
+
+      @Test
+      fun `return correct counts at metric total applications, at timeslot 4`() {
+        val time = timeslotToTime(4)
+        val expectedCountsByStage: Map<String, Long> = mapOf(
+          ApplicationStatus.APPLICATION_MADE to 1L,
+          ApplicationStatus.SELECTED_FOR_INTERVIEW to 1,
+        ).toCountMap()
+
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, time, time, expectedCountsByStage)
+      }
+
+      @Test
+      fun `return correct counts at metric total applications, at timeslot 5`() {
+        val time = timeslotToTime(5)
+        val expectedCountsByStage: Map<String, Long> = mapOf(
+          ApplicationStatus.SELECTED_FOR_INTERVIEW to 1L,
+          ApplicationStatus.INTERVIEW_BOOKED to 1,
+        ).toCountMap()
+
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, time, time, expectedCountsByStage)
+      }
+
+      @Test
+      fun `return correct counts at metric total applications, at timeslot 8`() {
+        val time = timeslotToTime(8)
+        val expectedCountsByStage: Map<String, Long> = emptyMap()
+
+        assertCountApplicationStagesByPrisonIdAndReportingPeriod(prisonId, time, time, expectedCountsByStage)
+      }
     }
 
     private fun givenApplicationsMadeOrUpdatedInTenTimeslots() {
@@ -492,6 +655,8 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
     }
 
     private fun Application.copyAs(status: ApplicationStatus) = this.copy(status = status.name)
+
+    private fun Map<ApplicationStatus, Long>.toCountMap() = this.mapKeys { it.key.name }.filter { it.value > 0 }
   }
 
   private fun assertRevisionMetadata(
@@ -550,6 +715,43 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
     with(metricSummary) {
       assertThat(numberOfApplicants).isEqualTo(expectedApplicantCount)
       assertThat(numberOfJobs).isEqualTo(expectedJobCount)
+    }
+  }
+
+  private fun assertCountApplicationStagesByPrisonIdAndReportingPeriod(
+    prisonId: String,
+    startTime: Instant,
+    endTime: Instant,
+    expectedCountsByStage: Map<String, Long>?,
+  ) = assertCountApplicationStages(prisonId, expectedCountsByStage, startTime, endTime)
+
+  private fun assertCountApplicationStagesByPrisonId(
+    prisonId: String,
+    expectedCountsByStage: Map<String, Long>?,
+  ) = assertCountApplicationStages(prisonId, expectedCountsByStage)
+
+  private fun assertCountApplicationStages(
+    prisonId: String,
+    expectedCountsByStage: Map<String, Long>? = null,
+    startTime: Instant? = null,
+    endTime: Instant? = null,
+  ) {
+    val metrics = applicationRepository.countApplicationStagesByPrisonIdAndDateTimeBetween(
+      prisonId = prisonId,
+      startTime = startTime ?: startOfTime,
+      endTime = endTime ?: currentTime,
+    )
+    expectedCountsByStage?.let { expectedCounts ->
+      assertThat(metrics)
+        .withFailMessage({ "Size not expected; metrics=${metrics.map { "${it.status}=${it.count}" }}; expected=$expectedCountsByStage" })
+        .hasSize(expectedCounts.size)
+
+      val actualCounts = metrics.associateBy({ it.status }, { it.count })
+      expectedCounts.forEach {
+        assertThat(actualCounts[it.key])
+          .withFailMessage { "status=${it.key}; actual count=${actualCounts[it.key]} , expected count=${it.value}" }
+          .isEqualTo(it.value)
+      }
     }
   }
 
