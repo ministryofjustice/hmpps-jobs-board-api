@@ -4,9 +4,11 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationStatus
 import java.time.LocalDate
 
 const val METRICS_SUMMARY_ENDPOINT = "$DASHBOARD_ENDPOINT/summary"
+const val METRICS_APPLICATIONS_STAGE_ENDPOINT = "$DASHBOARD_ENDPOINT/applications-stage"
 
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 abstract class DashboardMetricsTestCase(
@@ -72,3 +74,18 @@ abstract class MetricsSummaryTestCase : DashboardMetricsTestCase(METRICS_SUMMARY
     }
   """.trimIndent()
 }
+
+abstract class MetricsApplicationsTestCase(endpoint: String) : DashboardMetricsTestCase(endpoint) {
+  protected final val Map<ApplicationStatus, Long>.metricsResponses: String get() = toMetricsResponses(this)
+
+  private fun toMetricsResponses(expectedMetrics: Map<ApplicationStatus, Long>) = expectedMetrics.map {
+    """
+      {
+        "applicationStatus":"${it.key}",
+        "numberOfApplications":${it.value}
+      }
+    """.trimIndent()
+  }.joinToString(separator = ",").let { "[$it]" }
+}
+
+abstract class MetricsTotalApplicationsStageTestCase : MetricsApplicationsTestCase(METRICS_APPLICATIONS_STAGE_ENDPOINT)
