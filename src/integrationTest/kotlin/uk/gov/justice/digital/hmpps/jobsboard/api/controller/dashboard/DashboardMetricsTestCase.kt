@@ -35,22 +35,31 @@ abstract class DashboardMetricsTestCase(
     expectedResponse: String? = null,
   ) = assertGetMetricsIsExpected(parameters, HttpStatus.BAD_REQUEST, expectedResponse)
 
-  protected fun expectedErrorMessageMissingParameter(paramName: String, paramType: String = "String"): String {
-    val errorMessage = "Required request parameter '$paramName' for method parameter type $paramType is not present"
-    return """
-      {"status":400,"errorCode":null,"userMessage":"Missing required parameter: $errorMessage","developerMessage":"$errorMessage","moreInfo":null}
-    """.trimIndent()
-  }
+  protected fun expectedErrorMessageMissingParameter(paramName: String, paramType: String = "String") =
+    expectedErrorMessage(
+      errorMessage = "Required request parameter '$paramName' for method parameter type $paramType is not present",
+      userMessagePrefix = "Missing required parameter",
+    )
 
   protected fun expectedErrorMessageMissingDateParameter(paramName: String) =
     expectedErrorMessageMissingParameter(paramName, "LocalDate")
 
-  protected fun expectedErrorMessageParameterTypeMismatch(paramName: String, paramValue: Any): String {
-    val errorMessage = "Type mismatch: parameter '$paramName' with value '$paramValue'"
-    return """
-      {"status":400,"errorCode":null,"userMessage":"Validation failure: $errorMessage","developerMessage":"$errorMessage","moreInfo":null}
-    """.trimIndent()
-  }
+  protected fun expectedErrorMessageParameterTypeMismatch(paramName: String, paramValue: Any) =
+    expectedErrorMessageValidationFailure(
+      errorMessage = "Type mismatch: parameter '$paramName' with value '$paramValue'",
+    )
+
+  protected fun expectedErrorMessageInvalidDatePeriod(dateFrom: String, dateTo: String) =
+    expectedErrorMessageValidationFailure(
+      errorMessage = "dateFrom ($dateFrom) cannot be after dateTo ($dateTo)",
+    )
+
+  private fun expectedErrorMessageValidationFailure(errorMessage: String) =
+    expectedErrorMessage(errorMessage, userMessagePrefix = "Validation failure")
+
+  private fun expectedErrorMessage(errorMessage: String, userMessagePrefix: String? = null) = """
+    {"status":400,"errorCode":null,"userMessage":"${userMessagePrefix?.let { "$it: " }}$errorMessage","developerMessage":"$errorMessage","moreInfo":null}
+  """.trimIndent()
 
   private fun assertGetMetricsIsExpected(
     parameters: String? = null,

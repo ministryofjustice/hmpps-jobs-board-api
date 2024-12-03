@@ -59,6 +59,16 @@ class MetricsTotalApplicationsStageGetShould : MetricsTotalApplicationsStageTest
         expectedResponse = expectedErrorMessageParameterTypeMismatch("dateFrom", invalidDate),
       )
     }
+
+    @Test
+    fun `return error, when invalid reporting period has been specified`() {
+      val dateFrom = "2024-02-01"
+      val dateTo = "2024-01-31"
+      assertGetMetricsReturnsBadRequestError(
+        parameters = "prisonId=MDI&dateFrom=$dateFrom&dateTo=$dateTo",
+        expectedResponse = expectedErrorMessageInvalidDatePeriod(dateFrom, dateTo),
+      )
+    }
   }
 
   @Nested

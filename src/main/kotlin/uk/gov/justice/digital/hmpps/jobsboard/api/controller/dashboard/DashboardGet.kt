@@ -2,10 +2,12 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.dashboard
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -77,6 +79,12 @@ class DashboardGet(
       ApiResponse(
         responseCode = "200",
         description = "The success status is set as the request has been processed correctly.",
+        content = [
+          Content(
+            mediaType = "application/json",
+            array = ArraySchema(schema = Schema(implementation = GetMetricsApplicationCountByStatusResponse::class)),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "400",
@@ -107,9 +115,22 @@ class DashboardGet(
     @Parameter(description = "The end date of reporting period (in ISO-8601 date format)", example = "2024-01-31")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     dateTo: LocalDate,
-  ): ResponseEntity<List<GetMetricsApplicationCountByStatusResponse>> {
+  ): ResponseEntity<Any> {
+    validateDatePeriod(dateFrom, dateTo)?.let {
+      return ResponseEntity.badRequest().body(
+        ErrorResponse(status = HttpStatus.BAD_REQUEST, userMessage = "Validation failure: $it", developerMessage = it),
+      )
+    }
+
     val response =
       applicationMetricsRetriever.retrieveMetricsTotalApplicationsPerStageByPrisonIdAndDates(prisonId, dateFrom, dateTo)
     return ResponseEntity.ok(response)
+  }
+
+  private fun validateDatePeriod(dateFrom: LocalDate, dateTo: LocalDate): String? {
+    return when {
+      dateFrom.isAfter(dateTo) -> "dateFrom ($dateFrom) cannot be after dateTo ($dateTo)"
+      else -> null
+    }
   }
 }
