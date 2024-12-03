@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure
 
 import jakarta.persistence.EntityManager
 import org.hibernate.envers.AuditReaderFactory
+import org.hibernate.envers.RevisionType
 import org.hibernate.envers.query.AuditEntity
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.GetMetricsSummaryResponse
@@ -24,6 +25,7 @@ class ApplicationMetricsRepositoryImpl(
         AuditEntity.revisionNumber().maximize()
           .add(AuditEntity.property("lastModifiedAt").between(startTime, endTime))
           .add(AuditEntity.property("prisonId").eq(prisonId))
+          .add(AuditEntity.revisionType().`in`(arrayOf(RevisionType.ADD, RevisionType.MOD)))
           .computeAggregationInInstanceContext(),
       )
       .addProjection(AuditEntity.property("prisonNumber").countDistinct())

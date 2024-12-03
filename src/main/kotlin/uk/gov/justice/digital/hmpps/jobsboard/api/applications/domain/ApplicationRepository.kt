@@ -57,14 +57,14 @@ interface ApplicationRepository :
     WITH recent_updates AS (
         SELECT rev_number, id, status
         FROM applications_audit aa
-        WHERE aa.last_modified_at BETWEEN :startTime AND :endTime AND aa.prison_id = :prisonId
+        WHERE aa.last_modified_at BETWEEN :startTime AND :endTime AND aa.prison_id = :prisonId AND aa.rev_type IN (0,1)
     ),
     status_at_start AS (
       SELECT aa1.rev_number, aa1.id, aa1.status FROM applications_audit aa1
       INNER JOIN (
         SELECT id, max(rev_number) as rev_number 
         FROM applications_audit aa2
-        WHERE aa2.id IN (SELECT DISTINCT id from recent_updates) AND aa2.last_modified_at <= :startTime
+        WHERE aa2.id IN (SELECT DISTINCT id from recent_updates) AND aa2.last_modified_at <= :startTime AND aa2.rev_type IN (0,1)
         GROUP BY id
       ) at_start 
       ON aa1.id = at_start.id AND aa1.rev_number = at_start.rev_number
@@ -93,14 +93,14 @@ interface ApplicationRepository :
     WITH recent_updates AS (
         SELECT rev_number, id, status
         FROM applications_audit aa
-        WHERE aa.last_modified_at BETWEEN :startTime AND :endTime AND aa.prison_id = :prisonId
+        WHERE aa.last_modified_at BETWEEN :startTime AND :endTime AND aa.prison_id = :prisonId AND aa.rev_type IN (0,1)
     ),
     status_at_start AS (
       SELECT aa1.rev_number, aa1.id, aa1.status FROM applications_audit aa1
       INNER JOIN (
         SELECT id, max(rev_number) as rev_number 
         FROM applications_audit aa2
-        WHERE aa2.id IN (SELECT DISTINCT id from recent_updates) AND aa2.last_modified_at <= :startTime
+        WHERE aa2.id IN (SELECT DISTINCT id from recent_updates) AND aa2.last_modified_at <= :startTime AND aa2.rev_type IN (0,1)
         GROUP BY id
       ) at_start 
       ON aa1.id = at_start.id AND aa1.rev_number = at_start.rev_number
