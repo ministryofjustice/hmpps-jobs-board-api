@@ -21,10 +21,11 @@ class ApplicationMetricsRetriever(
     dateFrom: LocalDate,
     dateTo: LocalDate,
   ): GetMetricsSummaryResponse {
-    val startTime = dateFrom.atStartOfDay().instant
-    val endTime = dateTo.atTime(atEndOfDay).instant
-
-    return applicationRepository.countApplicantAndJobByPrisonIdAndDateTimeBetween(prisonId, startTime, endTime)
+    return applicationRepository.countApplicantAndJobByPrisonIdAndDateTimeBetween(
+      prisonId,
+      startTime = dateFrom.startAt,
+      endTime = dateTo.endAt,
+    )
   }
 
   fun retrieveMetricsTotalApplicationsPerStageByPrisonIdAndDates(
@@ -32,13 +33,27 @@ class ApplicationMetricsRetriever(
     dateFrom: LocalDate,
     dateTo: LocalDate,
   ): List<GetMetricsApplicationCountByStatusResponse> {
-    val startTime = dateFrom.atStartOfDay().instant
-    val endTime = dateTo.atTime(atEndOfDay).instant
-
-    return applicationRepository.countApplicationStagesByPrisonIdAndDateTimeBetween(prisonId, startTime, endTime)
-      .toResponses()
+    return applicationRepository.countApplicationStagesByPrisonIdAndDateTimeBetween(
+      prisonId,
+      startTime = dateFrom.startAt,
+      endTime = dateTo.endAt,
+    ).toResponses()
   }
 
+  fun retrieveMetricsLatestApplicationsPerStatusByPrisonIdAndDates(
+    prisonId: String,
+    dateFrom: LocalDate,
+    dateTo: LocalDate,
+  ): List<GetMetricsApplicationCountByStatusResponse> {
+    return applicationRepository.countApplicationStatusByPrisonIdAndDateTimeBetween(
+      prisonId,
+      startTime = dateFrom.startAt,
+      endTime = dateTo.endAt,
+    ).toResponses()
+  }
+
+  private val LocalDate.startAt: Instant get() = this.atStartOfDay().instant
+  private val LocalDate.endAt: Instant get() = this.atTime(atEndOfDay).instant
   private val LocalDateTime.instant: Instant get() = this.toInstant(ZoneOffset.UTC)
 
   private fun List<MetricsCountByStatus>.toResponses() =

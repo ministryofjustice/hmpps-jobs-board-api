@@ -127,6 +127,62 @@ class DashboardGet(
     return ResponseEntity.ok(response)
   }
 
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @GetMapping("/applications-status")
+  @Operation(
+    summary = "Retrieve metrics Latest Applications by application status, of given prison",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+        content = [
+          Content(
+            mediaType = "application/json",
+            array = ArraySchema(schema = Schema(implementation = GetMetricsApplicationCountByStatusResponse::class)),
+          ),
+        ],
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "The failure status is set when the request is invalid. An error response will be provided.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Error: Unauthorised. The error status is set as the required authorisation was not provided.",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
+        content = [Content()],
+      ),
+    ],
+  )
+  fun retrieveMetricsLatestApplications(
+    @RequestParam(required = true)
+    @Parameter(description = "The identifier of the given prison.", example = "MDI")
+    prisonId: String,
+    @RequestParam(required = true)
+    @Parameter(description = "The start date of reporting period (in ISO-8601 date format)", example = "2024-01-01")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    dateFrom: LocalDate,
+    @RequestParam(required = true)
+    @Parameter(description = "The end date of reporting period (in ISO-8601 date format)", example = "2024-01-31")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    dateTo: LocalDate,
+  ): ResponseEntity<Any> {
+    validateDatePeriod(dateFrom, dateTo)?.let {
+      return ResponseEntity.badRequest().body(
+        ErrorResponse(status = HttpStatus.BAD_REQUEST, userMessage = "Validation failure: $it", developerMessage = it),
+      )
+    }
+
+    val response =
+      applicationMetricsRetriever.retrieveMetricsLatestApplicationsPerStatusByPrisonIdAndDates(prisonId, dateFrom, dateTo)
+    return ResponseEntity.ok(response)
+  }
+
   private fun validateDatePeriod(dateFrom: LocalDate, dateTo: LocalDate): String? {
     return when {
       dateFrom.isAfter(dateTo) -> "dateFrom ($dateFrom) cannot be after dateTo ($dateTo)"
