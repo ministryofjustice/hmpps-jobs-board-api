@@ -9,6 +9,7 @@ import java.time.LocalDate
 
 const val METRICS_SUMMARY_ENDPOINT = "$DASHBOARD_ENDPOINT/summary"
 const val METRICS_APPLICATIONS_STAGE_ENDPOINT = "$DASHBOARD_ENDPOINT/applications-stage"
+const val METRICS_APPLICATIONS_STATUS_ENDPOINT = "$DASHBOARD_ENDPOINT/applications-status"
 
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 abstract class DashboardMetricsTestCase(
@@ -98,3 +99,5 @@ abstract class MetricsApplicationsTestCase(endpoint: String) : DashboardMetricsT
 }
 
 abstract class MetricsTotalApplicationsStageTestCase : MetricsApplicationsTestCase(METRICS_APPLICATIONS_STAGE_ENDPOINT)
+
+abstract class MetricsLatestApplicationsStatusTestCase : MetricsApplicationsTestCase(METRICS_APPLICATIONS_STATUS_ENDPOINT)
