@@ -4,6 +4,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationStatus
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationsFromPrisonABC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationsFromPrisonMDI
@@ -56,9 +57,20 @@ abstract class ApplicationRepositoryTestCase : JobRepositoryTestCase() {
   protected fun givenApplicationMade(application: Application): Application {
     employerRepository.save(application.job.employer)
     val job = jobRepository.saveAndFlush(application.job)
-    return ApplicationMother.builder().from(application).apply { this.job = job }.build().run {
-      applicationRepository.saveAndFlush(this)
+
+    val builder = ApplicationMother.builder().from(application).apply { this.job = job }
+
+    // insert APPLICATION_MADE status prior to expected status, for any other expected status, for auditing tests
+    when (application.status) {
+      ApplicationStatus.APPLICATION_MADE.name -> {}
+      else -> {
+        builder.status = ApplicationStatus.APPLICATION_MADE.name
+        builder.build().run { applicationRepository.saveAndFlush(this) }
+        builder.status = application.status
+      }
     }
+
+    return builder.build().run { applicationRepository.saveAndFlush(this) }
   }
 
   protected fun applicationBuilder(job: Job? = null) = ApplicationMother.builder().apply {

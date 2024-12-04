@@ -8,7 +8,9 @@ import org.springframework.data.repository.history.RevisionRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure.ApplicationMetricsRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure.MetricsCountByStatus
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import java.time.Instant
 
 @Repository
 interface ApplicationRepository :
@@ -49,4 +51,40 @@ interface ApplicationRepository :
     @Param("jobTitleOrEmployerName") jobTitleOrEmployerName: String?,
     pageable: Pageable,
   ): Page<Application>
+
+  @Query(
+    """
+    WITH recent_updates AS (
+        SELECT rev_number, id, status
+        FROM applications_audit aa
+        WHERE aa.last_modified_at BETWEEN :startTime AND :endTime AND aa.prison_id = :prisonId
+    ),
+    status_at_start AS (
+      SELECT aa1.rev_number, aa1.id, aa1.status FROM applications_audit aa1
+      INNER JOIN (
+        SELECT id, max(rev_number) as rev_number 
+        FROM applications_audit aa2
+        WHERE aa2.id IN (SELECT DISTINCT id from recent_updates) AND aa2.last_modified_at <= :startTime
+        GROUP BY id
+      ) at_start 
+      ON aa1.id = at_start.id AND aa1.rev_number = at_start.rev_number
+      AND aa1.rev_number NOT IN (SELECT rev_number from recent_updates)
+    ),
+    application_stages AS (
+        SELECT * FROM recent_updates UNION ALL SELECT * FROM status_at_start
+    ),
+    open_applications AS (
+        SELECT DISTINCT id FROM application_stages WHERE UPPER(status) IN ('APPLICATION_MADE', 'SELECTED_FOR_INTERVIEW', 'INTERVIEW_BOOKED')
+    )
+    SELECT status, COUNT(DISTINCT id) as count
+    FROM application_stages WHERE id IN (SELECT id FROM open_applications)
+    GROUP BY status 
+    """,
+    nativeQuery = true,
+  )
+  fun countApplicationStagesByPrisonIdAndDateTimeBetween(
+    prisonId: String,
+    startTime: Instant,
+    endTime: Instant,
+  ): List<MetricsCountByStatus>
 }
