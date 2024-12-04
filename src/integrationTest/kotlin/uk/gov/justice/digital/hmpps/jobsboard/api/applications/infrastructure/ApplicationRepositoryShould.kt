@@ -18,7 +18,9 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Applicatio
 import uk.gov.justice.digital.hmpps.jobsboard.api.audit.domain.RevisionInfo
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationBuilder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.applicationsFromPrisonDSB
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonABC
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonDSB
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonMDI
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.prisonXYZ
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
@@ -28,6 +30,9 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.TestClock
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
@@ -35,6 +40,11 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
   private val subsequentAuditor = ApplicationMother.lastModifiedBy
 
   private var currentAuditor = firstAuditor
+
+  private val startOfTime = Instant.parse("2024-01-31T00:00:00Z")
+  private val timeslotClock = TestClock.timeslotClock(startOfTime)
+
+  override val testClock: TestClock get() = timeslotClock
 
   @BeforeEach
   override fun setUp() {
@@ -394,6 +404,94 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
         expectedEmployerName?.let { actual.forEach { assertThat(it.job.employer.name).isIn(expectedEmployerName) } }
       }
     }
+
+    @Nested
+    @DisplayName("And Audit/Revisions have been recorded")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    inner class AndAuditRevisionsEnabled {
+      @Test
+      fun `return correct counts at metric summary, when some of the applications were made with given prison ID`() {
+        assertCountApplicantAndJobByPrisonId(prisonMDI, 1, 3)
+      }
+
+      @Test
+      fun `return zeroes at metric summary, when all applications were made with other prison ID(s)`() {
+        assertCountApplicantAndJobByPrisonId(prisonXYZ, 0, 0)
+      }
+
+      @Test
+      fun `return correct counts at metric summary, when applications were made by multiple applicants of given prison ID`() {
+        assertCountApplicantAndJobByPrisonId(prisonABC, 5, 3)
+      }
+    }
+  }
+
+  @Nested
+  @DisplayName("Given some applications made of various stages in audit revisions")
+  @Transactional(propagation = Propagation.NOT_SUPPORTED)
+  inner class GivenApplicationsOfStagesInRevisions {
+    private val prisonId = prisonDSB
+    private lateinit var applications: List<Application>
+    private lateinit var applicationMap: MutableMap<EntityId, Application>
+
+    @BeforeEach
+    internal fun setUp() {
+      givenApplicationsMadeOrUpdatedInTenTimeslots()
+    }
+
+    @Test
+    fun `return correct counts at metric summary, when reporting period covers all`() {
+      assertCountApplicantAndJobByPrisonIdAndReportingPeriod(
+        prisonId = prisonId,
+        startTime = timeslotToTime(1),
+        endTime = timeslotToTime(10),
+        expectedApplicantCount = 2,
+        expectedJobCount = 3,
+      )
+    }
+
+    @Test
+    fun `return correct counts at metric summary, when reporting period last few timeslots only`() {
+      assertCountApplicantAndJobByPrisonIdAndReportingPeriod(
+        prisonId = prisonId,
+        startTime = timeslotToTime(8),
+        endTime = timeslotToTime(10),
+        expectedApplicantCount = 1,
+        expectedJobCount = 1,
+      )
+    }
+
+    private fun givenApplicationsMadeOrUpdatedInTenTimeslots() {
+      givenJobsHaveBeenCreated(amazonForkliftOperator, tescoWarehouseHandler, abcConstructionApprentice)
+
+      applications = applicationsFromPrisonDSB
+      applicationMap = mutableMapOf()
+      val updatesAtTimeT = sortedMapOf(
+        0 to emptyList(),
+        1 to listOf(applications[0], applications[3]),
+        2 to emptyList(),
+        3 to listOf(applications[1]),
+        4 to listOf(applications[0].copyAs(ApplicationStatus.SELECTED_FOR_INTERVIEW), applications[3]),
+        5 to listOf(
+          applications[0].copyAs(ApplicationStatus.INTERVIEW_BOOKED),
+          applications[1].copyAs(ApplicationStatus.SELECTED_FOR_INTERVIEW),
+        ),
+        6 to listOf(
+          applications[0].copyAs(ApplicationStatus.JOB_OFFER),
+          applications[1].copyAs(ApplicationStatus.INTERVIEW_BOOKED),
+        ),
+        7 to listOf(applications[1].copyAs(ApplicationStatus.UNSUCCESSFUL_AT_INTERVIEW), applications[2]),
+        8 to listOf(applications[3].copyAs(ApplicationStatus.APPLICATION_UNSUCCESSFUL)),
+        9 to emptyList(),
+        10 to emptyList(),
+      )
+      updatesAtTimeT.forEach { time, apps ->
+        timeslotClock.timeslot.set(time.toLong())
+        applicationRepository.saveAllAndFlush(apps).onEach { applicationMap[it.id] = it }
+      }
+    }
+
+    private fun Application.copyAs(status: ApplicationStatus) = this.copy(status = status.name)
   }
 
   private fun assertRevisionMetadata(
@@ -415,6 +513,47 @@ class ApplicationRepositoryShould : ApplicationRepositoryTestCase() {
       .isEqualTo(expected)
     assertThat(actual.job.id).isEqualTo(expected.job.id)
   }
+
+  private fun assertCountApplicantAndJobByPrisonIdAndReportingPeriod(
+    prisonId: String,
+    startTime: Instant,
+    endTime: Instant,
+    expectedApplicantCount: Long,
+    expectedJobCount: Long,
+  ) = assertCountApplicantAndJob(
+    prisonId = prisonId,
+    startTime = startTime,
+    endTime = endTime,
+    expectedApplicantCount = expectedApplicantCount,
+    expectedJobCount = expectedJobCount,
+  )
+
+  private fun assertCountApplicantAndJobByPrisonId(
+    prisonId: String,
+    expectedApplicantCount: Long,
+    expectedJobCount: Long,
+  ) = assertCountApplicantAndJob(prisonId, expectedApplicantCount, expectedJobCount)
+
+  private fun assertCountApplicantAndJob(
+    prisonId: String,
+    expectedApplicantCount: Long,
+    expectedJobCount: Long,
+    startTime: Instant? = null,
+    endTime: Instant? = null,
+  ) {
+    val metricSummary = applicationRepository.countApplicantAndJobByPrisonIdAndDateTimeBetween(
+      prisonId = prisonId,
+      startTime = startTime ?: startOfTime,
+      endTime = endTime ?: currentTime,
+    )
+
+    with(metricSummary) {
+      assertThat(numberOfApplicants).isEqualTo(expectedApplicantCount)
+      assertThat(numberOfJobs).isEqualTo(expectedJobCount)
+    }
+  }
+
+  private fun timeslotToTime(timeslot: Int) = startOfTime.plus(timeslot.toLong(), ChronoUnit.DAYS)
 
   override fun setCurrentAuditor(username: String) {
     super.setCurrentAuditor(username)

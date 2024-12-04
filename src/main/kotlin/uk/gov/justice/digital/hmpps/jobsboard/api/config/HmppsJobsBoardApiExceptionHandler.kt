@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.JobNotFoundException
 
@@ -107,6 +108,19 @@ class HmppsJobsBoardApiExceptionHandler {
         ),
       )
   }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException::class)
+  fun handleMethodArgumentTypeMismatchException(e: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponse> =
+    e.let {
+      val errorMessage = "Type mismatch: parameter '${e.name}' with value '${e.value}'"
+      ResponseEntity.status(BAD_REQUEST).body(
+        ErrorResponse(
+          status = BAD_REQUEST,
+          userMessage = "Validation failure: $errorMessage",
+          developerMessage = errorMessage,
+        ),
+      )
+    }.also { log.info("Method argument type mismatch exception: ${e.message}", e) }
 
   @ExceptionHandler(java.lang.Exception::class)
   fun handleException(e: java.lang.Exception): ResponseEntity<ErrorResponse?>? {

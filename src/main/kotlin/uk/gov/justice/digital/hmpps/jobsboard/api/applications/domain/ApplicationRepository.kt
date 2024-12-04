@@ -7,10 +7,14 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.history.RevisionRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure.ApplicationMetricsRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 
 @Repository
-interface ApplicationRepository : JpaRepository<Application, EntityId>, RevisionRepository<Application, EntityId, Long> {
+interface ApplicationRepository :
+  JpaRepository<Application, EntityId>,
+  RevisionRepository<Application, EntityId, Long>,
+  ApplicationMetricsRepository {
 
   fun findByPrisonNumberAndStatusIn(prisonNumber: String, status: List<String>, pageable: Pageable): Page<Application>
 
