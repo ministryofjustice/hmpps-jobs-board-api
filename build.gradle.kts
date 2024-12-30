@@ -1,27 +1,27 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.9"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.1.2"
   kotlin("plugin.spring") version "2.0.21"
   kotlin("plugin.jpa") version "2.0.21"
   id("jvm-test-suite")
   id("jacoco")
 }
 
+ext["logback.version"] = "1.5.15"
+
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.1.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.2.2")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.data:spring-data-envers")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-  testImplementation("org.springframework.boot:spring-boot-starter-test") {
-    testImplementation("org.xmlunit:xmlunit-core:2.10.0")
-  }
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.boot:spring-boot-testcontainers") {
     testImplementation("org.apache.commons:commons-compress:1.27.1")
   }
@@ -43,9 +43,7 @@ testing {
       dependencies {
         testType.set(TestSuiteType.INTEGRATION_TEST)
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
-        implementation("org.springframework.boot:spring-boot-starter-test") {
-          implementation("org.xmlunit:xmlunit-core:2.10.0")
-        }
+        implementation("org.springframework.boot:spring-boot-starter-test")
         implementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
         implementation("org.springframework.cloud:spring-cloud-contract-wiremock:4.1.4")
         implementation("io.jsonwebtoken:jjwt-impl:0.12.5")
