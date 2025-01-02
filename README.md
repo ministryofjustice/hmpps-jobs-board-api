@@ -4,46 +4,74 @@
 [![Docker Repository on Quay](https://quay.io/repository/hmpps/hmpps-jobs-board-api/status "Docker Repository on Quay")](https://quay.io/repository/hmpps/hmpps-jobs-board-api)
 [![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://hmpps-jobs-board-api-dev.hmpps.service.justice.gov.uk/webjars/swagger-ui/index.html?configUrl=/v3/api-docs)
 
-This is a skeleton project from which to create new kotlin projects from.
+# About
+The **Match Jobs and Manage Applications** - Jobs Board API provides backend services _Jobs Uploads_, _Employers Uploads_ and _Candidate Matching_.
+
+* The product page on Developer Portal: [Match Jobs and Manage Applications](https://developer-portal.hmpps.service.justice.gov.uk/products/candidate-matching-1)
+* The high level design on Confluence: [Match Jobs & Manage Applications - HLD](https://dsdmoj.atlassian.net/wiki/x/34NiJgE)
+
+## Team
+This backend service is developed and supported by `Education Skills & Work` team. They can be contacted via `#education-skills-work-employment-dev` on Slack.
+
+## Healthiness
+The integration service has a `/health` endpoint which indicates the service is up and running.
 
 # Instructions
 
-If this is a HMPPS project then the project will be created as part of bootstrapping - 
-see https://github.com/ministryofjustice/dps-project-bootstrap.
+## Running the application locally
+This backend application depends on several services to run.
 
-## Creating a CloudPlatform namespace
+| Dependency    | Description                                              | Default                              | Override Env Var                                                                  |
+|---------------|----------------------------------------------------------|--------------------------------------|-----------------------------------------------------------------------------------|
+| hmpps-auth    | OAuth2 API server for authenticating requests            |                                      | `API_BASE_URL_OAUTH`                                                              |
+| OS Places API | OS Places API for resolving postcodes                    | `https://api.os.uk/search/places/v1` | `OS_PLACES_API_URL`                                                               |
+| Database      | Database server (`postgres` on local, `RDS` on live env) |                                      | `DATABASE_NAME`, `DATABASE_ENDPOINT`, `DATABASE_USERNAME` and `DATABASE_PASSWORD` |
+|
 
-When deploying to a new namespace, you may wish to use this template kotlin project namespace as the basis for your new namespace:
+### Environment variables
+Defining env var for *local* run
 
-<https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-jobs-board-api>
+| Env. var.           | description                                              |
+|---------------------|----------------------------------------------------------|
+| `DATABASE_ENDPOINT` | Database Endpoint (address with port)                    |
+| `DATABASE_NAME`     | Database Name                                            |
+| `DATABASE_USERNAME` | Database user's username                                 |
+| `DATABASE_PASSWORD` | Database user's password                                 |
+| `OS_PLACES_API_KEY` | API access key for OS Places API (per given environment) |
+_*_ These values can be obtained from k8s secrets on `dev` env.
 
-Copy this folder, update all the existing namespace references, and submit a PR to the CloudPlatform team. Further instructions from the CloudPlatform team can be found here: <https://user-guide.cloud-platform.service.justice.gov.uk/#cloud-platform-user-guide>
+* Run with the Spring profile `dev` on local
+    * Set active profile via this environmental variable `spring.profiles.active=dev` or `SPRING_PROFILES_ACTIVE=dev`
+* API Spec:
+    * Goto `http://localhost:8080/swagger-ui/index.html` to explore the OpenAPI specifications
+* Checking endpoints
+    * Goto `http://localhost:8080/health` to check the service is up and running
 
-## Renaming from Hmpps Jobs Board Api - github Actions
+### Running with Docker
+* Define/Override env var.: define a `.env` file with () required env var from above; [Syntax of .env file](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/#env-file-syntax)
 
-Once the new repository is deployed. Navigate to the repository in github, and select the `Actions` tab.
-Click the link to `Enable Actions on this repository`.
+  * provide API key only
+    ```
+    OS_PLACES_API_KEY=<API-ACCESS-KEY>
+    ```
+  * Specify API key and override Auth URL 
+    ```
+    OS_PLACES_API_KEY=<API-ACCESS-KEY>
+    API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+    ```
+* Run this at CLI
+  ```bash
+  docker compose pull && docker compose up -d
+  ```
 
-Find the Action workflow named: `rename-project-create-pr` and click `Run workflow`.  This workflow will
-execute the `rename-project.bash` and create Pull Request for you to review.  Review the PR and merge.
+will build the application and run it with a `PostgreSQL` database within local docker.
 
-Note: ideally this workflow would run automatically however due to a recent change github Actions are not
-enabled by default on newly created repos. There is no way to enable Actions other then to click the button in the UI.
-If this situation changes we will update this project so that the workflow is triggered during the bootstrap project.
-Further reading: <https://github.community/t/workflow-isnt-enabled-in-repos-generated-from-template/136421>
-
-## Manually renaming from Hmpps Jobs Board Api
-
-Run the `rename-project.bash` and create a PR.
-
-The `rename-project.bash` script takes a single argument - the name of the project and calculates from it:
-* The main class name (project name converted to pascal case) 
-* The project description (class name with spaces between the words)
-* The main package name (project name with hyphens removed)
-
-It then performs a search and replace and directory renames so the project is ready to be used.
-
-## Filling in the `productId`
-
-To allow easy identification of an application, the product Id of the overall product should be set in `values.yaml`. 
-The Service Catalogue contains a list of these IDs and is currently in development here https://developer-portal.hmpps.service.justice.gov.uk/products
+### Running the application in Intellij
+* Run this at CLI
+  ```bash
+  docker compose pull && docker compose up --scale hmpps-jobs-board-api=0 -d
+  ```
+* will just start a docker instance of `PostgreSQL` database. The application should then be started with a `dev` active profile
+in Intellij. 
+  * supply required env var, e.g. <br>
+    `spring.profiles.active`=`dev`;`os.places.api.key`=`<API-ACCESS-KEY>`
