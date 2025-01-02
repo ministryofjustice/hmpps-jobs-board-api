@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "api.base.url.oauth",
+      "type": "java.lang.String",
+      "description": "URL for API Authentication and Authorisation (OAuth)"
+    }
+  ]
+}
