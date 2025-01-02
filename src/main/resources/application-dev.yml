@@ -3,9 +3,9 @@ server:
   port: 8080
 
 api:
-  base:
-    url:
-      oauth: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+  base.url.oauth: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
+os.places.api:
+  key: <OVERRIDE_THIS>
 
 management.endpoint:
   health.cache.time-to-live: 0
@@ -13,4 +13,9 @@ management.endpoint:
 
 spring:
   datasource:
-    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=prefer'
+    url: 'jdbc:postgresql://localhost:5432/job-board'
+    username: 'job-board'
+    password: 'job-board'
+  flyway:
+    user: 'job-board'
+    password: 'job-board'
