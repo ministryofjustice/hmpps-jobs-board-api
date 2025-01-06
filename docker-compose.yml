@@ -19,6 +19,7 @@ services:
       - DATABASE_USERNAME=job-board
       - DATABASE_PASSWORD=job-board
       - API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+      - OS_PLACES_API_KEY=<OVERRIDE_THIS>
 
   job-board-db:
     image: postgres:16.2
