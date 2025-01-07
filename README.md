@@ -41,7 +41,10 @@ Defining env var for *local* run
 _*_ These values can be obtained from k8s secrets on `dev` env.
 
 * Run with the Spring profile `dev` on local
-    * Set active profile via this environmental variable `spring.profiles.active=dev` or `SPRING_PROFILES_ACTIVE=dev`
+  * Set active profile via this environmental variable `spring.profiles.active=dev` or `SPRING_PROFILES_ACTIVE=dev`
+* Run with the Spring profile `local` group on local
+  * Set active profile to `local`: `spring.profiles.active=local` or `SPRING_PROFILES_ACTIVE=local`
+  * The `local` group will utilise `localstack` for Integration features with message queue (`SQS`) 
 * API Spec:
     * Goto `http://localhost:8080/swagger-ui/index.html` to explore the OpenAPI specifications
 * Checking endpoints
@@ -64,14 +67,15 @@ _*_ These values can be obtained from k8s secrets on `dev` env.
   docker compose pull && docker compose up -d
   ```
 
-will build the application and run it with a `PostgreSQL` database within local docker.
+will build the application and run it with a `PostgreSQL` database and `localstack` within local docker.
 
 ### Running the application in Intellij
 * Run this at CLI
   ```bash
   docker compose pull && docker compose up --scale hmpps-jobs-board-api=0 -d
   ```
-* will just start a docker instance of `PostgreSQL` database. The application should then be started with a `dev` active profile
+* will just start docker instance of `PostgreSQL` database and `localstack`. The application should then be started with a `dev` or `local` active profile
 in Intellij. 
-  * supply required env var, e.g. <br>
-    `spring.profiles.active`=`dev`;`os.places.api.key`=`<API-ACCESS-KEY>`
+  * supply required env var, e.g.
+    * `spring.profiles.active`=`dev`;`os.places.api.key`=`<API-ACCESS-KEY>`
+    * `spring.profiles.active`=`local`;`os.places.api.key`=`<API-ACCESS-KEY>`

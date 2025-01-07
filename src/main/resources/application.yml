@@ -28,6 +28,9 @@ spring:
 
   profiles:
     group:
+      local:
+        - "dev"
+        - "localstack"
       test:
         - "stdout"
   jpa:
@@ -90,6 +93,10 @@ management:
     info:
       cache:
         time-to-live: 2000ms
+
+api:
+  integration:
+    outboundQueueName: 'hmpps_jobs_board_integration_queue'
 
 os:
   places:
