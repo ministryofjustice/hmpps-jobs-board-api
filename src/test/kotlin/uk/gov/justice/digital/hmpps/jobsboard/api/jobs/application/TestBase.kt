@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
@@ -28,4 +30,6 @@ abstract class TestBase {
 
   @Mock
   protected lateinit var timeProvider: TimeProvider
+
+  protected val objectMapper: ObjectMapper = jacksonObjectMapper()
 }
