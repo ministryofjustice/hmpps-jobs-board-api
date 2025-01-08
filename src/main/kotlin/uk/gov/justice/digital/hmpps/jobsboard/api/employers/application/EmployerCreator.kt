@@ -88,7 +88,7 @@ class EmployerCreator(
        {
       "eventId": "$eventId",
       "eventType": "$eventType",
-      "timestamp": "$timestamp"
+      "timestamp": "$timestamp",
       "employerId": "$employerId"
       }
     """.trimIndent(),
