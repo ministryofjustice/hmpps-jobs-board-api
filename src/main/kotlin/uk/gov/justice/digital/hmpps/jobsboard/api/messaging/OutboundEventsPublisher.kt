@@ -2,13 +2,12 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.messaging
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
 import software.amazon.awssdk.services.sns.model.MessageAttributeValue
 import software.amazon.awssdk.services.sns.model.PublishRequest
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import java.util.function.Supplier
 
-@Component
+// @Component
 class OutboundEventsPublisher(
   private val objectMapper: ObjectMapper,
   private val hmppsQueueService: HmppsQueueService,

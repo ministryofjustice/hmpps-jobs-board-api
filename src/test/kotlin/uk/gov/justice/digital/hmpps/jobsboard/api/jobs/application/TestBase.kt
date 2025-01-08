@@ -5,6 +5,8 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.application.OutboundEventsService
+import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 
 @ExtendWith(MockitoExtension::class)
 abstract class TestBase {
@@ -17,4 +19,13 @@ abstract class TestBase {
 
   @Mock
   protected lateinit var postcodeLocationService: PostcodeLocationService
+
+  @Mock
+  protected lateinit var outboundEventsService: OutboundEventsService
+
+  @Mock
+  protected lateinit var uuidGenerator: UUIDGenerator
+
+  @Mock
+  protected lateinit var timeProvider: TimeProvider
 }
