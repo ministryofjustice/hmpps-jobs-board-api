@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.application.OutboundEventsService
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.domain.OutboundEvent
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
-import java.time.ZoneOffset
 
 @Service
 class EmployerCreator(
@@ -77,7 +76,7 @@ class EmployerCreator(
   ): EmployerEvent = EmployerEvent(
     eventId = uuidGenerator.generate(),
     eventType = employerEventType,
-    timestamp = timeProvider.now().toInstant(ZoneOffset.UTC),
+    timestamp = timeProvider.nowAsInstant(),
     employerId = employerId,
   )
 
