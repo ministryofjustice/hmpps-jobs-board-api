@@ -7,7 +7,6 @@ import software.amazon.awssdk.services.sns.model.PublishRequest
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import java.util.function.Supplier
 
-// @Component
 class OutboundEventsPublisher(
   private val objectMapper: ObjectMapper,
   private val hmppsQueueService: HmppsQueueService,

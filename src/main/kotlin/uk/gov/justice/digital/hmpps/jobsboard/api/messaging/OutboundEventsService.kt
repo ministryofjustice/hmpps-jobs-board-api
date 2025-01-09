@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobsBoardProfile
 import java.time.Instant
 import java.time.ZoneOffset
 
-// @Service
 class OutboundEventsService(
   var outboundEventsPublisher: OutboundEventsPublisher?,
 ) {
