@@ -159,10 +159,12 @@ class EmployerCreatorShould : TestBase() {
       verify(outboundEventsService).handleMessage(eventCaptor.capture())
       val actualEvent = eventCaptor.firstValue
 
-      assertThat(actualEvent.eventType).isEqualTo(EmployerEventType.CREATED.eventTypeCode)
+      val eventType = EmployerEventType.EMPLOYER_CREATED
+      assertThat(actualEvent.eventType).isEqualTo(eventType.type)
       assertThat(actualEvent.content).isNotBlank()
       val payloadJson = objectMapper.readTree(actualEvent.content)
       assertThat(payloadJson.get("employerId").textValue()).isEqualTo(createEmployerRequest.id)
+      assertThat(payloadJson.get("eventType").textValue()).isEqualTo(eventType.eventTypeCode)
     }
 
     @Test
@@ -175,10 +177,12 @@ class EmployerCreatorShould : TestBase() {
       verify(outboundEventsService).handleMessage(eventCaptor.capture())
       val actualEvent = eventCaptor.firstValue
 
-      assertThat(actualEvent.eventType).isEqualTo(EmployerEventType.UPDATED.eventTypeCode)
+      val eventType = EmployerEventType.EMPLOYER_UPDATED
+      assertThat(actualEvent.eventType).isEqualTo(eventType.type)
       assertThat(actualEvent.content).isNotBlank()
       val payloadJson = objectMapper.readTree(actualEvent.content)
       assertThat(payloadJson.get("employerId").textValue()).isEqualTo(createEmployerRequest.id)
+      assertThat(payloadJson.get("eventType").textValue()).isEqualTo(eventType.eventTypeCode)
     }
   }
 

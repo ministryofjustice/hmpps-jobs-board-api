@@ -31,14 +31,14 @@ class EmployerCreator(
   fun create(request: CreateEmployerRequest) {
     val jobs = emptyList<Job>()
     save(request, jobs)
-      .also { sendIntegrationEvent(request.id, EmployerEventType.CREATED) }
+      .also { sendIntegrationEvent(request.id, EmployerEventType.EMPLOYER_CREATED) }
   }
 
   fun update(request: CreateEmployerRequest) {
     val employer = employerRepository.findById(EntityId(request.id))
       .orElseThrow { NotFoundException("Employer not found: employerId = ${request.id}") }
     save(request, employer.jobs)
-      .also { sendIntegrationEvent(request.id, EmployerEventType.UPDATED) }
+      .also { sendIntegrationEvent(request.id, EmployerEventType.EMPLOYER_UPDATED) }
   }
 
   fun existsById(employerId: String): Boolean {
@@ -82,12 +82,12 @@ class EmployerCreator(
 
   private fun EmployerEvent.toOutboundEvent(): OutboundEvent = OutboundEvent(
     eventId = eventId,
-    eventType = eventType.eventTypeCode,
+    eventType = eventType.type,
     timestamp = timestamp,
     content = """
        {
       "eventId": "$eventId",
-      "eventType": "$eventType",
+      "eventType": "${eventType.eventTypeCode}",
       "timestamp": "$timestamp",
       "employerId": "$employerId"
       }
