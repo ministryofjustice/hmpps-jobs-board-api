@@ -5,6 +5,8 @@ api:
   base:
     url:
       oauth: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+  integration:
+    enabled: true
 
 management.endpoint:
   health.cache.time-to-live: 0
@@ -24,3 +26,9 @@ os:
     api:
       url: http://localhost:8093
       key: "os-places-api-key"
+
+hmpps.sqs:
+  provider: localstack
+  queues:
+    outboundintegrationqueue:
+      queueName: ${random.uuid}
