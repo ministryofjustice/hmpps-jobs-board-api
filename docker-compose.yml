@@ -34,7 +34,7 @@ services:
       - POSTGRES_DB=job-board
 
   localstack:
-    image: localstack/localstack:4.0.3
+    image: localstack/localstack:4
     container_name: job-board-localstack
     ports:
       - "4566:4566"             # LocalStack Gateway

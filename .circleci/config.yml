@@ -16,16 +16,21 @@ parameters:
   postgres-version:
     type: string
     default: "16.2"
+  localstack-version:
+    type: string
+    default: "4"
 
 jobs:
   validate:
     executor:
-      name: hmpps/java_postgres
+      name: hmpps/java_localstack_postgres_with_db_name
       jdk_tag: << pipeline.parameters.java-version >>
       postgres_tag: << pipeline.parameters.postgres-version >>
       postgres_db: "job-board"
       postgres_username: "job-board"
       postgres_password: "job-board"
+      localstack_tag: << pipeline.parameters.localstack-version >>
+      services: "sqs"
     environment:
       DATABASE_ENDPOINT: localhost
       DATABASE_NAME: job-board

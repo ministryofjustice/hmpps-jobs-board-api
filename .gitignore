@@ -71,3 +71,6 @@ sonar-project.properties
 
 #Helm
 **/Chart.lock
+
+# LocalStack
+/volume/

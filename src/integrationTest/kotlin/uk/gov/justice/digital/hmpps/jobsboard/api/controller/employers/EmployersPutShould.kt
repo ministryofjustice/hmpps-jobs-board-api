@@ -1,35 +1,62 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
+import org.assertj.core.api.Assertions.assertThat
+import org.awaitility.kotlin.await
+import org.awaitility.kotlin.matches
+import org.awaitility.kotlin.untilCallTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.argumentCaptor
+import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.responseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.sainsburys
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tescoLogistics
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerEventType
+import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
 
 class EmployersPutShould : EmployerTestCase() {
-  @Test
-  fun `create a valid Employer`() {
-    assertAddEmployerIsCreated(employer = sainsburys)
-  }
 
-  @Test
-  fun `not create an Employer with invalid UUID`() {
-    assertAddEmployerThrowsValidationError(
-      employerId = "invalid-uuid",
-      body = tesco.requestBody,
-      expectedResponse = """
-        {
-          "status":400,
-          "errorCode":null,
-          "userMessage":"Validation failure: createOrUpdate.id: Invalid UUID format",
-          "developerMessage":"createOrUpdate.id: Invalid UUID format",
-          "moreInfo":null
-        }
-      """.trimIndent(),
-    )
+  @Nested
+  @DisplayName("Given employer has not been created yet.")
+  inner class GivenEmployerNotCreatedYet {
+    @Test
+    fun `create a valid Employer`() {
+      assertAddEmployerIsCreated(employer = sainsburys)
+    }
+
+    @Test
+    fun `not create an Employer with invalid UUID`() {
+      assertAddEmployerThrowsValidationError(
+        employerId = "invalid-uuid",
+        body = tesco.requestBody,
+        expectedResponse = """
+          {
+            "status":400,
+            "errorCode":null,
+            "userMessage":"Validation failure: createOrUpdate.id: Invalid UUID format",
+            "developerMessage":"createOrUpdate.id: Invalid UUID format",
+            "moreInfo":null
+          }
+        """.trimIndent(),
+      )
+    }
+
+    @Test
+    fun `send event after employer created`() {
+      val employer = tescoLogistics
+      assertAddEmployerIsCreated(employer)
+
+      assertMessageHasBeenSent(
+        expectedEventType = EmployerEventType.EMPLOYER_CREATED,
+        expectedEmployerId = employer.id.id,
+      )
+    }
   }
 
   @Nested
@@ -71,6 +98,40 @@ class EmployersPutShould : EmployerTestCase() {
         """.trimIndent()
       }
       assertUpdateEmployerThrowsValidationError(employerId, employerBuilder.build().requestBody, expectedError)
+    }
+
+    @Test
+    fun `send event after employer updated`() {
+      val employer = sainsburys
+      assertUpdateEmployerIsOk(employerId = employer.id.id, body = employer.requestBody)
+
+      assertMessageHasBeenSent(
+        expectedEventType = EmployerEventType.EMPLOYER_UPDATED,
+        expectedEmployerId = employer.id.id,
+        expectedCount = 2,
+      )
+    }
+  }
+
+  private fun assertMessageHasBeenSent(
+    expectedEventType: EmployerEventType,
+    expectedEmployerId: String,
+    expectedCount: Int = 1,
+  ) {
+    await untilCallTo {
+      outboundSqsClientSpy.countMessagesOnQueue(outboundQueueUrl).get()
+    } matches { it == expectedCount }
+
+    val actualMessage = argumentCaptor<SendMessageRequest>()
+      .also { verify(outboundSqsClientSpy, times(expectedCount)).sendMessage(it.capture()) }
+      .lastValue
+
+    actualMessage.messageAttributes()["eventType"]!!.stringValue().let { eventTypeMessageAttribute ->
+      assertThat(eventTypeMessageAttribute).isEqualTo(expectedEventType.type)
+    }
+    objectMapper.readTree(actualMessage.messageBody()).let { messageBody ->
+      assertThat(messageBody["eventType"].textValue()).isEqualTo(expectedEventType.eventTypeCode)
+      assertThat(messageBody["employerId"].textValue()).isEqualTo(expectedEmployerId)
     }
   }
 }

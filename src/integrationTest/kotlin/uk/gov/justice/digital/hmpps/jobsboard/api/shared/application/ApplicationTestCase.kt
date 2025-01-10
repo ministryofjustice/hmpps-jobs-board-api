@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.shared.application
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.jayway.jsonpath.JsonPath
 import org.awaitility.Awaitility
 import org.flywaydb.core.Flyway
@@ -12,14 +14,14 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
+import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.AuditingHandler
 import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.http.HttpHeaders
@@ -31,6 +33,8 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -40,6 +44,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirec
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import org.springframework.transaction.annotation.Transactional
+import software.amazon.awssdk.services.sqs.SqsAsyncClient
+import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.OUTBOUND_QUEUE_ID
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.SqsTestConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.ARCHIVED_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.EXPRESSIONS_OF_INTEREST_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
@@ -53,12 +61,18 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepos
 import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.OSPlacesMockServer
+import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.LocalStackContainer
+import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.LocalStackContainer.setLocalStackProperties
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
+import uk.gov.justice.hmpps.sqs.HmppsQueueService
+import uk.gov.justice.hmpps.sqs.MissingQueueException
 import java.security.SecureRandom
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Period
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -72,6 +86,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 @AutoConfigureWireMock(port = 0)
 @Transactional
 @ActiveProfiles("test-containers-flyway")
+@Import(SqsTestConfig::class)
 abstract class ApplicationTestCase {
 
   @Autowired
@@ -83,13 +98,13 @@ abstract class ApplicationTestCase {
   @Autowired
   protected lateinit var jobRepository: JobRepository
 
-  @MockBean
+  @MockitoSpyBean
   protected lateinit var timeProvider: DefaultTimeProvider
 
-  @MockBean
+  @MockitoBean
   protected lateinit var dateTimeProvider: DateTimeProvider
 
-  @SpyBean
+  @MockitoSpyBean
   protected lateinit var auditingHandler: AuditingHandler
 
   @Autowired
@@ -98,9 +113,27 @@ abstract class ApplicationTestCase {
   @Autowired
   private lateinit var jwtAuthHelper: JwtAuthHelper
 
+  @Autowired
+  protected lateinit var hmppsQueueService: HmppsQueueService
+
+  private val outboundQueue by lazy {
+    hmppsQueueService.findByQueueId(OUTBOUND_QUEUE_ID)
+      ?: throw MissingQueueException("HmppsQueue $OUTBOUND_QUEUE_ID not found")
+  }
+
+  @MockitoSpyBean
+  @Qualifier("outboundintegrationqueue-sqs-client")
+  protected lateinit var outboundSqsClientSpy: SqsAsyncClient
+
+  protected val outboundQueueUrl by lazy { outboundQueue.queueUrl }
+
+  protected val objectMapper: ObjectMapper = jacksonObjectMapper()
+
   private val countOfGettingCurrentTime = intArrayOf(0)
 
+  val defaultTimezoneId = ZoneId.of("Z")
   val defaultCurrentTime: Instant = Instant.parse("2024-01-01T00:00:00Z")
+  val defaultCurrentTimeLocal: LocalDateTime get() = defaultCurrentTime.atZone(defaultTimezoneId).toLocalDateTime()
 
   private object Holder {
     val random: SecureRandom by lazy { SecureRandom() }
@@ -111,6 +144,7 @@ abstract class ApplicationTestCase {
 
   companion object {
     private val postgresContainer = PostgresContainer.flywayContainer
+    private val localStackContainer = LocalStackContainer.instance
 
     @JvmStatic
     @DynamicPropertySource
@@ -123,6 +157,8 @@ abstract class ApplicationTestCase {
         registry.add("spring.flyway.user", postgresContainer::getUsername)
         registry.add("spring.flyway.password", postgresContainer::getPassword)
       }
+
+      localStackContainer?.also { setLocalStackProperties(it, registry) }
     }
 
     lateinit var osPlacesMockServer: OSPlacesMockServer
@@ -166,7 +202,10 @@ abstract class ApplicationTestCase {
       osPlacesMockServer.stubGetAddressesForPostcode(it)
     }
 
-    whenever(timeProvider.now()).thenCallRealMethod()
+    outboundSqsClientSpy.purgeQueue(PurgeQueueRequest.builder().queueUrl(outboundQueueUrl).build()).get()
+
+    whenever(timeProvider.timezoneId).thenReturn(defaultTimezoneId)
+    whenever(timeProvider.now()).thenReturn(defaultCurrentTimeLocal)
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCurrentTime))
     countOfGettingCurrentTime[0] = 0
   }
