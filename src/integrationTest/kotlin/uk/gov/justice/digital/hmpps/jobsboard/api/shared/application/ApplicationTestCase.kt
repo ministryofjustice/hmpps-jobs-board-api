@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.shared.application
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.jayway.jsonpath.JsonPath
 import org.awaitility.Awaitility
 import org.flywaydb.core.Flyway
@@ -12,12 +14,14 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
+import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.AuditingHandler
 import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.http.HttpHeaders
@@ -40,6 +44,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirec
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import org.springframework.transaction.annotation.Transactional
+import software.amazon.awssdk.services.sqs.SqsAsyncClient
+import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.OUTBOUND_QUEUE_ID
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.SqsTestConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.ARCHIVED_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.EXPRESSIONS_OF_INTEREST_PATH_PREFIX
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
@@ -57,6 +65,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.LocalStackConta
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.LocalStackContainer.setLocalStackProperties
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
+import uk.gov.justice.hmpps.sqs.HmppsQueueService
+import uk.gov.justice.hmpps.sqs.MissingQueueException
 import java.security.SecureRandom
 import java.time.Instant
 import java.time.LocalDate
@@ -76,6 +86,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 @AutoConfigureWireMock(port = 0)
 @Transactional
 @ActiveProfiles("test-containers-flyway")
+@Import(SqsTestConfig::class)
 abstract class ApplicationTestCase {
 
   @Autowired
@@ -101,6 +112,22 @@ abstract class ApplicationTestCase {
 
   @Autowired
   private lateinit var jwtAuthHelper: JwtAuthHelper
+
+  @Autowired
+  protected lateinit var hmppsQueueService: HmppsQueueService
+
+  private val outboundQueue by lazy {
+    hmppsQueueService.findByQueueId(OUTBOUND_QUEUE_ID)
+      ?: throw MissingQueueException("HmppsQueue $OUTBOUND_QUEUE_ID not found")
+  }
+
+  @MockitoSpyBean
+  @Qualifier("outboundintegrationqueue-sqs-client")
+  protected lateinit var outboundSqsClientSpy: SqsAsyncClient
+
+  protected val outboundQueueUrl by lazy { outboundQueue.queueUrl }
+
+  protected val objectMapper: ObjectMapper = jacksonObjectMapper()
 
   private val countOfGettingCurrentTime = intArrayOf(0)
 
@@ -174,6 +201,8 @@ abstract class ApplicationTestCase {
     arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
       osPlacesMockServer.stubGetAddressesForPostcode(it)
     }
+
+    outboundSqsClientSpy.purgeQueue(PurgeQueueRequest.builder().queueUrl(outboundQueueUrl).build()).get()
 
     whenever(timeProvider.timezoneId).thenReturn(defaultTimezoneId)
     whenever(timeProvider.now()).thenReturn(defaultCurrentTimeLocal)
