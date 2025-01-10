@@ -52,12 +52,7 @@ class EmployersPutShould : EmployerTestCase() {
       val employer = tescoLogistics
       assertAddEmployerIsCreated(employer)
 
-      await untilCallTo { outboundSqsClientSpy.countMessagesOnQueue(outboundQueueUrl).get() } matches { it == 1 }
-      val messageCaptor = argumentCaptor<SendMessageRequest>()
-        .also { verify(outboundSqsClientSpy).sendMessage(it.capture()) }
-
-      assertMessageIsExpected(
-        actualMessage = messageCaptor.firstValue,
+      assertMessageHasBeenSent(
         expectedEventType = EmployerEventType.EMPLOYER_CREATED,
         expectedEmployerId = employer.id.id,
       )
@@ -110,23 +105,27 @@ class EmployersPutShould : EmployerTestCase() {
       val employer = sainsburys
       assertUpdateEmployerIsOk(employerId = employer.id.id, body = employer.requestBody)
 
-      await untilCallTo { outboundSqsClientSpy.countMessagesOnQueue(outboundQueueUrl).get() } matches { it == 2 }
-      val messageCaptor = argumentCaptor<SendMessageRequest>()
-        .also { verify(outboundSqsClientSpy, times(2)).sendMessage(it.capture()) }
-
-      assertMessageIsExpected(
-        actualMessage = messageCaptor.secondValue,
+      assertMessageHasBeenSent(
         expectedEventType = EmployerEventType.EMPLOYER_UPDATED,
         expectedEmployerId = employer.id.id,
+        expectedCount = 2,
       )
     }
   }
 
-  private fun assertMessageIsExpected(
-    actualMessage: SendMessageRequest,
+  private fun assertMessageHasBeenSent(
     expectedEventType: EmployerEventType,
     expectedEmployerId: String,
+    expectedCount: Int = 1,
   ) {
+    await untilCallTo {
+      outboundSqsClientSpy.countMessagesOnQueue(outboundQueueUrl).get()
+    } matches { it == expectedCount }
+
+    val actualMessage = argumentCaptor<SendMessageRequest>()
+      .also { verify(outboundSqsClientSpy, times(expectedCount)).sendMessage(it.capture()) }
+      .lastValue
+
     actualMessage.messageAttributes()["eventType"]!!.stringValue().let { eventTypeMessageAttribute ->
       assertThat(eventTypeMessageAttribute).isEqualTo(expectedEventType.type)
     }
