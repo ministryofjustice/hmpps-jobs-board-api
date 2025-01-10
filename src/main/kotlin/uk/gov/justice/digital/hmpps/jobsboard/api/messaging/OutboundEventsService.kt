@@ -1,12 +1,10 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.messaging
 
-import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.CapturedSpringConfigValues
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.JobsBoardProfile
 import java.time.Instant
 import java.time.ZoneOffset
 
-@Service
 class OutboundEventsService(
   var outboundEventsPublisher: OutboundEventsPublisher?,
 ) {

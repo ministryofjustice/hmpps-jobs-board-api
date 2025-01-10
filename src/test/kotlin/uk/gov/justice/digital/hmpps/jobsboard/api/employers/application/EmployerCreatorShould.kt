@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.employers.application
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -11,8 +13,11 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerEventType
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.TestBase
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.domain.OutboundEvent
+import java.time.Instant
 import java.util.*
 import kotlin.test.Test
 
@@ -58,6 +63,8 @@ class EmployerCreatorShould : TestBase() {
 
   @Test
   fun `save an Employer with valid details`() {
+    wheneverCreateOutboundEvent()
+
     employerCreator.create(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
@@ -73,6 +80,8 @@ class EmployerCreatorShould : TestBase() {
 
   @Test
   fun `save an Employer with current time`() {
+    wheneverCreateOutboundEvent()
+
     employerCreator.create(createEmployerRequest)
 
     val employerCaptor = argumentCaptor<Employer>()
@@ -135,5 +144,56 @@ class EmployerCreatorShould : TestBase() {
 
     verify(employerRepository, never()).save(any(Employer::class.java))
     assertThat(exception.message).isEqualTo("EntityId cannot be null: {${createEmployerRequest.id}}")
+  }
+
+  @Nested
+  @DisplayName("Given Integration has been enabled")
+  inner class GivenIntegrationEnabled {
+    @Test
+    fun `send event after saving a new Employer`() {
+      wheneverCreateOutboundEvent()
+
+      employerCreator.create(createEmployerRequest)
+
+      assertEvent(EmployerEventType.EMPLOYER_CREATED)
+    }
+
+    @Test
+    fun `send event after saving an existing Employer`() {
+      givenEmployerCreated()
+
+      employerCreator.update(createEmployerRequest)
+
+      assertEvent(EmployerEventType.EMPLOYER_UPDATED)
+    }
+
+    private fun assertEvent(eventType: EmployerEventType) {
+      val eventCaptor = argumentCaptor<OutboundEvent>()
+      verify(outboundEventsService).handleMessage(eventCaptor.capture())
+      val actualEvent = eventCaptor.firstValue
+
+      assertThat(actualEvent.eventType).isEqualTo(eventType.type)
+      assertThat(actualEvent.content).isNotBlank()
+      val payloadJson = objectMapper.readTree(actualEvent.content)
+      assertThat(payloadJson.get("employerId").textValue()).isEqualTo(createEmployerRequest.id)
+      assertThat(payloadJson.get("eventType").textValue()).isEqualTo(eventType.eventTypeCode)
+    }
+  }
+
+  private fun wheneverCreateOutboundEvent() {
+    whenever(uuidGenerator.generate()).thenReturn(UUID.randomUUID().toString())
+    whenever(timeProvider.nowAsInstant()).thenReturn(Instant.now())
+  }
+
+  private fun givenEmployerCreated() {
+    wheneverCreateOutboundEvent()
+    val employer = Employer(
+      id = EntityId(createEmployerRequest.id),
+      name = createEmployerRequest.name,
+      description = createEmployerRequest.description,
+      sector = createEmployerRequest.sector,
+      status = createEmployerRequest.status,
+    )
+    whenever(employerRepository.findById(employer.id)).thenReturn(Optional.of(employer))
   }
 }

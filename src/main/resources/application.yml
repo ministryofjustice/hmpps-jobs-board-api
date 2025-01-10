@@ -96,6 +96,7 @@ management:
 
 api:
   integration:
+    enabled: false
     outboundQueueName: 'hmpps_jobs_board_integration_queue'
 
 os:
