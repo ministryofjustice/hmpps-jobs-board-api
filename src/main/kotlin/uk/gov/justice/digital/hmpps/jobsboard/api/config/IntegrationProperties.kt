@@ -5,5 +5,4 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(prefix = "api.integration")
 data class IntegrationProperties(
   val enabled: Boolean = false,
-  val outboundQueueName: String,
 )
