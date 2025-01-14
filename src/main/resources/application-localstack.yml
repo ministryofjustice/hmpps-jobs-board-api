@@ -46,7 +46,7 @@ hmpps.sqs:
   provider: localstack
   queues:
     outboundintegrationqueue:
-      queueName: ${api.integration.outboundQueueName}
+      queueName: hmpps_jobs_board_integration_queue
 
 #    hmppseventtestqueue:
 #      queueName: ${random.uuid}
