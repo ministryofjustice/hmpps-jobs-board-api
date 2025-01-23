@@ -21,7 +21,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.ExpressionOfI
 class ExpressionsOfInterestPut(
   private val expressionOfInterestCreator: ExpressionOfInterestCreator,
 ) {
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__EOI__RW')")
   @PutMapping("/{prisonNumber}")
   fun create(
     @PathVariable
