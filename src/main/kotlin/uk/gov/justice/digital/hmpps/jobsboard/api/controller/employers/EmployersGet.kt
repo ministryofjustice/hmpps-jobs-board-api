@@ -31,11 +31,11 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 class EmployersGet(
   private val employerRetriever: EmployerRetriever,
 ) {
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__EMPLOYERS__RO')")
   @GetMapping("/{id}")
   @Operation(
     summary = "Retrieve an Employer ",
-    description = "Retrieve a Jobs Board Employer. Currently requires roles <b>ROLE_EDUCATION_WORK_PLAN_VIEW</b> or <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b>",
+    description = "Retrieve a Jobs Board Employer. Currently requires roles <b>ROLE_EDUCATION_WORK_PLAN_VIEW</b>, <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b> or <b>ROLE_JOBS_BOARD__EMPLOYERS__RO</b>",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -71,11 +71,11 @@ class EmployersGet(
     return ResponseEntity.ok().body(GetEmployerResponse.from(employer))
   }
 
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__EMPLOYERS__RO')")
   @GetMapping("")
   @Operation(
     summary = "Retrieve all employers",
-    description = "Retrieve all employers. Currently requires role <b>ROLE_EDUCATION_WORK_PLAN_VIEW</b> or <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b>",
+    description = "Retrieve all employers. Currently requires role <b>ROLE_EDUCATION_WORK_PLAN_VIEW</b>, <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b> or <b>ROLE_JOBS_BOARD__EMPLOYERS__RO</b>",
     responses = [
       ApiResponse(
         responseCode = "200",

@@ -20,7 +20,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.ExpressionOfI
 class ExpressionsOfInterestDelete(
   private val expressionOfInterestDeleter: ExpressionOfInterestDeleter,
 ) {
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__EOI__RW')")
   @DeleteMapping("/{prisonNumber}")
   fun delete(
     @PathVariable
