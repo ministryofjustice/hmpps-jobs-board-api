@@ -9,14 +9,16 @@ import org.springframework.data.jpa.domain.JpaSort
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.CALC_DISTANCE_EXPRESSION
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 import java.time.LocalDate
 
 @Service
 class MatchingCandidateJobRetriever(
   private val matchingCandidateJobsRepository: MatchingCandidateJobRepository,
   private val postcodeLocationService: PostcodeLocationService,
+  private val timeProvider: TimeProvider,
 ) {
-  private val today: LocalDate get() = LocalDate.now()
+  private val today: LocalDate get() = timeProvider.today()
 
   fun retrieveAllJobs(
     prisonNumber: String,

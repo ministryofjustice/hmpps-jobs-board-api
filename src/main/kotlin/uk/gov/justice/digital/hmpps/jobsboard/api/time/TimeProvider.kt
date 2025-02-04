@@ -10,4 +10,6 @@ interface TimeProvider {
   fun now(): LocalDateTime
 
   fun nowAsInstant(): Instant = now().atZone(timezoneId).toInstant()
+
+  fun today() = now().toLocalDate()
 }
