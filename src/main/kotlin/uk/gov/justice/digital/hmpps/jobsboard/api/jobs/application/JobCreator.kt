@@ -1,10 +1,18 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobEvent
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobEventType
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.application.OutboundEventsService
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.domain.OutboundEvent
+import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -14,15 +22,25 @@ class JobCreator(
   private val jobRepository: JobRepository,
   private val employerRepository: EmployerRepository,
   private val postcodeLocationService: PostcodeLocationService,
+  @Autowired(required = false)
+  private val outboundEventsService: OutboundEventsService?,
+  private val uuidGenerator: UUIDGenerator,
+  private val timeProvider: TimeProvider,
 ) {
+  private companion object {
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
+
   fun create(request: CreateJobRequest) {
     save(request)
+      .also { sendIntegrationEvent(request.id, JobEventType.JOB_CREATED) }
   }
 
   fun update(request: CreateJobRequest) {
     val job = jobRepository.findById(EntityId(request.id))
       .orElseThrow { IllegalArgumentException("Job not found: id = ${request.id}") }
     save(request, job)
+      .also { sendIntegrationEvent(request.id, JobEventType.JOB_UPDATED) }
   }
 
   private fun save(
@@ -88,4 +106,40 @@ class JobCreator(
     }
     return zonedDateTime
   }
+
+  private fun sendIntegrationEvent(jobId: String, eventType: JobEventType) {
+    outboundEventsService?.let { service ->
+      try {
+        makeEventForJob(jobId, eventType).toOutboundEvent().let { event ->
+          service.handleMessage(event)
+        }
+      } catch (e: Exception) {
+        log.error("Fail to send integration event: jobId=$jobId; eventType=$eventType", e)
+      }
+    }
+  }
+
+  private fun makeEventForJob(
+    jobId: String,
+    jobEventType: JobEventType,
+  ): JobEvent = JobEvent(
+    eventId = uuidGenerator.generate(),
+    eventType = jobEventType,
+    timestamp = timeProvider.nowAsInstant(),
+    jobId = jobId,
+  )
+
+  private fun JobEvent.toOutboundEvent(): OutboundEvent = OutboundEvent(
+    eventId = eventId,
+    eventType = eventType.type,
+    timestamp = timestamp,
+    content = """
+       {
+      "eventId": "$eventId",
+      "eventType": "${eventType.eventTypeCode}",
+      "timestamp": "$timestamp",
+      "jobId": "$jobId"
+      }
+    """.trimIndent(),
+  )
 }
