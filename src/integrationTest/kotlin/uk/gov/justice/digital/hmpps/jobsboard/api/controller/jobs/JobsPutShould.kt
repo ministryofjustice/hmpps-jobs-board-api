@@ -148,8 +148,9 @@ class JobsPutShould : JobsTestCase() {
       .also { verify(outboundSqsClientSpy, times(expectedCount)).sendMessage(it.capture()) }
       .lastValue
 
-    actualMessage.messageAttributes()["eventType"]!!.stringValue().let { eventTypeMessageAttribute ->
-      assertThat(eventTypeMessageAttribute).isEqualTo(expectedEventType.type)
+    actualMessage.messageAttributes().let {
+      assertThat(it["eventType"]!!.stringValue()).isEqualTo(expectedEventType.type)
+      assertThat(it["eventId"]!!.stringValue()).isNotNull
     }
     objectMapper.readTree(actualMessage.messageBody()).let { messageBody ->
       assertThat(messageBody["eventType"].textValue()).isEqualTo(expectedEventType.eventTypeCode)

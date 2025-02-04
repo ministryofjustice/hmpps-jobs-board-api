@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.shared.domain.OutboundEvent
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.domain.OutboundEventsPublisher
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.MissingQueueException
-import uk.gov.justice.hmpps.sqs.eventTypeMessageAttributes
+import software.amazon.awssdk.services.sqs.model.MessageAttributeValue as SqsMessageAttributeValue
 
 /***
  * OutboundEventsQueuePublisher
@@ -30,11 +30,26 @@ class OutboundEventsQueuePublisher(
       SendMessageRequest.builder()
         .queueUrl(outboundQueue.queueUrl)
         .messageBody(event.content)
-        .eventTypeMessageAttributes(event.eventType)
+        .messageAttributes(event.messageAttributes())
         .build()
         .also { log.debug("Send event {} to outbound queue", event.eventId) },
     ).get().let {
       log.info("Sent event ${event.eventId} to outbound queue")
     }
   }
+
+  private fun OutboundEvent.messageAttributes() = eventAttributesToMessageAttributes(eventType, eventId)
+
+  private fun eventAttributesToMessageAttributes(
+    eventType: String,
+    eventId: String? = null,
+    noTracing: Boolean = false,
+  ): Map<String, SqsMessageAttributeValue> = buildMap {
+    put("eventType", attributeValue(eventType))
+    eventId?.let { put("eventId", attributeValue(it)) }
+    if (noTracing) put("noTracing", attributeValue("true"))
+  }
+
+  private fun attributeValue(value: String) =
+    SqsMessageAttributeValue.builder().dataType("String").stringValue(value).build()
 }
