@@ -17,7 +17,7 @@ enum class JobEventType(val type: String, val eventTypeCode: String, val descrip
   ),
   JOB_UPDATED(
     type = "mjma-jobs-board.job.updated",
-    eventTypeCode = "JobCreated",
+    eventTypeCode = "JobUpdated",
     description = "A Job has been updated on the MJMA Jobs Board service",
   ),
 }
