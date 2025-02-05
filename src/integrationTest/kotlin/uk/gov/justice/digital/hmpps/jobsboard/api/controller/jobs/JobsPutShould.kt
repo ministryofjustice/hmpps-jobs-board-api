@@ -1,6 +1,14 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
+import org.assertj.core.api.Assertions.assertThat
+import org.awaitility.kotlin.await
+import org.awaitility.kotlin.matches
+import org.awaitility.kotlin.untilCallTo
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.argumentCaptor
+import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.builder
@@ -8,6 +16,9 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobEventType
+import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
 
 class JobsPutShould : JobsTestCase() {
   @Test
@@ -40,8 +51,21 @@ class JobsPutShould : JobsTestCase() {
   }
 
   @Test
+  fun `send event after job created`() {
+    val job = tescoWarehouseHandler
+    assertAddEmployerIsCreated(job.employer)
+    assertAddJobIsCreated(job)
+
+    // first message is employer created, second message shall be job created.
+    assertMessageHasBeenSent(
+      expectedEventType = JobEventType.JOB_CREATED,
+      expectedJobId = job.id.id,
+      expectedCount = 2,
+    )
+  }
+
+  @Test
   fun `update an existing Job`() {
-    val employerId = "bf392249-b360-4e3e-81a0-8497047987e8"
     assertAddEmployerIsCreated(employer = amazon)
 
     val jobId = assertAddJobIsCreated(job = amazonForkliftOperator)
@@ -93,5 +117,44 @@ class JobsPutShould : JobsTestCase() {
       jobId = jobId,
       expectedResponse = amazonForkliftOperator.requestBody,
     )
+  }
+
+  @Test
+  fun `send event after job updated`() {
+    val job = tescoWarehouseHandler
+    assertAddEmployerIsCreated(job.employer)
+    assertAddJobIsCreated(job)
+
+    assertUpdateJobIsOk(jobId = job.id.id, body = job.requestBody)
+
+    // first message is employer created, second message is job created. third message shall be job updated.
+    assertMessageHasBeenSent(
+      expectedEventType = JobEventType.JOB_UPDATED,
+      expectedJobId = job.id.id,
+      expectedCount = 3,
+    )
+  }
+
+  private fun assertMessageHasBeenSent(
+    expectedEventType: JobEventType,
+    expectedJobId: String,
+    expectedCount: Int = 1,
+  ) {
+    await untilCallTo {
+      outboundSqsClientSpy.countMessagesOnQueue(outboundQueueUrl).get()
+    } matches { it == expectedCount }
+
+    val actualMessage = argumentCaptor<SendMessageRequest>()
+      .also { verify(outboundSqsClientSpy, times(expectedCount)).sendMessage(it.capture()) }
+      .lastValue
+
+    actualMessage.messageAttributes().let {
+      assertThat(it["eventType"]!!.stringValue()).isEqualTo(expectedEventType.type)
+      assertThat(it["eventId"]!!.stringValue()).isNotNull
+    }
+    objectMapper.readTree(actualMessage.messageBody()).let { messageBody ->
+      assertThat(messageBody["eventType"].textValue()).isEqualTo(expectedEventType.eventTypeCode)
+      assertThat(messageBody["jobId"].textValue()).isEqualTo(expectedJobId)
+    }
   }
 }
