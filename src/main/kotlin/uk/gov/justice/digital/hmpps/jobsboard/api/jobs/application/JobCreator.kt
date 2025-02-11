@@ -92,9 +92,7 @@ class JobCreator(
     )
   }
 
-  fun existsById(jobId: String): Boolean {
-    return jobRepository.existsById(EntityId(jobId))
-  }
+  fun existsById(jobId: String): Boolean = jobRepository.existsById(EntityId(jobId))
 
   private fun String.toLocalDate(): LocalDate? {
     val formatter = DateTimeFormatter.ISO_LOCAL_DATE

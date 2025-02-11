@@ -33,9 +33,7 @@ abstract class JobRepositoryTestCase : RepositoryTestCase() {
     jobs.forEach { jobRepository.save(it) }
   }
 
-  protected fun Job.archivedBy(prisonNumber: String): Archived =
-    Archived(id = JobPrisonerId(this.id, prisonNumber), job = this)
+  protected fun Job.archivedBy(prisonNumber: String): Archived = Archived(id = JobPrisonerId(this.id, prisonNumber), job = this)
 
-  protected fun Job.registerExpressionOfInterest(prisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = JobPrisonerId(this.id, prisonNumber), job = this)
+  protected fun Job.registerExpressionOfInterest(prisonNumber: String): ExpressionOfInterest = ExpressionOfInterest(id = JobPrisonerId(this.id, prisonNumber), job = this)
 }

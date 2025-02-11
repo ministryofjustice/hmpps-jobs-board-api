@@ -287,15 +287,12 @@ class ExpressedInterestGetShould : ExpressedInterestTestCase() {
       }
     }
 
-    private fun expectedResponses(jobs: List<Job>) =
-      expectedResponses(prisonNumber, *jobs.toTypedArray())
+    private fun expectedResponses(jobs: List<Job>) = expectedResponses(prisonNumber, *jobs.toTypedArray())
 
     private fun expectedResponses(vararg jobs: Job): List<String> = expectedResponses(prisonNumber, *jobs)
 
-    private fun expectedResponses(prisonNumber: String, vararg jobs: Job): List<String> {
-      return jobs.map {
-        it.candidateMatchingItemListResponseBody(prisonNumber, distances[it.id]!!)
-      }
+    private fun expectedResponses(prisonNumber: String, vararg jobs: Job): List<String> = jobs.map {
+      it.candidateMatchingItemListResponseBody(prisonNumber, distances[it.id]!!)
     }
   }
 

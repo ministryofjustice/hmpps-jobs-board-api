@@ -140,15 +140,11 @@ class ExpressionOfInterestCreatorShould : TestBase() {
     obtainTheJobJustCreated()
   }
 
-  private fun obtainTheJobJustCreated(): Job {
-    return deepCopy(amazonForkliftOperator).also { job ->
-      whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
-    }
+  private fun obtainTheJobJustCreated(): Job = deepCopy(amazonForkliftOperator).also { job ->
+    whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
   }
 
-  private fun makeExpressionOfInterestId(jobId: String, prisonNumber: String) =
-    JobPrisonerId(EntityId(jobId), prisonNumber)
+  private fun makeExpressionOfInterestId(jobId: String, prisonNumber: String) = JobPrisonerId(EntityId(jobId), prisonNumber)
 
-  private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = JobPrisonerId(job.id, prisonNumber), job = job)
+  private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest = ExpressionOfInterest(id = JobPrisonerId(job.id, prisonNumber), job = job)
 }

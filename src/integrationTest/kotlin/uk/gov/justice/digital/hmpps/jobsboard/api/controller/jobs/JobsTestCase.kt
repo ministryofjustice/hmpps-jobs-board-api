@@ -33,24 +33,20 @@ class JobsTestCase : EmployerTestCase() {
 
   protected fun assertAddJobIsCreated(
     job: Job,
-  ): String {
-    return assertAddJob(
-      id = job.id.id,
-      body = job.requestBody,
-      expectedStatus = CREATED,
-    )
-  }
+  ): String = assertAddJob(
+    id = job.id.id,
+    body = job.requestBody,
+    expectedStatus = CREATED,
+  )
 
   protected fun assertUpdateJobIsOk(
     jobId: String,
     body: String,
-  ): String {
-    return assertAddJob(
-      id = jobId,
-      body = body,
-      expectedStatus = OK,
-    )
-  }
+  ): String = assertAddJob(
+    id = jobId,
+    body = body,
+    expectedStatus = OK,
+  )
 
   protected fun assertAddJobThrowsValidationError(
     jobId: String? = null,

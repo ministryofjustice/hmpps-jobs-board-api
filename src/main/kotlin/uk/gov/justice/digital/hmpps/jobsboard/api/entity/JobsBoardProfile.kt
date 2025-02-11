@@ -94,7 +94,5 @@ data class JobsBoardProfile(
     return result
   }
 
-  override fun toString(): String {
-    return "JobsBoardProfile(offenderId='$offenderId', prisonId=$prisonId, prisonName=$prisonName, createdBy=$createdBy, createdDateTime=$createdDateTime, modifiedBy=$modifiedBy, schemaVersion=$schemaVersion, modifiedDateTime=$modifiedDateTime)"
-  }
+  override fun toString(): String = "JobsBoardProfile(offenderId='$offenderId', prisonId=$prisonId, prisonName=$prisonName, createdBy=$createdBy, createdDateTime=$createdDateTime, modifiedBy=$modifiedBy, schemaVersion=$schemaVersion, modifiedDateTime=$modifiedDateTime)"
 }

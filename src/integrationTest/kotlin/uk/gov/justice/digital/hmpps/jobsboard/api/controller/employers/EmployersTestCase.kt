@@ -16,24 +16,20 @@ class EmployerTestCase : ApplicationTestCase() {
 
   fun assertAddEmployerIsCreated(
     employer: Employer,
-  ): String {
-    return assertAddEmployer(
-      id = employer.id.id,
-      body = employer.requestBody,
-      expectedStatus = CREATED,
-    )
-  }
+  ): String = assertAddEmployer(
+    id = employer.id.id,
+    body = employer.requestBody,
+    expectedStatus = CREATED,
+  )
 
   protected fun assertUpdateEmployerIsOk(
     employerId: String,
     body: String,
-  ): String {
-    return assertAddEmployer(
-      id = employerId,
-      body = body,
-      expectedStatus = OK,
-    )
-  }
+  ): String = assertAddEmployer(
+    id = employerId,
+    body = body,
+    expectedStatus = OK,
+  )
 
   protected fun assertAddEmployerThrowsValidationError(
     employerId: String? = null,

@@ -44,6 +44,5 @@ class PostcodeRepositoryShould : RepositoryTestCase() {
     }
   }
 
-  private fun postcode(postcode: String, xCoordinate: Double, yCoordinate: Double) =
-    Postcode(EntityId(), postcode, xCoordinate, yCoordinate)
+  private fun postcode(postcode: String, xCoordinate: Double, yCoordinate: Double) = Postcode(EntityId(), postcode, xCoordinate, yCoordinate)
 }

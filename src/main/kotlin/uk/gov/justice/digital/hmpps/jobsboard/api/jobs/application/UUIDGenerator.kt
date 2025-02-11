@@ -5,7 +5,5 @@ import java.util.*
 
 @Service
 class UUIDGenerator {
-  fun generate(): String {
-    return UUID.randomUUID().toString()
-  }
+  fun generate(): String = UUID.randomUUID().toString()
 }

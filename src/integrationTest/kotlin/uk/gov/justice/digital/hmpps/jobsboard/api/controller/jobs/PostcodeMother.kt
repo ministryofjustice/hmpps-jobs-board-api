@@ -25,8 +25,7 @@ object PostcodeMother {
     postcode("E1 6AN", 533397.00, 181741.00),
   ).associateBy({ it.code }, { it })
 
-  private fun postcode(postcode: String, xCoordinate: Double, yCoordinate: Double) =
-    Postcode(EntityId(), postcode, xCoordinate, yCoordinate)
+  private fun postcode(postcode: String, xCoordinate: Double, yCoordinate: Double) = Postcode(EntityId(), postcode, xCoordinate, yCoordinate)
 
   class Builder {
     var id: EntityId = EntityId(randomUUID().toString())
@@ -48,13 +47,11 @@ object PostcodeMother {
       return this
     }
 
-    fun build(): Postcode {
-      return Postcode(
-        id = this.id,
-        code = this.code,
-        xCoordinate = this.xCoordinate,
-        yCoordinate = this.yCoordinate,
-      )
-    }
+    fun build(): Postcode = Postcode(
+      id = this.id,
+      code = this.code,
+      xCoordinate = this.xCoordinate,
+      yCoordinate = this.yCoordinate,
+    )
   }
 }

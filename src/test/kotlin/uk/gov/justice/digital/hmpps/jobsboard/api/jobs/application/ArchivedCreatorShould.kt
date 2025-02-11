@@ -140,15 +140,11 @@ class ArchivedCreatorShould : TestBase() {
     obtainTheJobJustCreated()
   }
 
-  private fun obtainTheJobJustCreated(): Job {
-    return deepCopy(amazonForkliftOperator).also { job ->
-      whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
-    }
+  private fun obtainTheJobJustCreated(): Job = deepCopy(amazonForkliftOperator).also { job ->
+    whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
   }
 
-  private fun makeArchivedId(jobId: String, prisonNumber: String) =
-    JobPrisonerId(EntityId(jobId), prisonNumber)
+  private fun makeArchivedId(jobId: String, prisonNumber: String) = JobPrisonerId(EntityId(jobId), prisonNumber)
 
-  private fun makeArchived(job: Job, prisonNumber: String): Archived =
-    Archived(id = JobPrisonerId(job.id, prisonNumber), job = job)
+  private fun makeArchived(job: Job, prisonNumber: String): Archived = Archived(id = JobPrisonerId(job.id, prisonNumber), job = job)
 }

@@ -16,18 +16,16 @@ class ApplicationRetriever(
     status: List<String>? = null,
     jobTitleOrEmployerName: String? = null,
     pageable: Pageable,
-  ): Page<Application> {
-    return when {
-      prisonerName.isNullOrEmpty() && status.isNullOrEmpty() && jobTitleOrEmployerName.isNullOrEmpty() ->
-        applicationRepository.findByPrisonId(prisonId, pageable)
+  ): Page<Application> = when {
+    prisonerName.isNullOrEmpty() && status.isNullOrEmpty() && jobTitleOrEmployerName.isNullOrEmpty() ->
+      applicationRepository.findByPrisonId(prisonId, pageable)
 
-      else -> applicationRepository.findByPrisonIdAndPrisonerNameAndApplicationStatusAndJobTitleOrEmployerName(
-        prisonId = prisonId,
-        prisonerName = prisonerName,
-        status = status,
-        jobTitleOrEmployerName = jobTitleOrEmployerName,
-        pageable = pageable,
-      )
-    }
+    else -> applicationRepository.findByPrisonIdAndPrisonerNameAndApplicationStatusAndJobTitleOrEmployerName(
+      prisonId = prisonId,
+      prisonerName = prisonerName,
+      status = status,
+      jobTitleOrEmployerName = jobTitleOrEmployerName,
+      pageable = pageable,
+    )
   }
 }

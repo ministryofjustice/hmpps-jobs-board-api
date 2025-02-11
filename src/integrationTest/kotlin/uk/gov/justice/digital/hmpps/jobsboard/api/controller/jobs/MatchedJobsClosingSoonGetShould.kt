@@ -134,7 +134,6 @@ class MatchedJobsClosingSoonGetShould : MatchedJobClosingSoonTestCase() {
       )
     }
 
-    private fun jobsToListResponse(jobs: List<Job>) =
-      jobs.map { it.closingSoonListResponseBody }.joinToString().let { "[$it]" }
+    private fun jobsToListResponse(jobs: List<Job>) = jobs.map { it.closingSoonListResponseBody }.joinToString().let { "[$it]" }
   }
 }

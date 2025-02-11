@@ -188,43 +188,40 @@ class ApplicationsGetShould : ApplicationsTestCase() {
         prisonId: String,
         expectedApplications: List<Application>,
         vararg applicationStatus: String,
-      ) =
-        assertGetApplicationsIsOk(
-          parameters = "prisonId=$prisonId&applicationStatus=${applicationStatus.joinToString(",")}",
-          expectedResponse = expectedResponseListOf(
-            size = defaultPageSize,
-            page = 0,
-            elements = expectedApplications.map { it.searchResponseBody }.toTypedArray(),
-          ),
-        )
+      ) = assertGetApplicationsIsOk(
+        parameters = "prisonId=$prisonId&applicationStatus=${applicationStatus.joinToString(",")}",
+        expectedResponse = expectedResponseListOf(
+          size = defaultPageSize,
+          page = 0,
+          elements = expectedApplications.map { it.searchResponseBody }.toTypedArray(),
+        ),
+      )
 
       private fun assertGetApplicationsFilterByJobTitleOrEmployerNameIsOk(
         prisonId: String,
         jobTitleOrEmployerName: String,
         expectedApplications: List<Application>,
-      ) =
-        assertGetApplicationsIsOk(
-          parameters = "prisonId=$prisonId&jobTitleOrEmployerName=$jobTitleOrEmployerName",
-          expectedResponse = expectedResponseListOf(
-            size = defaultPageSize,
-            page = 0,
-            elements = expectedApplications.map { it.searchResponseBody }.toTypedArray(),
-          ),
-        )
+      ) = assertGetApplicationsIsOk(
+        parameters = "prisonId=$prisonId&jobTitleOrEmployerName=$jobTitleOrEmployerName",
+        expectedResponse = expectedResponseListOf(
+          size = defaultPageSize,
+          page = 0,
+          elements = expectedApplications.map { it.searchResponseBody }.toTypedArray(),
+        ),
+      )
 
       private fun assertGetApplicationsFilterByPrisonerNameIsOk(
         prisonId: String,
         prisonerName: String,
         expectedApplications: List<Application>,
-      ) =
-        assertGetApplicationsIsOk(
-          parameters = "prisonId=$prisonId&prisonerName=$prisonerName",
-          expectedResponse = expectedResponseListOf(
-            size = defaultPageSize,
-            page = 0,
-            elements = expectedApplications.map { it.searchResponseBody }.toTypedArray(),
-          ),
-        )
+      ) = assertGetApplicationsIsOk(
+        parameters = "prisonId=$prisonId&prisonerName=$prisonerName",
+        expectedResponse = expectedResponseListOf(
+          size = defaultPageSize,
+          page = 0,
+          elements = expectedApplications.map { it.searchResponseBody }.toTypedArray(),
+        ),
+      )
     }
 
     @Nested

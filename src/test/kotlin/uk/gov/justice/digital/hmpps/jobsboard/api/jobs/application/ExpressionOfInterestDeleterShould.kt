@@ -118,11 +118,9 @@ class ExpressionOfInterestDeleterShould : TestBase() {
     assertEquals("Job not found: jobId=$nonExistentJobId", exception.message)
   }
 
-  private fun obtainTheJobJustCreated(stubJob: Boolean = true): Job {
-    return deepCopy(amazonForkliftOperator).also { job ->
-      if (stubJob) {
-        whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
-      }
+  private fun obtainTheJobJustCreated(stubJob: Boolean = true): Job = deepCopy(amazonForkliftOperator).also { job ->
+    if (stubJob) {
+      whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
     }
   }
 
@@ -133,9 +131,7 @@ class ExpressionOfInterestDeleterShould : TestBase() {
     }
   }
 
-  private fun makeExpressionOfInterestId(jobId: String, prisonNumber: String) =
-    JobPrisonerId(EntityId(jobId), prisonNumber)
+  private fun makeExpressionOfInterestId(jobId: String, prisonNumber: String) = JobPrisonerId(EntityId(jobId), prisonNumber)
 
-  private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = JobPrisonerId(job.id, prisonNumber), job = job)
+  private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest = ExpressionOfInterest(id = JobPrisonerId(job.id, prisonNumber), job = job)
 }

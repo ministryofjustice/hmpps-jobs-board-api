@@ -33,20 +33,18 @@ class ExpressionsOfInterestPut(
     @PathVariable
     @Size(max = 7, min = 1)
     prisonNumber: String,
-  ): ResponseEntity<Void> {
-    return if (expressionOfInterestCreator.existsById(jobId, prisonNumber)) {
-      ResponseEntity.ok().build()
-    } else {
-      expressionOfInterestCreator.createOrUpdate(
-        CreateExpressionOfInterestRequest(jobId, prisonNumber),
-      )
-      ResponseEntity.created(
-        ServletUriComponentsBuilder
-          .fromCurrentRequest()
-          .build()
-          .toUri(),
-      ).build()
-    }
+  ): ResponseEntity<Void> = if (expressionOfInterestCreator.existsById(jobId, prisonNumber)) {
+    ResponseEntity.ok().build()
+  } else {
+    expressionOfInterestCreator.createOrUpdate(
+      CreateExpressionOfInterestRequest(jobId, prisonNumber),
+    )
+    ResponseEntity.created(
+      ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .build()
+        .toUri(),
+    ).build()
   }
 
   @Hidden

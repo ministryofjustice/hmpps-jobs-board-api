@@ -18,19 +18,17 @@ class ApplicationMetricsRepositoryImpl(
     prisonId: String,
     startTime: Instant,
     endTime: Instant,
-  ): GetMetricsSummaryResponse {
-    return AuditReaderFactory.get(entityManager).createQuery()
-      .forRevisionsOfEntity(Application::class.java, true, true)
-      .add(
-        AuditEntity.revisionNumber().maximize()
-          .add(AuditEntity.property("lastModifiedAt").between(startTime, endTime))
-          .add(AuditEntity.property("prisonId").eq(prisonId))
-          .add(AuditEntity.revisionType().`in`(arrayOf(RevisionType.ADD, RevisionType.MOD)))
-          .computeAggregationInInstanceContext(),
-      )
-      .addProjection(AuditEntity.property("prisonNumber").countDistinct())
-      .addProjection(AuditEntity.property("job_id").countDistinct())
-      .singleResult
-      .let { it as Array<*> }.let { GetMetricsSummaryResponse(it[0] as Long, it[1] as Long) }
-  }
+  ): GetMetricsSummaryResponse = AuditReaderFactory.get(entityManager).createQuery()
+    .forRevisionsOfEntity(Application::class.java, true, true)
+    .add(
+      AuditEntity.revisionNumber().maximize()
+        .add(AuditEntity.property("lastModifiedAt").between(startTime, endTime))
+        .add(AuditEntity.property("prisonId").eq(prisonId))
+        .add(AuditEntity.revisionType().`in`(arrayOf(RevisionType.ADD, RevisionType.MOD)))
+        .computeAggregationInInstanceContext(),
+    )
+    .addProjection(AuditEntity.property("prisonNumber").countDistinct())
+    .addProjection(AuditEntity.property("job_id").countDistinct())
+    .singleResult
+    .let { it as Array<*> }.let { GetMetricsSummaryResponse(it[0] as Long, it[1] as Long) }
 }

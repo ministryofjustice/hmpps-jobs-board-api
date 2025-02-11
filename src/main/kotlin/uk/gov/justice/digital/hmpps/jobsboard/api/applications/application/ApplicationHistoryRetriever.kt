@@ -17,9 +17,7 @@ class ApplicationHistoryRetriever(
     return application?.let { retrieveAllApplicationHistories(application.id.id) }
   }
 
-  fun retrieveAllApplicationHistories(applicationId: String) =
-    retrieveAllApplicationHistories(EntityId(applicationId))
+  fun retrieveAllApplicationHistories(applicationId: String) = retrieveAllApplicationHistories(EntityId(applicationId))
 
-  private fun retrieveAllApplicationHistories(applicationId: EntityId) =
-    applicationRepository.findRevisions(applicationId)
+  private fun retrieveAllApplicationHistories(applicationId: EntityId) = applicationRepository.findRevisions(applicationId)
 }

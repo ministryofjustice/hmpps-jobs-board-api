@@ -9,11 +9,9 @@ data class DeleteExpressionOfInterestRequest internal constructor(
     fun from(
       jobId: String,
       prisonNumber: String,
-    ): DeleteExpressionOfInterestRequest {
-      return DeleteExpressionOfInterestRequest(
-        jobId,
-        prisonNumber,
-      )
-    }
+    ): DeleteExpressionOfInterestRequest = DeleteExpressionOfInterestRequest(
+      jobId,
+      prisonNumber,
+    )
   }
 }

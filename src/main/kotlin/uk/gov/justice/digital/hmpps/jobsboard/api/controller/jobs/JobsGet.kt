@@ -188,10 +188,8 @@ class JobsGet(
     @RequestParam(defaultValue = "3")
     @Parameter(description = "Restricted size of the results; default size is 3. Results will be restricted to only top-size jobs.")
     size: Int,
-  ): ResponseEntity<List<GetJobsClosingSoonResponse>> {
-    return matchingCandidateJobRetriever.retrieveClosingJobs(prisonNumber, sectors, size).let {
-      ResponseEntity.ok(it)
-    }
+  ): ResponseEntity<List<GetJobsClosingSoonResponse>> = matchingCandidateJobRetriever.retrieveClosingJobs(prisonNumber, sectors, size).let {
+    ResponseEntity.ok(it)
   }
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
@@ -224,10 +222,8 @@ class JobsGet(
     @RequestParam(required = true)
     @Parameter(description = "The identifier (prison number) of the given prisoner")
     prisonNumber: String,
-  ): ResponseEntity<List<GetJobsClosingSoonResponse>> {
-    return matchingCandidateJobRetriever.retrieveClosingJobsOfInterest(prisonNumber).let {
-      ResponseEntity.ok(it)
-    }
+  ): ResponseEntity<List<GetJobsClosingSoonResponse>> = matchingCandidateJobRetriever.retrieveClosingJobsOfInterest(prisonNumber).let {
+    ResponseEntity.ok(it)
   }
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")

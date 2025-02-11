@@ -21,9 +21,7 @@ import java.util.*
 class TestJpaConfig {
   @Primary
   @Bean
-  fun dateTimeProvider(): DateTimeProvider {
-    return mock(DateTimeProvider::class.java)
-  }
+  fun dateTimeProvider(): DateTimeProvider = mock(DateTimeProvider::class.java)
 
   @Bean
   fun auditorProvider(): AuditorAware<String> {

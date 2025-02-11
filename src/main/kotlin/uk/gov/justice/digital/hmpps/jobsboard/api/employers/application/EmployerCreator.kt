@@ -41,9 +41,7 @@ class EmployerCreator(
       .also { sendIntegrationEvent(request.id, EmployerEventType.EMPLOYER_UPDATED) }
   }
 
-  fun existsById(employerId: String): Boolean {
-    return employerRepository.existsById(EntityId(employerId))
-  }
+  fun existsById(employerId: String): Boolean = employerRepository.existsById(EntityId(employerId))
 
   private fun save(request: CreateEmployerRequest, jobs: List<Job>) {
     employerRepository.save(

@@ -9,11 +9,9 @@ data class CreateArchivedRequest internal constructor(
     fun from(
       jobId: String,
       prisonNumber: String,
-    ): CreateArchivedRequest {
-      return CreateArchivedRequest(
-        jobId,
-        prisonNumber,
-      )
-    }
+    ): CreateArchivedRequest = CreateArchivedRequest(
+      jobId,
+      prisonNumber,
+    )
   }
 }

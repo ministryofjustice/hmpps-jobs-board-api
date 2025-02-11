@@ -53,8 +53,7 @@ interface TestClock {
 
       fun defaultClock() = incrementDailyCLock()
       fun incrementDailyCLock() = TimeslotClock(defaultCurrentTime, defaultDuration)
-      fun timeslotToClock(startTime: Instant, timeslotLength: Duration = defaultDuration) =
-        TimeslotClock(startTime, timeslotLength)
+      fun timeslotToClock(startTime: Instant, timeslotLength: Duration = defaultDuration) = TimeslotClock(startTime, timeslotLength)
     }
 
     private fun timeslotToClock(timeslot: Long): Clock = Clock.offset(baseClock, timeslotLength.multipliedBy(timeslot))

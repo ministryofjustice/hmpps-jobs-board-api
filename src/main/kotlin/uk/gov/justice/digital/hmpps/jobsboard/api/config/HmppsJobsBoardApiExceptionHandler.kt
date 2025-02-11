@@ -110,17 +110,16 @@ class HmppsJobsBoardApiExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-  fun handleMethodArgumentTypeMismatchException(e: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponse> =
-    e.let {
-      val errorMessage = "Type mismatch: parameter '${e.name}' with value '${e.value}'"
-      ResponseEntity.status(BAD_REQUEST).body(
-        ErrorResponse(
-          status = BAD_REQUEST,
-          userMessage = "Validation failure: $errorMessage",
-          developerMessage = errorMessage,
-        ),
-      )
-    }.also { log.info("Method argument type mismatch exception: ${e.message}", e) }
+  fun handleMethodArgumentTypeMismatchException(e: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponse> = e.let {
+    val errorMessage = "Type mismatch: parameter '${e.name}' with value '${e.value}'"
+    ResponseEntity.status(BAD_REQUEST).body(
+      ErrorResponse(
+        status = BAD_REQUEST,
+        userMessage = "Validation failure: $errorMessage",
+        developerMessage = errorMessage,
+      ),
+    )
+  }.also { log.info("Method argument type mismatch exception: ${e.message}", e) }
 
   @ExceptionHandler(java.lang.Exception::class)
   fun handleException(e: java.lang.Exception): ResponseEntity<ErrorResponse?>? {

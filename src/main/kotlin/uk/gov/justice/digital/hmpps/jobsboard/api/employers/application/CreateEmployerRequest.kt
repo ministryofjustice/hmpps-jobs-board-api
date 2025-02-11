@@ -18,14 +18,12 @@ data class CreateEmployerRequest internal constructor(
       description: String,
       sector: String,
       status: String,
-    ): CreateEmployerRequest {
-      return CreateEmployerRequest(
-        id,
-        name,
-        description,
-        sector,
-        status,
-      )
-    }
+    ): CreateEmployerRequest = CreateEmployerRequest(
+      id,
+      name,
+      description,
+      sector,
+      status,
+    )
   }
 }

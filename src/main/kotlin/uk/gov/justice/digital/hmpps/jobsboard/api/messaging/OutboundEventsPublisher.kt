@@ -47,7 +47,5 @@ class OutboundEventsPublisher(
 class PublishEventException(message: String? = null, cause: Throwable? = null) :
   RuntimeException(message, cause),
   Supplier<PublishEventException> {
-  override fun get(): PublishEventException {
-    return PublishEventException(message, cause)
-  }
+  override fun get(): PublishEventException = PublishEventException(message, cause)
 }

@@ -11,13 +11,12 @@ class ExpressionOfInterestDeleter(
   private val jobRepository: JobRepository,
   private val expressionOfInterestRepository: ExpressionOfInterestRepository,
 ) {
-  fun delete(request: DeleteExpressionOfInterestRequest) =
-    expressionOfInterestRepository.deleteById(
-      JobPrisonerId(
-        jobId = EntityId(request.jobId),
-        prisonNumber = request.prisonNumber,
-      ),
-    )
+  fun delete(request: DeleteExpressionOfInterestRequest) = expressionOfInterestRepository.deleteById(
+    JobPrisonerId(
+      jobId = EntityId(request.jobId),
+      prisonNumber = request.prisonNumber,
+    ),
+  )
 
   fun existsById(jobId: String, prisonNumber: String): Boolean {
     if (jobRepository.findById(EntityId(jobId)).isEmpty) {

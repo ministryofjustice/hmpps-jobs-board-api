@@ -25,17 +25,16 @@ class OutboundEventsService(
     prisonName: String?,
     eventType: EventType,
     instant: Instant,
-  ): OutboundEvent =
-    OutboundEvent(
-      eventType = eventType,
-      personReference = PersonReference(listOf(Identifier("NOMS", reference))),
-      additionalInformation = AdditionalInformation(
-        reference = reference,
-        prisonId = prisonName,
-        userId = CapturedSpringConfigValues.getDPSPrincipal().name,
-        userDisplayName = CapturedSpringConfigValues.getDPSPrincipal().displayName,
-      ),
-      occurredAt = instant,
-      version = 1,
-    )
+  ): OutboundEvent = OutboundEvent(
+    eventType = eventType,
+    personReference = PersonReference(listOf(Identifier("NOMS", reference))),
+    additionalInformation = AdditionalInformation(
+      reference = reference,
+      prisonId = prisonName,
+      userId = CapturedSpringConfigValues.getDPSPrincipal().name,
+      userDisplayName = CapturedSpringConfigValues.getDPSPrincipal().displayName,
+    ),
+    occurredAt = instant,
+    version = 1,
+  )
 }

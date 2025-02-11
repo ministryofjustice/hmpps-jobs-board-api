@@ -118,11 +118,9 @@ class ArchivedDeleterShould : TestBase() {
     assertEquals("Job not found: jobId=$nonExistentJobId", exception.message)
   }
 
-  private fun obtainTheJobJustCreated(stubJob: Boolean = true): Job {
-    return deepCopy(amazonForkliftOperator).also { job ->
-      if (stubJob) {
-        whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
-      }
+  private fun obtainTheJobJustCreated(stubJob: Boolean = true): Job = deepCopy(amazonForkliftOperator).also { job ->
+    if (stubJob) {
+      whenever(jobRepository.findById(job.id)).thenReturn(Optional.of(job))
     }
   }
 
@@ -133,9 +131,7 @@ class ArchivedDeleterShould : TestBase() {
     }
   }
 
-  private fun makeArchivedId(jobId: String, prisonNumber: String) =
-    JobPrisonerId(EntityId(jobId), prisonNumber)
+  private fun makeArchivedId(jobId: String, prisonNumber: String) = JobPrisonerId(EntityId(jobId), prisonNumber)
 
-  private fun makeArchived(job: Job, prisonNumber: String): Archived =
-    Archived(id = JobPrisonerId(job.id, prisonNumber), job = job)
+  private fun makeArchived(job: Job, prisonNumber: String): Archived = Archived(id = JobPrisonerId(job.id, prisonNumber), job = job)
 }
