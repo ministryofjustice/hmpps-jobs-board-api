@@ -28,8 +28,8 @@ object JobMother {
     sourceSecondary = null,
     charityName = null,
     postcode = "NE157LR",
-    salaryFrom = 99f,
-    salaryTo = null,
+    salaryFrom = 1_234_567.12,
+    salaryTo = 7_654_321.21,
     salaryPeriod = "PER_DAY",
     additionalSalaryInformation = "Immediate starts available\nFull training provided",
     isPayingAtLeastNationalMinimumWage = true,
@@ -40,14 +40,14 @@ object JobMother {
     essentialCriteria = "Essential job criteria",
     desirableCriteria = null,
     description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
-    offenceExclusions = "[\"CASE_BY_CASE\", \"OTHER\"]",
+    offenceExclusions = "CASE_BY_CASE,OTHER",
     offenceExclusionsDetails = null,
     howToApply = "How to applyHow to apply",
     closingDate = LocalDate.parse("2025-07-01"),
     startDate = LocalDate.parse("2025-12-31"),
     isRollingOpportunity = false,
     isOnlyForPrisonLeavers = false,
-    supportingDocumentationRequired = "[\"DISCLOSURE_LETTER\", \"OTHER\"]",
+    supportingDocumentationRequired = "DISCLOSURE_LETTER,OTHER",
     supportingDocumentationDetails = null,
     employer = tesco,
   )
@@ -62,8 +62,8 @@ object JobMother {
     sourceSecondary = "",
     charityName = "Switchback",
     postcode = "LS12",
-    salaryFrom = 11.93f,
-    salaryTo = 15.90f,
+    salaryFrom = 11.93,
+    salaryTo = 15.90,
     salaryPeriod = "PER_HOUR",
     additionalSalaryInformation = null,
     isPayingAtLeastNationalMinimumWage = false,
@@ -91,7 +91,7 @@ object JobMother {
       - Regularly checking forklift equipment for faults or damages
       - Consolidating partial pallets for incoming goods
     """.trimIndent(),
-    offenceExclusions = "[\"NONE\", \"DRIVING\", \"OTH\"]",
+    offenceExclusions = "NONE,DRIVING,OTHER",
     offenceExclusionsDetails = """
       More details of other offence exclusions:
       - drunken at pub
@@ -102,7 +102,7 @@ object JobMother {
     isOnlyForPrisonLeavers = true,
     startDate = LocalDate.parse("2025-05-31"),
     howToApply = "",
-    supportingDocumentationRequired = "[\"CV\", \"DISCLOSURE_LETTER\"]",
+    supportingDocumentationRequired = "CV,DISCLOSURE_LETTER",
     supportingDocumentationDetails = "",
     employer = amazon,
   )
@@ -117,7 +117,7 @@ object JobMother {
     sourceSecondary = null,
     charityName = null,
     postcode = "GU3 3DU",
-    salaryFrom = 99f,
+    salaryFrom = 99.0,
     salaryTo = null,
     salaryPeriod = "PER_DAY",
     additionalSalaryInformation = null,
@@ -129,7 +129,7 @@ object JobMother {
     essentialCriteria = "Essential job criteria",
     desirableCriteria = null,
     description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
-    offenceExclusions = "[\"CASE_BY_CASE\", \"OTHER\"]",
+    offenceExclusions = "CASE_BY_CASE,OTHER",
     offenceExclusionsDetails = null,
     howToApply = "How to applyHow to apply",
     closingDate = null,
@@ -204,14 +204,14 @@ object JobMother {
           "essentialCriteria": "${job.essentialCriteria}",
           "desirableCriteria": ${job.desirableCriteria?.asJson()},
           "description": ${job.description.asJson()},
-          "offenceExclusions": ${job.offenceExclusions},
+          "offenceExclusions": ${job.offenceExclusions.asStringList()},
           "offenceExclusionsDetails": ${job.offenceExclusionsDetails?.asJson()}, 
           "isRollingOpportunity": ${job.isRollingOpportunity},
           "closingDate": ${job.closingDate?.toString()?.asJson()},
           "isOnlyForPrisonLeavers": ${job.isOnlyForPrisonLeavers},
           "startDate": ${job.startDate?.toString()?.asJson()},
           "howToApply": "${job.howToApply}",
-          "supportingDocumentationRequired": ${job.supportingDocumentationRequired},
+          "supportingDocumentationRequired": ${job.supportingDocumentationRequired?.asStringList()},
           "supportingDocumentationDetails": ${job.supportingDocumentationDetails?.asJson()}$createdAt
         }
     """.trimIndent()
@@ -261,8 +261,8 @@ class JobBuilder {
   var sourceSecondary: String? = null
   var charityName: String? = null
   var postcode: String = "LS11 5AD"
-  var salaryFrom: Float = 96.32f
-  var salaryTo: Float? = null
+  var salaryFrom: Double = 96.32
+  var salaryTo: Double? = null
   var salaryPeriod: String = "PER_DAY"
   var additionalSalaryInformation: String? = null
   var isPayingAtLeastNationalMinimumWage: Boolean = true
@@ -273,7 +273,7 @@ class JobBuilder {
   var essentialCriteria: String = "Essential job criteria"
   var desirableCriteria: String? = null
   var description: String = ""
-  var offenceExclusions: String = "[\"CASE_BY_CASE\", \"OTHER\"]"
+  var offenceExclusions: String = "CASE_BY_CASE,OTHER"
   var offenceExclusionsDetails: String? = null
   var isRollingOpportunity: Boolean = false
   var closingDate: LocalDate? = null
@@ -455,7 +455,7 @@ class JobBuilder {
         "contractType": "${this.contractType}",
         "numberOfVacancies": ${this.numberOfVacancies},
         "isOnlyForPrisonLeavers": ${this.isOnlyForPrisonLeavers}, 
-        "offenceExclusions": ${this.offenceExclusions},
+        "offenceExclusions": ${this.offenceExclusions.asStringList()},
         "essentialCriteria": ${this.essentialCriteria.asJson()},
         "description": ${this.description.asJson()},
         "howToApply": ${this.howToApply.asJson()},
@@ -468,7 +468,14 @@ class JobBuilder {
   }
 }
 
-fun String.asJson(): String {
-  val mapper: ObjectMapper = jacksonObjectMapper()
+private val mapper: ObjectMapper = jacksonObjectMapper()
+
+internal fun String.asJson(): String {
   return mapper.writeValueAsString(this)
 }
+
+internal fun String.asStringList() = asList().asStringList()
+
+internal fun String.asList() = this.split(",").map { it.trim() }.toList()
+
+internal fun List<String>.asStringList() = map { "\"$it\"" }.joinToString(separator = ",", prefix = "[", postfix = "]")

@@ -46,10 +46,10 @@ data class Job(
   val postcode: String,
 
   @Column(name = "salary_from", nullable = false)
-  val salaryFrom: Float,
+  val salaryFrom: Double,
 
   @Column(name = "salary_to", nullable = true)
-  val salaryTo: Float? = null,
+  val salaryTo: Double? = null,
 
   @Column(name = "salary_period", nullable = false)
   val salaryPeriod: String,
