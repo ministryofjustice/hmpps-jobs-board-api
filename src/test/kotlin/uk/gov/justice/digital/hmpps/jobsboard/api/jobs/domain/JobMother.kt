@@ -20,8 +20,8 @@ object JobMother {
     sourceSecondary = null,
     charityName = null,
     postcode = "NE157LR",
-    salaryFrom = 99f,
-    salaryTo = null,
+    salaryFrom = 1_234_567.12,
+    salaryTo = 7_654_321.21,
     salaryPeriod = "PER_DAY",
     additionalSalaryInformation = null,
     isPayingAtLeastNationalMinimumWage = true,
@@ -32,14 +32,14 @@ object JobMother {
     essentialCriteria = "Essential job criteria",
     desirableCriteria = null,
     description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
-    offenceExclusions = "[\"CASE_BY_CASE\", \"OTHER\"]",
+    offenceExclusions = "\"CASE_BY_CASE\",\"OTHER\"",
     offenceExclusionsDetails = null,
     howToApply = "How to applyHow to apply",
     closingDate = null,
     startDate = null,
     isRollingOpportunity = false,
     isOnlyForPrisonLeavers = true,
-    supportingDocumentationRequired = "[\"DISCLOSURE_LETTER\", \"OTHER\"]",
+    supportingDocumentationRequired = "\"DISCLOSURE_LETTER\",\"OTHER\"",
     supportingDocumentationDetails = null,
     employer = tesco,
   )
@@ -54,8 +54,8 @@ object JobMother {
     sourceSecondary = "",
     charityName = "",
     postcode = "LS12",
-    salaryFrom = 11.93f,
-    salaryTo = 15.90f,
+    salaryFrom = 11.93,
+    salaryTo = 15.90,
     salaryPeriod = "PER_HOUR",
     additionalSalaryInformation = null,
     isPayingAtLeastNationalMinimumWage = false,
@@ -83,14 +83,14 @@ object JobMother {
       - Regularly checking forklift equipment for faults or damages
       - Consolidating partial pallets for incoming goods
     """.trimIndent(),
-    offenceExclusions = "[\"NONE\", \"DRIVING\", \"OTH\"]",
+    offenceExclusions = "\"NONE\",\"DRIVING\",\"OTH\"",
     offenceExclusionsDetails = "Other offence A, another offence B, yet another offence C",
     isRollingOpportunity = false,
     closingDate = LocalDate.parse("2025-02-01"),
     isOnlyForPrisonLeavers = true,
     startDate = LocalDate.parse("2025-05-31"),
     howToApply = "",
-    supportingDocumentationRequired = "[\"CV\", \"DISCLOSURE_LETTER\"]",
+    supportingDocumentationRequired = "\"CV\",\"DISCLOSURE_LETTER\"",
     supportingDocumentationDetails = "",
     employer = amazon,
   )
@@ -105,7 +105,7 @@ object JobMother {
     sourceSecondary = null,
     charityName = null,
     postcode = "NE157LR",
-    salaryFrom = 99f,
+    salaryFrom = 99.0,
     salaryTo = null,
     salaryPeriod = "PER_DAY",
     additionalSalaryInformation = null,
@@ -117,7 +117,7 @@ object JobMother {
     essentialCriteria = "Essential job criteria",
     desirableCriteria = null,
     description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
-    offenceExclusions = "[\"CASE_BY_CASE\", \"OTHER\"]",
+    offenceExclusions = "\"CASE_BY_CASE\",\"OTHER\"",
     offenceExclusionsDetails = null,
     howToApply = "How to applyHow to apply",
     closingDate = null,
@@ -218,8 +218,8 @@ class JobBuilder {
   var sourceSecondary: String? = null
   var charityName: String? = null
   var postcode: String = "LS11 5AD"
-  var salaryFrom: Float = 96.32f
-  var salaryTo: Float? = null
+  var salaryFrom: Double = 96.32
+  var salaryTo: Double? = null
   var salaryPeriod: String = "PER_DAY"
   var additionalSalaryInformation: String? = null
   var isPayingAtLeastNationalMinimumWage: Boolean = true
@@ -230,7 +230,7 @@ class JobBuilder {
   var essentialCriteria: String = "Essential job criteria"
   var desirableCriteria: String? = null
   var description: String = ""
-  var offenceExclusions: String = "[\"CASE_BY_CASE\", \"OTHER\"]"
+  var offenceExclusions: String = "\"CASE_BY_CASE\",\"OTHER\""
   var offenceExclusionsDetails: String? = null
   var isRollingOpportunity: Boolean = false
   var closingDate: LocalDate? = null
