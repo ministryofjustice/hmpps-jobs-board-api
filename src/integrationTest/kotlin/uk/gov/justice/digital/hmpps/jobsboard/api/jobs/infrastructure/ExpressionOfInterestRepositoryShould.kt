@@ -168,6 +168,5 @@ class ExpressionOfInterestRepositoryShould : JobRepositoryTestCase() {
     }
   }
 
-  private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest =
-    ExpressionOfInterest(id = JobPrisonerId(job.id, prisonNumber), job = job)
+  private fun makeExpressionOfInterest(job: Job, prisonNumber: String): ExpressionOfInterest = ExpressionOfInterest(id = JobPrisonerId(job.id, prisonNumber), job = job)
 }

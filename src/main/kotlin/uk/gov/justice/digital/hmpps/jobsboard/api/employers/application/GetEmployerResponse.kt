@@ -11,15 +11,13 @@ data class GetEmployerResponse(
   val createdAt: String,
 ) {
   companion object {
-    fun from(employer: Employer): GetEmployerResponse {
-      return GetEmployerResponse(
-        id = employer.id.toString(),
-        name = employer.name,
-        description = employer.description,
-        sector = employer.sector,
-        status = employer.status,
-        createdAt = employer.createdAt.toString(),
-      )
-    }
+    fun from(employer: Employer): GetEmployerResponse = GetEmployerResponse(
+      id = employer.id.toString(),
+      name = employer.name,
+      description = employer.description,
+      sector = employer.sector,
+      status = employer.status,
+      createdAt = employer.createdAt.toString(),
+    )
   }
 }

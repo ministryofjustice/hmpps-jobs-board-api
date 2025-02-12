@@ -61,6 +61,5 @@ class JobPrisonerIdShould {
     assertEquals("prisonNumber cannot be empty", exception.message)
   }
 
-  private fun makeId(jobId: String, prisonNumber: String): JobPrisonerId =
-    JobPrisonerId(EntityId(jobId), prisonNumber)
+  private fun makeId(jobId: String, prisonNumber: String): JobPrisonerId = JobPrisonerId(EntityId(jobId), prisonNumber)
 }

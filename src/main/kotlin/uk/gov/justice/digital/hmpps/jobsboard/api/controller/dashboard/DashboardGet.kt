@@ -183,10 +183,8 @@ class DashboardGet(
     return ResponseEntity.ok(response)
   }
 
-  private fun validateDatePeriod(dateFrom: LocalDate, dateTo: LocalDate): String? {
-    return when {
-      dateFrom.isAfter(dateTo) -> "dateFrom ($dateFrom) cannot be after dateTo ($dateTo)"
-      else -> null
-    }
+  private fun validateDatePeriod(dateFrom: LocalDate, dateTo: LocalDate): String? = when {
+    dateFrom.isAfter(dateTo) -> "dateFrom ($dateFrom) cannot be after dateTo ($dateTo)"
+    else -> null
   }
 }

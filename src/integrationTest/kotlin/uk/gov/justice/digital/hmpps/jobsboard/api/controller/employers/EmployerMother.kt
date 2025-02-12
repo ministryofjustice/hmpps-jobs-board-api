@@ -48,20 +48,14 @@ object EmployerMother {
     status = "SILVER",
   )
 
-  fun builder(): EmployerBuilder {
-    return EmployerBuilder()
-  }
+  fun builder(): EmployerBuilder = EmployerBuilder()
 
   val Employer.requestBody: String get() = employerRequestBody(name, description, sector, status)
   val Employer.responseBody: String get() = employerResponseBody(id, name, description, sector, status)
 
-  private fun employerRequestBody(name: String, description: String, sector: String, status: String): String {
-    return employerBody(name, description, sector, status)
-  }
+  private fun employerRequestBody(name: String, description: String, sector: String, status: String): String = employerBody(name, description, sector, status)
 
-  private fun employerResponseBody(id: EntityId, name: String, description: String, sector: String, status: String): String {
-    return employerBody(name, description, sector, status, id.id)
-  }
+  private fun employerResponseBody(id: EntityId, name: String, description: String, sector: String, status: String): String = employerBody(name, description, sector, status, id.id)
 
   private fun employerBody(
     name: String,

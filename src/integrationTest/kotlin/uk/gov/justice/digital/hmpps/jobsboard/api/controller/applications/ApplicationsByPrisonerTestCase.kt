@@ -37,9 +37,8 @@ abstract class ApplicationsByPrisonerTestCase(
 
   protected val Application.responseBody get() = applicationResponseBody(this)
 
-  private fun applicationResponseBody(application: Application): String {
-    return application.let {
-      """
+  private fun applicationResponseBody(application: Application): String = application.let {
+    """
       {
         "id": "${it.id}",
         "jobId": "${it.job.id}",
@@ -49,8 +48,7 @@ abstract class ApplicationsByPrisonerTestCase(
         "createdAt": "$jobCreationTime",
         "lastModifiedAt": "$jobCreationTime"
       }
-      """.trimIndent()
-    }
+    """.trimIndent()
   }
 }
 

@@ -31,20 +31,16 @@ class MatchingCandidateJobRetriever(
     return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, releaseArea, searchRadius, today, pageable)
   }
 
-  fun retrieveClosingJobs(prisonNumber: String, sectors: List<String>?, size: Int): List<GetJobsClosingSoonResponse> {
-    return PageRequest.of(0, size).let { limitedBySize ->
-      matchingCandidateJobsRepository.findJobsClosingSoon(
-        prisonNumber = prisonNumber,
-        sectors = sectors?.map { it.lowercase() },
-        currentDate = today,
-        pageable = limitedBySize,
-      )
-    }
+  fun retrieveClosingJobs(prisonNumber: String, sectors: List<String>?, size: Int): List<GetJobsClosingSoonResponse> = PageRequest.of(0, size).let { limitedBySize ->
+    matchingCandidateJobsRepository.findJobsClosingSoon(
+      prisonNumber = prisonNumber,
+      sectors = sectors?.map { it.lowercase() },
+      currentDate = today,
+      pageable = limitedBySize,
+    )
   }
 
-  fun retrieveClosingJobsOfInterest(prisonNumber: String): List<GetJobsClosingSoonResponse> {
-    return matchingCandidateJobsRepository.findJobsOfInterestClosingSoon(prisonNumber, today)
-  }
+  fun retrieveClosingJobsOfInterest(prisonNumber: String): List<GetJobsClosingSoonResponse> = matchingCandidateJobsRepository.findJobsOfInterestClosingSoon(prisonNumber, today)
 
   fun retrieveJobsOfInterest(
     prisonNumber: String,

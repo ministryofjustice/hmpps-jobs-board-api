@@ -32,18 +32,16 @@ class ExpressionsOfInterestDelete(
     @PathVariable
     @Size(max = 7, min = 1)
     prisonNumber: String,
-  ): ResponseEntity<Void> {
-    return if (expressionOfInterestDeleter.existsById(jobId, prisonNumber)) {
-      expressionOfInterestDeleter.delete(
-        DeleteExpressionOfInterestRequest(
-          jobId,
-          prisonNumber,
-        ),
-      )
-      ResponseEntity.noContent().build()
-    } else {
-      ResponseEntity.notFound().build()
-    }
+  ): ResponseEntity<Void> = if (expressionOfInterestDeleter.existsById(jobId, prisonNumber)) {
+    expressionOfInterestDeleter.delete(
+      DeleteExpressionOfInterestRequest(
+        jobId,
+        prisonNumber,
+      ),
+    )
+    ResponseEntity.noContent().build()
+  } else {
+    ResponseEntity.notFound().build()
   }
 
   @Hidden

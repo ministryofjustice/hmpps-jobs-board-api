@@ -9,11 +9,9 @@ data class CreateExpressionOfInterestRequest internal constructor(
     fun from(
       jobId: String,
       prisonNumber: String,
-    ): CreateExpressionOfInterestRequest {
-      return CreateExpressionOfInterestRequest(
-        jobId,
-        prisonNumber,
-      )
-    }
+    ): CreateExpressionOfInterestRequest = CreateExpressionOfInterestRequest(
+      jobId,
+      prisonNumber,
+    )
   }
 }

@@ -81,7 +81,5 @@ abstract class ExpressedInterestTestCase : JobsTestCase() {
     assertAddArchived(job.id.id, prisonNumber)
   }
 
-  override fun expectedResponseListOf(vararg elements: String): String {
-    return expectedResponseListOf(20, 0, elements = elements)
-  }
+  override fun expectedResponseListOf(vararg elements: String): String = expectedResponseListOf(20, 0, elements = elements)
 }

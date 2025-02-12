@@ -23,6 +23,5 @@ class IntegrationConfiguration {
   )
 
   @Bean
-  fun outboundEventsService(outboundEventsPublisher: OutboundEventsPublisher) =
-    OutboundEventsService(outboundEventsPublisher)
+  fun outboundEventsService(outboundEventsPublisher: OutboundEventsPublisher) = OutboundEventsService(outboundEventsPublisher)
 }

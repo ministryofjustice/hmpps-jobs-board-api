@@ -110,19 +110,16 @@ object ApplicationMother {
 
   val Application.historyResponseBody get() = applicationHistoryResponse(this)
 
-  private fun applicationRequestBody(application: Application): String {
-    return application.let {
-      """
+  private fun applicationRequestBody(application: Application): String = application.let {
+    """
       {
         ${applicationBodyCommonFields(it)}
       }
-      """.trimIndent()
-    }
+    """.trimIndent()
   }
 
-  private fun applicationHistoryResponse(application: Application): Any {
-    return application.let {
-      """
+  private fun applicationHistoryResponse(application: Application): Any = application.let {
+    """
       {
         "id": "${it.id.id}",
         ${applicationBodyCommonFields(it)},
@@ -131,13 +128,11 @@ object ApplicationMother {
         "modifiedBy": "$username",
         "modifiedAt": "$jobCreationTime"
       }
-      """.trimIndent()
-    }
+    """.trimIndent()
   }
 
-  private fun applicationBodyCommonFields(application: Application): String {
-    return application.let {
-      """
+  private fun applicationBodyCommonFields(application: Application): String = application.let {
+    """
         "jobId": "${it.job.id}",
         "prisonNumber": "${it.prisonNumber}",
         "prisonId": "${it.prisonId}",
@@ -145,8 +140,7 @@ object ApplicationMother {
         "lastName": ${it.lastName?.asJson()},
         "applicationStatus": "${it.status}",
         "additionalInformation": ${it.additionalInformation?.asJson()}
-      """.trimIndent()
-    }
+    """.trimIndent()
   }
 
   fun makeApplication(
@@ -220,7 +214,6 @@ data class Applicant(
   val lastName: String?,
 ) {
   companion object {
-    fun from(prisonNumber: String, prisonId: String, firstName: String? = null, lastName: String? = null) =
-      Applicant(prisonNumber, prisonId, firstName, lastName)
+    fun from(prisonNumber: String, prisonId: String, firstName: String? = null, lastName: String? = null) = Applicant(prisonNumber, prisonId, firstName, lastName)
   }
 }

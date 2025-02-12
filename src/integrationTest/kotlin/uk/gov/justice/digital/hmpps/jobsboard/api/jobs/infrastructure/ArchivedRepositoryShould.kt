@@ -157,6 +157,5 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
     }
   }
 
-  private fun makeJobArchived(job: Job, prisonNumber: String): Archived =
-    Archived(id = JobPrisonerId(job.id, prisonNumber), job = job)
+  private fun makeJobArchived(job: Job, prisonNumber: String): Archived = Archived(id = JobPrisonerId(job.id, prisonNumber), job = job)
 }

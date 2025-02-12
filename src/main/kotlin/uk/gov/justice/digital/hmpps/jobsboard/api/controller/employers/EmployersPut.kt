@@ -56,19 +56,17 @@ class EmployersPut(
     )
     id: String,
     @Valid @RequestBody createEmployerRequest: CreateEmployerRequest,
-  ): ResponseEntity<Void> {
-    return if (employerCreator.existsById(id)) {
-      employerCreator.update(createEmployerRequest.copy(id = id))
-      ResponseEntity.ok().build()
-    } else {
-      employerCreator.create(createEmployerRequest.copy(id = id))
-      ResponseEntity.created(
-        ServletUriComponentsBuilder
-          .fromCurrentRequest()
-          .path("/{id}")
-          .buildAndExpand(id)
-          .toUri(),
-      ).build()
-    }
+  ): ResponseEntity<Void> = if (employerCreator.existsById(id)) {
+    employerCreator.update(createEmployerRequest.copy(id = id))
+    ResponseEntity.ok().build()
+  } else {
+    employerCreator.create(createEmployerRequest.copy(id = id))
+    ResponseEntity.created(
+      ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(id)
+        .toUri(),
+    ).build()
   }
 }

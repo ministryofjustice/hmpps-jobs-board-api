@@ -141,9 +141,7 @@ object JobMother {
     employer = abcConstruction,
   )
 
-  fun builder(): JobBuilder {
-    return JobBuilder()
-  }
+  fun builder(): JobBuilder = JobBuilder()
 
   val Job.requestBody: String get() = jobRequestBody(this)
   val Job.responseBody: String get() = jobResponseBody(this)
@@ -151,13 +149,9 @@ object JobMother {
   val Job.candidateMatchingListItemResponseBody: String get() = matchingCandidateJobItemListResponseBody(this)
   val Job.closingSoonListResponseBody: String get() = closingSoonListResponseBody(this)
 
-  fun Job.candidateMatchingItemListResponseBody(prisonNumber: String, distance: Double): String {
-    return matchingCandidateJobItemListResponseBody(this, prisonNumber, distance)
-  }
+  fun Job.candidateMatchingItemListResponseBody(prisonNumber: String, distance: Double): String = matchingCandidateJobItemListResponseBody(this, prisonNumber, distance)
 
-  private fun jobRequestBody(job: Job): String {
-    return jobBody(job)
-  }
+  private fun jobRequestBody(job: Job): String = jobBody(job)
 
   private fun jobResponseBody(job: Job): String {
     val expectedJob = job.copy().also {
@@ -166,8 +160,7 @@ object JobMother {
     return jobBody(expectedJob)
   }
 
-  private fun jobItemListResponseBody(job: Job): String {
-    return """
+  private fun jobItemListResponseBody(job: Job): String = """
         {
           "employerId": "${job.employer.id.id}",
           "employerName": "${job.employer.name}",
@@ -176,8 +169,7 @@ object JobMother {
           "sector": "${job.sector}",
           "createdAt": "$jobCreationTime"
         }
-    """.trimIndent()
-  }
+  """.trimIndent()
 
   private fun jobBody(job: Job): String {
     val createdAt = job.createdAt?.let { ",\n\"createdAt\": \"$it\"" } ?: ""
@@ -221,8 +213,7 @@ object JobMother {
     job: Job,
     prisonNumber: String = VALID_PRISON_NUMBER,
     distance: Double = 1.0,
-  ): String {
-    return """
+  ): String = """
         {
           "id": "${job.id}",
           "jobTitle": "${job.title}",
@@ -234,11 +225,9 @@ object JobMother {
           "hasExpressedInterest": ${job.expressionsOfInterest.containsKey(prisonNumber)},
           "createdAt": "$jobCreationTime"
         }
-    """.trimIndent()
-  }
+  """.trimIndent()
 
-  private fun closingSoonListResponseBody(job: Job): String {
-    return """
+  private fun closingSoonListResponseBody(job: Job): String = """
       {
         "id":"${job.id}",
         "employerName":"${job.employer.name}",
@@ -247,8 +236,7 @@ object JobMother {
         "sector":"${job.sector}",
         "createdAt":"$jobCreationTime"
       }
-    """.trimIndent()
-  }
+  """.trimIndent()
 }
 
 class JobBuilder {
@@ -365,45 +353,42 @@ class JobBuilder {
     return this
   }
 
-  fun build(): Job {
-    return Job(
-      id = this.id,
-      title = this.title,
-      sector = this.sector,
-      industrySector = this.industrySector,
-      numberOfVacancies = this.numberOfVacancies,
-      sourcePrimary = this.sourcePrimary,
-      sourceSecondary = this.sourceSecondary,
-      charityName = this.charityName,
-      postcode = this.postcode,
-      salaryFrom = this.salaryFrom,
-      salaryTo = this.salaryTo,
-      salaryPeriod = this.salaryPeriod,
-      additionalSalaryInformation = this.additionalSalaryInformation,
-      isPayingAtLeastNationalMinimumWage = this.isPayingAtLeastNationalMinimumWage,
-      workPattern = this.workPattern,
-      hoursPerWeek = this.hoursPerWeek,
-      contractType = this.contractType,
-      baseLocation = this.baseLocation,
-      essentialCriteria = this.essentialCriteria,
-      desirableCriteria = this.desirableCriteria,
-      description = this.description,
-      offenceExclusions = this.offenceExclusions,
-      offenceExclusionsDetails = this.offenceExclusionsDetails,
-      isRollingOpportunity = this.isRollingOpportunity,
-      closingDate = this.closingDate,
-      isOnlyForPrisonLeavers = this.isOnlyForPrisonLeavers,
-      startDate = this.startDate,
-      howToApply = this.howToApply,
-      supportingDocumentationRequired = this.supportingDocumentationRequired,
-      supportingDocumentationDetails = this.supportingDocumentationDetails,
-      expressionsOfInterest = this.expressionsOfInterest,
-      employer = this.employer,
-    )
-  }
+  fun build(): Job = Job(
+    id = this.id,
+    title = this.title,
+    sector = this.sector,
+    industrySector = this.industrySector,
+    numberOfVacancies = this.numberOfVacancies,
+    sourcePrimary = this.sourcePrimary,
+    sourceSecondary = this.sourceSecondary,
+    charityName = this.charityName,
+    postcode = this.postcode,
+    salaryFrom = this.salaryFrom,
+    salaryTo = this.salaryTo,
+    salaryPeriod = this.salaryPeriod,
+    additionalSalaryInformation = this.additionalSalaryInformation,
+    isPayingAtLeastNationalMinimumWage = this.isPayingAtLeastNationalMinimumWage,
+    workPattern = this.workPattern,
+    hoursPerWeek = this.hoursPerWeek,
+    contractType = this.contractType,
+    baseLocation = this.baseLocation,
+    essentialCriteria = this.essentialCriteria,
+    desirableCriteria = this.desirableCriteria,
+    description = this.description,
+    offenceExclusions = this.offenceExclusions,
+    offenceExclusionsDetails = this.offenceExclusionsDetails,
+    isRollingOpportunity = this.isRollingOpportunity,
+    closingDate = this.closingDate,
+    isOnlyForPrisonLeavers = this.isOnlyForPrisonLeavers,
+    startDate = this.startDate,
+    howToApply = this.howToApply,
+    supportingDocumentationRequired = this.supportingDocumentationRequired,
+    supportingDocumentationDetails = this.supportingDocumentationDetails,
+    expressionsOfInterest = this.expressionsOfInterest,
+    employer = this.employer,
+  )
 
-  fun buildCandidateMatchingListItemResponseBody(): String {
-    return """
+  fun buildCandidateMatchingListItemResponseBody(): String = """
       {
         "id": "${this.id}",
         "jobTitle": "${this.title}",
@@ -415,8 +400,7 @@ class JobBuilder {
         "hasExpressedInterest": ${this.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
         "createdAt": "$jobCreationTime"
       }
-    """.trimIndent()
-  }
+  """.trimIndent()
 
   fun buildJobDetailsResponseBody(prisonNumber: String): String {
     val optionalFields = StringBuilder()
@@ -470,9 +454,7 @@ class JobBuilder {
 
 private val mapper: ObjectMapper = jacksonObjectMapper()
 
-internal fun String.asJson(): String {
-  return mapper.writeValueAsString(this)
-}
+internal fun String.asJson(): String = mapper.writeValueAsString(this)
 
 internal fun String.asStringList() = asList().asStringList()
 

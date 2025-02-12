@@ -12,16 +12,14 @@ data class GetJobsResponse(
   val createdAt: String,
 ) {
   companion object {
-    fun from(job: Job): GetJobsResponse {
-      return GetJobsResponse(
-        id = job.id.toString(),
-        employerId = job.employer.id.id,
-        employerName = job.employer.name,
-        jobTitle = job.title,
-        numberOfVacancies = job.numberOfVacancies,
-        sector = job.sector,
-        createdAt = job.createdAt.toString(),
-      )
-    }
+    fun from(job: Job): GetJobsResponse = GetJobsResponse(
+      id = job.id.toString(),
+      employerId = job.employer.id.id,
+      employerName = job.employer.name,
+      jobTitle = job.title,
+      numberOfVacancies = job.numberOfVacancies,
+      sector = job.sector,
+      createdAt = job.createdAt.toString(),
+    )
   }
 }

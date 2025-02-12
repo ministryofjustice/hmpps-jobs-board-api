@@ -20,42 +20,35 @@ class ApplicationMetricsRetriever(
     prisonId: String,
     dateFrom: LocalDate,
     dateTo: LocalDate,
-  ): GetMetricsSummaryResponse {
-    return applicationRepository.countApplicantAndJobByPrisonIdAndDateTimeBetween(
-      prisonId,
-      startTime = dateFrom.startAt,
-      endTime = dateTo.endAt,
-    )
-  }
+  ): GetMetricsSummaryResponse = applicationRepository.countApplicantAndJobByPrisonIdAndDateTimeBetween(
+    prisonId,
+    startTime = dateFrom.startAt,
+    endTime = dateTo.endAt,
+  )
 
   fun retrieveMetricsTotalApplicationsPerStageByPrisonIdAndDates(
     prisonId: String,
     dateFrom: LocalDate,
     dateTo: LocalDate,
-  ): List<GetMetricsApplicationCountByStatusResponse> {
-    return applicationRepository.countApplicationStagesByPrisonIdAndDateTimeBetween(
-      prisonId,
-      startTime = dateFrom.startAt,
-      endTime = dateTo.endAt,
-    ).toResponses()
-  }
+  ): List<GetMetricsApplicationCountByStatusResponse> = applicationRepository.countApplicationStagesByPrisonIdAndDateTimeBetween(
+    prisonId,
+    startTime = dateFrom.startAt,
+    endTime = dateTo.endAt,
+  ).toResponses()
 
   fun retrieveMetricsLatestApplicationsPerStatusByPrisonIdAndDates(
     prisonId: String,
     dateFrom: LocalDate,
     dateTo: LocalDate,
-  ): List<GetMetricsApplicationCountByStatusResponse> {
-    return applicationRepository.countApplicationStatusByPrisonIdAndDateTimeBetween(
-      prisonId,
-      startTime = dateFrom.startAt,
-      endTime = dateTo.endAt,
-    ).toResponses()
-  }
+  ): List<GetMetricsApplicationCountByStatusResponse> = applicationRepository.countApplicationStatusByPrisonIdAndDateTimeBetween(
+    prisonId,
+    startTime = dateFrom.startAt,
+    endTime = dateTo.endAt,
+  ).toResponses()
 
   private val LocalDate.startAt: Instant get() = this.atStartOfDay().instant
   private val LocalDate.endAt: Instant get() = this.atTime(atEndOfDay).instant
   private val LocalDateTime.instant: Instant get() = this.toInstant(ZoneOffset.UTC)
 
-  private fun List<MetricsCountByStatus>.toResponses() =
-    this.map { GetMetricsApplicationCountByStatusResponse(it.status, it.count) }
+  private fun List<MetricsCountByStatus>.toResponses() = this.map { GetMetricsApplicationCountByStatusResponse(it.status, it.count) }
 }

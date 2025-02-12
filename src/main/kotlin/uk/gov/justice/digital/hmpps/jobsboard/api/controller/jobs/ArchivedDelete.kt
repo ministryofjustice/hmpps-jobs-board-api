@@ -32,18 +32,16 @@ class ArchivedDelete(
     @PathVariable
     @Size(max = 7, min = 1)
     prisonNumber: String,
-  ): ResponseEntity<Void> {
-    return if (archivedDeleter.existsById(jobId, prisonNumber)) {
-      archivedDeleter.delete(
-        DeleteArchivedRequest(
-          jobId,
-          prisonNumber,
-        ),
-      )
-      ResponseEntity.noContent().build()
-    } else {
-      ResponseEntity.notFound().build()
-    }
+  ): ResponseEntity<Void> = if (archivedDeleter.existsById(jobId, prisonNumber)) {
+    archivedDeleter.delete(
+      DeleteArchivedRequest(
+        jobId,
+        prisonNumber,
+      ),
+    )
+    ResponseEntity.noContent().build()
+  } else {
+    ResponseEntity.notFound().build()
   }
 
   @Hidden

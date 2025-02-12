@@ -9,11 +9,9 @@ data class DeleteArchivedRequest internal constructor(
     fun from(
       jobId: String,
       prisonNumber: String,
-    ): DeleteArchivedRequest {
-      return DeleteArchivedRequest(
-        jobId,
-        prisonNumber,
-      )
-    }
+    ): DeleteArchivedRequest = DeleteArchivedRequest(
+      jobId,
+      prisonNumber,
+    )
   }
 }

@@ -8,7 +8,5 @@ import java.time.ZoneId
 class DefaultTimeProvider(
   override val timezoneId: ZoneId = ZoneId.systemDefault(),
 ) : TimeProvider {
-  override fun now(): LocalDateTime {
-    return LocalDateTime.now()
-  }
+  override fun now(): LocalDateTime = LocalDateTime.now()
 }

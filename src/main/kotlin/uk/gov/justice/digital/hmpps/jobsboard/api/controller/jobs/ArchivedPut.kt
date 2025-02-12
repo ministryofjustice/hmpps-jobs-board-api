@@ -33,20 +33,18 @@ class ArchivedPut(
     @PathVariable
     @Size(max = 7, min = 1)
     prisonNumber: String,
-  ): ResponseEntity<Void> {
-    return if (archivedCreator.existsById(jobId, prisonNumber)) {
-      ResponseEntity.ok().build()
-    } else {
-      archivedCreator.createOrUpdate(
-        CreateArchivedRequest(jobId, prisonNumber),
-      )
-      ResponseEntity.created(
-        ServletUriComponentsBuilder
-          .fromCurrentRequest()
-          .build()
-          .toUri(),
-      ).build()
-    }
+  ): ResponseEntity<Void> = if (archivedCreator.existsById(jobId, prisonNumber)) {
+    ResponseEntity.ok().build()
+  } else {
+    archivedCreator.createOrUpdate(
+      CreateArchivedRequest(jobId, prisonNumber),
+    )
+    ResponseEntity.created(
+      ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .build()
+        .toUri(),
+    ).build()
   }
 
   @Hidden

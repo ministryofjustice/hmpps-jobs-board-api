@@ -67,8 +67,7 @@ abstract class ApplicationsTestCase : JobsTestCase() {
     }
   }
 
-  protected fun assertGetApplicationsIsOk(parameters: String? = null, expectedResponse: String? = null) =
-    assertGetApplications(parameters, OK, expectedResponse)
+  protected fun assertGetApplicationsIsOk(parameters: String? = null, expectedResponse: String? = null) = assertGetApplications(parameters, OK, expectedResponse)
 
   protected fun assertGetApplicationsIsSortedByJobAndEmployer(
     parameters: String? = null,
@@ -119,9 +118,8 @@ abstract class ApplicationsTestCase : JobsTestCase() {
 
   protected val Application.searchResponseBody get() = applicationResponseBody(this)
 
-  private fun applicationResponseBody(application: Application): String {
-    return application.let {
-      """
+  private fun applicationResponseBody(application: Application): String = application.let {
+    """
       {
         "id": "${it.id}",
         "jobId": "${it.job.id}",
@@ -135,8 +133,7 @@ abstract class ApplicationsTestCase : JobsTestCase() {
         "createdAt": "$jobCreationTime",
         "lastModifiedAt": "$jobCreationTime"
       }
-      """.trimIndent()
-    }
+    """.trimIndent()
   }
 
   private fun assertAddOrUpdateApplication(

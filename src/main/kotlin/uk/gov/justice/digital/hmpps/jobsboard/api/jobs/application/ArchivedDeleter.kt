@@ -14,13 +14,12 @@ class ArchivedDeleter(
 ) {
 
   @Transactional
-  fun delete(request: DeleteArchivedRequest) =
-    archivedRepository.deleteById(
-      JobPrisonerId(
-        jobId = EntityId(request.jobId),
-        prisonNumber = request.prisonNumber,
-      ),
-    )
+  fun delete(request: DeleteArchivedRequest) = archivedRepository.deleteById(
+    JobPrisonerId(
+      jobId = EntityId(request.jobId),
+      prisonNumber = request.prisonNumber,
+    ),
+  )
 
   fun existsById(jobId: String, prisonNumber: String): Boolean {
     if (jobRepository.findById(EntityId(jobId)).isEmpty) {

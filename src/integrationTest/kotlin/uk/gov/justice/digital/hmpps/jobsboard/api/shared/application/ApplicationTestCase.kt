@@ -213,9 +213,7 @@ abstract class ApplicationTestCase {
   internal fun setAuthorisation(
     user: String = "test-client",
     roles: List<String> = listOf(),
-  ): (HttpHeaders) {
-    return jwtAuthHelper.setAuthorisationForUnitTests(user, roles)
-  }
+  ): (HttpHeaders) = jwtAuthHelper.setAuthorisationForUnitTests(user, roles)
 
   private fun httpHeaders(): HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
 
@@ -289,8 +287,7 @@ abstract class ApplicationTestCase {
 
   protected fun randomUUID(): String = UUID.randomUUID().toString()
 
-  protected fun randomPrisonNumber(): String =
-    randomAlphabets(1) + randomDigits(4) + randomAlphabets(2)
+  protected fun randomPrisonNumber(): String = randomAlphabets(1) + randomDigits(4) + randomAlphabets(2)
 
   protected fun assertRequestWithBody(
     url: String,
@@ -463,13 +460,9 @@ abstract class ApplicationTestCase {
     }
   }
 
-  protected fun expectedResponseListOf(vararg elements: String): String {
-    return expectedResponseListOf(10, 0, elements = elements)
-  }
+  protected fun expectedResponseListOf(vararg elements: String): String = expectedResponseListOf(10, 0, elements = elements)
 
-  protected fun expectedResponseListOf(size: Int, page: Int, vararg elements: String): String {
-    return expectedResponseListOf(size, page, elements.size, *elements)
-  }
+  protected fun expectedResponseListOf(size: Int, page: Int, vararg elements: String): String = expectedResponseListOf(size, page, elements.size, *elements)
 
   protected fun expectedResponseListOf(size: Int, page: Int, totalElements: Int, vararg elements: String): String {
     val totalPages = (totalElements + size - 1) / size
@@ -497,9 +490,7 @@ abstract class ApplicationTestCase {
       .thenAnswer { Optional.of(startTime.plus(Period.ofDays(this.countOfGettingCurrentTime[0]++))) }
   }
 
-  protected fun randomAlphabets(length: Int): String =
-    ('A'..'Z').let { alphabets -> String(CharArray(length) { alphabets.random() }) }
+  protected fun randomAlphabets(length: Int): String = ('A'..'Z').let { alphabets -> String(CharArray(length) { alphabets.random() }) }
 
-  protected fun randomDigits(length: Int): String =
-    String(CharArray(length) { Holder.random.nextInt(9 + 1).toString()[0] })
+  protected fun randomDigits(length: Int): String = String(CharArray(length) { Holder.random.nextInt(9 + 1).toString()[0] })
 }

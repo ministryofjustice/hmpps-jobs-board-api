@@ -50,6 +50,5 @@ class OutboundEventsQueuePublisher(
     if (noTracing) put("noTracing", attributeValue("true"))
   }
 
-  private fun attributeValue(value: String) =
-    SqsMessageAttributeValue.builder().dataType("String").stringValue(value).build()
+  private fun attributeValue(value: String) = SqsMessageAttributeValue.builder().dataType("String").stringValue(value).build()
 }

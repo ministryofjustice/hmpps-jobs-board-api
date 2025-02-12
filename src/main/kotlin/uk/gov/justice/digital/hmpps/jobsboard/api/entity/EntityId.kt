@@ -18,11 +18,9 @@ data class EntityId(val id: String) : Serializable {
 
   override fun toString(): String = id
 
-  private fun isValidUUID(uuid: String): Boolean {
-    return try {
-      id == UUID.fromString(uuid).toString()
-    } catch (error: IllegalArgumentException) {
-      false
-    }
+  private fun isValidUUID(uuid: String): Boolean = try {
+    id == UUID.fromString(uuid).toString()
+  } catch (error: IllegalArgumentException) {
+    false
   }
 }

@@ -88,12 +88,11 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
     jobId: String,
     prisonNumber: String,
     isExistingJob: Boolean = true,
-  ): GetMatchingCandidateJobResponse? =
-    matchingCandidateJobRepository.findJobDetailsByPrisonNumber(jobId, prisonNumber).also { searchResults ->
-      assertThat(searchResults.size).isEqualTo(
-        if (isExistingJob) 1 else 0,
-      )
-    }.firstOrNull()
+  ): GetMatchingCandidateJobResponse? = matchingCandidateJobRepository.findJobDetailsByPrisonNumber(jobId, prisonNumber).also { searchResults ->
+    assertThat(searchResults.size).isEqualTo(
+      if (isExistingJob) 1 else 0,
+    )
+  }.firstOrNull()
 
   private fun assertJobDetailsByPrisonNumber(
     expectedJob: Job,
