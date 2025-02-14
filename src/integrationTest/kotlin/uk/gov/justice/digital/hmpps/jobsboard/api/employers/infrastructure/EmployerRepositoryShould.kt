@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
+import org.springframework.dao.DataIntegrityViolationException
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.sainsburys
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.anotherUserTestName
@@ -15,6 +17,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Com
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.employerModificationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
 import java.util.*
+import kotlin.test.assertFailsWith
 
 class EmployerRepositoryShould : EmployerRepositoryTestCase() {
   @Test
@@ -111,6 +114,23 @@ class EmployerRepositoryShould : EmployerRepositoryTestCase() {
     assertThat(updatedEmployer.lastModifiedBy)
       .isEqualTo(anotherUserTestName)
       .isNotEqualTo(updatedEmployer.createdBy)
+  }
+
+  @Test
+  fun `save employer with lengthy name`() {
+    val employer = EmployerMother.builder().withName("A".repeat(100)).build()
+    employerRepository.saveAndFlush(employer)
+  }
+
+  @Test
+  fun `NOT save employer with oversize name`() {
+    val employer = EmployerMother.builder().withName("A".repeat(101)).build()
+    val exception = assertFailsWith<Throwable> {
+      employerRepository.saveAndFlush(employer)
+    }
+    assertThat(exception)
+      .isInstanceOfAny(DataIntegrityViolationException::class.java)
+      .message().contains("ERROR: value too long")
   }
 
   @Nested

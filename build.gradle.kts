@@ -59,6 +59,7 @@ testing {
         implementation("org.testcontainers:junit-jupiter")
         implementation("org.testcontainers:localstack")
         implementation("org.awaitility:awaitility-kotlin")
+        implementation("org.jetbrains.kotlin:kotlin-test-junit5")
       }
 
       targets {
