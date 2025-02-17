@@ -64,6 +64,14 @@ class EmployersPutShould : EmployerTestCase() {
   inner class GivenAnEmployer {
     private lateinit var employerId: String
 
+    private val errorRespoonseInvalidSizeOfEmployerName: String by lazy {
+      "name - size must be between 3 and 100".let { error ->
+        """
+            {"status":400,"errorCode":null,"userMessage":"Validation failure: $error","developerMessage":"$error","moreInfo":null}
+        """.trimIndent()
+      }
+    }
+
     @BeforeEach
     fun setUp() {
       employerId = assertAddEmployerIsCreated(employer = sainsburys)
@@ -79,6 +87,32 @@ class EmployersPutShould : EmployerTestCase() {
       assertGetEmployerIsOK(
         employerId = employerId,
         expectedResponse = sainsburys.responseBody,
+      )
+    }
+
+    @Test
+    fun `not update an existing employer with validation error, as employer name is too long`() {
+      val employerBuilder = EmployerMother.builder().from(sainsburys).apply { name = ".".repeat(100) }
+      assertUpdateEmployerIsOk(employerId, employerBuilder.build().requestBody)
+
+      employerBuilder.name += "x"
+      assertUpdateEmployerThrowsValidationError(
+        employerId,
+        employerBuilder.build().requestBody,
+        expectedResponse = errorRespoonseInvalidSizeOfEmployerName,
+      )
+    }
+
+    @Test
+    fun `not update an existing employer with validation error, as employer name is too short`() {
+      val employerBuilder = EmployerMother.builder().from(sainsburys).apply { name = ".".repeat(3) }
+      assertUpdateEmployerIsOk(employerId, employerBuilder.build().requestBody)
+
+      employerBuilder.run { name = name.substring(0..1) }
+      assertUpdateEmployerThrowsValidationError(
+        employerId,
+        employerBuilder.build().requestBody,
+        expectedResponse = errorRespoonseInvalidSizeOfEmployerName,
       )
     }
 
