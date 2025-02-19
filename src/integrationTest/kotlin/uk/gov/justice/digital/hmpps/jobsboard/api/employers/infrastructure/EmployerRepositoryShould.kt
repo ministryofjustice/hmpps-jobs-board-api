@@ -133,6 +133,21 @@ class EmployerRepositoryShould : EmployerRepositoryTestCase() {
       .message().contains("ERROR: value too long")
   }
 
+  @Test
+  fun `NOT save employer with duplicate name`() {
+    val employer = sainsburys.let {
+      employerRepository.saveAndFlush(it)
+      EmployerMother.builder().withName(it.name).build()
+    }
+
+    val exception = assertFailsWith<Throwable> {
+      employerRepository.saveAndFlush(employer)
+    }
+    assertThat(exception)
+      .isInstanceOfAny(DataIntegrityViolationException::class.java)
+      .message().contains("ERROR: duplicate key value violates unique constraint")
+  }
+
   @Nested
   @DisplayName("Given a long username")
   inner class GivenALongUsername {
