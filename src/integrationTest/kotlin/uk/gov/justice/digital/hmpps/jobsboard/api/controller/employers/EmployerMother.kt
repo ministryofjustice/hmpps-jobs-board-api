@@ -18,7 +18,7 @@ object EmployerMother {
 
   val tescoLogistics = Employer(
     id = EntityId("2c8032bf-e583-4ae9-bcec-968a1c4881f9"),
-    name = "Tesco",
+    name = "Tesco Logistics",
     description = "This is another Tesco employer that provides logistic services.",
     sector = "LOGISTICS",
     status = "GOLD",

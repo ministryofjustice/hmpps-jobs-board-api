@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.shared.domain.OutboundEvent
 import java.time.Instant
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 @ExtendWith(MockitoExtension::class)
 class EmployerCreatorShould : TestBase() {
@@ -144,6 +145,29 @@ class EmployerCreatorShould : TestBase() {
 
     verify(employerRepository, never()).save(any(Employer::class.java))
     assertThat(exception.message).isEqualTo("EntityId cannot be null: {${createEmployerRequest.id}}")
+  }
+
+  @Test
+  fun `pass validation, without duplicate name`() {
+    val request = createEmployerRequest.also {
+      whenever(employerRepository.countByNameIgnoreCaseAndIdNot(it.name, EntityId(it.id))).thenReturn(0)
+    }
+
+    employerCreator.validate(request)
+  }
+
+  @Test
+  fun `throw an exception, with duplicate name`() {
+    val request = createEmployerRequest.also {
+      whenever(employerRepository.countByNameIgnoreCaseAndIdNot(it.name, EntityId(it.id))).thenReturn(1)
+    }
+    whenever(timeProvider.nowAsInstant()).thenReturn(Instant.now())
+
+    val exception = assertFailsWith<EmployerValidationException> { employerCreator.validate(request) }
+    assertThat(exception.message).contains("Duplicate Employer")
+    assertThat(exception.errorDetails)
+      .isNotNull.isNotEmpty
+      .contains(EmployerValidationException.DuplicateEmployerError)
   }
 
   @Nested

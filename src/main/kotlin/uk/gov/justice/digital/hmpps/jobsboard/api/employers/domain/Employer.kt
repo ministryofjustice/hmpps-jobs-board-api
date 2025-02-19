@@ -16,7 +16,7 @@ data class Employer(
   @Id
   var id: EntityId,
 
-  @Column(name = "name", length = 100, nullable = false)
+  @Column(name = "name", length = 100, nullable = false, unique = true)
   val name: String,
 
   @Column(name = "description", length = 1000, nullable = false)

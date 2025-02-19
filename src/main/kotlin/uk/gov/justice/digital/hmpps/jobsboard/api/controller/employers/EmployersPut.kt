@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
-import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.config.DataErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.application.CreateEmployerRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.application.EmployerCreator
 
@@ -29,22 +30,53 @@ class EmployersPut(
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @PutMapping("/{id}")
   @Operation(
-    summary = "Create an Employer ",
-    description = "Create a Jobs Board Employer. Currently requires role <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b>",
+    summary = "Create or update an Employer ",
+    description = "Create or update a Jobs Board Employer. Currently requires role <b>ROLE_EDUCATION_WORK_PLAN_EDIT</b>",
     responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Employer updated",
+      ),
       ApiResponse(
         responseCode = "201",
         description = "Employer created",
       ),
       ApiResponse(
+        responseCode = "400",
+        description = "Bad request",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = DataErrorResponse::class),
+            examples = [
+              ExampleObject(
+                value = """
+                {
+                  "status": 400,
+                  "userMessage": "Validation failed",
+                  "error": "Bad Request",
+                  "details": [
+                    {
+                      "field": "name",
+                      "message": "The name provided already exists. Please choose a different name.",
+                      "code": "DUPLICATE_EMPLOYER"
+                    }
+                  ],
+                  "timestamp": "2025-01-30T12:34:56.789Z"
+                }
+                """,
+              ),
+            ],
+          ),
+        ],
+      ),
+      ApiResponse(
         responseCode = "401",
-        description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+        description = "Error: Unauthorised. The error status is set as the required authorisation was not provided.",
       ),
       ApiResponse(
         responseCode = "403",
-        description = "Incorrect permissions to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+        description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
       ),
     ],
   )
@@ -56,17 +88,23 @@ class EmployersPut(
     )
     id: String,
     @Valid @RequestBody createEmployerRequest: CreateEmployerRequest,
-  ): ResponseEntity<Void> = if (employerCreator.existsById(id)) {
-    employerCreator.update(createEmployerRequest.copy(id = id))
-    ResponseEntity.ok().build()
-  } else {
-    employerCreator.create(createEmployerRequest.copy(id = id))
-    ResponseEntity.created(
-      ServletUriComponentsBuilder
-        .fromCurrentRequest()
-        .path("/{id}")
-        .buildAndExpand(id)
-        .toUri(),
-    ).build()
+  ): ResponseEntity<Void> {
+    val request = createEmployerRequest.copy(id = id).also {
+      employerCreator.validate(it)
+    }
+
+    return if (employerCreator.existsById(id)) {
+      employerCreator.update(request)
+      ResponseEntity.ok().build()
+    } else {
+      employerCreator.create(request)
+      ResponseEntity.created(
+        ServletUriComponentsBuilder
+          .fromCurrentRequest()
+          .path("/{id}")
+          .buildAndExpand(id)
+          .toUri(),
+      ).build()
+    }
   }
 }
