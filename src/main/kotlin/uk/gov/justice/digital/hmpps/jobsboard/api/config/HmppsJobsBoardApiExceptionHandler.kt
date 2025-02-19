@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.config
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import jakarta.validation.ValidationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -16,9 +17,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.JobNotFoundException
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.application.DataValidationException
+import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
+import java.time.Instant
+import uk.gov.justice.digital.hmpps.jobsboard.api.shared.application.ErrorDetail as DataErrorDetail
 
 @RestControllerAdvice
-class HmppsJobsBoardApiExceptionHandler {
+class HmppsJobsBoardApiExceptionHandler(
+  val timeProvider: TimeProvider,
+) {
   @ExceptionHandler(ValidationException::class)
   fun handleValidationException(e: Exception): ResponseEntity<ErrorResponse> {
     log.info("Validation exception: {}", e.message)
@@ -54,6 +61,22 @@ class HmppsJobsBoardApiExceptionHandler {
         developerMessage = e.message,
       ),
     ).also { log.info("No Job found exception: {}", e.message) }
+
+  @ExceptionHandler(DataValidationException::class)
+  fun handleDataValidationException(e: DataValidationException): ResponseEntity<DataErrorResponse> {
+    log.info("Data Validation exception: {}", e.message)
+    return ResponseEntity
+      .status(BAD_REQUEST)
+      .body(
+        DataErrorResponse(
+          status = BAD_REQUEST,
+          timestamp = timeProvider.nowAsInstant(),
+          userMessage = "Validation failed",
+          error = "Bad request: ${e.message}",
+          details = e.errorDetails?.map { ErrorDetail.from(it) }?.toList(),
+        ),
+      )
+  }
 
   @ExceptionHandler(AccessDeniedException::class)
   fun handleAccessDeniedException(e: AccessDeniedException): ResponseEntity<ErrorResponse> = ResponseEntity
@@ -155,4 +178,33 @@ data class ErrorResponse(
     moreInfo: String? = null,
   ) :
     this(status.value(), errorCode, userMessage, developerMessage, moreInfo)
+}
+
+data class DataErrorResponse(
+  val status: Int,
+  val timestamp: Instant? = null,
+  val error: String? = null,
+  val details: List<ErrorDetail>? = null,
+  val userMessage: String? = null,
+  @JsonInclude(JsonInclude.Include.NON_NULL) val errorCode: Int? = null,
+  @JsonInclude(JsonInclude.Include.NON_NULL) val developerMessage: String? = null,
+  @JsonInclude(JsonInclude.Include.NON_NULL) val moreInfo: String? = null,
+) {
+  constructor(
+    status: HttpStatus,
+    timestamp: Instant,
+    error: String? = null,
+    details: List<ErrorDetail>? = null,
+    userMessage: String? = null,
+  ) : this(status.value(), timestamp, error, details, userMessage)
+}
+
+data class ErrorDetail(
+  val field: String,
+  val message: String? = null,
+  val code: String,
+) {
+  companion object {
+    fun from(errorDetail: DataErrorDetail) = errorDetail.run { ErrorDetail(fieldName, errorMessage, errorCode) }
+  }
 }

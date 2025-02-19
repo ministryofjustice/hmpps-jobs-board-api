@@ -17,8 +17,13 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.sainsburys
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tescoLogistics
+import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerEventType
+import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 class EmployersPutShould : EmployerTestCase() {
 
@@ -63,6 +68,7 @@ class EmployersPutShould : EmployerTestCase() {
   @DisplayName("Given an employer has been created")
   inner class GivenAnEmployer {
     private lateinit var employerId: String
+    private lateinit var employer: Employer
 
     private val errorRespoonseInvalidSizeOfEmployerName: String by lazy {
       "name - size must be between 3 and 100".let { error ->
@@ -75,6 +81,7 @@ class EmployersPutShould : EmployerTestCase() {
     @BeforeEach
     fun setUp() {
       employerId = assertAddEmployerIsCreated(employer = sainsburys)
+      employer = sainsburys.copy(id = EntityId(employerId))
     }
 
     @Test
@@ -145,6 +152,28 @@ class EmployersPutShould : EmployerTestCase() {
         expectedCount = 2,
       )
     }
+
+    @Nested
+    inner class AndAnotherEmployer {
+      private val anotherEmployer = tesco.copy(id = EntityId(randomUUID()))
+      private val duplicateEmployer: Employer get() = anotherEmployer.copy(name = employer.name)
+
+      @Test
+      fun `NOT create another employer with duplicate name`() {
+        val expectedError = duplicateEmployerErrorResponse(defaultCurrentTimeLocal)
+
+        duplicateEmployer.run { assertAddEmployerThrowsValidationError(id.id, requestBody, expectedError) }
+      }
+
+      @Test
+      fun `NOT update another employer to duplicate name (trimmed)`() {
+        assertAddEmployerIsCreated(anotherEmployer)
+        val expectedError = duplicateEmployerErrorResponse(defaultCurrentTimeLocal)
+
+        duplicateEmployer.copy(name = "   ${duplicateEmployer.name}   ")
+          .run { assertAddEmployerThrowsValidationError(id.id, requestBody, expectedError) }
+      }
+    }
   }
 
   private fun assertMessageHasBeenSent(
@@ -167,5 +196,24 @@ class EmployersPutShould : EmployerTestCase() {
       assertThat(messageBody["eventType"].textValue()).isEqualTo(expectedEventType.eventTypeCode)
       assertThat(messageBody["employerId"].textValue()).isEqualTo(expectedEmployerId)
     }
+  }
+
+  private fun duplicateEmployerErrorResponse(timestamp: LocalDateTime) = duplicateEmployerErrorResponse(timestamp.atZone(ZoneId.systemDefault()).toInstant())
+
+  private fun duplicateEmployerErrorResponse(timestamp: Instant): String {
+    val userMessage = "Validation failed"
+    val errorMessage = "Bad request: Duplicate Employer"
+    val errorDetails = """
+      {"field":"name","message":"The name provided already exists. Please choose a different name.","code":"DUPLICATE_EMPLOYER"}
+    """.trimIndent()
+    return """
+      {
+        "status": 400,
+        "userMessage":"$userMessage",
+        "timestamp":"$timestamp",
+        "error": "$errorMessage", 
+        "details": [$errorDetails]
+       }
+    """.trimIndent()
   }
 }

@@ -43,6 +43,11 @@ class EmployerCreator(
 
   fun existsById(employerId: String): Boolean = employerRepository.existsById(EntityId(employerId))
 
+  fun validate(request: CreateEmployerRequest) {
+    val duplicateCount = request.let { employerRepository.countByNameIgnoreCaseAndIdNot(it.name.trim(), EntityId(it.id)) }
+    if (duplicateCount > 0) throw EmployerValidationException.duplicateEmployer(timeProvider.nowAsInstant())
+  }
+
   private fun save(request: CreateEmployerRequest, jobs: List<Job>) {
     employerRepository.save(
       Employer(
