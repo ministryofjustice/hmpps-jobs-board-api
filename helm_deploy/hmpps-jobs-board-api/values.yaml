@@ -44,6 +44,8 @@ generic-service:
       DATABASE_PASSWORD: "database_password"
       DATABASE_NAME: "database_name"
       DATABASE_ENDPOINT: "rds_instance_endpoint"
+    sqs-integration:
+      HMPPS_SQS_QUEUES_OUTBOUNDINTEGRATIONQUEUE_QUEUE_NAME: "outboundintegrationqueue"
 
   allowlist:
     groups:
