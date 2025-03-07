@@ -22,6 +22,7 @@ dependencies {
 
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("io.mockk:mockk:1.13.3")
   testImplementation("org.springframework.boot:spring-boot-testcontainers") {
     testImplementation("org.apache.commons:commons-compress:1.27.1")
   }
@@ -52,6 +53,7 @@ testing {
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
         implementation("com.zaxxer:HikariCP:5.1.0")
         implementation("com.h2database:h2")
+        implementation("io.mockk:mockk:1.13.3")
         implementation("org.springframework.boot:spring-boot-testcontainers") {
           implementation("org.apache.commons:commons-compress:1.27.1")
         }

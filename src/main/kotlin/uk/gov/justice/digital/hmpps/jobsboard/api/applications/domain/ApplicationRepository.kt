@@ -24,6 +24,8 @@ interface ApplicationRepository :
 
   fun findByPrisonId(prisonId: String, pageable: Pageable): Page<Application>
 
+  fun findByPrisonNumber(prisonNumber: String): List<Application>
+
   @Query(
     """
     SELECT a
