@@ -347,6 +347,6 @@ class SubjectAccessRequestGetTest {
     val response: ResponseEntity<Any> = controller.subjectAccess(prn = prn)
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.statusCode)
     val body = response.body as ErrorResponse
-    assertEquals("An error occurred while fetching data", body.userMessage)
+    assertEquals("An error occurred while building data", body.userMessage)
   }
 }
