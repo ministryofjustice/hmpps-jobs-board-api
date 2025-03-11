@@ -46,8 +46,8 @@ class SubjectAccessRequestService(
     val applicationHistory: List<HistoriesDTO> = revisions?.map { revision ->
       val application: Application = revision.entity
       HistoriesDTO(
-        firstName = application.firstName ?: "Unknown",
-        lastName = application.lastName ?: "Unknown",
+        firstName = application.firstName ?: "",
+        lastName = application.lastName ?: "",
         status = application.status,
         prisonName = application.prisonId,
         modifiedAt = application.lastModifiedAt.toString(),
