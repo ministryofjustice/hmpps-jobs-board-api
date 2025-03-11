@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.subjectAccessRequest.service
 
-import java.time.Instant
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -16,6 +15,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.application.SubjectAccessRequestService
+import java.time.Instant
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -81,9 +82,7 @@ class SubjectAccessRequestServiceTest {
   fun `should return empty list when no applications exist`() {
     val prisonNumber = "A1234BC"
     every { applicationRepository.findByPrisonNumber(prisonNumber) } returns emptyList()
-    
     val result = service.fetchApplications(prisonNumber).get()
-    
     assertTrue(result.isEmpty())
     verify { applicationRepository.findByPrisonNumber(prisonNumber) }
   }
@@ -104,9 +103,7 @@ class SubjectAccessRequestServiceTest {
     )
 
     every { expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber) } returns expressions
-    
     val result = service.fetchExpressionsOfInterest(prisonNumber).get()
-    
     assertEquals(1, result.size)
     assertEquals("Car mechanic", result[0].jobTitle)
     assertEquals("The AA", result[0].employerName)
@@ -153,7 +150,6 @@ class SubjectAccessRequestServiceTest {
 
   @Test
   fun `should return empty list when no archived jobs exist`() {
-
     val prisonNumber = "A1234BC"
     every { archivedRepository.findByIdPrisonNumber(prisonNumber) } returns emptyList()
 

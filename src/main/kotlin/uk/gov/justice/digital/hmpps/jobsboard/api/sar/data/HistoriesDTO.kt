@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.applications.data
+package uk.gov.justice.digital.hmpps.jobsboard.api.sar.data
 
 import io.swagger.v3.oas.annotations.media.Schema
 

@@ -1,9 +1,6 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.subjectAccessRequest.data
+package uk.gov.justice.digital.hmpps.jobsboard.api.sar.data
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.hmpps.jobsboard.api.applications.data.ApplicationDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.data.ArchivedDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.data.ExpressionOfInterestDTO
 
 @Schema(description = "Response containing summary for subject access request")
 data class SARSummaryDTO(

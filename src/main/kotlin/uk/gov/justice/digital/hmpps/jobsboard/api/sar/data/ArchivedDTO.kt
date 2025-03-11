@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.data
+package uk.gov.justice.digital.hmpps.jobsboard.api.sar.data
 
 data class ArchivedDTO(
   val jobTitle: String,

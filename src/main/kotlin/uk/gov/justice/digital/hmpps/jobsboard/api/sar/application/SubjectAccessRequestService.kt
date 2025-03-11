@@ -1,19 +1,19 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.subjectAccessRequest.service
+package uk.gov.justice.digital.hmpps.jobsboard.api.sar.application
 
 import org.springframework.data.history.Revisions
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.ApplicationHistoryRetriever
-import uk.gov.justice.digital.hmpps.jobsboard.api.applications.data.ApplicationDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.applications.data.HistoriesDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.data.ArchivedDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.data.ExpressionOfInterestDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ApplicationDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ArchivedDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ExpressionOfInterestDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.HistoriesDTO
 import java.util.concurrent.CompletableFuture
 
 @Service

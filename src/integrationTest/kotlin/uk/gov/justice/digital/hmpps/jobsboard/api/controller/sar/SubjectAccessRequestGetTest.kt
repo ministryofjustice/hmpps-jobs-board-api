@@ -1,7 +1,5 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.controller.subjectAccessRequest
+package uk.gov.justice.digital.hmpps.jobsboard.api.controller.sar
 
-import java.time.LocalDate
-import java.util.concurrent.CompletableFuture
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -12,14 +10,16 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import uk.gov.justice.digital.hmpps.jobsboard.api.applications.data.ApplicationDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.applications.data.HistoriesDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.exceptions.NotFoundException
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.data.ArchivedDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.data.ExpressionOfInterestDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.subjectAccessRequest.data.SARSummaryDTO
-import uk.gov.justice.digital.hmpps.jobsboard.api.subjectAccessRequest.service.SubjectAccessRequestService
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.application.SubjectAccessRequestService
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ApplicationDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ArchivedDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ExpressionOfInterestDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.HistoriesDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARSummaryDTO
+import java.time.LocalDate
+import java.util.concurrent.CompletableFuture
 import kotlin.test.assertEquals
 
 class SubjectAccessRequestGetTest {
@@ -164,7 +164,6 @@ class SubjectAccessRequestGetTest {
 
     assertEquals(expectedObject, actualObject)
 
-    // Verify interactions with the mock service
     verify { subjectAccessRequestService.fetchApplications(prn) }
     verify { subjectAccessRequestService.fetchExpressionsOfInterest(prn) }
     verify { subjectAccessRequestService.fetchArchivedJobs(prn) }
@@ -172,11 +171,9 @@ class SubjectAccessRequestGetTest {
 
   @Test
   fun `should return SARSummaryDTO with populated histories in correct JSON format when PRN is valid`() {
-    // Arrange
     val prn = "A1234BC"
     val createdAt = "2023-03-06T00:00:00Z"
 
-    // Populated histories
     val histories = listOf(
       HistoriesDTO(
         firstName = "John",
@@ -233,7 +230,6 @@ class SubjectAccessRequestGetTest {
 
     val actualJson = objectMapper.writeValueAsString(response.body)
 
-    // Expected JSON Output
     val expectedJson = """
         {
           "content": {
