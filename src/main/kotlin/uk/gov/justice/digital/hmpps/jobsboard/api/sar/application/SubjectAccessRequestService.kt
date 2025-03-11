@@ -26,11 +26,9 @@ class SubjectAccessRequestService(
 
   @Async
   fun fetchApplications(prisonNumber: String?): CompletableFuture<List<ApplicationDTO>> {
-    val histories: List<HistoriesDTO>
-
     val applications: List<Application> = applicationRepository.findByPrisonNumber(prisonNumber!!)
-    val applicationsDTO = applications.stream()
-      .map<ApplicationDTO> { jobApplication: Application ->
+    val applicationsDTO = applications
+      .map { jobApplication: Application ->
         val applicationHistory = getApplicationHistories(applicationHistoryRetriever.retrieveAllApplicationHistories(prisonNumber, jobApplication.job.id.id))
         ApplicationDTO(
           jobApplication.job.title,
@@ -63,7 +61,7 @@ class SubjectAccessRequestService(
   fun fetchExpressionsOfInterest(prisonNumber: String): CompletableFuture<List<ExpressionOfInterestDTO>> {
     val eoiList: List<ExpressionOfInterest> = expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber)
     val eoiDTOs: List<ExpressionOfInterestDTO> = eoiList.stream()
-      .map<ExpressionOfInterestDTO> { eoi: ExpressionOfInterest ->
+      .map { eoi: ExpressionOfInterest ->
         ExpressionOfInterestDTO(
           eoi.job.title,
           eoi.job.employer.name,
@@ -71,14 +69,14 @@ class SubjectAccessRequestService(
           eoi.createdAt.toString(),
         )
       }.toList()
-    return CompletableFuture.completedFuture<List<ExpressionOfInterestDTO>>(eoiDTOs)
+    return CompletableFuture.completedFuture(eoiDTOs)
   }
 
   @Async
   fun fetchArchivedJobs(prisonNumber: String): CompletableFuture<List<ArchivedDTO>> {
     val archivedJobs: List<Archived> = archivedRepository.findByIdPrisonNumber(prisonNumber)
-    val archivedJobDTO: List<ArchivedDTO> = archivedJobs.stream()
-      .map<ArchivedDTO> { archivedJob: Archived ->
+    val archivedJobDTO: List<ArchivedDTO> = archivedJobs
+      .map { archivedJob: Archived ->
         ArchivedDTO(
           archivedJob.job.title,
           archivedJob.job.employer.name,
@@ -86,6 +84,6 @@ class SubjectAccessRequestService(
           archivedJob.createdAt.toString(),
         )
       }.toList()
-    return CompletableFuture.completedFuture<List<ArchivedDTO>>(archivedJobDTO)
+    return CompletableFuture.completedFuture(archivedJobDTO)
   }
 }
