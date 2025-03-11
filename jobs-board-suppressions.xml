@@ -28,5 +28,13 @@
         <packageUrl regex="true">^pkg:javascript/DOMPurify@.*$</packageUrl>
         <vulnerabilityName>CVE-2024-48910</vulnerabilityName>
     </suppress>
-
+    <suppress>
+        <notes><![CDATA[
+        Suppression for DOMPurify mXSS, as it is used in testing only (Wiremock's bundled Swagger UI)
+        wiremock-jre8-standalone-2.35.1.jar: swagger-ui-bundle.js (pkg:javascript/DOMPurify@2.3.3) : CVE-2025-26791
+        wiremock-jre8-standalone-2.35.1.jar: swagger-ui-es-bundle.js (pkg:javascript/DOMPurify@2.3.3) : CVE-2025-26791
+        ]]></notes>
+        <packageUrl regex="true">^pkg:javascript/DOMPurify@.*$</packageUrl>
+        <vulnerabilityName>CVE-2025-26791</vulnerabilityName>
+    </suppress>
 </suppressions>
