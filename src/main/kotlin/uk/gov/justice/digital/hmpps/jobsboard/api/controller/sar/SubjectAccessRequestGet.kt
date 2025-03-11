@@ -89,7 +89,7 @@ class SubjectAccessRequestGet(
     }
 
     if (!prn.isNullOrEmpty()) {
-      try {
+      return try {
         val listOfJobApplications: CompletableFuture<List<ApplicationDTO>> = subjectAccessRequestService.fetchApplications(prn)
         val listOfExpressionsOfInterest: CompletableFuture<List<ExpressionOfInterestDTO>> = subjectAccessRequestService.fetchExpressionsOfInterest(prn)
         val listOfArchivedJobs: CompletableFuture<List<ArchivedDTO>> = subjectAccessRequestService.fetchArchivedJobs(prn)
@@ -100,7 +100,7 @@ class SubjectAccessRequestGet(
           e.printStackTrace()
 
           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-            ErrorResponse(status = HttpStatus.INTERNAL_SERVER_ERROR, userMessage = "An error occurred while fetching data", developerMessage = e.message),
+            ErrorResponse(status = HttpStatus.INTERNAL_SERVER_ERROR, userMessage = "An error occurred while building data", developerMessage = e.message),
           )
         }
 
@@ -114,10 +114,18 @@ class SubjectAccessRequestGet(
           ),
         )
       } catch (ex: NotFoundException) {
-        return ResponseEntity.noContent().build()
+        ResponseEntity.noContent().build()
+      } catch (ex: Exception) {
+        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+          ErrorResponse(
+            status = HttpStatus.INTERNAL_SERVER_ERROR,
+            userMessage = "An unexpected error occurred while fetching data",
+            developerMessage = ex.message,
+          ),
+        )
       }
-    } else {
-      return ResponseEntity.status(209).build()
     }
+
+    return ResponseEntity.status(209).build()
   }
 }
