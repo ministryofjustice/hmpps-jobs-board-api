@@ -15,6 +15,7 @@ generic-service:
     API_BASE_URL_OAUTH: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
     OS_PLACES_API_URL: "https://api.os.uk/search/places/v1"
     API_INTEGRATION_ENABLED: true
+    HMPPS_SAR_ADDITIONALACCESSROLE: "ROLE_EDUCATION_WORK_PLAN_VIEW"
 
   serviceAccountName: education-skills-work-employment-development
 
