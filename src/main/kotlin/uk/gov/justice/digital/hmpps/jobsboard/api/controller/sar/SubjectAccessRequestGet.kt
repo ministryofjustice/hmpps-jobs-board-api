@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -36,7 +35,9 @@ import java.util.concurrent.CompletableFuture
 class SubjectAccessRequestGet(
   private val subjectAccessRequestService: SubjectAccessRequestService,
 ) {
-  private val log: Logger = LoggerFactory.getLogger(this::class.java)
+  companion object {
+    private val log = LoggerFactory.getLogger(this::class.java)
+  }
 
   @PreAuthorize("hasAnyRole('SAR_DATA_ACCESS', @environment.getProperty('hmpps.sar.additionalAccessRole', 'SAR_DATA_ACCESS') )")
   @GetMapping
@@ -101,9 +102,11 @@ class SubjectAccessRequestGet(
         try {
           CompletableFuture.allOf(listOfJobApplications, listOfExpressionsOfInterest, listOfArchivedJobs).join()
         } catch (e: Exception) {
-          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-            ErrorResponse(status = HttpStatus.INTERNAL_SERVER_ERROR, userMessage = "An error occurred while building data", developerMessage = e.message),
-          )
+          return "An error occurred while building data".also { log.error(it, e) }.let { message ->
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+              ErrorResponse(status = HttpStatus.INTERNAL_SERVER_ERROR, userMessage = message, developerMessage = e.message),
+            )
+          }
         }
 
         return ResponseEntity.ok(
@@ -118,6 +121,7 @@ class SubjectAccessRequestGet(
       } catch (ex: NotFoundException) {
         ResponseEntity.noContent().build()
       } catch (ex: Exception) {
+        log.error("Unexpected exception", ex)
         ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
           ErrorResponse(
             status = HttpStatus.INTERNAL_SERVER_ERROR,
