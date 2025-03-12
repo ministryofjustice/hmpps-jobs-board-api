@@ -7,6 +7,10 @@ api:
 os.places.api:
   key: <OVERRIDE_THIS>
 
+hmpps:
+  sar:
+    additionalAccessRole: ROLE_EDUCATION_WORK_PLAN_VIEW
+
 management.endpoint:
   health.cache.time-to-live: 0
   info.cache.time-to-live: 0

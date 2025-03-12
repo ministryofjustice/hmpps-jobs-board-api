@@ -35,8 +35,8 @@ class SubjectAccessRequestService(
           jobApplication.job.employer.name,
           jobApplication.prisonId,
           applicationHistory,
-          jobApplication.createdBy,
-          jobApplication.lastModifiedBy,
+          jobApplication.createdAt.toString(),
+          jobApplication.lastModifiedAt.toString(),
         )
       }.toList()
     return CompletableFuture.completedFuture(applicationsDTO)

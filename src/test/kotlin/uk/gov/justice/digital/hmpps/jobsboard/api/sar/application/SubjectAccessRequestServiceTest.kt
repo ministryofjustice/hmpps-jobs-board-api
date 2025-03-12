@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.subjectAccessRequest.service
+package uk.gov.justice.digital.hmpps.jobsboard.api.sar.application
 
 import io.mockk.every
 import io.mockk.mockk
@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.sar.application.SubjectAccessRequestService
 import java.time.Instant
 import java.util.*
 import kotlin.test.assertEquals

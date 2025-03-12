@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -34,7 +36,9 @@ import java.util.concurrent.CompletableFuture
 class SubjectAccessRequestGet(
   private val subjectAccessRequestService: SubjectAccessRequestService,
 ) {
-  @PreAuthorize("hasAnyRole('SAR_DATA_ACCESS', @environment.getProperty('hmpps.sar.additionalAccessRole', 'SAR_DATA_ACCESS'))")
+  private val log: Logger = LoggerFactory.getLogger(this::class.java)
+
+  @PreAuthorize("hasAnyRole('SAR_DATA_ACCESS', @environment.getProperty('hmpps.sar.additionalAccessRole', 'SAR_DATA_ACCESS') )")
   @GetMapping
   @Operation(
     summary = "Successful return of data fulfilling subject access request for a prisoner",
@@ -97,8 +101,6 @@ class SubjectAccessRequestGet(
         try {
           CompletableFuture.allOf(listOfJobApplications, listOfExpressionsOfInterest, listOfArchivedJobs).join()
         } catch (e: Exception) {
-          e.printStackTrace()
-
           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
             ErrorResponse(status = HttpStatus.INTERNAL_SERVER_ERROR, userMessage = "An error occurred while building data", developerMessage = e.message),
           )
