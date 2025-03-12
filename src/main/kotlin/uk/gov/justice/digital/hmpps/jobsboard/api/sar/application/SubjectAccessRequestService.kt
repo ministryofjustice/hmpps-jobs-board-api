@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.ApplicationHistoryRetriever
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ApplicationDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ArchivedDTO
@@ -25,65 +23,39 @@ class SubjectAccessRequestService(
 ) {
 
   @Async
-  fun fetchApplications(prisonNumber: String?): CompletableFuture<List<ApplicationDTO>> {
-    val applications: List<Application> = applicationRepository.findByPrisonNumber(prisonNumber!!)
-    val applicationsDTO = applications
-      .map { jobApplication: Application ->
-        val applicationHistory = getApplicationHistories(applicationHistoryRetriever.retrieveAllApplicationHistories(prisonNumber, jobApplication.job.id.id))
-        ApplicationDTO(
-          jobApplication.job.title,
-          jobApplication.job.employer.name,
-          jobApplication.prisonId,
-          applicationHistory,
-          jobApplication.createdAt.toString(),
-          jobApplication.lastModifiedAt.toString(),
-        )
-      }.toList()
-    return CompletableFuture.completedFuture(applicationsDTO)
-  }
-
-  fun getApplicationHistories(revisions: Revisions<Long, Application>?): List<HistoriesDTO> {
-    val applicationHistory: List<HistoriesDTO> = revisions?.map { revision ->
-      val application: Application = revision.entity
-      HistoriesDTO(
-        firstName = application.firstName ?: "",
-        lastName = application.lastName ?: "",
-        status = application.status,
-        prisonName = application.prisonId,
-        modifiedAt = application.lastModifiedAt.toString(),
+  fun fetchApplications(prisonNumber: String?) = applicationRepository.findByPrisonNumber(prisonNumber!!).map {
+    it.run {
+      ApplicationDTO(
+        jobTitle = job.title,
+        employerName = job.employer.name,
+        prisonNumber = prisonNumber,
+        histories = applicationHistoryRetriever.retrieveAllApplicationHistories(prisonNumber, job.id.id)
+          ?.applicationHistories().orEmpty(),
+        createdAt = createdAt.toString(),
+        lastModifiedAt = lastModifiedAt.toString(),
       )
-    }?.toList().orEmpty()
-
-    return applicationHistory
-  }
+    }
+  }.toList().let { CompletableFuture.completedFuture(it) }
 
   @Async
-  fun fetchExpressionsOfInterest(prisonNumber: String): CompletableFuture<List<ExpressionOfInterestDTO>> {
-    val eoiList: List<ExpressionOfInterest> = expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber)
-    val eoiDTOs: List<ExpressionOfInterestDTO> = eoiList.stream()
-      .map { eoi: ExpressionOfInterest ->
-        ExpressionOfInterestDTO(
-          eoi.job.title,
-          eoi.job.employer.name,
-          prisonNumber,
-          eoi.createdAt.toString(),
-        )
-      }.toList()
-    return CompletableFuture.completedFuture(eoiDTOs)
-  }
+  fun fetchExpressionsOfInterest(prisonNumber: String) = expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber).map {
+    it.run { ExpressionOfInterestDTO(job.title, job.employer.name, prisonNumber, createdAt.toString()) }
+  }.toList().let { CompletableFuture.completedFuture(it) }
 
   @Async
-  fun fetchArchivedJobs(prisonNumber: String): CompletableFuture<List<ArchivedDTO>> {
-    val archivedJobs: List<Archived> = archivedRepository.findByIdPrisonNumber(prisonNumber)
-    val archivedJobDTO: List<ArchivedDTO> = archivedJobs
-      .map { archivedJob: Archived ->
-        ArchivedDTO(
-          archivedJob.job.title,
-          archivedJob.job.employer.name,
-          prisonNumber,
-          archivedJob.createdAt.toString(),
-        )
-      }.toList()
-    return CompletableFuture.completedFuture(archivedJobDTO)
-  }
+  fun fetchArchivedJobs(prisonNumber: String) = archivedRepository.findByIdPrisonNumber(prisonNumber).map {
+    it.run { ArchivedDTO(job.title, job.employer.name, prisonNumber, createdAt.toString()) }
+  }.toList().let { CompletableFuture.completedFuture(it) }
+
+  private fun Revisions<Long, Application>.applicationHistories() = map {
+    it.entity.run {
+      HistoriesDTO(
+        firstName = firstName,
+        lastName = lastName,
+        status = status,
+        prisonName = prisonId,
+        modifiedAt = lastModifiedAt.toString(),
+      )
+    }
+  }.toList()
 }
