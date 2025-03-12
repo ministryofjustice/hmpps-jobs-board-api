@@ -4,4 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ArchivedRepository : JpaRepository<Archived, JobPrisonerId>
+interface ArchivedRepository : JpaRepository<Archived, JobPrisonerId> {
+
+  fun findByIdPrisonNumber(prisonNumber: String): List<Archived>
+}
