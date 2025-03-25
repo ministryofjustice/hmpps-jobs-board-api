@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ApplicationDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ArchivedDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ExpressionOfInterestDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.HistoriesDTO
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
 
 @Service
@@ -23,29 +25,55 @@ class SubjectAccessRequestService(
 ) {
 
   @Async
-  fun fetchApplications(prisonNumber: String?) = applicationRepository.findByPrisonNumber(prisonNumber!!).map {
-    it.run {
-      ApplicationDTO(
-        jobTitle = job.title,
-        employerName = job.employer.name,
-        prisonNumber = prisonNumber,
-        histories = applicationHistoryRetriever.retrieveAllApplicationHistories(prisonNumber, job.id.id)
-          ?.applicationHistories().orEmpty(),
-        createdAt = createdAt.toString(),
-        lastModifiedAt = lastModifiedAt.toString(),
+  fun fetchApplications(prisonNumber: String?) = applicationRepository.findByPrisonNumber(prisonNumber!!)
+    .map {
+      it.run {
+        ApplicationDTO(
+          jobTitle = job.title,
+          employerName = job.employer.name,
+          prisonNumber = prisonNumber,
+          histories = applicationHistoryRetriever.retrieveAllApplicationHistories(prisonNumber, job.id.id)
+            ?.applicationHistories().orEmpty(),
+          createdAt = createdAt.toString(),
+          lastModifiedAt = lastModifiedAt.toString(),
+        )
+      }
+    }.sortedByDescending {
+      OffsetDateTime.parse(it.lastModifiedAt.toString())
+    }.map {
+      it.copy(
+        createdAt = formatDateTime(it.createdAt.toString()),
+        lastModifiedAt = formatDateTime(it.lastModifiedAt.toString()),
       )
-    }
-  }.toList().let { CompletableFuture.completedFuture(it) }
+    }.toList().let { CompletableFuture.completedFuture(it) }
 
   @Async
   fun fetchExpressionsOfInterest(prisonNumber: String) = expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber).map {
     it.run { ExpressionOfInterestDTO(job.title, job.employer.name, prisonNumber, createdAt.toString()) }
-  }.toList().let { CompletableFuture.completedFuture(it) }
+  }
+    .sortedByDescending {
+      OffsetDateTime.parse(it.createdAt.toString())
+    }
+    .map {
+      it.copy(
+        createdAt = formatDateTime(it.createdAt.toString()),
+      )
+    }
+    .toList().let { CompletableFuture.completedFuture(it) }
 
   @Async
   fun fetchArchivedJobs(prisonNumber: String) = archivedRepository.findByIdPrisonNumber(prisonNumber).map {
     it.run { ArchivedDTO(job.title, job.employer.name, prisonNumber, createdAt.toString()) }
-  }.toList().let { CompletableFuture.completedFuture(it) }
+  }
+    .sortedByDescending {
+      OffsetDateTime.parse(it.createdAt.toString())
+    }
+    .map {
+      it.copy(
+        createdAt = formatDateTime(it.createdAt.toString()),
+      )
+    }
+    .toList().let { CompletableFuture.completedFuture(it) }
 
   private fun Revisions<Long, Application>.applicationHistories() = map {
     it.entity.run {
@@ -57,5 +85,19 @@ class SubjectAccessRequestService(
         modifiedAt = lastModifiedAt.toString(),
       )
     }
-  }.toList()
+  }.sortedByDescending {
+    OffsetDateTime.parse(it.modifiedAt)
+  }.map {
+    val formatted = formatDateTime(it.modifiedAt)
+    it.copy(modifiedAt = formatted ?: it.modifiedAt)
+  }
+
+  private fun formatDateTime(datetime: String?): String? {
+    if (datetime.isNullOrBlank() || datetime == "null") {
+      return null
+    }
+
+    val parsedDate = OffsetDateTime.parse(datetime)
+    return parsedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+  }
 }
