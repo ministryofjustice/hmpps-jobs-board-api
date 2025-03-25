@@ -33,14 +33,15 @@ dependencies {
 
 testing {
   suites {
+    @Suppress("UnstableApiUsage")
     val test by getting(JvmTestSuite::class) {
       useJUnitJupiter()
     }
 
+    @Suppress("UnstableApiUsage")
     val integrationTest by registering(JvmTestSuite::class) {
       useJUnitJupiter()
       dependencies {
-        testType.set(TestSuiteType.INTEGRATION_TEST)
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
         implementation("org.springframework.boot:spring-boot-starter-test")
         implementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
