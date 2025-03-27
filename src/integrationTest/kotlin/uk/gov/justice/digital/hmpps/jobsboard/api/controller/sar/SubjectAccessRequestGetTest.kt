@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ApplicationDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ArchivedDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ExpressionOfInterestDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.HistoriesDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARFilter
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARSummaryDTO
 import java.time.LocalDate
 import java.util.concurrent.CompletableFuture
@@ -26,8 +27,11 @@ class SubjectAccessRequestGetTest {
   private lateinit var subjectAccessRequestService: SubjectAccessRequestService
   private lateinit var controller: SubjectAccessRequestGet
   private val objectMapper: ObjectMapper = jacksonObjectMapper()
-  private val prn = "A1234BC"
+  private val prisonNumber = "A1234BC"
   private val testCrn = "CRN123"
+  private val sarFilter: SARFilter = mockk {
+    prn = prisonNumber
+  }
 
   @BeforeEach
   fun setUp() {
@@ -66,11 +70,11 @@ class SubjectAccessRequestGetTest {
       ),
     )
 
-    every { subjectAccessRequestService.fetchApplications(prn) } returns CompletableFuture.completedFuture(applications)
-    every { subjectAccessRequestService.fetchExpressionsOfInterest(prn) } returns CompletableFuture.completedFuture(expressions)
-    every { subjectAccessRequestService.fetchArchivedJobs(prn) } returns CompletableFuture.completedFuture(archivedJobs)
+    every { subjectAccessRequestService.fetchApplications(sarFilter) } returns CompletableFuture.completedFuture(applications)
+    every { subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter) } returns CompletableFuture.completedFuture(expressions)
+    every { subjectAccessRequestService.fetchArchivedJobs(sarFilter) } returns CompletableFuture.completedFuture(archivedJobs)
 
-    val response: ResponseEntity<Any> = controller.subjectAccess(prn = prn)
+    val response: ResponseEntity<Any> = controller.subjectAccess(prn = prisonNumber)
 
     assertEquals(HttpStatus.OK, response.statusCode)
     val body = response.body as SARSummaryDTO
@@ -78,9 +82,9 @@ class SubjectAccessRequestGetTest {
     assertEquals(1, body.content.expressionsOfInterest.size)
     assertEquals(1, body.content.archivedJobs.size)
 
-    verify { subjectAccessRequestService.fetchApplications(prn) }
-    verify { subjectAccessRequestService.fetchExpressionsOfInterest(prn) }
-    verify { subjectAccessRequestService.fetchArchivedJobs(prn) }
+    verify { subjectAccessRequestService.fetchApplications(sarFilter) }
+    verify { subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter) }
+    verify { subjectAccessRequestService.fetchArchivedJobs(sarFilter) }
   }
 
   @Test
@@ -116,9 +120,9 @@ class SubjectAccessRequestGetTest {
       ),
     )
 
-    every { subjectAccessRequestService.fetchApplications(prn) } returns CompletableFuture.completedFuture(applications)
-    every { subjectAccessRequestService.fetchExpressionsOfInterest(prn) } returns CompletableFuture.completedFuture(expressions)
-    every { subjectAccessRequestService.fetchArchivedJobs(prn) } returns CompletableFuture.completedFuture(archivedJobs)
+    every { subjectAccessRequestService.fetchApplications(sarFilter) } returns CompletableFuture.completedFuture(applications)
+    every { subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter) } returns CompletableFuture.completedFuture(expressions)
+    every { subjectAccessRequestService.fetchArchivedJobs(sarFilter) } returns CompletableFuture.completedFuture(archivedJobs)
 
     val response: ResponseEntity<Any> = controller.subjectAccess(prn = prn)
 
@@ -164,9 +168,9 @@ class SubjectAccessRequestGetTest {
 
     assertEquals(expectedObject, actualObject)
 
-    verify { subjectAccessRequestService.fetchApplications(prn) }
-    verify { subjectAccessRequestService.fetchExpressionsOfInterest(prn) }
-    verify { subjectAccessRequestService.fetchArchivedJobs(prn) }
+    verify { subjectAccessRequestService.fetchApplications(sarFilter) }
+    verify { subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter) }
+    verify { subjectAccessRequestService.fetchArchivedJobs(sarFilter) }
   }
 
   @Test
@@ -220,9 +224,9 @@ class SubjectAccessRequestGetTest {
       ),
     )
 
-    every { subjectAccessRequestService.fetchApplications(prn) } returns CompletableFuture.completedFuture(applications)
-    every { subjectAccessRequestService.fetchExpressionsOfInterest(prn) } returns CompletableFuture.completedFuture(expressions)
-    every { subjectAccessRequestService.fetchArchivedJobs(prn) } returns CompletableFuture.completedFuture(archivedJobs)
+    every { subjectAccessRequestService.fetchApplications(sarFilter) } returns CompletableFuture.completedFuture(applications)
+    every { subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter) } returns CompletableFuture.completedFuture(expressions)
+    every { subjectAccessRequestService.fetchArchivedJobs(sarFilter) } returns CompletableFuture.completedFuture(archivedJobs)
 
     val response: ResponseEntity<Any> = controller.subjectAccess(prn = prn)
 
@@ -284,9 +288,9 @@ class SubjectAccessRequestGetTest {
     assertEquals(expectedObject, actualObject)
 
     // Verify interactions with the mock service
-    verify { subjectAccessRequestService.fetchApplications(prn) }
-    verify { subjectAccessRequestService.fetchExpressionsOfInterest(prn) }
-    verify { subjectAccessRequestService.fetchArchivedJobs(prn) }
+    verify { subjectAccessRequestService.fetchApplications(sarFilter) }
+    verify { subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter) }
+    verify { subjectAccessRequestService.fetchArchivedJobs(sarFilter) }
   }
 
   @Test
@@ -299,11 +303,11 @@ class SubjectAccessRequestGetTest {
 
   @Test
   fun `should return 204 NO CONTENT if NotFoundException is thrown`() {
-    every { subjectAccessRequestService.fetchApplications(prn) } throws NotFoundException("No content found")
-    every { subjectAccessRequestService.fetchExpressionsOfInterest(prn) } returns CompletableFuture.completedFuture(emptyList())
-    every { subjectAccessRequestService.fetchArchivedJobs(prn) } returns CompletableFuture.completedFuture(emptyList())
+    every { subjectAccessRequestService.fetchApplications(sarFilter) } throws NotFoundException("No content found")
+    every { subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter) } returns CompletableFuture.completedFuture(emptyList())
+    every { subjectAccessRequestService.fetchArchivedJobs(sarFilter) } returns CompletableFuture.completedFuture(emptyList())
 
-    val response: ResponseEntity<Any> = controller.subjectAccess(prn = prn)
+    val response: ResponseEntity<Any> = controller.subjectAccess(prn = prisonNumber)
 
     assertEquals(HttpStatus.NO_CONTENT, response.statusCode)
   }
@@ -319,7 +323,7 @@ class SubjectAccessRequestGetTest {
   fun `should return 400 if fromDate is after toDate`() {
     val fromDate = LocalDate.of(2024, 2, 1)
     val toDate = LocalDate.of(2024, 1, 1)
-    val response: ResponseEntity<Any> = controller.subjectAccess(prn, fromDate = fromDate, toDate = toDate)
+    val response: ResponseEntity<Any> = controller.subjectAccess(prisonNumber, fromDate = fromDate, toDate = toDate)
     assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
     val body = response.body as ErrorResponse
     assertEquals("fromDate (2024-02-01) cannot be after toDate (2024-01-01)", body.userMessage)
@@ -340,9 +344,9 @@ class SubjectAccessRequestGetTest {
   fun `should return 500 INTERNAL SERVER ERROR if async operations fail`() {
     val prn = "A1234BC"
 
-    every { subjectAccessRequestService.fetchApplications(prn) } returns CompletableFuture.failedFuture(RuntimeException("Fetch failed"))
-    every { subjectAccessRequestService.fetchExpressionsOfInterest(prn) } returns CompletableFuture.completedFuture(emptyList())
-    every { subjectAccessRequestService.fetchArchivedJobs(prn) } returns CompletableFuture.completedFuture(emptyList())
+    every { subjectAccessRequestService.fetchApplications(sarFilter) } returns CompletableFuture.failedFuture(RuntimeException("Fetch failed"))
+    every { subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter) } returns CompletableFuture.completedFuture(emptyList())
+    every { subjectAccessRequestService.fetchArchivedJobs(sarFilter) } returns CompletableFuture.completedFuture(emptyList())
 
     val response: ResponseEntity<Any> = controller.subjectAccess(prn = prn)
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.statusCode)
