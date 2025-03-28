@@ -29,9 +29,11 @@ class SubjectAccessRequestGetTest {
   private val objectMapper: ObjectMapper = jacksonObjectMapper()
   private val prisonNumber = "A1234BC"
   private val testCrn = "CRN123"
-  private val sarFilter: SARFilter = mockk {
-    prn = prisonNumber
-  }
+  private val sarFilter: SARFilter = SARFilter(
+    prn = prisonNumber,
+    fromDate = null,
+    toDate = null,
+  )
 
   @BeforeEach
   fun setUp() {
