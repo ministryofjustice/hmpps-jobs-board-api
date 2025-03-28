@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ApplicationDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ArchivedDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ExpressionOfInterestDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.HistoriesDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARFilter
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
@@ -25,7 +26,7 @@ class SubjectAccessRequestService(
 ) {
 
   @Async
-  fun fetchApplications(prisonNumber: String?) = applicationRepository.findByPrisonNumber(prisonNumber!!)
+  fun fetchApplications(sarFilter: SARFilter) = applicationRepository.findByPrisonNumber(sarFilter.prn)
     .map {
       it.run {
         ApplicationDTO(
@@ -48,8 +49,8 @@ class SubjectAccessRequestService(
     }.toList().let { CompletableFuture.completedFuture(it) }
 
   @Async
-  fun fetchExpressionsOfInterest(prisonNumber: String) = expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber).map {
-    it.run { ExpressionOfInterestDTO(job.title, job.employer.name, prisonNumber, createdAt.toString()) }
+  fun fetchExpressionsOfInterest(sarFilter: SARFilter) = expressionOfInterestRepository.findByIdPrisonNumber(sarFilter.prn).map {
+    it.run { ExpressionOfInterestDTO(job.title, job.employer.name, sarFilter.prn, createdAt.toString()) }
   }
     .sortedByDescending {
       OffsetDateTime.parse(it.createdAt.toString())
@@ -62,8 +63,8 @@ class SubjectAccessRequestService(
     .toList().let { CompletableFuture.completedFuture(it) }
 
   @Async
-  fun fetchArchivedJobs(prisonNumber: String) = archivedRepository.findByIdPrisonNumber(prisonNumber).map {
-    it.run { ArchivedDTO(job.title, job.employer.name, prisonNumber, createdAt.toString()) }
+  fun fetchArchivedJobs(sarFilter: SARFilter) = archivedRepository.findByIdPrisonNumber(sarFilter.prn).map {
+    it.run { ArchivedDTO(job.title, job.employer.name, sarFilter.prn, createdAt.toString()) }
   }
     .sortedByDescending {
       OffsetDateTime.parse(it.createdAt.toString())
@@ -89,14 +90,10 @@ class SubjectAccessRequestService(
     OffsetDateTime.parse(it.modifiedAt)
   }.map {
     val formatted = formatDateTime(it.modifiedAt)
-    it.copy(modifiedAt = formatted ?: it.modifiedAt)
+    it.copy(modifiedAt = formatted)
   }
 
-  private fun formatDateTime(datetime: String?): String? {
-    if (datetime.isNullOrBlank() || datetime == "null") {
-      return null
-    }
-
+  private fun formatDateTime(datetime: String): String {
     val parsedDate = OffsetDateTime.parse(datetime)
     return parsedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
   }

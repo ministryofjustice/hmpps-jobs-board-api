@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ApplicationDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ArchivedDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ExpressionOfInterestDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARContentDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARFilter
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARSummaryDTO
 import java.time.LocalDate
 import java.util.concurrent.CompletableFuture
@@ -95,9 +96,14 @@ class SubjectAccessRequestGet(
 
     if (!prn.isNullOrEmpty()) {
       return try {
-        val listOfJobApplications: CompletableFuture<List<ApplicationDTO>> = subjectAccessRequestService.fetchApplications(prn)
-        val listOfExpressionsOfInterest: CompletableFuture<List<ExpressionOfInterestDTO>> = subjectAccessRequestService.fetchExpressionsOfInterest(prn)
-        val listOfArchivedJobs: CompletableFuture<List<ArchivedDTO>> = subjectAccessRequestService.fetchArchivedJobs(prn)
+        val sarFilter = SARFilter(
+          prn = prn,
+          fromDate = fromDate,
+          toDate = toDate,
+        )
+        val listOfJobApplications: CompletableFuture<List<ApplicationDTO>> = subjectAccessRequestService.fetchApplications(sarFilter)
+        val listOfExpressionsOfInterest: CompletableFuture<List<ExpressionOfInterestDTO>> = subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter)
+        val listOfArchivedJobs: CompletableFuture<List<ArchivedDTO>> = subjectAccessRequestService.fetchArchivedJobs(sarFilter)
 
         try {
           CompletableFuture.allOf(listOfJobApplications, listOfExpressionsOfInterest, listOfArchivedJobs).join()

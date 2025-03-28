@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
+import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARFilter
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.util.*
@@ -30,8 +31,12 @@ class SubjectAccessRequestServiceTest {
   private lateinit var archivedRepository: ArchivedRepository
   private lateinit var applicationHistoryRetriever: ApplicationHistoryRetriever
   private lateinit var service: SubjectAccessRequestService
-
-  val prisonNumber = "A1234BC"
+  val prisonerNumber = "A1234BC"
+  private var sarFilter: SARFilter = SARFilter(
+    prn = prisonerNumber,
+    fromDate = null,
+    toDate = null,
+  )
 
   @BeforeEach
   fun setUp() {
@@ -49,7 +54,6 @@ class SubjectAccessRequestServiceTest {
 
   @Test
   fun `should return list of ApplicationDTO when applications exist`() {
-    val prisonNumber = "A1234BC"
     val prisonCentreId = "C12"
     val mockApplication = mockk<Application>(relaxed = true) {
       every { firstName } returns "Stephen"
@@ -73,13 +77,13 @@ class SubjectAccessRequestServiceTest {
 
     val mockRevisions = Revisions.of(listOf(mockRevision))
 
-    every { applicationRepository.findByPrisonNumber(prisonNumber) } returns applications
+    every { applicationRepository.findByPrisonNumber(prisonerNumber) } returns applications
     every { applicationHistoryRetriever.retrieveAllApplicationHistories(any(), any()) } returns mockRevisions
-    val result = service.fetchApplications(prisonNumber).get()
+    val result = service.fetchApplications(sarFilter).get()
     assertEquals(1, result.size)
     assertEquals("Delivery Driver", result[0].jobTitle)
     assertEquals("Amazon Flex", result[0].employerName)
-    verify { applicationRepository.findByPrisonNumber(prisonNumber) }
+    verify { applicationRepository.findByPrisonNumber(prisonerNumber) }
   }
 
   @Test
@@ -101,7 +105,7 @@ class SubjectAccessRequestServiceTest {
           every { id } returns "1"
         },
         prisonId = "MDI",
-        prisonNumber = prisonNumber,
+        prisonNumber = prisonerNumber,
         firstName = "Stephen",
         lastName = "James",
         status = "APPLICATION_MADE",
@@ -117,12 +121,12 @@ class SubjectAccessRequestServiceTest {
     applicationList.get(0).createdAt = createdAt0.toInstant()
     applicationList.get(0).lastModifiedAt = lastModifiedAt0.toInstant()
 
-    every { applicationRepository.findByPrisonNumber(prisonNumber) } returns applicationList
+    every { applicationRepository.findByPrisonNumber(prisonerNumber) } returns applicationList
     every {
       applicationHistoryRetriever.retrieveAllApplicationHistories(any(), any())
     } returns null
 
-    val result = service.fetchApplications(prisonNumber).get()
+    val result = service.fetchApplications(sarFilter).get()
 
     assertEquals(1, result.size)
     assertEquals(result[0].jobTitle, "Car mechanic")
@@ -170,7 +174,7 @@ class SubjectAccessRequestServiceTest {
           every { id } returns "1"
         },
         prisonId = "MDI",
-        prisonNumber = prisonNumber,
+        prisonNumber = prisonerNumber,
         firstName = "Stephen",
         lastName = "James",
         status = "APPLICATION_MADE",
@@ -186,7 +190,7 @@ class SubjectAccessRequestServiceTest {
           every { id } returns "1"
         },
         prisonId = "MDI",
-        prisonNumber = prisonNumber,
+        prisonNumber = prisonerNumber,
         firstName = "Stephen",
         lastName = "James",
         status = "APPLICATION_MADE",
@@ -202,7 +206,7 @@ class SubjectAccessRequestServiceTest {
           every { id } returns "2"
         },
         prisonId = "MDI",
-        prisonNumber = prisonNumber,
+        prisonNumber = prisonerNumber,
         firstName = "Stephen",
         lastName = "James",
         status = "APPLICATION_MADE",
@@ -224,12 +228,12 @@ class SubjectAccessRequestServiceTest {
     applicationList.get(2).createdAt = createdAt2.toInstant()
     applicationList.get(2).lastModifiedAt = lastModifiedAt2.toInstant()
 
-    every { applicationRepository.findByPrisonNumber(prisonNumber) } returns applicationList
+    every { applicationRepository.findByPrisonNumber(prisonerNumber) } returns applicationList
     every {
       applicationHistoryRetriever.retrieveAllApplicationHistories(any(), any())
     } returns null
 
-    val result = service.fetchApplications(prisonNumber).get()
+    val result = service.fetchApplications(sarFilter).get()
 
     assertEquals(3, result.size)
     assertEquals(result[0].jobTitle, "Delivery driver")
@@ -247,10 +251,10 @@ class SubjectAccessRequestServiceTest {
 
   @Test
   fun `should return empty list when no applications exist`() {
-    every { applicationRepository.findByPrisonNumber(prisonNumber) } returns emptyList()
-    val result = service.fetchApplications(prisonNumber).get()
+    every { applicationRepository.findByPrisonNumber(prisonerNumber) } returns emptyList()
+    val result = service.fetchApplications(sarFilter).get()
     assertTrue(result.isEmpty())
-    verify { applicationRepository.findByPrisonNumber(prisonNumber) }
+    verify { applicationRepository.findByPrisonNumber(prisonerNumber) }
   }
 
   @Test
@@ -267,22 +271,22 @@ class SubjectAccessRequestServiceTest {
       ),
     )
 
-    every { expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber) } returns expressions
-    val result = service.fetchExpressionsOfInterest(prisonNumber).get()
+    every { expressionOfInterestRepository.findByIdPrisonNumber(prisonerNumber) } returns expressions
+    val result = service.fetchExpressionsOfInterest(sarFilter).get()
     assertEquals(1, result.size)
     assertEquals("Car mechanic", result[0].jobTitle)
     assertEquals("The AA", result[0].employerName)
-    verify { expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber) }
+    verify { expressionOfInterestRepository.findByIdPrisonNumber(prisonerNumber) }
   }
 
   @Test
   fun `should return empty list when no expressions of interest exist`() {
-    every { expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber) } returns emptyList()
+    every { expressionOfInterestRepository.findByIdPrisonNumber(prisonerNumber) } returns emptyList()
 
-    val result = service.fetchExpressionsOfInterest(prisonNumber).get()
+    val result = service.fetchExpressionsOfInterest(sarFilter).get()
 
     assertTrue(result.isEmpty())
-    verify { expressionOfInterestRepository.findByIdPrisonNumber(prisonNumber) }
+    verify { expressionOfInterestRepository.findByIdPrisonNumber(prisonerNumber) }
   }
 
   @Test
@@ -299,23 +303,23 @@ class SubjectAccessRequestServiceTest {
       ),
     )
 
-    every { archivedRepository.findByIdPrisonNumber(prisonNumber) } returns archivedJobs
+    every { archivedRepository.findByIdPrisonNumber(prisonerNumber) } returns archivedJobs
 
-    val result = service.fetchArchivedJobs(prisonNumber).get()
+    val result = service.fetchArchivedJobs(sarFilter).get()
 
     assertEquals(1, result.size)
     assertEquals("Sales person", result[0].jobTitle)
     assertEquals("Boots", result[0].employerName)
-    verify { archivedRepository.findByIdPrisonNumber(prisonNumber) }
+    verify { archivedRepository.findByIdPrisonNumber(prisonerNumber) }
   }
 
   @Test
   fun `should return empty list when no archived jobs exist`() {
-    every { archivedRepository.findByIdPrisonNumber(prisonNumber) } returns emptyList()
+    every { archivedRepository.findByIdPrisonNumber(prisonerNumber) } returns emptyList()
 
-    val result = service.fetchArchivedJobs(prisonNumber).get()
+    val result = service.fetchArchivedJobs(sarFilter).get()
 
     assertTrue(result.isEmpty())
-    verify { archivedRepository.findByIdPrisonNumber(prisonNumber) }
+    verify { archivedRepository.findByIdPrisonNumber(prisonerNumber) }
   }
 }
