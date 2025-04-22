@@ -131,4 +131,20 @@ interface ApplicationRepository :
     startTime: Instant,
     endTime: Instant,
   ): List<MetricsCountByStatus>
+
+  @Query(
+    """
+      
+    SELECT a FROM Application a
+    WHERE a.prisonNumber = :prisonNumber
+    AND a.createdAt >= :fromDate
+    AND a.createdAt <= :toDate
+    ORDER BY a.createdAt DESC
+  """,
+  )
+  fun findByPrisonNumberAndDateBetween(
+    @Param("prisonNumber") prisonNumber: String,
+    @Param("fromDate") fromDate: Instant?,
+    @Param("toDate") toDate: Instant?,
+  ): List<Application>
 }

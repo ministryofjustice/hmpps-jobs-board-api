@@ -26,21 +26,27 @@ class SubjectAccessRequestService(
 ) {
 
   @Async
-  fun fetchApplications(sarFilter: SARFilter) = applicationRepository.findByPrisonNumber(sarFilter.prn)
-    .map {
-      it.run {
-        ApplicationDTO(
-          jobTitle = job.title,
-          employerName = job.employer.name,
-          prisonNumber = prisonNumber,
-          histories = applicationHistoryRetriever.retrieveAllApplicationHistories(prisonNumber, job.id.id)
-            ?.applicationHistories().orEmpty(),
-          createdAt = createdAt.toString(),
-          lastModifiedAt = lastModifiedAt.toString(),
-        )
-      }
-    }.sortedByDescending {
-      OffsetDateTime.parse(it.lastModifiedAt.toString())
+  fun fetchApplications(sarFilter: SARFilter) = applicationRepository.findByPrisonNumberAndDateBetween(sarFilter.prn, sarFilter.fromDate, sarFilter.toDate)
+    .map { application ->
+      val histories = applicationHistoryRetriever
+        .retrieveAllApplicationHistories(application.prisonNumber, application.job.id.id)
+        ?.applicationHistories()
+        .orEmpty()
+
+      val includeOptionalFields = histories.isEmpty()
+
+      ApplicationDTO(
+        jobTitle = application.job.title,
+        employerName = application.job.employer.name,
+        prisonNumber = application.prisonNumber,
+        firstName = if (includeOptionalFields) application.firstName else null,
+        histories = histories,
+        lastName = if (includeOptionalFields) application.lastName else null,
+        status = if (includeOptionalFields) application.status else null,
+        prisonId = if (includeOptionalFields) application.prisonId else null,
+        createdAt = application.createdAt.toString(),
+        lastModifiedAt = application.lastModifiedAt.toString(),
+      )
     }.map {
       it.copy(
         createdAt = formatDateTime(it.createdAt.toString()),
@@ -49,25 +55,23 @@ class SubjectAccessRequestService(
     }.toList().let { CompletableFuture.completedFuture(it) }
 
   @Async
-  fun fetchExpressionsOfInterest(sarFilter: SARFilter) = expressionOfInterestRepository.findByIdPrisonNumber(sarFilter.prn).map {
-    it.run { ExpressionOfInterestDTO(job.title, job.employer.name, sarFilter.prn, createdAt.toString()) }
-  }
-    .sortedByDescending {
-      OffsetDateTime.parse(it.createdAt.toString())
+  fun fetchExpressionsOfInterest(sarFilter: SARFilter) = expressionOfInterestRepository
+    .findByPrisonNumberAndDateBetween(sarFilter.prn, sarFilter.fromDate, sarFilter.toDate).map {
+      it.run { ExpressionOfInterestDTO(job.title, job.employer.name, sarFilter.prn, createdAt.toString()) }
     }
     .map {
       it.copy(
         createdAt = formatDateTime(it.createdAt.toString()),
       )
     }
-    .toList().let { CompletableFuture.completedFuture(it) }
+    .toList().let {
+      CompletableFuture.completedFuture(it)
+    }
 
   @Async
-  fun fetchArchivedJobs(sarFilter: SARFilter) = archivedRepository.findByIdPrisonNumber(sarFilter.prn).map {
-    it.run { ArchivedDTO(job.title, job.employer.name, sarFilter.prn, createdAt.toString()) }
-  }
-    .sortedByDescending {
-      OffsetDateTime.parse(it.createdAt.toString())
+  fun fetchArchivedJobs(sarFilter: SARFilter) = archivedRepository
+    .findByPrisonNumberAndDateBetween(sarFilter.prn, sarFilter.fromDate, sarFilter.toDate).map {
+      it.run { ArchivedDTO(job.title, job.employer.name, sarFilter.prn, createdAt.toString()) }
     }
     .map {
       it.copy(
@@ -82,7 +86,7 @@ class SubjectAccessRequestService(
         firstName = firstName,
         lastName = lastName,
         status = status,
-        prisonName = prisonId,
+        prisonId = prisonId,
         modifiedAt = lastModifiedAt.toString(),
       )
     }

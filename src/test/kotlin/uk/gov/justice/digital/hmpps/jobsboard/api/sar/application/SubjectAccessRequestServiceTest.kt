@@ -5,6 +5,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.eq
 import org.springframework.data.history.Revision
 import org.springframework.data.history.Revisions
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.ApplicationHistoryRetriever
@@ -77,13 +78,25 @@ class SubjectAccessRequestServiceTest {
 
     val mockRevisions = Revisions.of(listOf(mockRevision))
 
-    every { applicationRepository.findByPrisonNumber(prisonerNumber) } returns applications
+    every {
+      applicationRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    } returns applications
     every { applicationHistoryRetriever.retrieveAllApplicationHistories(any(), any()) } returns mockRevisions
     val result = service.fetchApplications(sarFilter).get()
     assertEquals(1, result.size)
-    assertEquals("Delivery Driver", result[0].jobTitle)
-    assertEquals("Amazon Flex", result[0].employerName)
-    verify { applicationRepository.findByPrisonNumber(prisonerNumber) }
+    assertEquals("Delivery Driver", result[0]!!.jobTitle)
+    assertEquals("Amazon Flex", result[0]!!.employerName)
+    verify {
+      applicationRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    }
   }
 
   @Test
@@ -121,7 +134,13 @@ class SubjectAccessRequestServiceTest {
     applicationList.get(0).createdAt = createdAt0.toInstant()
     applicationList.get(0).lastModifiedAt = lastModifiedAt0.toInstant()
 
-    every { applicationRepository.findByPrisonNumber(prisonerNumber) } returns applicationList
+    every {
+      applicationRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    } returns applicationList
     every {
       applicationHistoryRetriever.retrieveAllApplicationHistories(any(), any())
     } returns null
@@ -129,132 +148,29 @@ class SubjectAccessRequestServiceTest {
     val result = service.fetchApplications(sarFilter).get()
 
     assertEquals(1, result.size)
-    assertEquals(result[0].jobTitle, "Car mechanic")
-    assertEquals(result[0].createdAt, "2024-11-15")
-    assertEquals(result[0].lastModifiedAt, "2024-12-15")
-  }
-
-  @Test
-  fun `should return formatted ApplicationDTO list and sorted by the newest first when multiple applications exist`() {
-    val createdAt0 = OffsetDateTime.parse("2021-11-15T10:00:00Z")
-    val createdAt1 = OffsetDateTime.parse("2024-11-15T10:00:00Z")
-    val createdAt2 = OffsetDateTime.parse("2024-11-15T10:00:00Z")
-
-    val lastModifiedAt0 = OffsetDateTime.parse("2022-01-15T10:00:00Z")
-    val lastModifiedAt1 = OffsetDateTime.parse("2024-12-15T10:00:00Z")
-    val lastModifiedAt2 = OffsetDateTime.parse("2025-01-15T10:00:00Z")
-
-    val employer0 = mockk<Employer> {
-      every { name } returns "Aldi"
-    }
-
-    val employer1 = mockk<Employer> {
-      every { name } returns "The AA"
-    }
-
-    val employer2 = mockk<Employer> {
-      every { name } returns "Tesco"
-    }
-
-    val entity0 = mockk<EntityId> {
-      every { id } returns "0"
-    }
-
-    val entity1 = mockk<EntityId> {
-      every { id } returns "1"
-    }
-
-    val entity2 = mockk<EntityId> {
-      every { id } returns "2"
-    }
-
-    val applicationList = listOf(
-      Application(
-        id = mockk {
-          every { id } returns "1"
-        },
-        prisonId = "MDI",
-        prisonNumber = prisonerNumber,
-        firstName = "Stephen",
-        lastName = "James",
-        status = "APPLICATION_MADE",
-        additionalInformation = "",
-        job = mockk<Job> {
-          every { title } returns "Cash till administrator"
-          every { employer } returns employer0
-          every { id } returns entity0
-        },
-      ),
-      Application(
-        id = mockk {
-          every { id } returns "1"
-        },
-        prisonId = "MDI",
-        prisonNumber = prisonerNumber,
-        firstName = "Stephen",
-        lastName = "James",
-        status = "APPLICATION_MADE",
-        additionalInformation = "",
-        job = mockk<Job> {
-          every { title } returns "Car mechanic"
-          every { employer } returns employer1
-          every { id } returns entity1
-        },
-      ),
-      Application(
-        id = mockk {
-          every { id } returns "2"
-        },
-        prisonId = "MDI",
-        prisonNumber = prisonerNumber,
-        firstName = "Stephen",
-        lastName = "James",
-        status = "APPLICATION_MADE",
-        additionalInformation = "",
-        job = mockk<Job> {
-          every { title } returns "Delivery driver"
-          every { employer } returns employer2
-          every { id } returns entity2
-        },
-      ),
-    )
-
-    applicationList.get(0).createdAt = createdAt0.toInstant()
-    applicationList.get(0).lastModifiedAt = lastModifiedAt0.toInstant()
-
-    applicationList.get(1).createdAt = createdAt1.toInstant()
-    applicationList.get(1).lastModifiedAt = lastModifiedAt1.toInstant()
-
-    applicationList.get(2).createdAt = createdAt2.toInstant()
-    applicationList.get(2).lastModifiedAt = lastModifiedAt2.toInstant()
-
-    every { applicationRepository.findByPrisonNumber(prisonerNumber) } returns applicationList
-    every {
-      applicationHistoryRetriever.retrieveAllApplicationHistories(any(), any())
-    } returns null
-
-    val result = service.fetchApplications(sarFilter).get()
-
-    assertEquals(3, result.size)
-    assertEquals(result[0].jobTitle, "Delivery driver")
-    assertEquals(result[0].createdAt, "2024-11-15")
-    assertEquals(result[0].lastModifiedAt, "2025-01-15")
-
-    assertEquals(result[1].jobTitle, "Car mechanic")
-    assertEquals(result[1].createdAt, "2024-11-15")
-    assertEquals(result[1].lastModifiedAt, "2024-12-15")
-
-    assertEquals(result[2].jobTitle, "Cash till administrator")
-    assertEquals(result[2].createdAt, "2021-11-15")
-    assertEquals(result[2].lastModifiedAt, "2022-01-15")
+    assertEquals(result[0]!!.jobTitle, "Car mechanic")
+    assertEquals(result[0]!!.createdAt, "2024-11-15")
+    assertEquals(result[0]!!.lastModifiedAt, "2024-12-15")
   }
 
   @Test
   fun `should return empty list when no applications exist`() {
-    every { applicationRepository.findByPrisonNumber(prisonerNumber) } returns emptyList()
+    every {
+      applicationRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    } returns emptyList()
     val result = service.fetchApplications(sarFilter).get()
     assertTrue(result.isEmpty())
-    verify { applicationRepository.findByPrisonNumber(prisonerNumber) }
+    verify {
+      applicationRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    }
   }
 
   @Test
@@ -271,22 +187,46 @@ class SubjectAccessRequestServiceTest {
       ),
     )
 
-    every { expressionOfInterestRepository.findByIdPrisonNumber(prisonerNumber) } returns expressions
+    every {
+      expressionOfInterestRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    } returns expressions
     val result = service.fetchExpressionsOfInterest(sarFilter).get()
     assertEquals(1, result.size)
     assertEquals("Car mechanic", result[0].jobTitle)
     assertEquals("The AA", result[0].employerName)
-    verify { expressionOfInterestRepository.findByIdPrisonNumber(prisonerNumber) }
+    verify {
+      expressionOfInterestRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    }
   }
 
   @Test
   fun `should return empty list when no expressions of interest exist`() {
-    every { expressionOfInterestRepository.findByIdPrisonNumber(prisonerNumber) } returns emptyList()
+    every {
+      expressionOfInterestRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    } returns emptyList()
 
     val result = service.fetchExpressionsOfInterest(sarFilter).get()
 
     assertTrue(result.isEmpty())
-    verify { expressionOfInterestRepository.findByIdPrisonNumber(prisonerNumber) }
+    verify {
+      expressionOfInterestRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    }
   }
 
   @Test
@@ -303,23 +243,129 @@ class SubjectAccessRequestServiceTest {
       ),
     )
 
-    every { archivedRepository.findByIdPrisonNumber(prisonerNumber) } returns archivedJobs
+    every {
+      archivedRepository.findByPrisonNumberAndDateBetween(
+        prisonerNumber,
+        fromDate = null,
+        toDate = null,
+      )
+    } returns archivedJobs
 
     val result = service.fetchArchivedJobs(sarFilter).get()
 
     assertEquals(1, result.size)
     assertEquals("Sales person", result[0].jobTitle)
     assertEquals("Boots", result[0].employerName)
-    verify { archivedRepository.findByIdPrisonNumber(prisonerNumber) }
+    verify {
+      archivedRepository.findByPrisonNumberAndDateBetween(
+        prisonerNumber,
+        fromDate = null,
+        toDate = null,
+      )
+    }
+  }
+
+  @Test
+  fun `should return empty list of ArchivedDTO when archived jobs exist and fromDate is later than created`() {
+    val testFromDate = Instant.parse("2024-03-06T00:00:00Z")
+    val testSarFilter: SARFilter = SARFilter(
+      prn = prisonerNumber,
+      fromDate = testFromDate,
+      toDate = null,
+    )
+
+    val createdAt = Instant.parse("2023-03-06T00:00:00Z")
+    val archivedJobs = listOf(
+      Archived(
+        job = mockk {
+          every { title } returns "Sales person"
+          every { employer.name } returns "Boots"
+        },
+        createdAt = createdAt,
+        id = mockk(),
+      ),
+    )
+
+    every {
+      archivedRepository.findByPrisonNumberAndDateBetween(
+        testSarFilter.prn,
+        testSarFilter.fromDate,
+        testSarFilter.toDate,
+      )
+    } returns emptyList()
+
+    val result = service.fetchArchivedJobs(testSarFilter).get()
+
+    assertEquals(0, result.size)
+    verify {
+      archivedRepository.findByPrisonNumberAndDateBetween(
+        testSarFilter.prn,
+        testSarFilter.fromDate,
+        testSarFilter.toDate,
+      )
+    }
+  }
+
+  @Test
+  fun `should return list of ArchivedDTO when archived jobs exist and toDate is earlier than created`() {
+    val testToDate = Instant.parse("2024-03-06T00:00:00Z")
+    val testSarFilter: SARFilter = SARFilter(
+      prn = prisonerNumber,
+      fromDate = null,
+      toDate = testToDate,
+    )
+
+    val createdAt = Instant.parse("2023-03-06T00:00:00Z")
+    val archivedJobs = listOf(
+      Archived(
+        job = mockk {
+          every { title } returns "Sales person"
+          every { employer.name } returns "Boots"
+        },
+        createdAt = createdAt,
+        id = mockk(),
+      ),
+    )
+
+    every {
+      archivedRepository.findByPrisonNumberAndDateBetween(
+        testSarFilter.prn,
+        testSarFilter.fromDate,
+        testSarFilter.toDate,
+      )
+    } returns archivedJobs
+
+    val result = service.fetchArchivedJobs(testSarFilter).get()
+
+    assertEquals(1, result.size)
+    verify {
+      archivedRepository.findByPrisonNumberAndDateBetween(
+        testSarFilter.prn,
+        testSarFilter.fromDate,
+        testSarFilter.toDate,
+      )
+    }
   }
 
   @Test
   fun `should return empty list when no archived jobs exist`() {
-    every { archivedRepository.findByIdPrisonNumber(prisonerNumber) } returns emptyList()
+    every {
+      archivedRepository.findByPrisonNumberAndDateBetween(
+        eq(sarFilter.prn),
+        eq(sarFilter.fromDate),
+        eq(sarFilter.toDate),
+      )
+    } returns emptyList()
 
     val result = service.fetchArchivedJobs(sarFilter).get()
 
     assertTrue(result.isEmpty())
-    verify { archivedRepository.findByIdPrisonNumber(prisonerNumber) }
+    verify {
+      archivedRepository.findByPrisonNumberAndDateBetween(
+        sarFilter.prn,
+        sarFilter.fromDate,
+        sarFilter.toDate,
+      )
+    }
   }
 }

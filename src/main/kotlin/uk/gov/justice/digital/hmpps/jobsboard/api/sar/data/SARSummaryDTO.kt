@@ -9,7 +9,7 @@ data class SARSummaryDTO(
 
 data class SARContentDTO(
   @Schema(description = "List of applications", example = "[]")
-  val applications: List<ApplicationDTO> = emptyList(),
+  val applications: List<ApplicationDTO?> = emptyList(),
   @Schema(description = "List of jobs with an expression of interest", example = "[]")
   val expressionsOfInterest: List<ExpressionOfInterestDTO> = emptyList(),
   @Schema(description = "List of archived jobs", example = "[]")
