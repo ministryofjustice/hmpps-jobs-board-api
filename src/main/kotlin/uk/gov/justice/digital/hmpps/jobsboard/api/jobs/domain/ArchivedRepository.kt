@@ -13,8 +13,8 @@ interface ArchivedRepository : JpaRepository<Archived, JobPrisonerId> {
 
   @Query(
     """
-    SELECT a FROM Application a
-    WHERE a.prisonNumber = :prisonNumber
+    SELECT a FROM Archived a
+    WHERE a.id.prisonNumber = :prisonNumber
     AND a.createdAt >= :fromDate
     AND a.createdAt <= :toDate
     ORDER BY a.createdAt DESC

@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.sar.data
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class ApplicationDTO(
   @Schema(description = "The job title of the job applied for", example = "Delivery Driver")
   val jobTitle: String,
