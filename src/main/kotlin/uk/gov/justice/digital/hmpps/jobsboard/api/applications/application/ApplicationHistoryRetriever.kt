@@ -32,7 +32,7 @@ class ApplicationHistoryRetriever(
 
   private fun retrieveAllApplicationHistories(applicationId: EntityId) = applicationRepository.findRevisions(applicationId)
 
-  private fun retrieveLatestApplication(prisonNumber: String, jobId: String) = applicationRepository.findByPrisonNumberAndJobIdIdOrderByCreatedAtDesc(prisonNumber, jobId)
+  private fun retrieveLatestApplication(prisonNumber: String, jobId: String) = applicationRepository.findTopByPrisonNumberAndJobIdIdOrderByCreatedAtDesc(prisonNumber, jobId)
 
   private fun LocalDateTime.instant() = this.toInstant(ZoneOffset.UTC)
   private val LocalDate.startAt: Instant get() = this.atStartOfDay().instant()

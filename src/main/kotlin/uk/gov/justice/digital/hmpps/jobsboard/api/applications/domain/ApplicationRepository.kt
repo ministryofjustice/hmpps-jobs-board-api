@@ -132,7 +132,7 @@ interface ApplicationRepository :
     endTime: Instant,
   ): List<MetricsCountByStatus>
 
-  fun findByPrisonNumberAndJobIdIdOrderByCreatedAtDesc(prisonNumber: String, jobId: String): Application?
+  fun findTopByPrisonNumberAndJobIdIdOrderByCreatedAtDesc(prisonNumber: String, jobId: String): Application?
 
   fun findByPrisonNumberAndCreatedAtBetweenOrderByCreatedAtDesc(
     prisonNumber: String,
