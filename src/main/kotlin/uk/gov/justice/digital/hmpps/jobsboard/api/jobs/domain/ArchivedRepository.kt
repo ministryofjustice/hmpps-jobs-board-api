@@ -1,28 +1,26 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain
 
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.time.Instant
 
 @Repository
 interface ArchivedRepository : JpaRepository<Archived, JobPrisonerId> {
+  fun findByIdPrisonNumberOrderByCreatedAtDesc(prisonNumber: String): List<Archived>
 
-  fun findByIdPrisonNumber(prisonNumber: String): List<Archived>
+  fun findByIdPrisonNumberAndCreatedAtBetweenOrderByCreatedAtDesc(
+    prisonNumber: String,
+    start: Instant?,
+    end: Instant?,
+  ): List<Archived>
 
-  @Query(
-    """
-    SELECT a FROM Archived a
-    WHERE a.id.prisonNumber = :prisonNumber
-    AND a.createdAt >= :fromDate
-    AND a.createdAt <= :toDate
-    ORDER BY a.createdAt DESC
-  """,
-  )
-  fun findByPrisonNumberAndDateBetween(
-    @Param("prisonNumber") prisonNumber: String,
-    @Param("fromDate") fromDate: Instant?,
-    @Param("toDate") toDate: Instant?,
+  fun findByIdPrisonNumberAndCreatedAtLessThanEqualOrderByCreatedAtDesc(
+    prisonNumber: String,
+    end: Instant,
+  ): List<Archived>
+
+  fun findByIdPrisonNumberAndCreatedAtGreaterThanEqualOrderByCreatedAtDesc(
+    prisonNumber: String,
+    start: Instant,
   ): List<Archived>
 }

@@ -27,9 +27,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ExpressionOfInterestD
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARContentDTO
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARFilter
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARSummaryDTO
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneOffset
 import java.util.concurrent.CompletableFuture
 
 @Validated
@@ -98,11 +96,7 @@ class SubjectAccessRequestGet(
 
     if (!prn.isNullOrEmpty()) {
       return try {
-        val sarFilter = SARFilter(
-          prn = prn,
-          fromDate = fromDate?.toStartOfDayInstant() ?: Instant.EPOCH,
-          toDate = toDate?.toStartOfDayInstant() ?: Instant.now(),
-        )
+        val sarFilter = SARFilter(prn, fromDate, toDate)
         val listOfJobApplications: CompletableFuture<List<ApplicationDTO>> = subjectAccessRequestService.fetchApplications(sarFilter)
         val listOfExpressionsOfInterest: CompletableFuture<List<ExpressionOfInterestDTO>> = subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter)
         val listOfArchivedJobs: CompletableFuture<List<ArchivedDTO>> = subjectAccessRequestService.fetchArchivedJobs(sarFilter)
@@ -142,9 +136,4 @@ class SubjectAccessRequestGet(
 
     return ResponseEntity.status(209).build()
   }
-
-  private fun LocalDate.toStartOfDayInstant(): Instant = this.atStartOfDay(ZoneOffset.UTC).toInstant()
-
-  private fun LocalDate.toEndOfDayInstant(): Instant = this.plusDays(1)
-    .atStartOfDay(ZoneOffset.UTC).toInstant().minusMillis(1)
 }
