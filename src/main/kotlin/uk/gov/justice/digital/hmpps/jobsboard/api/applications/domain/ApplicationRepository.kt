@@ -24,7 +24,7 @@ interface ApplicationRepository :
 
   fun findByPrisonId(prisonId: String, pageable: Pageable): Page<Application>
 
-  fun findByPrisonNumber(prisonNumber: String): List<Application>
+  fun findByPrisonNumberOrderByCreatedAtDesc(prisonNumber: String): List<Application>
 
   @Query(
     """
@@ -132,19 +132,21 @@ interface ApplicationRepository :
     endTime: Instant,
   ): List<MetricsCountByStatus>
 
-  @Query(
-    """
-      
-    SELECT a FROM Application a
-    WHERE a.prisonNumber = :prisonNumber
-    AND a.createdAt >= :fromDate
-    AND a.createdAt <= :toDate
-    ORDER BY a.createdAt DESC
-  """,
-  )
-  fun findByPrisonNumberAndDateBetween(
-    @Param("prisonNumber") prisonNumber: String,
-    @Param("fromDate") fromDate: Instant?,
-    @Param("toDate") toDate: Instant?,
+  fun findTopByPrisonNumberAndJobIdIdOrderByCreatedAtDesc(prisonNumber: String, jobId: String): Application?
+
+  fun findByPrisonNumberAndCreatedAtBetweenOrderByCreatedAtDesc(
+    prisonNumber: String,
+    start: Instant?,
+    end: Instant?,
+  ): List<Application>
+
+  fun findByPrisonNumberAndCreatedAtLessThanEqualOrderByCreatedAtDesc(
+    prisonNumber: String,
+    end: Instant,
+  ): List<Application>
+
+  fun findByPrisonNumberAndCreatedAtGreaterThanEqualOrderByCreatedAtDesc(
+    prisonNumber: String,
+    start: Instant,
   ): List<Application>
 }
