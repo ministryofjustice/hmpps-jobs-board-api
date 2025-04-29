@@ -10,7 +10,7 @@ data class HistoriesDTO(
   @Schema(description = "The status of the job application", example = "SELECTED_FOR_INTERVIEW")
   val status: String,
   @Schema(description = "The name of the prison where the job application was made", example = "Moorland (HMP & YOI)")
-  val prisonName: String,
+  val prisonId: String,
   @Schema(description = "When the job application was modified", example = "2024-11-25T09:45:29.916505Z")
   val modifiedAt: String,
 )

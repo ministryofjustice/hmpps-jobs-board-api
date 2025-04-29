@@ -96,11 +96,7 @@ class SubjectAccessRequestGet(
 
     if (!prn.isNullOrEmpty()) {
       return try {
-        val sarFilter = SARFilter(
-          prn = prn,
-          fromDate = fromDate,
-          toDate = toDate,
-        )
+        val sarFilter = SARFilter(prn, fromDate, toDate)
         val listOfJobApplications: CompletableFuture<List<ApplicationDTO>> = subjectAccessRequestService.fetchApplications(sarFilter)
         val listOfExpressionsOfInterest: CompletableFuture<List<ExpressionOfInterestDTO>> = subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter)
         val listOfArchivedJobs: CompletableFuture<List<ArchivedDTO>> = subjectAccessRequestService.fetchArchivedJobs(sarFilter)
