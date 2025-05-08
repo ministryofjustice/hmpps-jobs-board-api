@@ -59,7 +59,7 @@ class SubjectAccessRequestGet(
       ApiResponse(
         responseCode = "204",
         description = "Request successfully processed - no content found with recognised PRN",
-        content = [Content()],
+        content = [],
       ),
       ApiResponse(
         responseCode = "209",
@@ -97,6 +97,7 @@ class SubjectAccessRequestGet(
     if (!prn.isNullOrEmpty()) {
       return try {
         val sarFilter = SARFilter(prn, fromDate, toDate)
+        println("------> prn: $prn")
         val listOfJobApplications: CompletableFuture<List<ApplicationDTO>> = subjectAccessRequestService.fetchApplications(sarFilter)
         val listOfExpressionsOfInterest: CompletableFuture<List<ExpressionOfInterestDTO>> = subjectAccessRequestService.fetchExpressionsOfInterest(sarFilter)
         val listOfArchivedJobs: CompletableFuture<List<ArchivedDTO>> = subjectAccessRequestService.fetchArchivedJobs(sarFilter)
@@ -110,6 +111,18 @@ class SubjectAccessRequestGet(
             )
           }
         }
+
+        println(
+          ResponseEntity.ok(
+            SARSummaryDTO(
+              SARContentDTO(
+                listOfJobApplications.get(),
+                listOfExpressionsOfInterest.get(),
+                listOfArchivedJobs.get(),
+              ),
+            ),
+          ),
+        )
 
         return ResponseEntity.ok(
           SARSummaryDTO(
