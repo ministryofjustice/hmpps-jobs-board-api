@@ -59,7 +59,7 @@ class SubjectAccessRequestGet(
       ApiResponse(
         responseCode = "204",
         description = "Request successfully processed - no content found with recognised PRN",
-        content = [Content()],
+        content = [],
       ),
       ApiResponse(
         responseCode = "209",

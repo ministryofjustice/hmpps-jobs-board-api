@@ -35,7 +35,7 @@ class SubjectAccessRequestService(
       endTime != null -> applicationRepository.findByPrisonNumberAndCreatedAtLessThanEqualOrderByCreatedAtDesc(sarFilter.prn, endTime)
       else -> applicationRepository.findByPrisonNumberOrderByCreatedAtDesc(sarFilter.prn)
     }.map { application ->
-      val histories = applicationHistoryRetriever.retrieveApplicationHistoriesByDate(application.id.id, sarFilter.fromDate, sarFilter.toDate).map {
+      val histories = applicationHistoryRetriever.retrieveAllApplicationHistories(application.id.id).map {
         it.entity.run {
           HistoriesDTO(
             firstName = firstName,
@@ -53,7 +53,7 @@ class SubjectAccessRequestService(
         employerName = application.job.employer.name,
         prisonNumber = application.prisonNumber,
         firstName = if (includeOptionalFields) application.firstName else null,
-        histories = histories,
+        histories = histories.toList(),
         lastName = if (includeOptionalFields) application.lastName else null,
         status = if (includeOptionalFields) application.status else null,
         prisonId = if (includeOptionalFields) application.prisonId else null,
