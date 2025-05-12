@@ -330,6 +330,17 @@ class SubjectAccessRequestGetTest {
   }
 
   @Test
+  fun `should return 204 when all SAR lists are empty`() {
+    every { subjectAccessRequestService.fetchApplications(any()) } returns CompletableFuture.completedFuture(emptyList<ApplicationDTO>())
+    every { subjectAccessRequestService.fetchExpressionsOfInterest(any()) } returns CompletableFuture.completedFuture(emptyList<ExpressionOfInterestDTO>())
+    every { subjectAccessRequestService.fetchArchivedJobs(any()) } returns CompletableFuture.completedFuture(emptyList<ArchivedDTO>())
+
+    val response: ResponseEntity<Any> = controller.subjectAccess(prn = prisonNumber)
+    assertEquals(response.statusCode.value(), 204)
+    assertEquals(HttpStatus.NO_CONTENT, response.statusCode)
+  }
+
+  @Test
   fun `should return 209 if only CRN is provided`() {
     val response: ResponseEntity<Any> = controller.subjectAccess(crn = testCrn)
 
