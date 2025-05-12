@@ -111,6 +111,10 @@ class SubjectAccessRequestGet(
           }
         }
 
+        if (listOfJobApplications.get().isEmpty() && listOfExpressionsOfInterest.get().isEmpty() && listOfArchivedJobs.get().isEmpty()) {
+          return ResponseEntity.noContent().build()
+        }
+
         return ResponseEntity.ok(
           SARSummaryDTO(
             SARContentDTO(
