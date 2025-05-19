@@ -15,8 +15,8 @@ import java.util.*
 
 object ApplicationMother {
   val username = "test-client"
-  val createdBy = "CCOLUMBUS_GEN"
-  val lastModifiedBy = "JSMITH_GEN"
+  val createdBy = "USER1_GEN"
+  val lastModifiedBy = "USER2_GEN"
 
   val prisonMDI = "MDI"
   val prisonABC = "ABC"
@@ -26,8 +26,8 @@ object ApplicationMother {
   val knownApplicant = Applicant(
     prisonNumber = "GC12HDK",
     prisonId = prisonMDI,
-    firstName = "JOE",
-    lastName = "BLOGGS",
+    firstName = "SOME",
+    lastName = "ONE",
   )
 
   val applicantA = Applicant.from("A1111AA", prisonABC, firstName = "One")
@@ -164,8 +164,8 @@ class ApplicationBuilder {
   var id: String = UUID.randomUUID().toString()
   var prisonNumber: String = "GC12HDK"
   var prisonId: String = "MDI"
-  var firstName: String? = "JOE"
-  var lastName: String? = "BLOGGS"
+  var firstName: String? = "SOME"
+  var lastName: String? = "ONE"
   var status: String = "APPLICATION_MADE"
   var additionalInformation: String? = "Some additional information"
   var job: Job = JobMother.builder().build()

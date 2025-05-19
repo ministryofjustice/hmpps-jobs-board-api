@@ -14,8 +14,8 @@ object ApplicationMother {
   object KnownApplicant {
     val prisonNumber = "GC12HDK"
     val prisonId = "MDI"
-    val firstName = "JOE"
-    val lastName = "BLOGGS"
+    val firstName = "SOME"
+    val lastName = "ONE"
   }
 
   val applicationToTescoWarehouseHandler = Application(
@@ -67,15 +67,15 @@ class ApplicationBuilder {
   var id: String = UUID.randomUUID().toString()
   var prisonNumber: String = "GC12HDK"
   var prisonId: String = "MDI"
-  var firstName: String? = "JOE"
-  var lastName: String? = "BLOGGS"
+  var firstName: String? = "SOME"
+  var lastName: String? = "ONE"
   var status: String = "APPLICATION_MADE"
   var additionalInformation: String? = "Some additional information"
   var job: Job = JobMother.builder().build()
 
-  var createdBy: String? = "CCOLUMBUS_GEN"
+  var createdBy: String? = "USER1_GEN"
   var createdAt: Instant? = Instant.now().minusSeconds(1)
-  var modifiedBy: String? = "JSMITH_GEN"
+  var modifiedBy: String? = "USER2_GEN"
   var modifiedAt: Instant? = Instant.now()
 
   fun from(application: Application) = this.apply {

@@ -49,8 +49,8 @@ class SubjectAccessRequestGetTest {
         "Delivery Driver",
         "Amazon Flex",
         "A1234BC",
-        "John",
-        "Joe",
+        "Some",
+        "One",
         "SELECTED_FOR_INTERVIEW",
         "MOI",
         histories,
@@ -104,8 +104,8 @@ class SubjectAccessRequestGetTest {
         "Delivery Driver",
         "Amazon Flex",
         "A1234BC",
-        "John",
-        "Joe",
+        "Some",
+        "One",
         "SELECTED_FOR_INTERVIEW",
         "MOI",
         histories,
@@ -149,8 +149,8 @@ class SubjectAccessRequestGetTest {
                     "employerName": "Amazon Flex",
                     "prisonNumber": "A1234BC",
                     "prisonId": "MOI",
-                    "firstName": "John",
-                    "lastName": "Joe",
+                    "firstName": "Some",
+                    "lastName": "One",
                     "status": "SELECTED_FOR_INTERVIEW",
                     "histories": [],
                     "createdAt": "2024-11-15T18:45:29.916505Z",
@@ -194,15 +194,15 @@ class SubjectAccessRequestGetTest {
 
     val histories = listOf(
       HistoriesDTO(
-        firstName = "John",
-        lastName = "Smith",
+        firstName = "Some",
+        lastName = "One",
         status = "SELECTED_FOR_INTERVIEW",
         prisonId = "MOI",
         modifiedAt = "2024-11-25T09:45:29.916505Z",
       ),
       HistoriesDTO(
-        firstName = "Jane",
-        lastName = "Doe",
+        firstName = "Another",
+        lastName = "Two",
         status = "OFFER_ACCEPTED",
         prisonId = "HML",
         modifiedAt = "2024-12-01T10:30:15.123456Z",
@@ -262,15 +262,15 @@ class SubjectAccessRequestGetTest {
                 "prisonNumber": "A1234BC",
                 "histories": [
                   {
-                    "firstName": "John",
-                    "lastName": "Smith",
+                    "firstName": "Some",
+                    "lastName": "One",
                     "status": "SELECTED_FOR_INTERVIEW",
                     "prisonId": "MOI",
                     "modifiedAt": "2024-11-25T09:45:29.916505Z"
                   },
                   {
-                    "firstName": "Jane",
-                    "lastName": "Doe",
+                    "firstName": "Another",
+                    "lastName": "Two",
                     "status": "OFFER_ACCEPTED",
                     "prisonId": "HML",
                     "modifiedAt": "2024-12-01T10:30:15.123456Z"
