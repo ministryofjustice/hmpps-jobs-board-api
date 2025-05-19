@@ -27,7 +27,7 @@ object EmployerMother {
   val sainsburys = Employer(
     id = EntityId("f4fbdbf3-823c-4877-aafc-35a7fa74a15a"),
     name = "Sainsbury's",
-    description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by John James Sainsbury with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century.",
+    description = "J Sainsbury plc, trading as Sainsbury's, is a British supermarket and the second-largest chain of supermarkets in the United Kingdom. Founded in 1869 by J*** J**** S******* with a shop in Drury Lane, London, the company was the largest UK retailer of groceries for most of the 20th century.",
     sector = "RETAIL",
     status = "GOLD",
   )
