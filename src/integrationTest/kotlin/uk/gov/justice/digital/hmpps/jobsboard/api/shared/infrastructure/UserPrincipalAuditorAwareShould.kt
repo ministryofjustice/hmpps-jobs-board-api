@@ -17,7 +17,7 @@ class UserPrincipalAuditorAwareShould {
 
   private val auditorAware = UserPrincipalAuditorAware()
   private val username = "auser_gen"
-  private val displayName = "John Doe"
+  private val displayName = "Some One"
   private val system = "system"
 
   @AfterEach

@@ -11,13 +11,13 @@ data class ApplicationDTO(
   val employerName: String,
   @Schema(description = "The prisonNumber of the person who applied for the job", example = "A1234BC")
   val prisonNumber: String,
-  @Schema(description = "The job applicants first name", example = "John")
+  @Schema(description = "The job applicants first name")
   val firstName: String?,
-  @Schema(description = "The job applicants last name", example = "Smith")
+  @Schema(description = "The job applicants last name")
   val lastName: String?,
   @Schema(description = "The status of the job application", example = "SELECTED_FOR_INTERVIEW")
   val status: String?,
-  @Schema(description = "The name of the prison where the job application was made", example = "Moorland (HMP & YOI)")
+  @Schema(description = "The identifier of the prison where the job application was made")
   val prisonId: String?,
   @Schema(description = "A list of applications made in the past")
   val histories: List<HistoriesDTO>,

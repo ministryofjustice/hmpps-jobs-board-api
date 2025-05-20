@@ -124,8 +124,8 @@ class SubjectAccessRequestServiceTest {
     }
 
     val revisedApplication = mockk<Application>(relaxed = true) {
-      every { firstName } returns "Rachel"
-      every { lastName } returns "Smith"
+      every { firstName } returns "Some"
+      every { lastName } returns "One"
       every { status } returns "SELECTED_FOR_INTERVIEW"
       every { prisonId } returns "MOI"
       every { lastModifiedAt } returns modifiedAtTime

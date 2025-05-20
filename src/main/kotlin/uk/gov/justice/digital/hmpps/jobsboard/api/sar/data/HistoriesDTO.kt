@@ -3,9 +3,9 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.sar.data
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class HistoriesDTO(
-  @Schema(description = "The job applicants first name", example = "John")
+  @Schema(description = "The job applicants first name")
   val firstName: String?,
-  @Schema(description = "The job applicants last name", example = "Smith")
+  @Schema(description = "The job applicants last name")
   val lastName: String?,
   @Schema(description = "The status of the job application", example = "SELECTED_FOR_INTERVIEW")
   val status: String,
