@@ -11,7 +11,7 @@ object EmployerMother {
   val tesco = Employer(
     id = EntityId("89de6c84-3372-4546-bbc1-9d1dc9ceb354"),
     name = "Tesco",
-    description = "Tesco plc is a British multinational groceries and general merchandise retailer headquartered in Welwyn Garden City, England. The company was founded by Jack Cohen in Hackney, London in 1919.",
+    description = "Tesco plc is a British multinational groceries and general merchandise retailer headquartered in Welwyn Garden City, England. The company was founded by J*** C**** in Hackney, London in 1919.",
     sector = "RETAIL",
     status = "SILVER",
   )

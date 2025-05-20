@@ -39,7 +39,7 @@ class EmployerRetrieverShould {
   private val tescoEmployer = Employer(
     id = EntityId("eaf7e96e-e45f-461d-bbcb-fd4cedf0499c"),
     name = "Tesco",
-    description = "Tesco plc is a British multinational groceries and general merchandise retailer headquartered in Welwyn Garden City, England. The company was founded by Jack Cohen in Hackney, London in 1919.",
+    description = "Tesco plc is a British multinational groceries and general merchandise retailer headquartered in Welwyn Garden City, England. The company was founded by J*** C**** in Hackney, London in 1919.",
     sector = "RETAIL",
     status = "SILVER",
   )
