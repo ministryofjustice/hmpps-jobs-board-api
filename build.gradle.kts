@@ -1,18 +1,18 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.1.0"
-  kotlin("plugin.spring") version "2.1.20"
-  kotlin("plugin.jpa") version "2.1.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.2.0"
+  kotlin("plugin.spring") version "2.1.21"
+  kotlin("plugin.jpa") version "2.1.21"
   id("jvm-test-suite")
   id("jacoco")
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.4")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.5")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.data:spring-data-envers")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
 
@@ -26,7 +26,7 @@ dependencies {
   }
   testImplementation("org.testcontainers:postgresql")
   testImplementation("org.testcontainers:junit-jupiter")
-  testImplementation("io.github.hakky54:logcaptor:2.10.1")
+  testImplementation("io.github.hakky54:logcaptor:2.11.0")
 
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -45,14 +45,13 @@ testing {
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
         implementation("org.springframework.boot:spring-boot-starter-test")
         implementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-        implementation("org.springframework.cloud:spring-cloud-contract-wiremock:4.2.0")
-        implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
+        implementation("org.springframework.cloud:spring-cloud-contract-wiremock:4.2.1")
+        runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
         implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
         implementation("org.flywaydb:flyway-core")
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
-        implementation("com.zaxxer:HikariCP:5.1.0")
         implementation("com.h2database:h2")
-        implementation("io.mockk:mockk:1.13.3")
+        implementation("io.mockk:mockk:1.14.2")
         implementation("org.springframework.boot:spring-boot-testcontainers") {
           implementation("org.apache.commons:commons-compress:1.27.1")
         }
