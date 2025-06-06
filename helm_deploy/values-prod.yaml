@@ -10,7 +10,7 @@ generic-service:
     API_BASE_URL_OAUTH: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     OS_PLACES_API_URL: "https://api.os.uk/search/places/v1"
 
-  serviceAccountName: education-skills-work-employment-production
+  serviceAccountName: education-skills-and-work-live-production
 
 # CloudPlatform AlertManager receiver to route prometheus alerts to slack
 # See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
