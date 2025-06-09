@@ -17,7 +17,7 @@ generic-service:
     API_INTEGRATION_ENABLED: true
     HMPPS_SAR_ADDITIONALACCESSROLE: "ROLE_EDUCATION_WORK_PLAN_VIEW"
 
-  serviceAccountName: education-skills-work-employment-development
+  serviceAccountName: education-skills-and-work-devs-development
 
 # CloudPlatform AlertManager receiver to route prometheus alerts to slack
 # See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
