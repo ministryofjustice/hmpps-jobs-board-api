@@ -16,11 +16,12 @@ spring:
   jpa:
     show-sql: true
   datasource:
-    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=disable&autosave=conservative'
+    url: 'jdbc:postgresql://${DATABASE_ENDPOINT:localhost:5432}/${DATABASE_NAME:job-board}?sslmode=disable&autosave=conservative'
+    user: '${DATABASE_USERNAME:job-board}'
+    password: '${DATABASE_PASSWORD:job-board}'
   flyway:
     baseline-on-migrate: true
     clean-disabled: false
-
 os:
   places:
     api:

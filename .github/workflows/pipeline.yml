@@ -42,11 +42,6 @@ jobs:
       postgres-db: job-board
       postgres-username: job-board
       postgres-password: job-board
-    env:
-      DATABASE_ENDPOINT: localhost
-      DATABASE_NAME: job-board
-      DATABASE_USERNAME: job-board
-      DATABASE_PASSWORD: job-board
   build:
     name: Build docker image from hmpps-github-actions
     if: github.ref == 'refs/heads/main'
