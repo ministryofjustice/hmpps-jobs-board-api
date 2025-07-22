@@ -49,3 +49,9 @@ jobs:
           path: build/reports/tests
 workflows:
   version: 2
+  test-only:
+    jobs:
+      - validate:
+          filters:
+            tags:
+              ignore: /.*/
