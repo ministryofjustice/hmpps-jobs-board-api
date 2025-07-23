@@ -12,7 +12,9 @@ management.endpoint:
 
 spring:
   datasource:
-    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=disable&autosave=conservative'
+    url: 'jdbc:postgresql://${DATABASE_ENDPOINT:localhost:5432}/${DATABASE_NAME:job-board}?sslmode=disable&autosave=conservative'
+    username: '${DATABASE_USERNAME:job-board}'
+    password: '${DATABASE_PASSWORD:job-board}'
 
   jpa:
     hibernate:
