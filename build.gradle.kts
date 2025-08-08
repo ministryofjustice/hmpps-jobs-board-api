@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.4"
   kotlin("plugin.spring") version "2.2.0"
   kotlin("plugin.jpa") version "2.2.0"
   id("jvm-test-suite")
@@ -7,14 +7,14 @@ plugins {
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.9") {
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.10") {
     implementation("org.apache.commons:commons-lang3:3.18.0")
   }
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.data:spring-data-envers")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
 
@@ -22,13 +22,13 @@ dependencies {
 
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.mockk:mockk:1.13.3")
+  testImplementation("io.mockk:mockk:1.14.5")
   testImplementation("org.springframework.boot:spring-boot-testcontainers") {
     testImplementation("org.apache.commons:commons-compress:1.27.1")
   }
   testImplementation("org.testcontainers:postgresql")
   testImplementation("org.testcontainers:junit-jupiter")
-  testImplementation("io.github.hakky54:logcaptor:2.11.0")
+  testImplementation("io.github.hakky54:logcaptor:2.12.0")
 
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -53,7 +53,7 @@ testing {
         implementation("org.flywaydb:flyway-core")
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
         implementation("com.h2database:h2")
-        implementation("io.mockk:mockk:1.14.2")
+        implementation("io.mockk:mockk:1.14.5")
         implementation("org.springframework.boot:spring-boot-testcontainers") {
           implementation("org.apache.commons:commons-compress:1.27.1")
         }
