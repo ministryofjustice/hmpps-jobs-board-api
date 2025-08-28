@@ -32,4 +32,26 @@ interface JobRepository : JpaRepository<Job, EntityId> {
     @Param("sector") sector: String,
     pageable: Pageable,
   ): Page<Job>
+
+  @Query(
+    """
+    SELECT j FROM Job j
+    WHERE LOWER(j.createdBy) = LOWER(:createdBy)
+    AND (
+        LOWER(j.sector) = LOWER(:sector)
+        OR :sector IS NULL
+    )
+    AND (
+        LOWER(j.title) LIKE LOWER(CONCAT('%', :searchString, '%'))
+        OR LOWER(j.employer.name) LIKE LOWER(CONCAT('%', :searchString, '%'))
+        OR :searchString IS NULL
+    )
+    """,
+  )
+  fun findByCreatedByAndSectorAndTitleOrEmployerName(
+    createdBy: String,
+    searchString: String?,
+    sector: String?,
+    pageable: Pageable,
+  ): Page<Job>
 }

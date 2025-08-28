@@ -15,25 +15,36 @@ class JobRetriever(
   fun retrieve(id: String): Job = jobRepository.findById(EntityId(id))
     .orElseThrow { JobNotFoundException("Job with Id $id not found") }
 
-  fun retrieveAllJobs(jobTitleOrEmployerName: String?, sector: String?, pageable: Pageable): Page<Job> = when {
-    !jobTitleOrEmployerName.isNullOrEmpty() && sector.isNullOrEmpty() ->
-      jobRepository
-        .findByTitleContainingOrEmployerNameContainingAllIgnoringCase(
-          title = jobTitleOrEmployerName,
-          employerName = jobTitleOrEmployerName,
+  fun retrieveAllJobs(jobTitleOrEmployerName: String?, sector: String?, createdBy: String?, pageable: Pageable): Page<Job> = when {
+    createdBy.isNullOrEmpty() -> when {
+      !jobTitleOrEmployerName.isNullOrEmpty() && sector.isNullOrEmpty() ->
+        jobRepository
+          .findByTitleContainingOrEmployerNameContainingAllIgnoringCase(
+            title = jobTitleOrEmployerName,
+            employerName = jobTitleOrEmployerName,
+            pageable = pageable,
+          )
+
+      jobTitleOrEmployerName.isNullOrEmpty() && !sector.isNullOrEmpty() ->
+        jobRepository.findBySectorIgnoringCase(
+          sector = sector,
           pageable = pageable,
         )
-    jobTitleOrEmployerName.isNullOrEmpty() && !sector.isNullOrEmpty() ->
-      jobRepository.findBySectorIgnoringCase(
-        sector = sector,
-        pageable = pageable,
-      )
-    !jobTitleOrEmployerName.isNullOrEmpty() && !sector.isNullOrEmpty() ->
-      jobRepository.findBySectorAndTitleOrEmployerName(
-        searchString = jobTitleOrEmployerName,
-        sector = sector,
-        pageable = pageable,
-      )
-    else -> jobRepository.findAll(pageable)
+
+      !jobTitleOrEmployerName.isNullOrEmpty() && !sector.isNullOrEmpty() ->
+        jobRepository.findBySectorAndTitleOrEmployerName(
+          searchString = jobTitleOrEmployerName,
+          sector = sector,
+          pageable = pageable,
+        )
+
+      else -> jobRepository.findAll(pageable)
+    }
+    else -> jobRepository.findByCreatedByAndSectorAndTitleOrEmployerName(
+      createdBy = createdBy,
+      searchString = jobTitleOrEmployerName,
+      sector = sector,
+      pageable = pageable,
+    )
   }
 }
