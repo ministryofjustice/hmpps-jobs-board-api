@@ -5,18 +5,20 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.jobCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.VALID_PRISON_NUMBER
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID.randomUUID
 
 object JobMother {
+  val jobCreator = "test-client"
+  val jobCreationTime: Instant = Instant.parse("2024-01-01T00:00:00Z")
 
   val tescoWarehouseHandler = Job(
     id = EntityId("04295747-e60d-4e51-9716-e721a63bdd06"),
@@ -167,7 +169,8 @@ object JobMother {
           "jobTitle": "${job.title}",
           "numberOfVacancies": ${job.numberOfVacancies},
           "sector": "${job.sector}",
-          "createdAt": "$jobCreationTime"
+          "createdAt": "$jobCreationTime",
+          "createdBy": "$jobCreator"
         }
   """.trimIndent()
 
@@ -460,4 +463,4 @@ internal fun String.asStringList() = asList().asStringList()
 
 internal fun String.asList() = this.split(",").map { it.trim() }.toList()
 
-internal fun List<String>.asStringList() = map { "\"$it\"" }.joinToString(separator = ",", prefix = "[", postfix = "]")
+internal fun List<String>.asStringList() = joinToString(separator = ",", prefix = "[", postfix = "]") { "\"$it\"" }

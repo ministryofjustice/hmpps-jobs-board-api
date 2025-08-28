@@ -10,6 +10,7 @@ data class GetJobsResponse(
   val numberOfVacancies: Int,
   val sector: String,
   val createdAt: String,
+  val createdBy: String,
 ) {
   companion object {
     fun from(job: Job): GetJobsResponse = GetJobsResponse(
@@ -20,6 +21,7 @@ data class GetJobsResponse(
       numberOfVacancies = job.numberOfVacancies,
       sector = job.sector,
       createdAt = job.createdAt.toString(),
+      createdBy = job.createdBy!!,
     )
   }
 }
