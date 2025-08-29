@@ -50,27 +50,83 @@ class JobsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RO')")
   @GetMapping("")
+  @Operation(
+    summary = "Retrieve jobs",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "The failure status is set when the request is invalid. An error response will be provided.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Error: Unauthorised. The error status is set as the required authorisation was not provided.",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
+        content = [Content()],
+      ),
+    ],
+  )
   fun retrieveAll(
     @RequestParam(required = false)
+    @Parameter(description = "Text searching against Job Title or Employer Name")
     jobTitleOrEmployerName: String?,
     @RequestParam(required = false)
+    @Parameter(description = "Job's sector to be searched with")
     sector: String?,
-    @RequestParam(defaultValue = "title", required = false)
+    @RequestParam(required = false)
+    @Parameter(description = "Job's creator to be searched with")
+    createdBy: String?,
+    @RequestParam(defaultValue = "jobTitle", required = false)
+    @Parameter(
+      description = "Sorting by (job title / date added)",
+      example = "jobTitle",
+      examples = [
+        ExampleObject(
+          name = "jobTitle",
+          value = "jobTitle",
+          description = "Sort by Job title",
+        ),
+        ExampleObject(
+          name = "createdAt",
+          value = "createdAt",
+          description = "Sort by Date added",
+        ),
+      ],
+    )
     sortBy: String?,
     @RequestParam(defaultValue = "asc", required = false)
+    @Parameter(
+      description = "Sorting order (ascending/descending)",
+      example = "desc",
+      examples = [
+        ExampleObject(name = "asc", value = "asc", description = "ascending order"),
+        ExampleObject(name = "desc", value = "desc", description = "descending order"),
+      ],
+    )
     sortOrder: String?,
     @RequestParam(defaultValue = "0")
+    @Parameter(description = "Page number")
     page: Int,
     @RequestParam(defaultValue = "10")
+    @Parameter(description = "Page size")
     size: Int,
   ): ResponseEntity<Page<GetJobsResponse>> {
     val sortedBy = when (sortBy) {
       "jobTitle" -> "title"
-      else -> sortBy
+      "createdAt" -> "createdAt"
+      else -> "title"
     }
     val direction = if (sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
     val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortedBy))
-    val jobList = jobRetriever.retrieveAllJobs(jobTitleOrEmployerName, sector, pageable)
+    val jobList = jobRetriever.retrieveAllJobs(jobTitleOrEmployerName, sector, createdBy, pageable)
     val response = jobList.map { GetJobsResponse.from(it) }
     return ResponseEntity.ok(response)
   }

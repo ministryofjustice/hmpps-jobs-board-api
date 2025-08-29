@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.itemListResponseBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.jobCreator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.responseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import java.util.UUID
@@ -168,6 +169,68 @@ class JobsGetShould : JobsTestCase() {
       expectedResponse = expectedResponseListOf(
         abcConstructionApprentice.itemListResponseBody,
       ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by Job creator`() {
+    givenThreeJobsAreCreated()
+
+    val createdBy = jobCreator.lowercase()
+    assertGetJobsIsOK(
+      parameters = "createdBy=$createdBy",
+      expectedResponse = expectedResponseListOf(
+        amazonForkliftOperator.itemListResponseBody,
+        tescoWarehouseHandler.itemListResponseBody,
+        abcConstructionApprentice.itemListResponseBody,
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by Job creator AND Job title OR Employer name`() {
+    givenThreeJobsAreCreated()
+
+    assertGetJobsIsOK(
+      parameters = "createdBy=$jobCreator&jobTitleOrEmployerName=tesco",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandler.itemListResponseBody,
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by Job creator AND job sector`() {
+    givenThreeJobsAreCreated()
+
+    assertGetJobsIsOK(
+      parameters = "createdBy=$jobCreator&sector=construction",
+      expectedResponse = expectedResponseListOf(
+        abcConstructionApprentice.itemListResponseBody,
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated Jobs list filtered by Job creator AND Job title OR Employer name AND job sector`() {
+    givenThreeJobsAreCreated()
+
+    assertGetJobsIsOK(
+      parameters = "createdBy=$jobCreator&jobTitleOrEmployerName=tesco&sector=wareHOUSING",
+      expectedResponse = expectedResponseListOf(
+        tescoWarehouseHandler.itemListResponseBody,
+      ),
+    )
+  }
+
+  @Test
+  fun `retrieve a default paginated empty Jobs list filtered by unknown Job creator`() {
+    givenThreeJobsAreCreated()
+
+    val unknownJobCreator = "unknown_creator"
+    assertGetJobsIsOK(
+      parameters = "createdBy=$unknownJobCreator",
+      expectedResponse = expectedResponseListOf(),
     )
   }
 
