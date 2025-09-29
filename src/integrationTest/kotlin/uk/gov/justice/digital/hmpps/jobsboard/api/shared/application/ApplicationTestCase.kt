@@ -194,9 +194,9 @@ abstract class ApplicationTestCase {
     jobRepository.deleteAll()
     employerRepository.deleteAll()
     osPlacesMockServer.resetAll()
-    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(abcConstructionApprentice.postcode).build())
-    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(amazonForkliftOperator.postcode).build())
-    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(tescoWarehouseHandler.postcode).build())
+    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(abcConstructionApprentice.postcode!!).build())
+    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(amazonForkliftOperator.postcode!!).build())
+    osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(tescoWarehouseHandler.postcode!!).build())
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(RELEASE_AREA_POSTCODE).build())
     arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
       osPlacesMockServer.stubGetAddressesForPostcode(it)

@@ -109,6 +109,62 @@ object JobMother {
     employer = amazon,
   )
 
+  val amazonNationalForkliftOperator = Job(
+    id = EntityId("d3035924-f9fe-426f-b253-f7c8225167af"),
+    title = "National forklift operator",
+    sector = "RETAIL",
+    industrySector = "LOGISTICS",
+    numberOfVacancies = 2,
+    sourcePrimary = "PEL",
+    sourceSecondary = "",
+    charityName = "Switchback",
+    postcode = null,
+    isNational = true,
+    salaryFrom = 11.93,
+    salaryTo = 15.90,
+    salaryPeriod = "PER_HOUR",
+    additionalSalaryInformation = null,
+    isPayingAtLeastNationalMinimumWage = false,
+    workPattern = "FLEXIBLE_SHIFTS",
+    hoursPerWeek = "FULL_TIME",
+    contractType = "TEMPORARY",
+    baseLocation = "WORKPLACE",
+    essentialCriteria = "",
+    desirableCriteria = "",
+    description = """
+      What's on offer:
+
+      - 5 days over 7, 05:30 to 15:30
+      - Paid weekly
+      - Immediate starts available
+      - Full training provided
+      
+      Your duties will include:
+
+      - Manoeuvring forklifts safely in busy industrial environments
+      - Safely stacking and unstacking large quantities of goods onto shelves or pallets
+      - Moving goods from storage areas to loading areas for transport
+      - Unloading deliveries and safely relocating the goods to their designated storage areas
+      - Ensuring forklift driving areas are free from spills or obstructions
+      - Regularly checking forklift equipment for faults or damages
+      - Consolidating partial pallets for incoming goods
+    """.trimIndent(),
+    offenceExclusions = "NONE,DRIVING,OTHER",
+    offenceExclusionsDetails = """
+      More details of other offence exclusions:
+      - drunken at pub
+      - war crime
+    """.trimIndent(),
+    isRollingOpportunity = false,
+    closingDate = LocalDate.parse("2025-02-01"),
+    isOnlyForPrisonLeavers = true,
+    startDate = LocalDate.parse("2025-05-31"),
+    howToApply = "",
+    supportingDocumentationRequired = "CV,DISCLOSURE_LETTER",
+    supportingDocumentationDetails = "",
+    employer = amazon,
+  )
+
   val abcConstructionApprentice = Job(
     id = EntityId("6fdf2bf4-cfe6-419c-bab2-b3673adbb393"),
     title = "Apprentice plasterer",
@@ -251,7 +307,7 @@ class JobBuilder {
   var sourcePrimary: String = "PEL"
   var sourceSecondary: String? = null
   var charityName: String? = null
-  var postcode: String = "LS11 5AD"
+  var postcode: String? = "LS11 5AD"
   var salaryFrom: Double = 96.32
   var salaryTo: Double? = null
   var salaryPeriod: String = "PER_DAY"

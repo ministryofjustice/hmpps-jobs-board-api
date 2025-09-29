@@ -10,7 +10,7 @@ data class GetMatchingCandidateJobResponse(
   val jobTitle: String,
   val closingDate: String?,
   val startDate: String?,
-  val postcode: String,
+  val postcode: String?,
   val distance: Float?,
   val sector: String,
   val salaryFrom: Double,
@@ -32,6 +32,7 @@ data class GetMatchingCandidateJobResponse(
   val expressionOfInterest: Boolean,
   val archived: Boolean,
   val createdAt: String,
+  val isNational: Boolean?,
 ) {
   constructor(
     id: String,
@@ -39,7 +40,7 @@ data class GetMatchingCandidateJobResponse(
     jobTitle: String,
     closingDate: LocalDate?,
     startDate: LocalDate?,
-    postcode: String,
+    postcode: String?,
     distance: Float?,
     sector: String,
     salaryFrom: Double,
@@ -61,6 +62,7 @@ data class GetMatchingCandidateJobResponse(
     expressionOfInterest: Boolean,
     archived: Boolean,
     createdAt: Instant?,
+    isNational: Boolean?,
   ) : this(
     id,
     employerName,
@@ -89,8 +91,8 @@ data class GetMatchingCandidateJobResponse(
     expressionOfInterest,
     archived,
     createdAt.toString(),
-  ) {
-  }
+    isNational,
+  )
 
   companion object {
     fun from(
@@ -125,6 +127,7 @@ data class GetMatchingCandidateJobResponse(
       expressionOfInterest = expressionOfInterest,
       archived = archived,
       createdAt = job.createdAt.toString(),
+      isNational = job.isNational,
     )
   }
 }

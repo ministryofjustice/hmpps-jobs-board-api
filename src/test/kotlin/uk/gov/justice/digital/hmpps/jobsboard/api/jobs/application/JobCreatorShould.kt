@@ -123,6 +123,28 @@ class JobCreatorShould : TestBase() {
     assertThat(exception.message).isEqualTo("EntityId cannot be null: {${createJobRequest.id}}")
   }
 
+  @Test
+  fun `throw an exception when creating a CreateJobRequest with a null postcode and isNational=false`() {
+    val exception = assertThrows<IllegalArgumentException> {
+      builder().from(amazonForkliftOperator)
+        .withPostcode(null)
+        .buildCreateJobRequest()
+    }
+
+    assertThat(exception.message).isEqualTo("Postcode must be provided if job is not national")
+  }
+
+  @Test
+  fun `throw an exception when creating a Job with a null postcode and isNational=false`() {
+    val exception = assertThrows<IllegalArgumentException> {
+      builder().from(amazonForkliftOperator)
+        .withPostcode(null)
+        .build()
+    }
+
+    assertThat(exception.message).isEqualTo("Postcode must be provided if job is not national")
+  }
+
   @Nested
   @DisplayName("Given Integration has been enabled")
   inner class GivenIntegrationEnabled {
