@@ -50,7 +50,14 @@ class JobCreator(
     val employer = employerRepository.findById(EntityId(request.employerId))
       .orElseThrow { IllegalArgumentException("Employer not found: employerId = ${request.employerId}") }
 
-    postcodeLocationService.save(request.postCode)
+    // Validate postcode is present if the job is not national
+    if (!request.isNational && request.postCode.isNullOrBlank()) {
+      throw IllegalArgumentException("Postcode is required for non-national jobs")
+    }
+
+    if (!request.postCode.isNullOrBlank()) {
+      postcodeLocationService.save(request.postCode)
+    }
 
     jobRepository.save(
       Job(
@@ -63,6 +70,7 @@ class JobCreator(
         sourceSecondary = request.sourceSecondary,
         charityName = request.charityName,
         postcode = request.postCode,
+        isNational = request.isNational,
         salaryFrom = request.salaryFrom,
         salaryTo = request.salaryTo,
         salaryPeriod = request.salaryPeriod,
