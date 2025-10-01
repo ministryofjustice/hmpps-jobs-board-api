@@ -28,7 +28,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.closingDate,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
-      CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT)
+      CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT),
+      j.isNational
     )
     FROM Job j
     LEFT JOIN ExpressionOfInterest eoi ON eoi.job.id.id = j.id.id AND eoi.id.prisonNumber = :prisonNumber
@@ -81,7 +82,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.howToApply,
       CASE WHEN eoi.id IS NOT NULL THEN true ELSE false END,
       CASE WHEN a.id IS NOT NULL THEN true ELSE false END,
-      j.createdAt
+      j.createdAt,
+      j.isNational
     )
     FROM Job j
     LEFT JOIN j.expressionsOfInterest eoi on eoi.id.prisonNumber = :prisonNumber 
@@ -123,7 +125,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.howToApply,
       CASE WHEN eoi.id IS NOT NULL THEN true ELSE false END,
       CASE WHEN a.id IS NOT NULL THEN true ELSE false END,
-      j.createdAt
+      j.createdAt,
+      j.isNational
     )
     FROM Job j
     LEFT JOIN j.expressionsOfInterest eoi on eoi.id.prisonNumber = :prisonNumber 
@@ -203,7 +206,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.closingDate,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
-      $CALC_DISTANCE_EXPRESSION
+      $CALC_DISTANCE_EXPRESSION,
+      j.isNational
     )
     FROM Job j
     JOIN j.expressionsOfInterest eoi ON eoi.id.prisonNumber = :prisonNumber
@@ -233,7 +237,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.closingDate,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
-      $CALC_DISTANCE_EXPRESSION
+      $CALC_DISTANCE_EXPRESSION,
+      j.isNational
     )
     FROM Job j
     JOIN j.employer e

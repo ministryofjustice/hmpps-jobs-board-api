@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.JpaSort
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonNationalForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
@@ -43,7 +44,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
   private val defaultSort = Sort.by(Sort.Direction.ASC, "closingDate", "title")
   private val defaultPageable = PageRequest.of(0, 10, defaultSort)
-  private val closingSoonPageable = PageRequest.of(0, 3, defaultSort)
+  private val closingSoonPageable = PageRequest.of(0, 4, defaultSort)
   private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, defaultSort)
   private val sortByDistanceAndJobTitle =
     CALC_DISTANCE_EXPRESSION.let { JpaSort.unsafe(Sort.Direction.ASC, it, "title") }
@@ -81,7 +82,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   @Nested
   @DisplayName("Given some jobs have been created")
   inner class GivenSomeJobsCreated {
-    private val allJobs = listOf(amazonForkliftOperator, tescoWarehouseHandler, abcConstructionApprentice)
+    private val allJobs = listOf(amazonForkliftOperator, amazonNationalForkliftOperator, tescoWarehouseHandler, abcConstructionApprentice)
 
     @BeforeEach
     fun setUp() {
@@ -148,7 +149,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
       @Test
       fun `retrieve matched jobs closing soon, without archived job(s)`() {
-        val expectedJobs = listOf(amazonForkliftOperator, abcConstructionApprentice)
+        val expectedJobs = listOf(amazonForkliftOperator, amazonNationalForkliftOperator, abcConstructionApprentice)
         assertFindJobsClosingSoonIsExpected(
           expectedSize = expectedJobs.size,
           expectedJobs = expectedJobs,
@@ -176,7 +177,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
       @Test
       fun `retrieve matched jobs closing soon, without job(s) of interest`() {
-        val expectedJobs = listOf(amazonForkliftOperator, abcConstructionApprentice)
+        val expectedJobs = listOf(amazonForkliftOperator, amazonNationalForkliftOperator, abcConstructionApprentice)
         assertFindJobsClosingSoonIsExpected(
           expectedSize = expectedJobs.size,
           expectedJobs = expectedJobs,
@@ -238,6 +239,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
         fun `retrieve archived jobs of interest with distance`() {
           expectedResults = listOf(
             amazonForkliftOperator.listResponse(distance = 20.0f),
+            amazonNationalForkliftOperator.listResponse(distance = null),
             tescoWarehouseHandler.listResponse(distance = 1.0f),
             abcConstructionApprentice.listResponse(distance = 22.0f),
           )
@@ -256,6 +258,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
             tescoWarehouseHandler.listResponse(distance = 1.0f),
             amazonForkliftOperator.listResponse(distance = 20.0f),
             abcConstructionApprentice.listResponse(distance = 22.0f),
+            amazonNationalForkliftOperator.listResponse(distance = null),
           )
 
           assertFindArchivedJobsIsExpected(
@@ -325,7 +328,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
         @BeforeEach
         fun setUp() {
-          expectedJobs = listOf(amazonForkliftOperator, abcConstructionApprentice)
+          expectedJobs = listOf(amazonForkliftOperator, amazonNationalForkliftOperator, abcConstructionApprentice)
           archiveJob(prisonNumber, tescoWarehouseHandler)
         }
 
@@ -370,6 +373,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
         fun `retrieve jobs of interest with distance`() {
           expectedResults = listOf(
             amazonForkliftOperator.listResponse(true, 20.0f),
+            amazonNationalForkliftOperator.listResponse(true, null),
             tescoWarehouseHandler.listResponse(true, 1.0f),
             abcConstructionApprentice.listResponse(true, 22.0f),
           )
@@ -388,6 +392,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
             tescoWarehouseHandler.listResponse(true, 1.0f),
             amazonForkliftOperator.listResponse(true, 20.0f),
             abcConstructionApprentice.listResponse(true, 22.0f),
+            amazonNationalForkliftOperator.listResponse(true, null),
           )
 
           assertFindJobsOfInterestIsExpected(
@@ -430,8 +435,8 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     inner class AndCustomisation {
       @Test
       fun `retrieve matched jobs closing soon, of specified sectors only`() {
-        val sectors = listOf(tescoWarehouseHandler.sector, amazonForkliftOperator.sector).map { it.lowercase() }
-        val expectedJobs = listOf(amazonForkliftOperator, tescoWarehouseHandler)
+        val sectors = listOf(tescoWarehouseHandler.sector, amazonForkliftOperator.sector, amazonNationalForkliftOperator.sector).map { it.lowercase() }
+        val expectedJobs = listOf(amazonForkliftOperator, amazonNationalForkliftOperator, tescoWarehouseHandler)
         assertFindJobsClosingSoonIsExpected(
           sectors = sectors,
           expectedJobs = expectedJobs,
@@ -565,6 +570,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     employerName = employer.name,
     sector = sector,
     postcode = postcode,
+    isNational = isNational,
     closingDate = closingDate,
     hasExpressedInterest = hasExpressedInterest,
     createdAt = createdAt,

@@ -14,9 +14,9 @@ object PostcodeMother {
 
   val postcodeMap = listOf(
     postcode(RELEASE_AREA_POSTCODE, 0.0, 0.0),
-    postcode(abcConstructionApprentice.postcode, 25000.0, 25000.0),
-    postcode(amazonForkliftOperator.postcode, 22800.0, 22800.0),
-    postcode(tescoWarehouseHandler.postcode, 1100.0, 1100.0),
+    postcode(abcConstructionApprentice.postcode!!, 25000.0, 25000.0),
+    postcode(amazonForkliftOperator.postcode!!, 22800.0, 22800.0),
+    postcode(tescoWarehouseHandler.postcode!!, 1100.0, 1100.0),
     postcode("LS110AN", 429017.0, 431869.0),
     postcode("LS11 0AN", 429017.0, 431869.0),
     postcode("M4 5BD", 385003.00, 398558.00),
@@ -35,9 +35,9 @@ object PostcodeMother {
 
     val postcodeCoordinates: MutableMap<String, Pair<Double, Double>> = mutableMapOf(
       RELEASE_AREA_POSTCODE to Pair(0.0, 0.0),
-      abcConstructionApprentice.postcode to Pair(25000.0, 25000.0),
-      amazonForkliftOperator.postcode to Pair(22800.0, 22800.0),
-      tescoWarehouseHandler.postcode to Pair(1100.0, 1100.0),
+      abcConstructionApprentice.postcode!! to Pair(25000.0, 25000.0),
+      amazonForkliftOperator.postcode!! to Pair(22800.0, 22800.0),
+      tescoWarehouseHandler.postcode!! to Pair(1100.0, 1100.0),
     )
 
     fun from(postcode: String): Builder {

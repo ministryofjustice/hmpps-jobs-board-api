@@ -213,7 +213,7 @@ class JobBuilder {
   var sourcePrimary: String = "PEL"
   var sourceSecondary: String? = null
   var charityName: String? = null
-  var postcode: String = "LS11 5AD"
+  var postcode: String? = "LS11 5AD"
   var salaryFrom: Double = 96.32
   var salaryTo: Double? = null
   var salaryPeriod: String = "PER_DAY"
@@ -246,6 +246,11 @@ class JobBuilder {
 
   fun withId(id: String): JobBuilder {
     this.id = id
+    return this
+  }
+
+  fun withPostcode(postcode: String?): JobBuilder {
+    this.postcode = postcode
     return this
   }
 

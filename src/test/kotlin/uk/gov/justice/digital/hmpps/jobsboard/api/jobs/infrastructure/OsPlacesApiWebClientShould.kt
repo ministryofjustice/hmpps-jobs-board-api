@@ -57,7 +57,7 @@ class OsPlacesApiWebClientShould {
   @Test
   fun `get coordinates when a valid postcode is provided`() {
     val expectedPostcode = OsPlacesApiDPA(
-      postcode = amazonForkliftOperator.postcode,
+      postcode = amazonForkliftOperator.postcode!!,
       xCoordinate = 1.23,
       yCoordinate = 4.56,
     )
@@ -80,7 +80,7 @@ class OsPlacesApiWebClientShould {
   @Test
   fun `return a fallback object when unexpected error calling OS Places API`() {
     val expectedPostcode = OsPlacesApiDPA(
-      postcode = amazonForkliftOperator.postcode,
+      postcode = amazonForkliftOperator.postcode!!,
       xCoordinate = null,
       yCoordinate = null,
     )
@@ -105,7 +105,7 @@ class OsPlacesApiWebClientShould {
 
     whenever(requestHeadersMock.retrieve()).thenThrow(responseException)
 
-    osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
+    osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode!!)
 
     var logEvents: List<LogEvent> = logCaptor.logEvents
     assertThat(logEvents).hasSize(1)
