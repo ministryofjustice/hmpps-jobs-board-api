@@ -57,6 +57,7 @@ class EmployerRetrieverShould {
   @BeforeEach
   fun setUp() {
     `when`(timeProvider.now()).thenReturn(fixedTime)
+    `when`(timeProvider.today()).thenReturn(fixedTime.toLocalDate())
   }
 
   @Test
@@ -90,13 +91,14 @@ class EmployerRetrieverShould {
     val employers = listOf(tescoEmployer, sainsburysEmployer)
     val name = null
     val sector = null
+    val hasNationalJobs = false
     val pageNumber = 0
     val pageSize = 2
     val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
     val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
     whenever(employerRepository.findAll(pageable)).thenReturn(pagedResult)
 
-    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable)
+    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable, hasNationalJobs)
 
     verify(employerRepository, times(1)).findAll(pageable)
     assertThat(result.content).isEqualTo(pagedResult.content)
@@ -107,13 +109,14 @@ class EmployerRetrieverShould {
     val employers = listOf(tescoEmployer)
     val name = "Tesco"
     val sector = null
+    val hasNationalJobs = false
     val pageNumber = 0
     val pageSize = 10
     val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
     val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
     whenever(employerRepository.findByNameIgnoringCaseContaining(name, pageable)).thenReturn(pagedResult)
 
-    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable)
+    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable, hasNationalJobs)
 
     verify(employerRepository, times(1)).findByNameIgnoringCaseContaining(name, pageable)
     assertThat(result.content).isEqualTo(pagedResult.content)
@@ -124,13 +127,14 @@ class EmployerRetrieverShould {
     val employers = listOf(tescoEmployer)
     val name = null
     val sector = "RETAIL"
+    val hasNationalJobs = false
     val pageNumber = 0
     val pageSize = 10
     val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
     val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
     whenever(employerRepository.findBySectorIgnoringCase(sector, pageable)).thenReturn(pagedResult)
 
-    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable)
+    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable, hasNationalJobs)
 
     verify(employerRepository, times(1)).findBySectorIgnoringCase(sector, pageable)
     assertThat(result.content).isEqualTo(pagedResult.content)
@@ -141,15 +145,34 @@ class EmployerRetrieverShould {
     val employers = listOf(tescoEmployer)
     val name = "Tesco"
     val sector = "RETAIL"
+    val hasNationalJobs = false
     val pageNumber = 0
     val pageSize = 10
     val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
     val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
     whenever(employerRepository.findByNameContainingAndSectorAllIgnoringCase(name, sector, pageable)).thenReturn(pagedResult)
 
-    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable)
+    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable, hasNationalJobs)
 
     verify(employerRepository, times(1)).findByNameContainingAndSectorAllIgnoringCase(name, sector, pageable)
+    assertThat(result.content).isEqualTo(pagedResult.content)
+  }
+
+  @Test
+  fun `return a paginated list of employers filtered by national jobs`() {
+    val employers = listOf(tescoEmployer)
+    val name = null
+    val sector = null
+    val hasNationalJobs = true
+    val pageNumber = 0
+    val pageSize = 10
+    val pageable = Pageable.ofSize(pageSize).withPage(pageNumber)
+    val pagedResult: Page<Employer> = PageImpl(employers, pageable, employers.size.toLong())
+    whenever(employerRepository.findEmployersWithLiveNationalJobs(fixedTime.toLocalDate(), pageable)).thenReturn(pagedResult)
+
+    val result = employerRetriever.retrieveAllEmployers(name, sector, pageable, hasNationalJobs)
+
+    verify(employerRepository, times(1)).findEmployersWithLiveNationalJobs(fixedTime.toLocalDate(), pageable)
     assertThat(result.content).isEqualTo(pagedResult.content)
   }
 }
