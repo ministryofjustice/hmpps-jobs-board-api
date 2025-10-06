@@ -29,7 +29,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
       CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT),
-      j.isNational
+      j.isNational,
+      j.numberOfVacancies
     )
     FROM Job j
     LEFT JOIN ExpressionOfInterest eoi ON eoi.job.id.id = j.id.id AND eoi.id.prisonNumber = :prisonNumber
@@ -211,7 +212,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
       $CALC_DISTANCE_EXPRESSION,
-      j.isNational
+      j.isNational,
+      j.numberOfVacancies
     )
     FROM Job j
     JOIN j.expressionsOfInterest eoi ON eoi.id.prisonNumber = :prisonNumber
@@ -242,7 +244,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
       $CALC_DISTANCE_EXPRESSION,
-      j.isNational
+      j.isNational,
+      j.numberOfVacancies
     )
     FROM Job j
     JOIN j.employer e

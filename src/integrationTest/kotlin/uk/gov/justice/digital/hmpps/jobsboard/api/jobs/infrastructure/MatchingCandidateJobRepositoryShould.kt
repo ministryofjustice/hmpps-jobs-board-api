@@ -607,5 +607,6 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     hasExpressedInterest = hasExpressedInterest,
     createdAt = createdAt,
     distance = distance,
+    numberOfVacancies = numberOfVacancies,
   )
 }
