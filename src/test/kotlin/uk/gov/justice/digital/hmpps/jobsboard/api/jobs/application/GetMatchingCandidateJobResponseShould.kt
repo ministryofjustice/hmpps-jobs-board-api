@@ -16,6 +16,7 @@ class GetMatchingCandidateJobResponseShould : TestBase() {
       closingDate = job.closingDate,
       startDate = job.startDate,
       postcode = job.postcode,
+      isNational = job.isNational,
       distance = null,
       sector = job.sector,
       salaryFrom = job.salaryFrom,

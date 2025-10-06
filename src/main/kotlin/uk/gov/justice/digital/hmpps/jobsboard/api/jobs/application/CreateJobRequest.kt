@@ -13,7 +13,8 @@ data class CreateJobRequest internal constructor(
   val sourcePrimary: String,
   val sourceSecondary: String? = null,
   val charityName: String? = null,
-  val postCode: String,
+  val postCode: String? = null,
+  val isNational: Boolean = false,
   val salaryFrom: Double,
   val salaryTo: Double? = null,
   val salaryPeriod: String,
@@ -37,6 +38,11 @@ data class CreateJobRequest internal constructor(
   val supportingDocumentationRequired: List<String>? = null,
   val supportingDocumentationDetails: String? = null,
 ) {
+  init {
+    require(isNational || postCode != null) {
+      "Postcode must be provided if job is not national"
+    }
+  }
   companion object {
     fun from(
       id: String,
@@ -48,7 +54,8 @@ data class CreateJobRequest internal constructor(
       sourcePrimary: String,
       sourceSecondary: String? = null,
       charityName: String? = null,
-      postCode: String,
+      postCode: String? = null,
+      isNational: Boolean = false,
       salaryFrom: Double,
       salaryTo: Double? = null,
       salaryPeriod: String,
@@ -81,6 +88,7 @@ data class CreateJobRequest internal constructor(
       sourceSecondary,
       charityName,
       postCode,
+      isNational,
       salaryFrom,
       salaryTo,
       salaryPeriod,

@@ -42,7 +42,7 @@ class PostcodeLocationServiceShould {
     fun `save a postcode with coordinates`() {
       whenever(uuidGenerator.generate())
         .thenReturn(postcodeId)
-      whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
+      whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode!!))
         .thenReturn(expectedLocation)
 
       postcodeLocationService.save(amazonForkliftOperator.postcode)
@@ -60,7 +60,7 @@ class PostcodeLocationServiceShould {
     inner class AndStoredCoordinatesAreNotNull {
       @Test
       fun `not save a postcode with coordinates`() {
-        whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode))
+        whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
           .thenReturn(expectedPostcode)
 
         postcodeLocationService.save(amazonForkliftOperator.postcode)
@@ -75,7 +75,7 @@ class PostcodeLocationServiceShould {
     inner class AndStoredCoordinatesAreNull {
       @Test
       fun `Update postcode with fresh coordinates`() {
-        whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode))
+        whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
           .thenReturn(expectedPostcodeWithNullCoordinates)
         whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
           .thenReturn(expectedLocation)
@@ -90,20 +90,20 @@ class PostcodeLocationServiceShould {
 
   private val expectedPostcode = Postcode(
     id = EntityId(postcodeId),
-    code = amazonForkliftOperator.postcode,
+    code = amazonForkliftOperator.postcode!!,
     xCoordinate = 1.23,
     yCoordinate = 4.56,
   )
 
   private val expectedPostcodeWithNullCoordinates = Postcode(
     id = EntityId(postcodeId),
-    code = amazonForkliftOperator.postcode,
+    code = amazonForkliftOperator.postcode!!,
     xCoordinate = null,
     yCoordinate = null,
   )
 
   private val expectedLocation = OsPlacesApiDPA(
-    postcode = amazonForkliftOperator.postcode,
+    postcode = amazonForkliftOperator.postcode!!,
     xCoordinate = expectedPostcode.xCoordinate,
     yCoordinate = expectedPostcode.yCoordinate,
   )

@@ -42,8 +42,8 @@ data class Job(
   @Column(name = "charity_name", nullable = true)
   val charityName: String? = null,
 
-  @Column(name = "postcode", nullable = false)
-  val postcode: String,
+  @Column(name = "postcode", nullable = true)
+  val postcode: String? = null,
 
   @Column(name = "salary_from", nullable = false)
   val salaryFrom: Double,
@@ -108,6 +108,9 @@ data class Job(
   @Column(name = "supporting_documentation_details", nullable = true)
   val supportingDocumentationDetails: String? = null,
 
+  @Column(name = "is_national", nullable = false)
+  val isNational: Boolean = false,
+
   @JoinColumn(name = "employer_id", referencedColumnName = "id")
   @ManyToOne(fetch = FetchType.LAZY)
   val employer: Employer,
@@ -122,6 +125,7 @@ data class Job(
 
   @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
   val applications: List<Application> = mutableListOf(),
+
 ) : Auditable() {
   override fun toString(): String = """
     Job(
@@ -155,6 +159,7 @@ data class Job(
         howToApply=$howToApply,
         supportingDocumentationRequired=$supportingDocumentationRequired,
         supportingDocumentationDetails=$supportingDocumentationDetails,
+        isNational=$isNational,
         employer=$employer,
         expressionsOfInterest=$expressionsOfInterest,
         archived=$archived,
@@ -165,4 +170,9 @@ data class Job(
         lastModifiedAt=$lastModifiedAt,
     )
   """.trimIndent()
+  init {
+    require(isNational || postcode != null) {
+      "Postcode must be provided if job is not national"
+    }
+  }
 }

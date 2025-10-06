@@ -8,9 +8,10 @@ data class GetMatchingCandidateJobsResponse(
   val jobTitle: String,
   val employerName: String,
   val sector: String,
-  val postcode: String,
+  val postcode: String? = null,
   val closingDate: LocalDate? = null,
   val hasExpressedInterest: Boolean = false,
   val createdAt: Instant? = null,
   val distance: Float?,
+  val isNational: Boolean = false,
 )
