@@ -42,6 +42,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     AND a.id IS NULL
     AND (CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT) <= :searchRadius
     OR pos1.code IS NULL OR pos2.code IS NULL OR pos2.xCoordinate IS NULL OR pos2.yCoordinate IS NULL OR :searchRadius IS NULL)
+    AND (j.isNational = :isNationalJob OR :isNationalJob IS NULL)
+    AND (e.id.id = :employerId OR :employerId IS NULL)
   """,
   )
   fun findAll(
@@ -50,6 +52,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("releaseArea") releaseArea: String? = null,
     @Param("searchRadius") searchRadius: Int? = null,
     @Param("currentDate") currentDate: LocalDate,
+    @Param("isNationalJob") isNationalJob: Boolean? = null,
+    @Param("employerId") employerId: String? = null,
     pageable: Pageable,
   ): Page<GetMatchingCandidateJobsResponse>
 

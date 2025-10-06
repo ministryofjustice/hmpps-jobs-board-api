@@ -5,7 +5,9 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcNationalConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonNationalForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingListItemResponseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
@@ -38,7 +40,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
   @DisplayName("Given Job Board has jobs")
   inner class GivenJobsBoardHasJobs {
     @BeforeEach
-    fun beforeEach() = givenThreeJobsAreCreated()
+    fun beforeEach() = givenRegionalAndNationalJobsAreCreated()
 
     @Test
     fun `return Jobs list without calculating distance`() {
@@ -56,6 +58,56 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             .buildCandidateMatchingListItemResponseBody(),
         ),
       )
+    }
+
+    @Test
+    fun `return National Jobs list`() {
+      requestParams.append("&isNationalJob=true")
+      assertGetMatchingCandidateJobsIsOK(
+        parameters = requestParams.toString(),
+        expectedResponse = expectedResponseListOf(
+          builder().from(abcNationalConstructionApprentice)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(amazonNationalForkliftOperator)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+        ),
+      )
+    }
+
+    @Nested
+    @DisplayName("And an employer id has been provided")
+    inner class AndAndEmployerIdHasBeenProvided {
+      @BeforeEach
+      fun setUp() {
+        requestParams.append("&employerId=${amazonNationalForkliftOperator.employer.id.id}")
+      }
+
+      @Test
+      fun `return National Jobs list`() {
+        requestParams.append("&isNationalJob=true")
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = requestParams.toString(),
+          expectedResponse = expectedResponseListOf(
+            builder().from(amazonNationalForkliftOperator)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+
+      @Test
+      fun `return Jobs list`() {
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = requestParams.toString(),
+          expectedResponse = expectedResponseListOf(
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
     }
 
     @Nested
@@ -105,6 +157,22 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
                 .withDistanceInMiles(null)
                 .buildCandidateMatchingListItemResponseBody(),
               builder().from(tescoWarehouseHandler)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+            ),
+          )
+        }
+
+        @Test
+        fun `return National Jobs list`() {
+          requestParams.append("&isNationalJob=true")
+          assertGetMatchingCandidateJobsIsOK(
+            parameters = requestParams.toString(),
+            expectedResponse = expectedResponseListOf(
+              builder().from(abcNationalConstructionApprentice)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(amazonNationalForkliftOperator)
                 .withDistanceInMiles(null)
                 .buildCandidateMatchingListItemResponseBody(),
             ),
@@ -220,6 +288,22 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
               ),
             )
           }
+
+          @Test
+          fun `return a custom paginated National Jobs list`() {
+            requestParams.append("&isNationalJob=true")
+            assertGetMatchingCandidateJobsIsOK(
+              parameters = requestParams.toString(),
+              expectedResponse = expectedResponseListOf(
+                size = 1,
+                page = 1,
+                totalElements = 2,
+                builder().from(amazonNationalForkliftOperator)
+                  .withDistanceInMiles(null)
+                  .buildCandidateMatchingListItemResponseBody(),
+              ),
+            )
+          }
         }
 
         @Nested
@@ -249,6 +333,19 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
                 tescoWarehouseHandler.candidateMatchingListItemResponseBody,
                 builder().from(amazonForkliftOperator)
                   .withDistanceInMiles(20.0f)
+                  .buildCandidateMatchingListItemResponseBody(),
+              ),
+            )
+          }
+
+          @Test
+          fun `return National Jobs filtered by various job sectors`() {
+            requestParams.append("&isNationalJob=true&sectors=retail,warehousing")
+            assertGetMatchingCandidateJobsIsOK(
+              parameters = requestParams.toString(),
+              expectedResponse = expectedResponseListOf(
+                builder().from(amazonNationalForkliftOperator)
+                  .withDistanceInMiles(null)
                   .buildCandidateMatchingListItemResponseBody(),
               ),
             )
@@ -333,6 +430,22 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             assertGetMatchingCandidateJobsIsOKAndSortedByDistance(
               parameters = requestParams.toString(),
               expectedSortingOrder = order,
+            )
+          }
+
+          @Test
+          fun `return National Jobs sorted by job title, in descending order`() {
+            requestParams.append("&isNationalJob=true&sortBy=jobTitle&sortOrder=desc")
+            assertGetMatchingCandidateJobsIsOK(
+              parameters = requestParams.toString(),
+              expectedResponse = expectedResponseListOf(
+                builder().from(amazonNationalForkliftOperator)
+                  .withDistanceInMiles(null)
+                  .buildCandidateMatchingListItemResponseBody(),
+                builder().from(abcNationalConstructionApprentice)
+                  .withDistanceInMiles(null)
+                  .buildCandidateMatchingListItemResponseBody(),
+              ),
             )
           }
         }

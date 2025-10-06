@@ -26,9 +26,11 @@ class MatchingCandidateJobRetriever(
     releaseArea: String?,
     searchRadius: Int?,
     pageable: Pageable,
+    isNationalJob: Boolean?,
+    employerId: String?,
   ): Page<GetMatchingCandidateJobsResponse> {
     releaseArea?.let { postcodeLocationService.save(it) }
-    return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, releaseArea, searchRadius, today, pageable)
+    return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, releaseArea, searchRadius, today, isNationalJob, employerId, pageable)
   }
 
   fun retrieveClosingJobs(prisonNumber: String, sectors: List<String>?, size: Int): List<GetJobsClosingSoonResponse> = PageRequest.of(0, size).let { limitedBySize ->
