@@ -87,7 +87,7 @@ class PrisonSubjectAccessRequestServiceTest {
 
     val response = prisonSubjectAccessRequestService.getPrisonContentFor(prn = prisonNumber, fromDate = null, toDate = null)
 
-    val expected = HmppsSubjectAccessRequestContent(content=SARContentDTO(applications = applications, expressionsOfInterest = expressions, archivedJobs = archivedJobs))
+    val expected = HmppsSubjectAccessRequestContent(content = SARContentDTO(applications = applications, expressionsOfInterest = expressions, archivedJobs = archivedJobs))
 
     assertEquals(expected, response)
 
@@ -122,7 +122,7 @@ class PrisonSubjectAccessRequestServiceTest {
 
     val response = prisonSubjectAccessRequestService.getPrisonContentFor(prn = prisonNumber, fromDate = null, toDate = null)
 
-    val expected = HmppsSubjectAccessRequestContent(content=SARContentDTO(applications = applications, expressionsOfInterest = emptyList(), archivedJobs = emptyList()))
+    val expected = HmppsSubjectAccessRequestContent(content = SARContentDTO(applications = applications, expressionsOfInterest = emptyList(), archivedJobs = emptyList()))
 
     assertEquals(expected, response)
 
