@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jobsboard.api.controller.sar
+package uk.gov.justice.digital.hmpps.jobsboard.api.controllers.sar
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
