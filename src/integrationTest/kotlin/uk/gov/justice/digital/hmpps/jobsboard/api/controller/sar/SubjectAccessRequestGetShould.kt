@@ -109,6 +109,25 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
           }
         }
       }
+
+      @Test
+      fun `should return 209 if given a crn`() {
+        val headers = setAuthorisation(roles = listOf("ROLE_SAR_DATA_ACCESS"))
+
+        mockMvc.get("/subject-access-request?crn=A111111") {
+          contentType = APPLICATION_JSON
+          accept = APPLICATION_JSON
+          headers {
+            headers.forEach { (name, values) ->
+              values.forEach { value ->
+                header(name, value)
+              }
+            }
+          }
+        }.andExpect {
+          status { isEqualTo(209) }
+        }
+      }
     }
   }
 }
