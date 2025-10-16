@@ -14,4 +14,5 @@ data class GetMatchingCandidateJobsResponse(
   val createdAt: Instant? = null,
   val distance: Float?,
   val isNational: Boolean = false,
+  val numberOfVacancies: Int,
 )

@@ -150,6 +150,10 @@ class JobsGet(
     page: Int,
     @RequestParam(defaultValue = "10")
     size: Int,
+    @RequestParam(defaultValue = "false")
+    isNationalJob: Boolean,
+    @RequestParam(required = false)
+    employerId: String?,
   ): ResponseEntity<Page<GetMatchingCandidateJobsResponse>> {
     val direction = if (sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
     val sortedBy = when (sortBy) {
@@ -159,7 +163,7 @@ class JobsGet(
     }
     val lowerCaseSectors = sectors?.map { it.lowercase() }
     val pageable: Pageable = PageRequest.of(page, size, sortedBy)
-    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(prisonNumber, lowerCaseSectors, releaseArea, searchRadius, pageable)
+    val jobList = matchingCandidateJobRetriever.retrieveAllJobs(prisonNumber, lowerCaseSectors, releaseArea, searchRadius, pageable, isNationalJob, employerId)
     return ResponseEntity.ok(jobList)
   }
 

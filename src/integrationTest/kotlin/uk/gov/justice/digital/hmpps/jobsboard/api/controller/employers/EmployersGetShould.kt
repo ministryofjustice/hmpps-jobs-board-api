@@ -6,8 +6,10 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerM
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.sainsburys
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tescoLogistics
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonNationalForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobsTestCase
 
-class EmployersGetShould : EmployerTestCase() {
+class EmployersGetShould : JobsTestCase() {
   @Test
   fun `retrieve an existing Employer`() {
     val employerId = assertAddEmployerIsCreated(employer = tesco)
@@ -95,12 +97,34 @@ class EmployersGetShould : EmployerTestCase() {
   }
 
   @Test
+  fun `retrieve a default paginated Employers list filtered by has national jobs`() {
+    givenEmployersAreCreated(tesco, sainsburys)
+    givenJobsAreCreated(amazonNationalForkliftOperator)
+
+    assertGetEmployerIsOK(
+      parameters = "hasNationalJobs=true",
+      expectedResponse = expectedResponseListOf(amazon.responseBody),
+    )
+  }
+
+  @Test
   fun `retrieve a custom paginated Employers list filtered by name AND sector`() {
     givenEmployersAreCreated(tesco, tescoLogistics, sainsburys, amazon)
 
     assertGetEmployerIsOK(
       parameters = "name=Sainsbury's&sector=RETAIL&page=0&size=1",
       expectedResponse = expectedResponseListOf(size = 1, page = 0, sainsburys.responseBody),
+    )
+  }
+
+  @Test
+  fun `retrieve a custom paginated Employers list filtered by has national jobs`() {
+    givenEmployersAreCreated(tesco, sainsburys)
+    givenJobsAreCreated(amazonNationalForkliftOperator)
+
+    assertGetEmployerIsOK(
+      parameters = "hasNationalJobs=true&page=0&size=1",
+      expectedResponse = expectedResponseListOf(size = 1, page = 0, amazon.responseBody),
     )
   }
 

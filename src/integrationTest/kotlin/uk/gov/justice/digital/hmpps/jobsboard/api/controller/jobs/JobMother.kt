@@ -156,7 +156,7 @@ object JobMother {
       - war crime
     """.trimIndent(),
     isRollingOpportunity = false,
-    closingDate = LocalDate.parse("2025-02-01"),
+    closingDate = null,
     isOnlyForPrisonLeavers = true,
     startDate = LocalDate.parse("2025-05-31"),
     howToApply = "",
@@ -175,6 +175,41 @@ object JobMother {
     sourceSecondary = null,
     charityName = null,
     postcode = "GU3 3DU",
+    salaryFrom = 99.0,
+    salaryTo = null,
+    salaryPeriod = "PER_DAY",
+    additionalSalaryInformation = null,
+    isPayingAtLeastNationalMinimumWage = true,
+    workPattern = "FLEXIBLE_SHIFTS",
+    contractType = "TEMPORARY",
+    hoursPerWeek = "FULL_TIME_40_PLUS",
+    baseLocation = null,
+    essentialCriteria = "Essential job criteria",
+    desirableCriteria = null,
+    description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
+    offenceExclusions = "CASE_BY_CASE,OTHER",
+    offenceExclusionsDetails = null,
+    howToApply = "How to applyHow to apply",
+    closingDate = null,
+    startDate = null,
+    isRollingOpportunity = false,
+    isOnlyForPrisonLeavers = true,
+    supportingDocumentationRequired = null,
+    supportingDocumentationDetails = null,
+    employer = abcConstruction,
+  )
+
+  val abcNationalConstructionApprentice = Job(
+    id = EntityId("6fdf2bf4-cfe6-419c-bab2-b3673adbb394"),
+    title = "National Apprentice plasterer",
+    sector = "CONSTRUCTION",
+    industrySector = "CONSTRUCTION",
+    numberOfVacancies = 3,
+    sourcePrimary = "DWP",
+    sourceSecondary = null,
+    charityName = null,
+    postcode = null,
+    isNational = true,
     salaryFrom = 99.0,
     salaryTo = null,
     salaryPeriod = "PER_DAY",
@@ -242,7 +277,7 @@ object JobMother {
           "sourcePrimary": "${job.sourcePrimary}",
           "sourceSecondary": ${job.sourceSecondary?.asJson()},
           "charityName": ${job.charityName?.asJson()},
-          "postCode": "${job.postcode}",
+          "postCode": ${job.postcode?.asJson()},
           "salaryFrom": ${job.salaryFrom},
           "salaryTo": ${job.salaryTo},
           "salaryPeriod": "${job.salaryPeriod}",
@@ -263,7 +298,8 @@ object JobMother {
           "startDate": ${job.startDate?.toString()?.asJson()},
           "howToApply": "${job.howToApply}",
           "supportingDocumentationRequired": ${job.supportingDocumentationRequired?.asStringList()},
-          "supportingDocumentationDetails": ${job.supportingDocumentationDetails?.asJson()}$createdAt
+          "supportingDocumentationDetails": ${job.supportingDocumentationDetails?.asJson()}$createdAt,
+          "isNational": ${job.isNational}
         }
     """.trimIndent()
   }
@@ -278,7 +314,7 @@ object JobMother {
           "jobTitle": "${job.title}",
           "employerName": "${job.employer.name}",
           "sector": "${job.sector}",
-          "postcode": "${job.postcode}",
+          "postcode": ${job.postcode?.asJson()},
           "distance": $distance,
           "closingDate": ${job.closingDate?.toString()?.asJson()},
           "hasExpressedInterest": ${job.expressionsOfInterest.containsKey(prisonNumber)},
@@ -308,6 +344,7 @@ class JobBuilder {
   var sourceSecondary: String? = null
   var charityName: String? = null
   var postcode: String? = "LS11 5AD"
+  var isNational: Boolean = false
   var salaryFrom: Double = 96.32
   var salaryTo: Double? = null
   var salaryPeriod: String = "PER_DAY"
@@ -375,6 +412,7 @@ class JobBuilder {
     this.sourceSecondary = job.sourceSecondary
     this.charityName = job.charityName
     this.postcode = job.postcode
+    this.isNational = job.isNational
     this.salaryFrom = job.salaryFrom
     this.salaryTo = job.salaryTo
     this.salaryPeriod = job.salaryPeriod
@@ -422,6 +460,7 @@ class JobBuilder {
     sourceSecondary = this.sourceSecondary,
     charityName = this.charityName,
     postcode = this.postcode,
+    isNational = this.isNational,
     salaryFrom = this.salaryFrom,
     salaryTo = this.salaryTo,
     salaryPeriod = this.salaryPeriod,
@@ -453,7 +492,7 @@ class JobBuilder {
         "jobTitle": "${this.title}",
         "employerName": "${this.employer.name}",
         "sector": "${this.sector}",
-        "postcode": "${this.postcode}",
+        "postcode": ${this.postcode?.asJson()},
         "distance": ${this.distance},
         "closingDate": ${this.closingDate?.toString()?.asJson()},
         "hasExpressedInterest": ${this.expressionsOfInterest.containsKey(VALID_PRISON_NUMBER)},
@@ -489,7 +528,7 @@ class JobBuilder {
         "id": "${this.id}",
         "employerName": "${this.employer.name}",
         "jobTitle": "${this.title}",
-        "postcode": "${this.postcode}",
+        "postcode": ${this.postcode?.asJson()},
         "sector": "${this.sector}",
         "salaryFrom": ${this.salaryFrom},
         "salaryPeriod": "${this.salaryPeriod}",

@@ -106,10 +106,12 @@ class EmployersGet(
     page: Int,
     @RequestParam(defaultValue = "10")
     size: Int,
+    @RequestParam(defaultValue = "false")
+    hasNationalJobs: Boolean,
   ): ResponseEntity<Page<GetEmployerResponse>>? {
     val direction = if (sortOrder.equals("desc", ignoreCase = true)) DESC else ASC
     val pageable: Pageable = PageRequest.of(page, size, Sort.by(direction, sortBy))
-    val employerList = employerRetriever.retrieveAllEmployers(name, sector, pageable)
+    val employerList = employerRetriever.retrieveAllEmployers(name, sector, pageable, hasNationalJobs)
     val response = employerList.map { GetEmployerResponse.from(it) }
     return ResponseEntity.ok(response)
   }

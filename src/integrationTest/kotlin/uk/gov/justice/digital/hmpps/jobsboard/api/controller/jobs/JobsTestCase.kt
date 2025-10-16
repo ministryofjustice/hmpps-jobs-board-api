@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerTestCase
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcNationalConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonNationalForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
@@ -154,13 +156,20 @@ class JobsTestCase : EmployerTestCase() {
     )
   }
 
+  protected fun givenRegionalAndNationalJobsAreCreated() {
+    givenJobsAreCreated(
+      tescoWarehouseHandler,
+      amazonForkliftOperator,
+      abcConstructionApprentice,
+      amazonNationalForkliftOperator,
+      abcNationalConstructionApprentice,
+    )
+  }
+
   protected fun givenJobsAreCreated(vararg jobs: Job) {
-    jobs.forEach { job ->
-      run {
-        assertAddEmployerIsCreated(job.employer)
-        assertAddJobIsCreated(job)
-      }
-    }
+    val employers = jobs.map { it.employer }.distinctBy { it.id }
+    employers.forEach { employer -> assertAddEmployerIsCreated(employer) }
+    jobs.forEach { job -> assertAddJobIsCreated(job) }
   }
 
   protected fun String.asJson(): String {
