@@ -21,7 +21,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.CreateArchive
 class ArchivedPut(
   private val archivedCreator: ArchivedCreator,
 ) {
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__ARCHIVED__RW')")
   @PutMapping("/{prisonNumber}")
   fun create(
     @PathVariable

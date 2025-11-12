@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.application.Employer
 class EmployersPut(
   private val employerCreator: EmployerCreator,
 ) {
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__EMPLOYERS__RW')")
   @PutMapping("/{id}")
   @Operation(
     summary = "Create or update an Employer ",

@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 class ApplicationsPut(
   private val applicationCreator: ApplicationCreator,
 ) {
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__APPLICATIONS__RW')")
   @PutMapping("/{id}")
   @Operation(
     summary = "Create or Update an Application to a job for the prisoner",
