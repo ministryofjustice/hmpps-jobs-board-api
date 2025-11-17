@@ -1,14 +1,14 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.1.3"
-  kotlin("plugin.spring") version "2.2.20"
-  kotlin("plugin.jpa") version "2.2.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.1.4"
+  kotlin("plugin.spring") version "2.2.21"
+  kotlin("plugin.jpa") version "2.2.21"
   id("jvm-test-suite")
   id("jacoco")
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.7.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.11") {
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.1") {
     implementation("org.apache.commons:commons-lang3:3.18.0")
   }
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -21,7 +21,7 @@ dependencies {
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.7.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.8.1")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("io.mockk:mockk:1.14.5")
