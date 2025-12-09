@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.asda
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.jobCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
@@ -52,6 +53,40 @@ object JobMother {
     supportingDocumentationRequired = "DISCLOSURE_LETTER,OTHER",
     supportingDocumentationDetails = null,
     employer = tesco,
+  )
+
+  val asdaWarehouseHandler = Job(
+    id = EntityId("04295747-e60d-4e51-9716-e721a63bdd09"),
+    title = "Warehouse handler",
+    sector = "WAREHOUSING",
+    industrySector = "LOGISTICS",
+    numberOfVacancies = 1,
+    sourcePrimary = "DWP",
+    sourceSecondary = null,
+    charityName = null,
+    postcode = "NE207LR",
+    salaryFrom = 1_234_567.12,
+    salaryTo = 7_654_321.21,
+    salaryPeriod = "PER_DAY",
+    additionalSalaryInformation = "Immediate starts available\nFull training provided",
+    isPayingAtLeastNationalMinimumWage = true,
+    workPattern = "FLEXI_TIME",
+    contractType = "PERMANENT",
+    hoursPerWeek = "FULL_TIME_40_PLUS",
+    baseLocation = "HYBRID",
+    essentialCriteria = "Essential job criteria",
+    desirableCriteria = null,
+    description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
+    offenceExclusions = "CASE_BY_CASE,OTHER",
+    offenceExclusionsDetails = null,
+    howToApply = "How to applyHow to apply",
+    closingDate = LocalDate.parse("2025-07-01"),
+    startDate = LocalDate.parse("2025-12-31"),
+    isRollingOpportunity = false,
+    isOnlyForPrisonLeavers = false,
+    supportingDocumentationRequired = "DISCLOSURE_LETTER,OTHER",
+    supportingDocumentationDetails = null,
+    employer = asda,
   )
 
   val amazonForkliftOperator = Job(

@@ -53,6 +53,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.EXPRESSIONS_OF
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.asdaWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.Builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
@@ -198,6 +199,7 @@ abstract class ApplicationTestCase {
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(amazonForkliftOperator.postcode!!).build())
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(tescoWarehouseHandler.postcode!!).build())
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(RELEASE_AREA_POSTCODE).build())
+    osPlacesMockServer.stubGetAddressesForPostcodeNotFound(Builder().from(asdaWarehouseHandler.postcode!!).build())
     arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
       osPlacesMockServer.stubGetAddressesForPostcode(it)
     }

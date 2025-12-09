@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcNationalConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonNationalForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.asdaWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingListItemResponseBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
@@ -54,6 +55,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             .withDistanceInMiles(null)
             .buildCandidateMatchingListItemResponseBody(),
           builder().from(tescoWarehouseHandler)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(asdaWarehouseHandler)
             .withDistanceInMiles(null)
             .buildCandidateMatchingListItemResponseBody(),
         ),
@@ -132,6 +136,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             builder().from(tescoWarehouseHandler)
               .withDistanceInMiles(null)
               .buildCandidateMatchingListItemResponseBody(),
+            builder().from(asdaWarehouseHandler)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
           ),
         )
       }
@@ -157,6 +164,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
                 .withDistanceInMiles(null)
                 .buildCandidateMatchingListItemResponseBody(),
               builder().from(tescoWarehouseHandler)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(asdaWarehouseHandler)
                 .withDistanceInMiles(null)
                 .buildCandidateMatchingListItemResponseBody(),
             ),
@@ -200,6 +210,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             builder().from(amazonForkliftOperator)
               .withDistanceInMiles(20.0f)
               .buildCandidateMatchingListItemResponseBody(),
+            builder().from(asdaWarehouseHandler)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
             tescoWarehouseHandler.candidateMatchingListItemResponseBody,
           ),
         )
@@ -222,6 +235,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
               builder().from(amazonForkliftOperator)
                 .withDistanceInMiles(20.0f)
                 .buildCandidateMatchingListItemResponseBody(),
+              builder().from(asdaWarehouseHandler)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
               tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             ),
           )
@@ -235,6 +251,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             assertAddArchived(amazonForkliftOperator.id.id, prisonNumber)
             assertAddArchived(amazonForkliftOperator.id.id, anotherPrisonNumber)
             assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
+            assertAddArchived(asdaWarehouseHandler.id.id, prisonNumber)
 
             assertGetMatchingCandidateJobsIsOK(
               parameters = requestParams.toString(),
@@ -253,12 +270,16 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
             assertAddExpressionOfInterest(abcConstructionApprentice.id.id, anotherPrisonNumber)
             assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
+            assertAddExpressionOfInterest(asdaWarehouseHandler.id.id, anotherPrisonNumber)
 
             assertGetMatchingCandidateJobsIsOK(
               parameters = requestParams.toString(),
               expectedResponse = expectedResponseListOf(
                 builder().from(amazonForkliftOperator)
                   .withDistanceInMiles(20.0f)
+                  .buildCandidateMatchingListItemResponseBody(),
+                builder().from(asdaWarehouseHandler)
+                  .withDistanceInMiles(null)
                   .buildCandidateMatchingListItemResponseBody(),
                 tescoWarehouseHandler.candidateMatchingListItemResponseBody,
               ),
@@ -281,7 +302,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
               expectedResponse = expectedResponseListOf(
                 size = 1,
                 page = 1,
-                totalElements = 2,
+                totalElements = 3,
                 builder().from(tescoWarehouseHandler)
                   .withDistanceInMiles(1.0f)
                   .buildCandidateMatchingListItemResponseBody(),
@@ -334,6 +355,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
                 builder().from(amazonForkliftOperator)
                   .withDistanceInMiles(20.0f)
                   .buildCandidateMatchingListItemResponseBody(),
+                builder().from(asdaWarehouseHandler)
+                  .withDistanceInMiles(null)
+                  .buildCandidateMatchingListItemResponseBody(),
               ),
             )
           }
@@ -375,6 +399,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
               parameters = requestParams.toString(),
               expectedJobTitlesSorted = listOf(
+                "Warehouse handler",
                 "Warehouse handler",
                 "Forklift operator",
               ),

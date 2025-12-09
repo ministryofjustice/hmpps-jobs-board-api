@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcNationalConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonNationalForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.asdaWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
@@ -163,6 +164,7 @@ class JobsTestCase : EmployerTestCase() {
       abcConstructionApprentice,
       amazonNationalForkliftOperator,
       abcNationalConstructionApprentice,
+      asdaWarehouseHandler,
     )
   }
 

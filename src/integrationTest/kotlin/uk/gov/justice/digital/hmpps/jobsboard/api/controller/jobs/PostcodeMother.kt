@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.asdaWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
@@ -23,9 +24,10 @@ object PostcodeMother {
     postcode("NW1 6XE", 527870.40, 182081.17),
     postcode("NG1 1AA", 457804.00, 340087.00),
     postcode("E1 6AN", 533397.00, 181741.00),
+    postcode(asdaWarehouseHandler.postcode!!, null, null),
   ).associateBy({ it.code }, { it })
 
-  private fun postcode(postcode: String, xCoordinate: Double, yCoordinate: Double) = Postcode(EntityId(), postcode, xCoordinate, yCoordinate)
+  private fun postcode(postcode: String, xCoordinate: Double?, yCoordinate: Double?) = Postcode(EntityId(), postcode, xCoordinate, yCoordinate)
 
   class Builder {
     var id: EntityId = EntityId(randomUUID().toString())
