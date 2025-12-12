@@ -181,7 +181,23 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
           WireMock.aResponse()
             .withStatus(404) // <-- Return 404
             .withHeader("Content-Type", "application/json")
-            .withBody("""{"error":"Postcode not found"}"""), // optional
+            .withBody(
+              """{
+                "header" : {
+                "uri" : "https://api.os.uk/search/places/v1/postcode?postcode="${postcode.code}",
+                "query" : "postcode=${postcode.code}",
+                "offset" : 0,
+                "totalresults" : 0,
+                "format" : "JSON",
+                "dataset" : "DPA",
+                "lr" : "EN,CY",
+                "maxresults" : 100,
+                "epoch" : "123",
+                "lastupdate" : "2025-12-11",
+                "output_srs" : "EPSG:27700"
+              }
+            }""",
+            ),
         ),
     )
   }
