@@ -179,7 +179,7 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
       get(urlEqualTo(uri))
         .willReturn(
           WireMock.aResponse()
-            .withStatus(404) // <-- Return 404
+            .withStatus(200) // <-- Return 200
             .withHeader("Content-Type", "application/json")
             .withBody(
               """{
