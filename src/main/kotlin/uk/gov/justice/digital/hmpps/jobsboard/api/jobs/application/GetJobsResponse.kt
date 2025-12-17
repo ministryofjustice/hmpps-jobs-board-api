@@ -9,6 +9,7 @@ data class GetJobsResponse(
   val jobTitle: String,
   val numberOfVacancies: Int,
   val sector: String,
+  val closingDate: String? = null,
   val createdAt: String,
   val createdBy: String,
 ) {
@@ -20,6 +21,7 @@ data class GetJobsResponse(
       jobTitle = job.title,
       numberOfVacancies = job.numberOfVacancies,
       sector = job.sector,
+      closingDate = job.closingDate?.toString(),
       createdAt = job.createdAt.toString(),
       createdBy = job.createdBy!!,
     )

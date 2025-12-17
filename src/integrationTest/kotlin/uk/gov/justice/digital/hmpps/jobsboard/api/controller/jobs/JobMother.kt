@@ -260,6 +260,7 @@ object JobMother {
           "jobTitle": "${job.title}",
           "numberOfVacancies": ${job.numberOfVacancies},
           "sector": "${job.sector}",
+          "closingDate": ${job.closingDate?.toString()?.asJson()},
           "createdAt": "$jobCreationTime",
           "createdBy": "$jobCreator"
         }
