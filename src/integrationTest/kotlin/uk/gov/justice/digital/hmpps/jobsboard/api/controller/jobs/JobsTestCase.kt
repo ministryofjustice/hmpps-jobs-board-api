@@ -14,6 +14,10 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcNationalConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonNationalForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.asdaWarehouseHandlerNonGeoCoded
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.dpdForkliftOperatorNonGeoCoded
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.dpdNationalForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.lidlWarehouseHandlerNonGeoCoded
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.requestBody
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
@@ -163,6 +167,18 @@ class JobsTestCase : EmployerTestCase() {
       abcConstructionApprentice,
       amazonNationalForkliftOperator,
       abcNationalConstructionApprentice,
+      asdaWarehouseHandlerNonGeoCoded,
+    )
+  }
+
+  protected fun givenRegionalAndNationalNonGeoCodedJobs() {
+    givenJobsAreCreated(
+      asdaWarehouseHandlerNonGeoCoded,
+      lidlWarehouseHandlerNonGeoCoded,
+      dpdNationalForkliftOperator,
+      abcNationalConstructionApprentice,
+      dpdForkliftOperatorNonGeoCoded,
+      amazonForkliftOperator,
     )
   }
 
