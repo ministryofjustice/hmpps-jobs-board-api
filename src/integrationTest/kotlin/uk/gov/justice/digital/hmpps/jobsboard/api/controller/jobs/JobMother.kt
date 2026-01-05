@@ -5,6 +5,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.abcConstruction
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.asda
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.dpd
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.lidl
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.tesco
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.jobCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
@@ -55,7 +57,7 @@ object JobMother {
     employer = tesco,
   )
 
-  val asdaWarehouseHandler = Job(
+  val asdaWarehouseHandlerNonGeoCoded = Job(
     id = EntityId("04295747-e60d-4e51-9716-e721a63bdd09"),
     title = "Warehouse handler",
     sector = "WAREHOUSING",
@@ -87,6 +89,40 @@ object JobMother {
     supportingDocumentationRequired = "DISCLOSURE_LETTER,OTHER",
     supportingDocumentationDetails = null,
     employer = asda,
+  )
+
+  val lidlWarehouseHandlerNonGeoCoded = Job(
+    id = EntityId("04295747-e60d-4e51-9716-b821a63bdd09"),
+    title = "Warehouse handler",
+    sector = "WAREHOUSING",
+    industrySector = "LOGISTICS",
+    numberOfVacancies = 1,
+    sourcePrimary = "DWP",
+    sourceSecondary = null,
+    charityName = null,
+    postcode = "NE307LR",
+    salaryFrom = 1_234_567.12,
+    salaryTo = 7_654_321.21,
+    salaryPeriod = "PER_DAY",
+    additionalSalaryInformation = "Immediate starts available\nFull training provided",
+    isPayingAtLeastNationalMinimumWage = true,
+    workPattern = "FLEXI_TIME",
+    contractType = "PERMANENT",
+    hoursPerWeek = "FULL_TIME_40_PLUS",
+    baseLocation = "HYBRID",
+    essentialCriteria = "Essential job criteria",
+    desirableCriteria = null,
+    description = "Job description\r\nDescribe the role and main tasks. Include any benefits and training opportunities.",
+    offenceExclusions = "CASE_BY_CASE,OTHER",
+    offenceExclusionsDetails = null,
+    howToApply = "How to applyHow to apply",
+    closingDate = LocalDate.parse("2025-07-01"),
+    startDate = LocalDate.parse("2025-12-31"),
+    isRollingOpportunity = false,
+    isOnlyForPrisonLeavers = false,
+    supportingDocumentationRequired = "DISCLOSURE_LETTER,OTHER",
+    supportingDocumentationDetails = null,
+    employer = lidl,
   )
 
   val amazonForkliftOperator = Job(
@@ -198,6 +234,117 @@ object JobMother {
     supportingDocumentationRequired = "CV,DISCLOSURE_LETTER",
     supportingDocumentationDetails = "",
     employer = amazon,
+  )
+
+  val dpdNationalForkliftOperator = Job(
+    id = EntityId("d3035924-f9fe-426f-b253-f7c8115167af"),
+    title = "National forklift operator",
+    sector = "RETAIL",
+    industrySector = "LOGISTICS",
+    numberOfVacancies = 2,
+    sourcePrimary = "PEL",
+    sourceSecondary = "",
+    charityName = "Switchback",
+    postcode = null,
+    isNational = true,
+    salaryFrom = 11.93,
+    salaryTo = 15.90,
+    salaryPeriod = "PER_HOUR",
+    additionalSalaryInformation = null,
+    isPayingAtLeastNationalMinimumWage = false,
+    workPattern = "FLEXIBLE_SHIFTS",
+    hoursPerWeek = "FULL_TIME",
+    contractType = "TEMPORARY",
+    baseLocation = "WORKPLACE",
+    essentialCriteria = "",
+    desirableCriteria = "",
+    description = """
+      What's on offer:
+
+      - 5 days over 7, 05:30 to 15:30
+      - Paid weekly
+      - Immediate starts available
+      - Full training provided
+      
+      Your duties will include:
+
+      - Manoeuvring forklifts safely in busy industrial environments
+      - Safely stacking and unstacking large quantities of goods onto shelves or pallets
+      - Moving goods from storage areas to loading areas for transport
+      - Unloading deliveries and safely relocating the goods to their designated storage areas
+      - Ensuring forklift driving areas are free from spills or obstructions
+      - Regularly checking forklift equipment for faults or damages
+      - Consolidating partial pallets for incoming goods
+    """.trimIndent(),
+    offenceExclusions = "NONE,DRIVING,OTHER",
+    offenceExclusionsDetails = """
+      More details of other offence exclusions:
+      - drunken at pub
+      - war crime
+    """.trimIndent(),
+    isRollingOpportunity = false,
+    closingDate = null,
+    isOnlyForPrisonLeavers = true,
+    startDate = LocalDate.parse("2025-05-31"),
+    howToApply = "",
+    supportingDocumentationRequired = "CV,DISCLOSURE_LETTER",
+    supportingDocumentationDetails = "",
+    employer = dpd,
+  )
+
+  val dpdForkliftOperatorNonGeoCoded = Job(
+    id = EntityId("d3035924-f9fe-963f-b253-f7c8115167af"),
+    title = "Local forklift operator",
+    sector = "RETAIL",
+    industrySector = "LOGISTICS",
+    numberOfVacancies = 2,
+    sourcePrimary = "PEL",
+    sourceSecondary = "",
+    charityName = "Switchback",
+    postcode = "NE407LR",
+    salaryFrom = 11.93,
+    salaryTo = 15.90,
+    salaryPeriod = "PER_HOUR",
+    additionalSalaryInformation = null,
+    isPayingAtLeastNationalMinimumWage = false,
+    workPattern = "FLEXIBLE_SHIFTS",
+    hoursPerWeek = "FULL_TIME",
+    contractType = "TEMPORARY",
+    baseLocation = "WORKPLACE",
+    essentialCriteria = "",
+    desirableCriteria = "",
+    description = """
+      What's on offer:
+
+      - 5 days over 7, 05:30 to 15:30
+      - Paid weekly
+      - Immediate starts available
+      - Full training provided
+      
+      Your duties will include:
+
+      - Manoeuvring forklifts safely in busy industrial environments
+      - Safely stacking and unstacking large quantities of goods onto shelves or pallets
+      - Moving goods from storage areas to loading areas for transport
+      - Unloading deliveries and safely relocating the goods to their designated storage areas
+      - Ensuring forklift driving areas are free from spills or obstructions
+      - Regularly checking forklift equipment for faults or damages
+      - Consolidating partial pallets for incoming goods
+    """.trimIndent(),
+    offenceExclusions = "NONE,DRIVING,OTHER",
+    offenceExclusionsDetails = """
+      More details of other offence exclusions:
+      - drunken at pub
+      - war crime
+    """.trimIndent(),
+    isRollingOpportunity = false,
+    closingDate = null,
+    isOnlyForPrisonLeavers = true,
+    startDate = LocalDate.parse("2025-05-31"),
+    howToApply = "",
+    supportingDocumentationRequired = "CV,DISCLOSURE_LETTER",
+    supportingDocumentationDetails = "",
+    employer = dpd,
   )
 
   val abcConstructionApprentice = Job(

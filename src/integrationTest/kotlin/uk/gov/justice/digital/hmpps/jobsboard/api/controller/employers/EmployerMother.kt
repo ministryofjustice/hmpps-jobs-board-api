@@ -16,6 +16,14 @@ object EmployerMother {
     status = "SILVER",
   )
 
+  val lidl = Employer(
+    id = EntityId("89de6c84-3372-4546-bbc1-9d1dc9ceb301"),
+    name = "Lidl",
+    description = "Lidl Stiftung & Co. KG is a German multinational discount supermarket chain headquartered in Neckarsulm, Germany, founded by Josef Schwarz in 1930.",
+    sector = "RETAIL",
+    status = "SILVER",
+  )
+
   val tesco = Employer(
     id = EntityId("89de6c84-3372-4546-bbc1-9d1dc9ceb354"),
     name = "Tesco",
@@ -44,6 +52,14 @@ object EmployerMother {
     id = EntityId("bf392249-b360-4e3e-81a0-8497047987e8"),
     name = "Amazon",
     description = "Amazon.com, Inc., doing business as Amazon, is an American multinational technology company, engaged in e-commerce, cloud computing, online advertising, digital streaming, and artificial intelligence.",
+    sector = "LOGISTICS",
+    status = "KEY_PARTNER",
+  )
+
+  val dpd = Employer(
+    id = EntityId("bf392249-b361-4e3e-81a0-8497047987e8"),
+    name = "DPD",
+    description = "DPDgroup is an international parcel delivery and logistics company, providing express shipping and supply-chain solutions across Europe and worldwide.",
     sector = "LOGISTICS",
     status = "KEY_PARTNER",
   )
