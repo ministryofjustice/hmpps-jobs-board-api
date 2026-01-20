@@ -18,6 +18,9 @@ class MatchingCandidateJobRetriever(
   private val postcodeLocationService: PostcodeLocationService,
   private val timeProvider: TimeProvider,
 ) {
+  companion object {
+    const val UNRESTRICTED_SEARCH_RADIUS_VALUE_FROM_UI = 9999
+  }
   private val today: LocalDate get() = timeProvider.today()
 
   fun retrieveAllJobs(
@@ -36,6 +39,10 @@ class MatchingCandidateJobRetriever(
     if (!postcodeLocationService.isGeoCoded(releaseArea) || isNationalJob == true) {
       maybeRevisedSearchRadiusInput = null
       maybeRevisedReleaseAreaInput = null
+    }
+    // Handling of case where unrestricted search request from UI is passed as 9999
+    if (UNRESTRICTED_SEARCH_RADIUS_VALUE_FROM_UI == searchRadius) {
+      maybeRevisedSearchRadiusInput = null
     }
 
     return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, maybeRevisedReleaseAreaInput, maybeRevisedSearchRadiusInput, today, isNationalJob, employerId, pageable)

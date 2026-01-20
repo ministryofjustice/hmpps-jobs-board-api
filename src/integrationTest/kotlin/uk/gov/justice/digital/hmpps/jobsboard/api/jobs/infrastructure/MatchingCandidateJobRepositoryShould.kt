@@ -24,7 +24,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.CALC_DISTANCE_EXPR
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
 import java.time.LocalDate
 
 class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
@@ -36,9 +35,6 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
 
   @Autowired
   private lateinit var archivedRepository: ArchivedRepository
-
-  @Autowired
-  private lateinit var postcodesRepository: PostcodesRepository
 
   private val prisonNumber = "A1234BC"
   private val anotherPrisonNumber = "X9876YZ"

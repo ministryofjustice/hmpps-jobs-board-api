@@ -231,15 +231,12 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         }
 
         @Test
-        fun `return Jobs filtered by search radius for jobs with postcode is geo-coded`() {
+        fun `return Jobs filtered by search radius for jobs when postcode is geo-coded`() {
           assertGetMatchingCandidateJobsIsOK(
             parameters = requestParams.toString(),
             expectedResponse = expectedResponseListOf(
               builder().from(amazonForkliftOperator)
                 .withDistanceInMiles(20.0f)
-                .buildCandidateMatchingListItemResponseBody(),
-              builder().from(asdaWarehouseHandlerNonGeoCoded)
-                .withDistanceInMiles(null)
                 .buildCandidateMatchingListItemResponseBody(),
               tescoWarehouseHandler.candidateMatchingListItemResponseBody,
             ),
@@ -269,7 +266,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         @DisplayName("And candidates have expressed interest")
         inner class AndCandidatesExpressed {
           @Test
-          fun `return Jobs tagged with candidate's interest`() {
+          fun `return only geo-located Jobs tagged with candidate's interest`() {
             assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
             assertAddExpressionOfInterest(abcConstructionApprentice.id.id, anotherPrisonNumber)
             assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
@@ -280,9 +277,6 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
               expectedResponse = expectedResponseListOf(
                 builder().from(amazonForkliftOperator)
                   .withDistanceInMiles(20.0f)
-                  .buildCandidateMatchingListItemResponseBody(),
-                builder().from(asdaWarehouseHandlerNonGeoCoded)
-                  .withDistanceInMiles(null)
                   .buildCandidateMatchingListItemResponseBody(),
                 tescoWarehouseHandler.candidateMatchingListItemResponseBody,
               ),
@@ -305,7 +299,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
               expectedResponse = expectedResponseListOf(
                 size = 1,
                 page = 1,
-                totalElements = 3,
+                totalElements = 2,
                 builder().from(tescoWarehouseHandler)
                   .withDistanceInMiles(1.0f)
                   .buildCandidateMatchingListItemResponseBody(),
@@ -358,9 +352,6 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
                 builder().from(amazonForkliftOperator)
                   .withDistanceInMiles(20.0f)
                   .buildCandidateMatchingListItemResponseBody(),
-                builder().from(asdaWarehouseHandlerNonGeoCoded)
-                  .withDistanceInMiles(null)
-                  .buildCandidateMatchingListItemResponseBody(),
               ),
             )
           }
@@ -402,7 +393,6 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             assertGetMatchingCandidateJobsIsOKAndSortedByJobTitle(
               parameters = requestParams.toString(),
               expectedJobTitlesSorted = listOf(
-                "Warehouse handler",
                 "Warehouse handler",
                 "Forklift operator",
               ),
@@ -644,7 +634,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       }
 
       @Test
-      fun `return Jobs list without calculated distance for non-geo-coded jobs`() {
+      fun `return Jobs list without calculated distance for non-geo-coded jobs - UNRESTRICTED SEARCH 1 - searchRadius is NULL`() {
         assertGetMatchingCandidateJobsIsOK(
           parameters = requestParams.toString(),
           expectedResponse = expectedResponseListOf(
@@ -664,8 +654,30 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         )
       }
 
+      @Test
+      fun `return Jobs list without calculated distance for non-geo-coded jobs - UNRESTRICTED SEARCH 2 - searchRadius is 9999`() {
+        requestParams.append("&searchRadius=9999")
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = requestParams.toString(),
+          expectedResponse = expectedResponseListOf(
+            builder().from(asdaWarehouseHandlerNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(lidlWarehouseHandlerNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(dpdForkliftOperatorNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(20.0F)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+
       @Nested
-      @DisplayName("And a search radius has been provided")
+      @DisplayName("And a search radius has been provided - RESTRICTED SEARCH")
       inner class AndSearchRadiusHasBeenProvided {
         @BeforeEach
         fun setUp() {
@@ -678,15 +690,6 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
           assertGetMatchingCandidateJobsIsOK(
             parameters = requestParams.toString(),
             expectedResponse = expectedResponseListOf(
-              builder().from(asdaWarehouseHandlerNonGeoCoded)
-                .withDistanceInMiles(null)
-                .buildCandidateMatchingListItemResponseBody(),
-              builder().from(lidlWarehouseHandlerNonGeoCoded)
-                .withDistanceInMiles(null)
-                .buildCandidateMatchingListItemResponseBody(),
-              builder().from(dpdForkliftOperatorNonGeoCoded)
-                .withDistanceInMiles(null)
-                .buildCandidateMatchingListItemResponseBody(),
               builder().from(amazonForkliftOperator)
                 .withDistanceInMiles(20.0f)
                 .buildCandidateMatchingListItemResponseBody(),

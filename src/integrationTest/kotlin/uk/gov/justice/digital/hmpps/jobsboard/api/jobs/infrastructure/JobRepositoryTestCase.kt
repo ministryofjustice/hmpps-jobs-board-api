@@ -4,10 +4,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.employers.EmployerMother.amazon
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.Builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Archived
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobPrisonerId
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.jobCreationTime
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.RepositoryTestCase
@@ -25,12 +27,16 @@ abstract class JobRepositoryTestCase : RepositoryTestCase() {
 
   protected fun givenAJobHasBeenCreated(): Job {
     employerRepository.save(amazon)
+    postcodesRepository.save<Postcode>(Builder().from(amazonForkliftOperator.postcode!!).build())
     return jobRepository.saveAndFlush(amazonForkliftOperator)
   }
 
   protected fun givenJobsHaveBeenCreated(vararg jobs: Job) {
     jobs.map { it.employer }.toSet().forEach { employerRepository.save(it) }
-    jobs.forEach { jobRepository.save(it) }
+    jobs.forEach {
+      it.postcode?.let { code -> postcodesRepository.save(Builder().from(code).build()) }
+      jobRepository.save(it)
+    }
   }
 
   protected fun Job.archivedBy(prisonNumber: String): Archived = Archived(id = JobPrisonerId(this.id, prisonNumber), job = this)
