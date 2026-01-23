@@ -654,28 +654,6 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         )
       }
 
-      @Test
-      fun `return Jobs list without calculated distance for non-geo-coded jobs - UNRESTRICTED SEARCH 2 - searchRadius is 9999`() {
-        requestParams.append("&searchRadius=9999")
-        assertGetMatchingCandidateJobsIsOK(
-          parameters = requestParams.toString(),
-          expectedResponse = expectedResponseListOf(
-            builder().from(asdaWarehouseHandlerNonGeoCoded)
-              .withDistanceInMiles(null)
-              .buildCandidateMatchingListItemResponseBody(),
-            builder().from(lidlWarehouseHandlerNonGeoCoded)
-              .withDistanceInMiles(null)
-              .buildCandidateMatchingListItemResponseBody(),
-            builder().from(dpdForkliftOperatorNonGeoCoded)
-              .withDistanceInMiles(null)
-              .buildCandidateMatchingListItemResponseBody(),
-            builder().from(amazonForkliftOperator)
-              .withDistanceInMiles(20.0F)
-              .buildCandidateMatchingListItemResponseBody(),
-          ),
-        )
-      }
-
       @Nested
       @DisplayName("And a search radius has been provided - RESTRICTED SEARCH")
       inner class AndSearchRadiusHasBeenProvided {

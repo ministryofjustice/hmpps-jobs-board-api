@@ -40,10 +40,6 @@ class MatchingCandidateJobRetriever(
       maybeRevisedSearchRadiusInput = null
       maybeRevisedReleaseAreaInput = null
     }
-    // Handling of case where unrestricted search request from UI is passed as 9999
-    if (UNRESTRICTED_SEARCH_RADIUS_VALUE_FROM_UI == searchRadius) {
-      maybeRevisedSearchRadiusInput = null
-    }
 
     return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, maybeRevisedReleaseAreaInput, maybeRevisedSearchRadiusInput, today, isNationalJob, employerId, pageable)
   }
