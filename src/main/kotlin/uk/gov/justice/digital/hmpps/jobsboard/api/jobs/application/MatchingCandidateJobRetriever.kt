@@ -18,9 +18,6 @@ class MatchingCandidateJobRetriever(
   private val postcodeLocationService: PostcodeLocationService,
   private val timeProvider: TimeProvider,
 ) {
-  companion object {
-    const val UNRESTRICTED_SEARCH_RADIUS_VALUE_FROM_UI = 9999
-  }
   private val today: LocalDate get() = timeProvider.today()
 
   fun retrieveAllJobs(

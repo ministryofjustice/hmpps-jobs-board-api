@@ -634,7 +634,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       }
 
       @Test
-      fun `return Jobs list without calculated distance for non-geo-coded jobs - UNRESTRICTED SEARCH 1 - searchRadius is NULL`() {
+      fun `return Jobs list without calculated distance for non-geo-coded jobs - UNRESTRICTED SEARCH - searchRadius is NULL`() {
         assertGetMatchingCandidateJobsIsOK(
           parameters = requestParams.toString(),
           expectedResponse = expectedResponseListOf(
@@ -664,7 +664,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         }
 
         @Test
-        fun `return jobs with non-geo-coded postcodes ignoring search radius`() {
+        fun `return jobs with geo-coded postcodes within search radius`() {
           assertGetMatchingCandidateJobsIsOK(
             parameters = requestParams.toString(),
             expectedResponse = expectedResponseListOf(
