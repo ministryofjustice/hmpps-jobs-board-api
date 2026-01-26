@@ -17,6 +17,7 @@ import org.springframework.test.context.DynamicPropertySource
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestJpaConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
@@ -44,12 +45,16 @@ abstract class RepositoryTestCase {
   @Autowired
   protected lateinit var jobRepository: JobRepository
 
+  @Autowired
+  protected lateinit var postcodesRepository: PostcodesRepository
+
   private final val defaultCreationTime: Instant = TestPrototypes.defaultCreationTime
 
   @BeforeEach
   fun setUp() {
     jobRepository.deleteAll()
     employerRepository.deleteAll()
+    postcodesRepository.deleteAll()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCreationTime))
     whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
   }

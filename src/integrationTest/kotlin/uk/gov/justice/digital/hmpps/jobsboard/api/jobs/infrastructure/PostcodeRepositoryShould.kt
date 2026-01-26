@@ -6,16 +6,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
-import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Postcode
-import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.RepositoryTestCase
 import java.util.*
 
 class PostcodeRepositoryShould : RepositoryTestCase() {
-  @Autowired
-  protected lateinit var postcodesRepository: PostcodesRepository
 
   private val expectedPostcode = postcode("LS11 0AN", 429017.0, 431869.0)
 

@@ -57,7 +57,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     AND (
       :isNationalJob IS TRUE      
       OR COALESCE(:searchRadius, 0) <= 0
-    	OR COALESCE(CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT), -1) <= :searchRadius 
+      OR (pos1.xCoordinate IS NOT NULL AND pos1.yCoordinate IS NOT NULL AND COALESCE(CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT), -1) <= :searchRadius)
     )
     AND (j.isNational = :isNationalJob OR :isNationalJob IS NULL)
     AND (e.id.id = :employerId OR :employerId IS NULL)
