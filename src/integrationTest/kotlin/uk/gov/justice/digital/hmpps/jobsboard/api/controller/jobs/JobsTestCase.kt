@@ -73,7 +73,7 @@ class JobsTestCase : EmployerTestCase() {
     expectedStatus: HttpStatus,
     expectedResponse: String? = null,
   ): String {
-    val finalJobId = id ?: randomUUID().toString()
+    val finalJobId = id ?: randomUUID()
     assertRequestWithBody(
       url = "$JOBS_ENDPOINT/$finalJobId",
       body = body,
@@ -189,11 +189,6 @@ class JobsTestCase : EmployerTestCase() {
   }
 
   protected fun String.asJson(): String {
-    val mapper: ObjectMapper = jacksonObjectMapper()
-    return mapper.writeValueAsString(this)
-  }
-
-  protected fun List<String>.asJson(): String {
     val mapper: ObjectMapper = jacksonObjectMapper()
     return mapper.writeValueAsString(this)
   }

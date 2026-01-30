@@ -43,7 +43,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirec
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import org.springframework.transaction.annotation.Transactional
-import org.wiremock.spring.EnableWireMock
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.OUTBOUND_QUEUE_ID
@@ -86,7 +85,6 @@ import java.util.concurrent.TimeUnit.SECONDS
 @AutoConfigureTestDatabase(replace = NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
-@EnableWireMock
 @Transactional
 @ActiveProfiles("test-containers-flyway")
 @Import(SqsTestConfig::class)

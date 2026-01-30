@@ -43,7 +43,7 @@ testing {
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
         implementation("org.springframework.boot:spring-boot-starter-test")
         implementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
-        implementation("org.wiremock.integrations:wiremock-spring-boot:4.0.9")
+        implementation("org.wiremock:wiremock-standalone:3.13.2")
         runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
         implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
         implementation("org.flywaydb:flyway-core")
