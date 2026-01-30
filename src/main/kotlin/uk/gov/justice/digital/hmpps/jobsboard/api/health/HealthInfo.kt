@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.health
 
-import org.springframework.boot.actuate.health.Health
-import org.springframework.boot.actuate.health.HealthIndicator
+import org.springframework.boot.health.contributor.Health
+import org.springframework.boot.health.contributor.HealthIndicator
 import org.springframework.boot.info.BuildProperties
 import org.springframework.stereotype.Component
 
@@ -11,5 +11,5 @@ import org.springframework.stereotype.Component
 @Component
 class HealthInfo(private val buildProperties: BuildProperties) : HealthIndicator {
 
-  override fun health(): Health = Health.up().withDetail("version", buildProperties.version).build()
+  override fun health(): Health = Health.up().withDetail("version", buildProperties.version!!).build()
 }

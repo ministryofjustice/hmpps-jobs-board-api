@@ -1,37 +1,29 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.3.0"
-  kotlin("plugin.spring") version "2.2.21"
-  kotlin("plugin.jpa") version "2.2.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.0.3"
+  kotlin("plugin.spring") version "2.3.0"
+  kotlin("plugin.jpa") version "2.3.0"
   id("jvm-test-suite")
   id("jacoco")
 }
 
-ext["netty.version"] = "4.1.130.Final"
-
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.1")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.1") {
-    implementation("org.apache.commons:commons-lang3:3.18.0")
-  }
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.0.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:6.0.1")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+  implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.data:spring-data-envers")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.8.1")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.0.0")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("io.mockk:mockk:1.14.5")
-  testImplementation("org.springframework.boot:spring-boot-testcontainers") {
-    testImplementation("org.apache.commons:commons-compress:1.27.1")
-  }
-  testImplementation("org.testcontainers:postgresql")
-  testImplementation("org.testcontainers:junit-jupiter")
   testImplementation("io.github.hakky54:logcaptor:2.12.0")
 
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -39,33 +31,34 @@ dependencies {
 
 testing {
   suites {
-    @Suppress("UnstableApiUsage")
+    @Suppress("UnstableApiUsage", "unused")
     val test by getting(JvmTestSuite::class) {
       useJUnitJupiter()
     }
 
-    @Suppress("UnstableApiUsage")
+    @Suppress("UnstableApiUsage", "unused")
     val integrationTest by registering(JvmTestSuite::class) {
       useJUnitJupiter()
       dependencies {
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
         implementation("org.springframework.boot:spring-boot-starter-test")
-        implementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-        implementation("org.springframework.cloud:spring-cloud-contract-wiremock:4.2.1")
+        implementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
+        implementation("org.wiremock.integrations:wiremock-spring-boot:4.0.9")
         runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
         implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
         implementation("org.flywaydb:flyway-core")
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
         implementation("com.h2database:h2")
         implementation("io.mockk:mockk:1.14.5")
-        implementation("org.springframework.boot:spring-boot-testcontainers") {
-          implementation("org.apache.commons:commons-compress:1.27.1")
-        }
-        implementation("org.testcontainers:postgresql")
-        implementation("org.testcontainers:junit-jupiter")
-        implementation("org.testcontainers:localstack")
+        implementation("org.springframework.boot:spring-boot-testcontainers")
+        implementation("org.testcontainers:testcontainers-postgresql")
+        implementation("org.testcontainers:testcontainers-junit-jupiter")
+        implementation("org.testcontainers:testcontainers-localstack")
         implementation("org.awaitility:awaitility-kotlin")
         implementation("org.jetbrains.kotlin:kotlin-test-junit5")
+
+        implementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
+        implementation("org.springframework.boot:spring-boot-starter-webmvc-test")
       }
 
       targets {

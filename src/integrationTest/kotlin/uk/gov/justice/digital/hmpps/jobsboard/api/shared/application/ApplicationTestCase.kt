@@ -16,11 +16,10 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.AuditingHandler
 import org.springframework.data.auditing.DateTimeProvider
@@ -44,6 +43,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirec
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.isEqualTo
 import org.springframework.transaction.annotation.Transactional
+import org.wiremock.spring.EnableWireMock
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.OUTBOUND_QUEUE_ID
@@ -86,7 +86,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 @AutoConfigureTestDatabase(replace = NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
-@AutoConfigureWireMock(port = 0)
+@EnableWireMock
 @Transactional
 @ActiveProfiles("test-containers-flyway")
 @Import(SqsTestConfig::class)
@@ -142,15 +142,13 @@ abstract class ApplicationTestCase {
     val random: SecureRandom by lazy { SecureRandom() }
   }
 
-  @Value("\${os.places.api.key}")
-  lateinit var apiKey: String
-
   companion object {
     private val postgresContainer = PostgresContainer.flywayContainer
     private val localStackContainer = LocalStackContainer.instance
 
     @JvmStatic
     @DynamicPropertySource
+    @Suppress("unused")
     fun configureTestContainers(registry: DynamicPropertyRegistry) {
       postgresContainer?.run {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl)
@@ -204,7 +202,7 @@ abstract class ApplicationTestCase {
     osPlacesMockServer.stubGetAddressesForPostcodeNotFound(Builder().from(asdaWarehouseHandlerNonGeoCoded.postcode!!).build())
     osPlacesMockServer.stubGetAddressesForPostcodeNotFound(Builder().from(lidlWarehouseHandlerNonGeoCoded.postcode!!).build())
     osPlacesMockServer.stubGetAddressesForPostcodeNotFound(Builder().from(dpdForkliftOperatorNonGeoCoded.postcode!!).build())
-    arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
+    arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").mapNotNull { postcodeMap[it] }.forEach {
       osPlacesMockServer.stubGetAddressesForPostcode(it)
     }
 
@@ -219,7 +217,7 @@ abstract class ApplicationTestCase {
   internal fun setAuthorisation(
     user: String = "test-client",
     roles: List<String> = listOf(),
-  ): (HttpHeaders) = jwtAuthHelper.setAuthorisationForUnitTests(user, roles)
+  ): HttpHeaders = jwtAuthHelper.setAuthorisationForUnitTests(user, roles)
 
   private fun httpHeaders(): HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
 
@@ -355,7 +353,7 @@ abstract class ApplicationTestCase {
       contentType = APPLICATION_JSON
       accept = APPLICATION_JSON
       headers {
-        httpHeaders().forEach { (name, values) ->
+        httpHeaders().forEach { name, values ->
           values.forEach { value ->
             header(name, value)
           }

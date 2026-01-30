@@ -159,7 +159,7 @@ class JobsGet(
     val sortedBy = when (sortBy) {
       "jobTitle" -> Sort.by(direction, "title")
       "distance" -> matchingCandidateJobRetriever.sortByDistance(direction)
-      else -> Sort.by(direction, sortBy)
+      else -> Sort.by(direction, sortBy!!)
     }
     val lowerCaseSectors = sectors?.map { it.lowercase() }
     val pageable: Pageable = PageRequest.of(page, size, sortedBy)

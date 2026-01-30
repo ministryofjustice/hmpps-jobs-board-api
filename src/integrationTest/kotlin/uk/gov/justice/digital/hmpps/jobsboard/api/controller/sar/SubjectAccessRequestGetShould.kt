@@ -32,7 +32,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
           contentType = APPLICATION_JSON
           accept = APPLICATION_JSON
           headers {
-            headers.forEach { (name, values) ->
+            headers.forEach { name, values ->
               values.forEach { value ->
                 header(name, value)
               }
@@ -49,7 +49,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
           contentType = APPLICATION_JSON
           accept = APPLICATION_JSON
           headers {
-            headers.forEach { (name, values) ->
+            headers.forEach { name, values ->
               values.forEach { value ->
                 header(name, value)
               }
@@ -69,7 +69,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
           contentType = APPLICATION_JSON
           accept = APPLICATION_JSON
           headers {
-            headers.forEach { (name, values) ->
+            headers.forEach { name, values ->
               values.forEach { value ->
                 header(name, value)
               }
@@ -90,7 +90,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
           contentType = APPLICATION_JSON
           accept = APPLICATION_JSON
           headers {
-            headers.forEach { (name, values) ->
+            headers.forEach { name, values ->
               values.forEach { value ->
                 header(name, value)
               }
@@ -118,7 +118,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
           contentType = APPLICATION_JSON
           accept = APPLICATION_JSON
           headers {
-            headers.forEach { (name, values) ->
+            headers.forEach { name, values ->
               values.forEach { value ->
                 header(name, value)
               }
