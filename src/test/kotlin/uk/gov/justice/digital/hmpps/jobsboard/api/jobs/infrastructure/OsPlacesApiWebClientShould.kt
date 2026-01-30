@@ -107,13 +107,13 @@ class OsPlacesApiWebClientShould {
 
     osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode!!)
 
-    var logEvents: List<LogEvent> = logCaptor.logEvents
+    val logEvents: List<LogEvent> = logCaptor.logEvents
     assertThat(logEvents).hasSize(1)
 
     assertTrue(
       logCaptor.logEvents.any { logEvent ->
         logEvent.throwable.isPresent
-        logEvent.throwable.get().message!!.contains(responseException.message.toString())
+        logEvent.throwable.get().message!!.contains(responseException.message)
       },
       "Expected error log to contain the expected exception message: ${responseException.message}",
     )

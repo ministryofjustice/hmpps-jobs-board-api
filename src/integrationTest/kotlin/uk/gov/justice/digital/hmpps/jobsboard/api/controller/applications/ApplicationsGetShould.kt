@@ -50,7 +50,7 @@ class ApplicationsGetShould : ApplicationsTestCase() {
 
   @Nested
   @DisplayName("Given some applications, with the given prisonId")
-  inner class GivenSomeApplications {
+  open inner class GivenSomeApplications {
     @BeforeEach
     fun setUp() = givenMoreApplicationsFromMultiplePrisons()
 
@@ -77,7 +77,7 @@ class ApplicationsGetShould : ApplicationsTestCase() {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Test
-    fun `return applications list, that can be retained after the job updated, for given prison`() {
+    open fun `return applications list, that can be retained after the job updated, for given prison`() {
       val job = JobMother.builder().from(amazonForkliftOperator).apply {
         additionalSalaryInformation = "updated info about salary: ... "
       }.build()

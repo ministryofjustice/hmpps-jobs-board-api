@@ -22,7 +22,7 @@ class JobCreator(
   private val jobRepository: JobRepository,
   private val employerRepository: EmployerRepository,
   private val postcodeLocationService: PostcodeLocationService,
-  @Autowired(required = false)
+  @param:Autowired(required = false)
   private val outboundEventsService: OutboundEventsService?,
   private val uuidGenerator: UUIDGenerator,
   private val timeProvider: TimeProvider,

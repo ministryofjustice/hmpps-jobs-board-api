@@ -119,7 +119,7 @@ class HmppsJobsBoardApiExceptionHandler(
 
   @ExceptionHandler(MethodArgumentNotValidException::class)
   fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-    val errorMessage = e.fieldErrors.map { "${it.field} - ${it.defaultMessage}" }.joinToString(separator = ", ")
+    val errorMessage = e.fieldErrors.joinToString(separator = ", ") { "${it.field} - ${it.defaultMessage}" }
     log.info("Method argument not valid: {}", errorMessage)
     return ResponseEntity
       .status(BAD_REQUEST)
@@ -144,19 +144,16 @@ class HmppsJobsBoardApiExceptionHandler(
     )
   }.also { log.info("Method argument type mismatch exception: ${e.message}", e) }
 
-  @ExceptionHandler(java.lang.Exception::class)
-  fun handleException(e: java.lang.Exception): ResponseEntity<ErrorResponse?>? {
-    log.error("Unexpected exception", e)
-    return ResponseEntity
-      .status(INTERNAL_SERVER_ERROR)
-      .body(
-        ErrorResponse(
-          status = INTERNAL_SERVER_ERROR,
-          userMessage = "Unexpected error: ${e.message}",
-          developerMessage = e.message,
-        ),
-      )
-  }
+  @ExceptionHandler(Exception::class)
+  fun handleException(e: Exception): ResponseEntity<ErrorResponse> = ResponseEntity
+    .status(INTERNAL_SERVER_ERROR)
+    .body(
+      ErrorResponse(
+        status = INTERNAL_SERVER_ERROR,
+        userMessage = "Unexpected error: ${e.message}",
+        developerMessage = e.message,
+      ),
+    ).also { log.error("Unexpected exception", e) }
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -186,9 +183,9 @@ data class DataErrorResponse(
   val error: String? = null,
   val details: List<ErrorDetail>? = null,
   val userMessage: String? = null,
-  @JsonInclude(JsonInclude.Include.NON_NULL) val errorCode: Int? = null,
-  @JsonInclude(JsonInclude.Include.NON_NULL) val developerMessage: String? = null,
-  @JsonInclude(JsonInclude.Include.NON_NULL) val moreInfo: String? = null,
+  @param:JsonInclude(JsonInclude.Include.NON_NULL) val errorCode: Int? = null,
+  @param:JsonInclude(JsonInclude.Include.NON_NULL) val developerMessage: String? = null,
+  @param:JsonInclude(JsonInclude.Include.NON_NULL) val moreInfo: String? = null,
 ) {
   constructor(
     status: HttpStatus,

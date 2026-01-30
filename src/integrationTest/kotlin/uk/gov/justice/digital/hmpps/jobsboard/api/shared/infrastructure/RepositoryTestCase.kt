@@ -5,9 +5,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.data.domain.AuditorAware
@@ -68,6 +68,7 @@ abstract class RepositoryTestCase {
 
     @JvmStatic
     @DynamicPropertySource
+    @Suppress("unused")
     fun configureTestContainers(registry: DynamicPropertyRegistry) {
       postgresContainer?.run {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl)

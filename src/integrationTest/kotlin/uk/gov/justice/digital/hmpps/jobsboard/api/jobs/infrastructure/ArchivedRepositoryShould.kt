@@ -106,7 +106,7 @@ class ArchivedRepositoryShould : JobRepositoryTestCase() {
 
     assertThat(exception).isInstanceOf(DataAccessException::class.java)
     assertThat(exception.message)
-      .contains("Unable to find")
+      .contains("No row with the given identifier exists for entity")
       .contains(jobId)
   }
 

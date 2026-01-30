@@ -29,14 +29,9 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
     claims["client_id"] as String
   }
   private fun findDisplayName(claims: Map<String, Any?>): String? = claims["name"] as String?
-  private fun findPrincipal(claims: Map<String, Any?>): String = if (claims.containsKey("user_name")) {
-    claims["user_name"] as String
-  } else {
-    claims["client_id"] as String
-  }
 
   private fun extractAuthorities(jwt: Jwt): Collection<GrantedAuthority> {
-    val authorities = mutableListOf<GrantedAuthority>().apply { addAll(jwtGrantedAuthoritiesConverter.convert(jwt)!!) }
+    val authorities = mutableListOf<GrantedAuthority>().apply { addAll(jwtGrantedAuthoritiesConverter.convert(jwt)) }
     if (jwt.claims.containsKey("authorities")) {
       @Suppress("UNCHECKED_CAST")
       val claimAuthorities = (jwt.claims["authorities"] as Collection<String>).toList()

@@ -100,7 +100,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
     expectedExpessionOfInterest: Boolean? = null,
     expectedArchived: Boolean? = null,
     expectedDistance: Float? = null,
-  ): GetMatchingCandidateJobResponse? {
+  ): GetMatchingCandidateJobResponse {
     val actualJobDetails = findJobDetailsByPrisonNumber(expectedJob.id.id, expectedPrisonNumber)
 
     assertThat(actualJobDetails).isNotNull.usingRecursiveComparison()
@@ -121,7 +121,7 @@ class MatchingCandidateJobRepositoryJobDetailsShould : JobRepositoryTestCase() {
     assertThat(actualJobDetails.jobTitle).isEqualTo(expectedJob.title)
     assertThat(actualJobDetails.closingDate).isEqualTo(expectedJob.closingDate?.toString())
     assertThat(actualJobDetails.startDate).isEqualTo(expectedJob.startDate?.toString())
-    assertThat(actualJobDetails.offenceExclusions?.joinToString(separator = ",")).isEqualTo(expectedJob.offenceExclusions)
+    assertThat(actualJobDetails.offenceExclusions.joinToString(separator = ",")).isEqualTo(expectedJob.offenceExclusions)
     assertThat(actualJobDetails.createdAt).isEqualTo(expectedJob.createdAt.toString())
     expectedDistance?.let { assertThat(actualJobDetails.distance).isEqualTo(it) }
     expectedExpessionOfInterest?.let { assertThat(actualJobDetails.expressionOfInterest).isEqualTo(it) }
