@@ -53,13 +53,21 @@ _*_ These values can be obtained from k8s secrets on `dev` env.
 * Define/Override env var.: define a `.env` file with () required env var from above; [Syntax of .env file](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/#env-file-syntax)
 
   * provide API key only
-    ```
+    ```dotenv
     OS_PLACES_API_KEY=<API-ACCESS-KEY>
+    PRODUCT_ID=DPS015
     ```
   * Specify API key and override Auth URL 
-    ```
+    ```dotenv
     OS_PLACES_API_KEY=<API-ACCESS-KEY>
     API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+    PRODUCT_ID=DPS015
+    ```
+  * Or use `local` profile group
+    ```dotenv
+    SPRING_PROFILES_ACTIVE=local
+    OS_PLACES_API_KEY=<API-ACCESS-KEY>
+    PRODUCT_ID=DPS015
     ```
 * Run this at CLI
   ```bash
