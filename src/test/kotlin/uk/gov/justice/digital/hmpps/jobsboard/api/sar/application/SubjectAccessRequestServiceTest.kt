@@ -17,13 +17,8 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfIntere
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.SARFilter
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
-import java.util.UUID
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -40,7 +35,6 @@ class SubjectAccessRequestServiceTest {
     fromDate = null,
     toDate = null,
   )
-  private val atEndOfDay = LocalTime.MAX.truncatedTo(ChronoUnit.MICROS)
 
   @BeforeEach
   fun setUp() {
@@ -67,10 +61,10 @@ class SubjectAccessRequestServiceTest {
     )
     val applicationId = EntityId(UUID.randomUUID().toString()).id
 
-    val mockApplication = mockk<Application>(relaxed = true) {
+    mockk<Application>(relaxed = true) {
       every { job.title } returns "Cleaner"
       every { job.employer.name } returns "Tesco"
-      every { id.id } returns applicationId.toString()
+      every { id.id } returns applicationId
       every { createdAt } returns createdAtTime
       every { lastModifiedAt } returns createdAtTime
     }
@@ -83,7 +77,7 @@ class SubjectAccessRequestServiceTest {
       every { lastModifiedAt } returns modifiedAtTime
     }
 
-    val mockRevision = mockk<Revision<Long, Application>> {
+    mockk<Revision<Long, Application>> {
       every { entity } returns revisedApplication
     }
 
@@ -118,7 +112,7 @@ class SubjectAccessRequestServiceTest {
     val mockApplication = mockk<Application>(relaxed = true) {
       every { job.title } returns "Cleaner"
       every { job.employer.name } returns "Tesco"
-      every { id.id } returns applicationId.toString()
+      every { id.id } returns applicationId
       every { createdAt } returns createdAtTime
       every { lastModifiedAt } returns createdAtTime
     }
@@ -195,24 +189,11 @@ class SubjectAccessRequestServiceTest {
 
   @Test
   fun `should return empty list of ExpressionOfInterestDTO when created date is later than end date`() {
-    val createdAt: Instant = Instant.parse("2023-03-06T00:00:00Z")
-
     val toDate = OffsetDateTime.parse("2022-04-01T00:00:00Z").toLocalDate()
     val testSarFilter = SARFilter(
       prn = prisonerNumber,
       toDate = toDate,
       fromDate = null,
-    )
-
-    val expressions = listOf(
-      ExpressionOfInterest(
-        job = mockk {
-          every { title } returns "Car mechanic"
-          every { employer.name } returns "The AA"
-        },
-        createdAt = createdAt,
-        id = mockk(),
-      ),
     )
 
     every {
@@ -297,7 +278,6 @@ class SubjectAccessRequestServiceTest {
   @Test
   fun `should return empty list archived jobs when created at is later than end date filter`() {
     val toDate = OffsetDateTime.parse("2024-04-01T00:00:00Z").toLocalDate()
-    val createdAt = Instant.parse("2024-05-15T00:00:00Z")
     val testSarFilter = SARFilter(
       prn = prisonerNumber,
       toDate = toDate,
@@ -364,7 +344,4 @@ class SubjectAccessRequestServiceTest {
       archivedRepository.findByIdPrisonNumberOrderByCreatedAtDesc(sarFilter.prn)
     }
   }
-
-  private fun LocalDateTime.instant() = this.toInstant(ZoneOffset.UTC)
-  private val LocalDate.endAt: Instant get() = this.atTime(atEndOfDay).instant()
 }
