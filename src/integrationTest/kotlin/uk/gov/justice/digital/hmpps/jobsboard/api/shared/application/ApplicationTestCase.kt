@@ -16,11 +16,10 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.AuditingHandler
 import org.springframework.data.auditing.DateTimeProvider
@@ -53,6 +52,9 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.EXPRESSIONS_OF
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JOBS_ENDPOINT
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.asdaWarehouseHandlerNonGeoCoded
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.dpdForkliftOperatorNonGeoCoded
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.lidlWarehouseHandlerNonGeoCoded
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.Builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
@@ -83,7 +85,6 @@ import java.util.concurrent.TimeUnit.SECONDS
 @AutoConfigureTestDatabase(replace = NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
-@AutoConfigureWireMock(port = 0)
 @Transactional
 @ActiveProfiles("test-containers-flyway")
 @Import(SqsTestConfig::class)
@@ -139,15 +140,13 @@ abstract class ApplicationTestCase {
     val random: SecureRandom by lazy { SecureRandom() }
   }
 
-  @Value("\${os.places.api.key}")
-  lateinit var apiKey: String
-
   companion object {
     private val postgresContainer = PostgresContainer.flywayContainer
     private val localStackContainer = LocalStackContainer.instance
 
     @JvmStatic
     @DynamicPropertySource
+    @Suppress("unused")
     fun configureTestContainers(registry: DynamicPropertyRegistry) {
       postgresContainer?.run {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl)
@@ -198,7 +197,10 @@ abstract class ApplicationTestCase {
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(amazonForkliftOperator.postcode!!).build())
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(tescoWarehouseHandler.postcode!!).build())
     osPlacesMockServer.stubGetAddressesForPostcode(Builder().from(RELEASE_AREA_POSTCODE).build())
-    arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").map { postcodeMap[it] }.filterNotNull().forEach {
+    osPlacesMockServer.stubGetAddressesForPostcodeNotFound(Builder().from(asdaWarehouseHandlerNonGeoCoded.postcode!!).build())
+    osPlacesMockServer.stubGetAddressesForPostcodeNotFound(Builder().from(lidlWarehouseHandlerNonGeoCoded.postcode!!).build())
+    osPlacesMockServer.stubGetAddressesForPostcodeNotFound(Builder().from(dpdForkliftOperatorNonGeoCoded.postcode!!).build())
+    arrayOf("M4 5BD", "NW1 6XE", "NG1 1AA").mapNotNull { postcodeMap[it] }.forEach {
       osPlacesMockServer.stubGetAddressesForPostcode(it)
     }
 
@@ -213,7 +215,7 @@ abstract class ApplicationTestCase {
   internal fun setAuthorisation(
     user: String = "test-client",
     roles: List<String> = listOf(),
-  ): (HttpHeaders) = jwtAuthHelper.setAuthorisationForUnitTests(user, roles)
+  ): HttpHeaders = jwtAuthHelper.setAuthorisationForUnitTests(user, roles)
 
   private fun httpHeaders(): HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
 
@@ -349,7 +351,7 @@ abstract class ApplicationTestCase {
       contentType = APPLICATION_JSON
       accept = APPLICATION_JSON
       headers {
-        httpHeaders().forEach { (name, values) ->
+        httpHeaders().forEach { name, values ->
           values.forEach { value ->
             header(name, value)
           }

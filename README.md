@@ -1,9 +1,8 @@
 # hmpps-jobs-board-api
-[![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&style=flat&logo=github&label=MoJ%20Compliant&query=%24.result&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-jobs-board-api)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-github-repositories.html#hmpps-jobs-board-api "Link to report")
-[![CircleCI](https://circleci.com/gh/ministryofjustice/hmpps-jobs-board-api/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/hmpps-jobs-board-api)
-[![Docker Repository on Quay](https://quay.io/repository/hmpps/hmpps-jobs-board-api/status "Docker Repository on Quay")](https://quay.io/repository/hmpps/hmpps-jobs-board-api)
-[![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://hmpps-jobs-board-api-dev.hmpps.service.justice.gov.uk/webjars/swagger-ui/index.html?configUrl=/v3/api-docs)
-
+[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/hmpps-jobs-board-api/badge?style=flat)](https://github-community.service.justice.gov.uk/repository-standards/hmpps-jobs-board-api)
+[![Docker Repository on ghcr](https://img.shields.io/badge/ghcr.io-repository-2496ED.svg?logo=docker)](https://ghcr.io/ministryofjustice/hmpps-jobs-board-api)
+[![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://jobs-board-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
+[![Pipeline [test -> build -> deploy]](https://github.com/ministryofjustice/hmpps-jobs-board-api/actions/workflows/pipeline.yml/badge.svg?branch=main)](https://github.com/ministryofjustice/hmpps-jobs-board-api/actions/workflows/pipeline.yml)
 # About
 The **Match Jobs and Manage Applications** - Jobs Board API provides backend services _Jobs Uploads_, _Employers Uploads_ and _Candidate Matching_.
 
@@ -54,13 +53,21 @@ _*_ These values can be obtained from k8s secrets on `dev` env.
 * Define/Override env var.: define a `.env` file with () required env var from above; [Syntax of .env file](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/#env-file-syntax)
 
   * provide API key only
-    ```
+    ```dotenv
     OS_PLACES_API_KEY=<API-ACCESS-KEY>
+    PRODUCT_ID=DPS015
     ```
   * Specify API key and override Auth URL 
-    ```
+    ```dotenv
     OS_PLACES_API_KEY=<API-ACCESS-KEY>
     API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+    PRODUCT_ID=DPS015
+    ```
+  * Or use `local` profile group
+    ```dotenv
+    SPRING_PROFILES_ACTIVE=local
+    OS_PLACES_API_KEY=<API-ACCESS-KEY>
+    PRODUCT_ID=DPS015
     ```
 * Run this at CLI
   ```bash

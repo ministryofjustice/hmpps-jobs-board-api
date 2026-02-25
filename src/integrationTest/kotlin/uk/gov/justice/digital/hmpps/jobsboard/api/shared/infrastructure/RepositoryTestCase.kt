@@ -5,9 +5,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.data.domain.AuditorAware
@@ -17,6 +17,7 @@ import org.springframework.test.context.DynamicPropertySource
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.TestJpaConfig
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.PostcodesRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.TestPrototypes.Companion.userTestName
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
@@ -44,12 +45,16 @@ abstract class RepositoryTestCase {
   @Autowired
   protected lateinit var jobRepository: JobRepository
 
+  @Autowired
+  protected lateinit var postcodesRepository: PostcodesRepository
+
   private final val defaultCreationTime: Instant = TestPrototypes.defaultCreationTime
 
   @BeforeEach
   fun setUp() {
     jobRepository.deleteAll()
     employerRepository.deleteAll()
+    postcodesRepository.deleteAll()
     whenever(dateTimeProvider.now).thenReturn(Optional.of(defaultCreationTime))
     whenever(auditorProvider.currentAuditor).thenReturn(Optional.of(userTestName))
   }
@@ -63,6 +68,7 @@ abstract class RepositoryTestCase {
 
     @JvmStatic
     @DynamicPropertySource
+    @Suppress("unused")
     fun configureTestContainers(registry: DynamicPropertyRegistry) {
       postgresContainer?.run {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl)

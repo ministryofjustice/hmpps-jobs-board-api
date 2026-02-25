@@ -11,6 +11,22 @@ generic-service:
     OS_PLACES_API_URL: "https://api.os.uk/search/places/v1"
     API_INTEGRATION_ENABLED: true
 
+  # Enable syncing the production database to pre-prod. This creates a scheduled job that runs every 4 hours and will
+  # restore the jobs-board database to pre-prod if that is a newer version of the NOMIS database since the last restore.
+  postgresDatabaseRestore:
+    enabled: true
+    namespace_secrets:
+      rds-postgresql-instance-output:
+        DB_NAME: "database_name"
+        DB_USER: "database_username"
+        DB_PASS: "database_password"
+        DB_HOST: "rds_instance_address"
+      rds-postgresql-instance-output-preprod:
+        DB_NAME_PREPROD: "database_name"
+        DB_USER_PREPROD: "database_username"
+        DB_PASS_PREPROD: "database_password"
+        DB_HOST_PREPROD: "rds_instance_address"
+
   serviceAccountName: education-skills-and-work-live-production
 
 # CloudPlatform AlertManager receiver to route prometheus alerts to slack

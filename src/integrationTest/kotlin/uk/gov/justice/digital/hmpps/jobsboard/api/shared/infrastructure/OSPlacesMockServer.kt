@@ -165,4 +165,40 @@ class OSPlacesMockServer(private val apiKey: String) : WireMockServer(OS_PLACES_
 
     log.info("Wiremock endpoint set to: $uri")
   }
+
+  fun stubGetAddressesForPostcodeNotFound(postcode: Postcode) {
+    val uri = UriComponentsBuilder
+      .fromPath("/postcode")
+      .queryParam("postcode", postcode.code)
+      .queryParam("key", apiKey)
+      .encode()
+      .build()
+      .toUriString()
+
+    stubFor(
+      get(urlEqualTo(uri))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(200) // <-- Return 200
+            .withHeader("Content-Type", "application/json")
+            .withBody(
+              """{
+                "header" : {
+                "uri" : "https://api.os.uk/search/places/v1/postcode?postcode="${postcode.code}",
+                "query" : "postcode=${postcode.code}",
+                "offset" : 0,
+                "totalresults" : 0,
+                "format" : "JSON",
+                "dataset" : "DPA",
+                "lr" : "EN,CY",
+                "maxresults" : 100,
+                "epoch" : "123",
+                "lastupdate" : "2025-12-11",
+                "output_srs" : "EPSG:27700"
+              }
+            }""",
+            ),
+        ),
+    )
+  }
 }

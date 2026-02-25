@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -55,6 +56,7 @@ class PostcodeLocationServiceShould {
   @Nested
   @DisplayName("Given a postcode exists")
   inner class GivenPostcodeExisting {
+
     @Nested
     @DisplayName("And the stored coordinates are not null")
     inner class AndStoredCoordinatesAreNotNull {
@@ -85,6 +87,62 @@ class PostcodeLocationServiceShould {
         verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
         verify(postcodesRepository).save(expectedPostcode)
       }
+    }
+  }
+
+  @Nested
+  @DisplayName("Is Geocoded postcode")
+  inner class IsGeocodedPostcode {
+    @Test
+    fun `geocoded postcode with coordinates exists`() {
+      whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+        .thenReturn(expectedPostcode)
+
+      val actual = postcodeLocationService.isGeoCoded(amazonForkliftOperator.postcode)
+
+      assertThat(actual).isTrue
+
+      verify(osPlacesAPIClient, never()).getAddressesFor(any())
+    }
+
+    @Test
+    fun `postcode with null coordinates exists`() {
+      whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+        .thenReturn(expectedPostcodeWithNullCoordinates)
+
+      val actual = postcodeLocationService.isGeoCoded(amazonForkliftOperator.postcode)
+
+      assertThat(actual).isFalse
+
+      verify(osPlacesAPIClient, never()).getAddressesFor(any())
+    }
+
+    @Test
+    fun `postcode does not exist and geocoded postcode returned`() {
+      whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+        .thenReturn(null)
+      whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
+        .thenReturn(expectedLocation)
+
+      val actual = postcodeLocationService.isGeoCoded(amazonForkliftOperator.postcode)
+
+      assertThat(actual).isTrue
+
+      verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
+    }
+
+    @Test
+    fun `postcode does not exist and geocoded postcode not returned`() {
+      whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+        .thenReturn(null)
+      whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
+        .thenReturn(expectedLocation)
+
+      val actual = postcodeLocationService.isGeoCoded(amazonForkliftOperator.postcode)
+
+      assertThat(actual).isTrue
+
+      verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
     }
   }
 

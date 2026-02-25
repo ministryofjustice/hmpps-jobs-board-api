@@ -8,8 +8,12 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcC
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.abcNationalConstructionApprentice
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonNationalForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.asdaWarehouseHandlerNonGeoCoded
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.builder
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.candidateMatchingListItemResponseBody
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.dpdForkliftOperatorNonGeoCoded
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.dpdNationalForkliftOperator
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.lidlWarehouseHandlerNonGeoCoded
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.tescoWarehouseHandler
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.NO_FIXED_ABODE_POSTCODE
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
@@ -54,6 +58,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             .withDistanceInMiles(null)
             .buildCandidateMatchingListItemResponseBody(),
           builder().from(tescoWarehouseHandler)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(asdaWarehouseHandlerNonGeoCoded)
             .withDistanceInMiles(null)
             .buildCandidateMatchingListItemResponseBody(),
         ),
@@ -132,6 +139,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             builder().from(tescoWarehouseHandler)
               .withDistanceInMiles(null)
               .buildCandidateMatchingListItemResponseBody(),
+            builder().from(asdaWarehouseHandlerNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
           ),
         )
       }
@@ -157,6 +167,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
                 .withDistanceInMiles(null)
                 .buildCandidateMatchingListItemResponseBody(),
               builder().from(tescoWarehouseHandler)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(asdaWarehouseHandlerNonGeoCoded)
                 .withDistanceInMiles(null)
                 .buildCandidateMatchingListItemResponseBody(),
             ),
@@ -190,7 +203,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       }
 
       @Test
-      fun `return Jobs list with calculated distance`() {
+      fun `return Jobs list with calculated distance for jobs with geo-coded postcodes`() {
         assertGetMatchingCandidateJobsIsOK(
           parameters = requestParams.toString(),
           expectedResponse = expectedResponseListOf(
@@ -199,6 +212,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
               .buildCandidateMatchingListItemResponseBody(),
             builder().from(amazonForkliftOperator)
               .withDistanceInMiles(20.0f)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(asdaWarehouseHandlerNonGeoCoded)
+              .withDistanceInMiles(null)
               .buildCandidateMatchingListItemResponseBody(),
             tescoWarehouseHandler.candidateMatchingListItemResponseBody,
           ),
@@ -215,7 +231,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         }
 
         @Test
-        fun `return Jobs filtered by search radius`() {
+        fun `return Jobs filtered by search radius for jobs when postcode is geo-coded`() {
           assertGetMatchingCandidateJobsIsOK(
             parameters = requestParams.toString(),
             expectedResponse = expectedResponseListOf(
@@ -235,6 +251,7 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
             assertAddArchived(amazonForkliftOperator.id.id, prisonNumber)
             assertAddArchived(amazonForkliftOperator.id.id, anotherPrisonNumber)
             assertAddArchived(tescoWarehouseHandler.id.id, anotherPrisonNumber)
+            assertAddArchived(asdaWarehouseHandlerNonGeoCoded.id.id, prisonNumber)
 
             assertGetMatchingCandidateJobsIsOK(
               parameters = requestParams.toString(),
@@ -249,10 +266,11 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         @DisplayName("And candidates have expressed interest")
         inner class AndCandidatesExpressed {
           @Test
-          fun `return Jobs tagged with candidate's interest`() {
+          fun `return only geo-located Jobs tagged with candidate's interest`() {
             assertAddExpressionOfInterest(abcConstructionApprentice.id.id, prisonNumber)
             assertAddExpressionOfInterest(abcConstructionApprentice.id.id, anotherPrisonNumber)
             assertAddExpressionOfInterest(tescoWarehouseHandler.id.id, anotherPrisonNumber)
+            assertAddExpressionOfInterest(asdaWarehouseHandlerNonGeoCoded.id.id, anotherPrisonNumber)
 
             assertGetMatchingCandidateJobsIsOK(
               parameters = requestParams.toString(),
@@ -448,6 +466,213 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
               ),
             )
           }
+        }
+      }
+    }
+  }
+
+  @Nested
+  @DisplayName("Given Job Board has non geo-coded jobs")
+  inner class GivenJobsBoardHasNonGeoCodedJobs {
+    @BeforeEach
+    fun beforeEach() = givenRegionalAndNationalNonGeoCodedJobs()
+
+    @Test
+    fun `return Jobs list without calculating distance`() {
+      assertGetMatchingCandidateJobsIsOK(
+        parameters = requestParams.toString(),
+        expectedResponse = expectedResponseListOf(
+          builder().from(asdaWarehouseHandlerNonGeoCoded)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(lidlWarehouseHandlerNonGeoCoded)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(dpdForkliftOperatorNonGeoCoded)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(amazonForkliftOperator)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+        ),
+      )
+    }
+
+    @Test
+    fun `return National Jobs list`() {
+      requestParams.append("&isNationalJob=true")
+      assertGetMatchingCandidateJobsIsOK(
+        parameters = requestParams.toString(),
+        expectedResponse = expectedResponseListOf(
+          builder().from(dpdNationalForkliftOperator)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(abcNationalConstructionApprentice)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+        ),
+      )
+    }
+
+    @Nested
+    @DisplayName("And an employer id has been provided")
+    inner class AndAnEmployerIdHasBeenProvided {
+      @BeforeEach
+      fun setUp() {
+        requestParams.append("&employerId=${dpdNationalForkliftOperator.employer.id.id}")
+      }
+
+      @Test
+      fun `should return employer matching non-geocoded jobs`() {
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = requestParams.toString(),
+          expectedResponse = expectedResponseListOf(
+            builder().from(dpdForkliftOperatorNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+
+      @Test
+      fun `should return employer matching National Jobs list`() {
+        requestParams.append("&isNationalJob=true")
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = requestParams.toString(),
+          expectedResponse = expectedResponseListOf(
+            builder().from(dpdNationalForkliftOperator)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+    }
+
+    @Nested
+    @DisplayName("And a 'no fixed abode' release area postcode has been provided")
+    inner class AndNoFixedAbodeReleaseAreaPostcodeHasBeenProvided {
+      @BeforeEach
+      fun setUp() {
+        requestParams.append("&releaseArea=$NO_FIXED_ABODE_POSTCODE")
+      }
+
+      @Test
+      fun `return Jobs list without calculating distance`() {
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = requestParams.toString(),
+          expectedResponse = expectedResponseListOf(
+            builder().from(asdaWarehouseHandlerNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(lidlWarehouseHandlerNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(dpdForkliftOperatorNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+
+      @Nested
+      @DisplayName("And a search radius has been provided")
+      inner class AndSearchRadiusHasBeenProvided {
+        @BeforeEach
+        fun setUp() {
+          val searchRadiusInMiles = 20
+          requestParams.append("&searchRadius=$searchRadiusInMiles")
+        }
+
+        @Test
+        fun `return Jobs list without calculating distance for non-geocoded jobs`() {
+          assertGetMatchingCandidateJobsIsOK(
+            parameters = requestParams.toString(),
+            expectedResponse = expectedResponseListOf(
+              builder().from(asdaWarehouseHandlerNonGeoCoded)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(lidlWarehouseHandlerNonGeoCoded)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(dpdForkliftOperatorNonGeoCoded)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(amazonForkliftOperator)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+            ),
+          )
+        }
+
+        @Test
+        fun `return National Jobs list`() {
+          requestParams.append("&isNationalJob=true")
+          assertGetMatchingCandidateJobsIsOK(
+            parameters = requestParams.toString(),
+            expectedResponse = expectedResponseListOf(
+              builder().from(abcNationalConstructionApprentice)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+              builder().from(dpdNationalForkliftOperator)
+                .withDistanceInMiles(null)
+                .buildCandidateMatchingListItemResponseBody(),
+            ),
+          )
+        }
+      }
+    }
+
+    @Nested
+    @DisplayName("And a regular valid release area postcode has been provided")
+    inner class AndReleaseAreaPostcodeHasBeenProvided {
+      @BeforeEach
+      fun setUp() {
+        requestParams.append("&releaseArea=$RELEASE_AREA_POSTCODE")
+      }
+
+      @Test
+      fun `return Jobs list without calculated distance for non-geo-coded jobs - UNRESTRICTED SEARCH - searchRadius is NULL`() {
+        assertGetMatchingCandidateJobsIsOK(
+          parameters = requestParams.toString(),
+          expectedResponse = expectedResponseListOf(
+            builder().from(asdaWarehouseHandlerNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(lidlWarehouseHandlerNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(dpdForkliftOperatorNonGeoCoded)
+              .withDistanceInMiles(null)
+              .buildCandidateMatchingListItemResponseBody(),
+            builder().from(amazonForkliftOperator)
+              .withDistanceInMiles(20.0f)
+              .buildCandidateMatchingListItemResponseBody(),
+          ),
+        )
+      }
+
+      @Nested
+      @DisplayName("And a search radius has been provided - RESTRICTED SEARCH")
+      inner class AndSearchRadiusHasBeenProvided {
+        @BeforeEach
+        fun setUp() {
+          val searchRadiusInMiles = 20
+          requestParams.append("&searchRadius=$searchRadiusInMiles")
+        }
+
+        @Test
+        fun `return jobs with geo-coded postcodes within search radius`() {
+          assertGetMatchingCandidateJobsIsOK(
+            parameters = requestParams.toString(),
+            expectedResponse = expectedResponseListOf(
+              builder().from(amazonForkliftOperator)
+                .withDistanceInMiles(20.0f)
+                .buildCandidateMatchingListItemResponseBody(),
+            ),
+          )
         }
       }
     }

@@ -28,7 +28,20 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.closingDate,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
-      CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT),
+      CASE WHEN pos1.xCoordinate IS NULL OR pos1.yCoordinate IS NULL
+          THEN NULL
+          WHEN pos2.xCoordinate IS NULL OR pos2.yCoordinate IS NULL
+          THEN NULL
+          ELSE CAST(
+                 ROUND(
+                   SQRT(
+                     POWER(pos2.xCoordinate - pos1.xCoordinate, 2) +
+                     POWER(pos2.yCoordinate - pos1.yCoordinate, 2)
+                   ) / 1609.34,
+                   1
+                 ) AS float
+               )
+      END,
       j.isNational,
       j.numberOfVacancies
     )
@@ -41,8 +54,11 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     WHERE  (j.closingDate >= :currentDate OR j.closingDate IS NULL)
     AND (LOWER(j.sector) IN :#{#sectors} OR :#{#sectors} IS NULL )
     AND a.id IS NULL
-    AND (CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT) <= :searchRadius
-    OR pos1.code IS NULL OR pos2.code IS NULL OR pos2.xCoordinate IS NULL OR pos2.yCoordinate IS NULL OR :searchRadius IS NULL)
+    AND (
+      :isNationalJob IS TRUE      
+      OR COALESCE(:searchRadius, 0) <= 0
+      OR (pos1.xCoordinate IS NOT NULL AND pos1.yCoordinate IS NOT NULL AND COALESCE(CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT), -1) <= :searchRadius)
+    )
     AND (j.isNational = :isNationalJob OR :isNationalJob IS NULL)
     AND (e.id.id = :employerId OR :employerId IS NULL)
   """,

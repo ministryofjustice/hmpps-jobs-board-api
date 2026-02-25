@@ -33,4 +33,17 @@ class PostcodeLocationService(
 
     postcodesRepository.save(postcodeToSave)
   }
+
+  fun isGeoCoded(postcode: String?): Boolean {
+    val pc = postcode?.trim()?.takeIf { it.isNotEmpty() } ?: return false
+
+    postcodesRepository.findByCode(pc)?.let { saved ->
+      return saved.xCoordinate != null && saved.yCoordinate != null
+    }
+    val dpa = runCatching {
+      osPlacesAPIClient.getAddressesFor(pc)
+    }.getOrNull() ?: return false
+
+    return dpa.xCoordinate != null && dpa.yCoordinate != null
+  }
 }

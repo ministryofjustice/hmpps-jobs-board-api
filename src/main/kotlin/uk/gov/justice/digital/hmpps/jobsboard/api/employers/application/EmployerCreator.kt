@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 @Service
 class EmployerCreator(
   private val employerRepository: EmployerRepository,
-  @Autowired(required = false)
+  @param:Autowired(required = false)
   private val outboundEventsService: OutboundEventsService?,
   private val uuidGenerator: UUIDGenerator,
   private val timeProvider: TimeProvider,
