@@ -31,7 +31,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 class EmployersGet(
   private val employerRetriever: EmployerRetriever,
 ) {
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__EMPLOYERS__RO')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__EMPLOYERS__RO','ROLE_JOBS_BOARD__EMPLOYERS__RW')")
   @GetMapping("/{id}")
   @Operation(
     summary = "Retrieve an Employer ",
@@ -71,7 +71,7 @@ class EmployersGet(
     return ResponseEntity.ok().body(GetEmployerResponse.from(employer))
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__EMPLOYERS__RO')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__EMPLOYERS__RO','ROLE_JOBS_BOARD__EMPLOYERS__RW')")
   @GetMapping("")
   @Operation(
     summary = "Retrieve all employers",
