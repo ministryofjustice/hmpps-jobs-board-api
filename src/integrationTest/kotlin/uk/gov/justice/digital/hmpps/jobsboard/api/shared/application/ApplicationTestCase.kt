@@ -448,7 +448,7 @@ abstract class ApplicationTestCase {
         val assertFieldsAreSorted: (String, List<Comparable<*>?>?) -> Unit = { fieldName, expectedList ->
           expectedList?.let { sortedList ->
             sortedList.forEachIndexed { index, expectedValue ->
-              jsonPath("$.content[$index].$fieldName", equalTo(expectedValue))
+              jsonPath("$.content[$index].$fieldName", equalTo<Comparable<*>>(expectedValue))
             }
           }
         }
