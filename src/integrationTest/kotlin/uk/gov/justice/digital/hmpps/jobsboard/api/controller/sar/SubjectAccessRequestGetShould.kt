@@ -26,7 +26,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
 
       @Test
       fun `access forbidden when no role`() {
-        val headers = setAuthorisation()
+        val headers = httpHeaders()
 
         mockMvc.get("/subject-access-request?prn=${knownApplicant.prisonNumber}") {
           contentType = APPLICATION_JSON
@@ -43,7 +43,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
 
       @Test
       fun `access forbidden with wrong role`() {
-        val headers = setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
+        val headers = httpHeaders(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
 
         mockMvc.get("/subject-access-request?prn=${knownApplicant.prisonNumber}") {
           contentType = APPLICATION_JSON
@@ -63,7 +63,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
     inner class HappyPath {
       @Test
       fun `should return 204 if no prisoner data`() {
-        val headers = setAuthorisation(roles = listOf("ROLE_SAR_DATA_ACCESS"))
+        val headers = httpHeaders(roles = listOf("ROLE_SAR_DATA_ACCESS"))
 
         mockMvc.get("/subject-access-request?prn=${knownApplicant.prisonNumber}") {
           contentType = APPLICATION_JSON
@@ -84,7 +84,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
       fun `should return data if prisoner exists`() {
         givenMoreApplicationsFromMultiplePrisons()
 
-        val headers = setAuthorisation(roles = listOf("ROLE_SAR_DATA_ACCESS"))
+        val headers = httpHeaders(roles = listOf("ROLE_SAR_DATA_ACCESS"))
 
         mockMvc.get("/subject-access-request?prn=${knownApplicant.prisonNumber}") {
           contentType = APPLICATION_JSON
@@ -112,7 +112,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
 
       @Test
       fun `should return 209 if given a crn`() {
-        val headers = setAuthorisation(roles = listOf("ROLE_SAR_DATA_ACCESS"))
+        val headers = httpHeaders(roles = listOf("ROLE_SAR_DATA_ACCESS"))
 
         mockMvc.get("/subject-access-request?crn=A111111") {
           contentType = APPLICATION_JSON

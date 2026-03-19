@@ -1,0 +1,68 @@
+{
+  "applications": [
+    {
+      "jobTitle": "Forklift operator",
+      "employerName": "Amazon",
+      "prisonNumber": "GC12HDK",
+      "histories": [
+        {
+          "firstName": "SOME",
+          "lastName": "ONE",
+          "status": "APPLICATION_MADE",
+          "prisonId": "MDI",
+          "modifiedAt": "2024-01-01T00:00:00Z"
+        }
+      ],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "lastModifiedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "jobTitle": "Warehouse handler",
+      "employerName": "Tesco",
+      "prisonNumber": "GC12HDK",
+      "histories": [
+        {
+          "firstName": "SOME",
+          "lastName": "ONE",
+          "status": "APPLICATION_MADE",
+          "prisonId": "MDI",
+          "modifiedAt": "2024-01-01T00:00:00Z"
+        }
+      ],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "lastModifiedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "jobTitle": "Apprentice plasterer",
+      "employerName": "ABC Construction",
+      "prisonNumber": "GC12HDK",
+      "histories": [
+        {
+          "firstName": "SOME",
+          "lastName": "ONE",
+          "status": "UNSUCCESSFUL_AT_INTERVIEW",
+          "prisonId": "MDI",
+          "modifiedAt": "2024-01-01T00:00:00Z"
+        }
+      ],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "lastModifiedAt": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "expressionsOfInterest": [
+    {
+      "jobTitle": "Forklift operator",
+      "employerName": "Amazon",
+      "prisonNumber": "GC12HDK",
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "archivedJobs": [
+    {
+      "jobTitle": "Apprentice plasterer",
+      "employerName": "ABC Construction",
+      "prisonNumber": "GC12HDK",
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}
