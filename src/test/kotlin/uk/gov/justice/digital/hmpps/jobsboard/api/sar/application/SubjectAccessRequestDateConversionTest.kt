@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.subjectaccessrequest.templates.DateConversio
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class SubjectAccessRequestDateConversionTest {
   companion object {
@@ -31,7 +32,7 @@ class SubjectAccessRequestDateConversionTest {
     // Year	    Clocks go forward	    Clocks go back
     // 2025	    30 March	            26 October
     val zoneId = ZoneId.of("Europe/London")
-    val sarReportFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, h:mm:ss a")
+    val sarReportFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, h:mm:ss a").withLocale(Locale.UK)
     val expectedDateTime = Instant.parse(dateTimeString).atZone(zoneId).toLocalDateTime().format(sarReportFormatter)
 
     val actualDateTime = dateConversionHelper.convertDates(dateTimeString)
