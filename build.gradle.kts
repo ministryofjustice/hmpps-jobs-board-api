@@ -19,7 +19,7 @@ dependencies {
   runtimeOnly("org.postgresql:postgresql")
 
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.0.1")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.1.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.1.1")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("io.mockk:mockk:1.14.5")
@@ -41,7 +41,7 @@ testing {
       dependencies {
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
         implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.0.1")
-        implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.1.0")
+        implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.1.1")
         implementation("org.springframework.boot:spring-boot-starter-test")
         implementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
         implementation("org.wiremock:wiremock-standalone:3.13.2")
