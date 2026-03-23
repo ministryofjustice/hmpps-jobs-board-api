@@ -137,6 +137,9 @@ abstract class ApplicationTestCase {
 
   protected val objectMapper: ObjectMapper = jacksonObjectMapper()
 
+  protected val defaultUser = "test-client"
+  protected var currentUser = defaultUser
+
   private val countOfGettingCurrentTime = intArrayOf(0)
 
   val defaultTimezoneId = ZoneId.of("Z")
@@ -220,12 +223,12 @@ abstract class ApplicationTestCase {
   }
 
   internal fun setAuthorisation(
-    user: String = "test-client",
+    user: String,
     roles: List<String> = listOf(),
   ): (HttpHeaders) -> Unit = jwtAuthorisationHelper.setAuthorisationHeader(user, roles = roles)
 
-  protected fun httpHeaders() = HttpHeaders().also { setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT")).invoke(it) }
-  protected fun httpHeaders(roles: List<String>) = HttpHeaders().also { setAuthorisation(roles = roles).invoke(it) }
+  protected fun httpHeaders() = HttpHeaders().also { setAuthorisation(user = currentUser, roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT")).invoke(it) }
+  protected fun httpHeaders(roles: List<String>) = HttpHeaders().also { setAuthorisation(user = currentUser, roles = roles).invoke(it) }
 
   protected fun assertAddExpressionOfInterest(
     jobId: String? = null,

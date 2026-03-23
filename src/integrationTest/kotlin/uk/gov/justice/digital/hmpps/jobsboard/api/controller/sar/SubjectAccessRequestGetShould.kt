@@ -2,21 +2,39 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.controller.sar
 
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.nullValue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.get
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure.ApplicationAuditCleaner
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationMother.knownApplicant
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.applications.ApplicationsTestCase
-import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ArchivedDTO
+import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobMother.amazonForkliftOperator
 import uk.gov.justice.digital.hmpps.jobsboard.api.sar.data.ExpressionOfInterestDTO
 
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class SubjectAccessRequestGetShould : ApplicationsTestCase() {
+  @Autowired
+  protected lateinit var applicationAuditCleaner: ApplicationAuditCleaner
+
+  @BeforeEach
+  override fun setup() {
+    super.setup()
+    applicationAuditCleaner.deleteAllRevisions()
+  }
 
   @Nested
   @DisplayName("/subject-access-request")
   inner class SubjectAccessRequestEndpoint {
+    init {
+      currentUser = "USER1_GEN"
+    }
+
     @Nested
     inner class Security {
       @Test
@@ -61,10 +79,10 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
 
     @Nested
     inner class HappyPath {
+      private val headers = httpHeaders(roles = listOf("ROLE_SAR_DATA_ACCESS"))
+
       @Test
       fun `should return 204 if no prisoner data`() {
-        val headers = httpHeaders(roles = listOf("ROLE_SAR_DATA_ACCESS"))
-
         mockMvc.get("/subject-access-request?prn=${knownApplicant.prisonNumber}") {
           contentType = APPLICATION_JSON
           accept = APPLICATION_JSON
@@ -83,8 +101,7 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
       @Test
       fun `should return data if prisoner exists`() {
         givenMoreApplicationsFromMultiplePrisons()
-
-        val headers = httpHeaders(roles = listOf("ROLE_SAR_DATA_ACCESS"))
+        assertAddArchived(jobId = amazonForkliftOperator.id.id, prisonNumber = knownApplicant.prisonNumber)
 
         mockMvc.get("/subject-access-request?prn=${knownApplicant.prisonNumber}") {
           contentType = APPLICATION_JSON
@@ -103,8 +120,11 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
             content {
               jsonPath("$.attachments", nullValue())
               jsonPath("$.content.applications[0].prisonNumber", equalTo(knownApplicant.prisonNumber))
+              jsonPath("$.content.applications[0].createdBy", equalTo(currentUser))
+              jsonPath("$.content.applications[0].lastModifiedBy", equalTo(currentUser))
+              jsonPath("$.content.applications[0].histories[0].modifiedBy", equalTo(currentUser))
               jsonPath("$.content.expressionsOfInterest", equalTo(emptyList<ExpressionOfInterestDTO>()))
-              jsonPath("$.content.archivedJobs", equalTo(emptyList<ArchivedDTO>()))
+              jsonPath("$.content.archivedJobs[0].createdBy", equalTo(currentUser))
             }
           }
         }
@@ -112,8 +132,6 @@ class SubjectAccessRequestGetShould : ApplicationsTestCase() {
 
       @Test
       fun `should return 209 if given a crn`() {
-        val headers = httpHeaders(roles = listOf("ROLE_SAR_DATA_ACCESS"))
-
         mockMvc.get("/subject-access-request?crn=A111111") {
           contentType = APPLICATION_JSON
           accept = APPLICATION_JSON

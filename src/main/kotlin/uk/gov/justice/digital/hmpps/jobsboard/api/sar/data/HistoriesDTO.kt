@@ -11,6 +11,8 @@ data class HistoriesDTO(
   val status: String,
   @param:Schema(description = "The name of the prison where the job application was made", example = "Moorland (HMP & YOI)")
   val prisonId: String,
+  @param:Schema(description = "The user who modified this job application", example = "USER2_GEN")
+  val modifiedBy: String,
   @param:Schema(description = "When the job application was modified", example = "2024-11-25T09:45:29.916505Z")
   val modifiedAt: String,
 )

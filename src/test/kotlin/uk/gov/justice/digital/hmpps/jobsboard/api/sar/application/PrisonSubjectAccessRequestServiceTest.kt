@@ -30,6 +30,8 @@ class PrisonSubjectAccessRequestServiceTest {
   fun `should return HmppsSubjectAccessRequestContent when all SAR lists are populated`() {
     val prn = "A1234BC"
     val createdAt = "2023-03-06T00:00:00Z"
+    val createdBy = "USER1_GEN"
+    val lastModifiedBy = "USER2_GEN"
 
     val histories = listOf(
       HistoriesDTO(
@@ -37,6 +39,7 @@ class PrisonSubjectAccessRequestServiceTest {
         lastName = "One",
         status = "SELECTED_FOR_INTERVIEW",
         prisonId = "MOI",
+        modifiedBy = lastModifiedBy,
         modifiedAt = "2024-11-25T09:45:29.916505Z",
       ),
       HistoriesDTO(
@@ -44,6 +47,7 @@ class PrisonSubjectAccessRequestServiceTest {
         lastName = "Two",
         status = "OFFER_ACCEPTED",
         prisonId = "HML",
+        modifiedBy = lastModifiedBy,
         modifiedAt = "2024-12-01T10:30:15.123456Z",
       ),
     )
@@ -56,9 +60,12 @@ class PrisonSubjectAccessRequestServiceTest {
         null,
         null,
         null,
+        additionalInformation = "More about this job application: ...",
         null,
         histories = histories,
+        createdBy = createdBy,
         createdAt = "2024-11-15T18:45:29.916505Z",
+        lastModifiedBy = lastModifiedBy,
         lastModifiedAt = "2024-11-25T09:45:29.916505Z",
       ),
     )
@@ -77,6 +84,7 @@ class PrisonSubjectAccessRequestServiceTest {
         jobTitle = "Sales person",
         employerName = "Boots",
         prisonNumber = prn,
+        createdBy = createdBy,
         createdAt = createdAt,
       ),
     )
@@ -99,7 +107,8 @@ class PrisonSubjectAccessRequestServiceTest {
   @Test
   fun `should return HmppsSubjectAccessRequestContent when one SAR lists is populated`() {
     val prn = "A1234BC"
-    val createdAt = "2023-03-06T00:00:00Z"
+    val createdBy = "USER1_GEN"
+    val lastModifiedBy = "USER2_GEN"
 
     val applications = listOf(
       ApplicationDTO(
@@ -109,9 +118,12 @@ class PrisonSubjectAccessRequestServiceTest {
         null,
         null,
         null,
+        additionalInformation = "More about this job application: ...",
         null,
         histories = emptyList(),
+        createdBy = createdBy,
         createdAt = "2024-11-15T18:45:29.916505Z",
+        lastModifiedBy = lastModifiedBy,
         lastModifiedAt = "2024-11-25T09:45:29.916505Z",
       ),
     )

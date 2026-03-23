@@ -100,6 +100,10 @@ class SubjectAccessRequestApiTest {
 
     private val sarPrisonNumber = knownApplicant.prisonNumber
 
+    init {
+      currentUser = "USER1_GEN"
+    }
+
     override fun getSarHelper(): SarIntegrationTestHelper = sarIntegrationTestHelper
     override fun getWebTestClientInstance(): WebTestClient = webTestClient
 
