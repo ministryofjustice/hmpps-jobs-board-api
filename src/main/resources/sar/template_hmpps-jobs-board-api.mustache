@@ -1,0 +1,76 @@
+<h1 class="title">Match Jobs and Manage Applications</h1>
+{{#.}}
+    <h2>Applications</h2>
+    {{#applications}}
+        <h3>Application</h3>
+        <table class="summary-list">
+            <tr><td>Job Title</td><td>{{ optionalValue jobTitle }}</td></tr>
+            <tr><td>Employer Name</td><td>{{ optionalValue employerName }}</td></tr>
+            <tr><td>Created at</td><td>{{ optionalValue (formatDate createdAt) }}</td></tr>
+            <tr><td>Last modified at</td><td>{{ optionalValue (formatDate lastModifiedAt) }}</td></tr>
+        </table>
+        <h4>Histories</h4>
+        {{#histories}}
+            <table class="data-table">
+                <tr>
+                    <td class="data-column-35">Status</td>
+                    <td class="data-column-30">Prison name</td>
+                    <td class="data-column-35">Modified at</td>
+                </tr>
+                <tr>
+                    <td>{{ optionalValue status }}</td>
+                    <td>{{ getPrisonName prisonId }}</td>
+                    <td>{{ optionalValue (formatDate modifiedAt)}}</td>
+                </tr>
+            </table>
+        {{/histories}}
+        {{^histories}}
+            <p>No Data Held</p>
+        {{/histories}}
+    {{/applications}}
+    {{^applications}}
+        <p>No Data Held</p>
+    {{/applications}}
+
+    <h2>Expressions of interest</h2>
+    {{#expressionsOfInterest}}
+        <table class="data-table">
+            <tr>
+                <td class="data-column-35">Job title</td>
+                <td class="data-column-30">Employer name</td>
+                <td class="data-column-35">Created at</td>
+            </tr>
+            <tr>
+                <td>{{ optionalValue jobTitle }}</td>
+                <td>{{ optionalValue employerName }}</td>
+                <td>{{ optionalValue (formatDate createdAt)}}</td>
+            </tr>
+        </table>
+    {{/expressionsOfInterest}}
+    {{^expressionsOfInterest}}
+        <p>No Data Held</p>
+    {{/expressionsOfInterest}}
+
+    <h2>Archived jobs</h2>
+    {{#archivedJobs}}
+        <table class="data-table">
+            <tr>
+                <td class="data-column-35">Job title</td>
+                <td class="data-column-30">Employer name</td>
+                <td class="data-column-35">Created at</td>
+            </tr>
+            <tr>
+                <td>{{ optionalValue jobTitle }}</td>
+                <td>{{ optionalValue employerName }}</td>
+                <td>{{ optionalValue (formatDate createdAt)}}</td>
+            </tr>
+        </table>
+    {{/archivedJobs}}
+    {{^archivedJobs}}
+        <p>No Data Held</p>
+    {{/archivedJobs}}
+    <br/>
+{{/.}}
+{{^.}}
+    <p>No Data Held</p>
+{{/.}}

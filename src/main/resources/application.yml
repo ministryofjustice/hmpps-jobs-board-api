@@ -106,3 +106,9 @@ os:
     api:
       url: "https://api.os.uk/search/places/v1"
       key: ${os.places.api.key}
+
+hmpps:
+  sar:
+    template:
+      path: /sar/template_hmpps-jobs-board-api.mustache
+      enabled: true

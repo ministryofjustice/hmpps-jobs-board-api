@@ -20,6 +20,7 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.context.annotation.Import
 import org.springframework.data.auditing.AuditingHandler
 import org.springframework.data.auditing.DateTimeProvider
@@ -60,15 +61,17 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.RELEASE_AREA_POSTCODE
 import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.PostcodeMother.postcodeMap
 import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.EmployerRepository
-import uk.gov.justice.digital.hmpps.jobsboard.api.helpers.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure.OSPlacesMockServer
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.LocalStackContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.LocalStackContainer.setLocalStackProperties
 import uk.gov.justice.digital.hmpps.jobsboard.api.testcontainers.PostgresContainer
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.DefaultTimeProvider
+import uk.gov.justice.digital.hmpps.subjectaccessrequest.SarIntegrationTestHelper
+import uk.gov.justice.digital.hmpps.subjectaccessrequest.SarIntegrationTestHelperConfig
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.MissingQueueException
+import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 import java.security.SecureRandom
 import java.time.Instant
 import java.time.LocalDate
@@ -83,11 +86,12 @@ import java.util.concurrent.TimeUnit.SECONDS
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = NONE)
+@AutoConfigureWebTestClient
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test-containers-flyway")
-@Import(SqsTestConfig::class)
+@Import(SqsTestConfig::class, SarIntegrationTestHelperConfig::class)
 abstract class ApplicationTestCase {
 
   @Autowired
@@ -112,10 +116,13 @@ abstract class ApplicationTestCase {
   protected lateinit var mockMvc: MockMvc
 
   @Autowired
-  private lateinit var jwtAuthHelper: JwtAuthHelper
+  private lateinit var jwtAuthorisationHelper: JwtAuthorisationHelper
 
   @Autowired
   protected lateinit var hmppsQueueService: HmppsQueueService
+
+  @Autowired
+  lateinit var sarIntegrationTestHelper: SarIntegrationTestHelper
 
   private val outboundQueue by lazy {
     hmppsQueueService.findByQueueId(OUTBOUND_QUEUE_ID)
@@ -215,9 +222,10 @@ abstract class ApplicationTestCase {
   internal fun setAuthorisation(
     user: String = "test-client",
     roles: List<String> = listOf(),
-  ): HttpHeaders = jwtAuthHelper.setAuthorisationForUnitTests(user, roles)
+  ): (HttpHeaders) -> Unit = jwtAuthorisationHelper.setAuthorisationHeader(user, roles = roles)
 
-  private fun httpHeaders(): HttpHeaders = this.setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT"))
+  protected fun httpHeaders() = HttpHeaders().also { setAuthorisation(roles = listOf("ROLE_EDUCATION_WORK_PLAN_EDIT")).invoke(it) }
+  protected fun httpHeaders(roles: List<String>) = HttpHeaders().also { setAuthorisation(roles = roles).invoke(it) }
 
   protected fun assertAddExpressionOfInterest(
     jobId: String? = null,
