@@ -10,10 +10,13 @@
           "lastName": "ONE",
           "status": "APPLICATION_MADE",
           "prisonId": "MDI",
+          "modifiedBy": "USER1_GEN",
           "modifiedAt": "2024-01-01T00:00:00Z"
         }
       ],
+      "createdBy": "USER1_GEN",
       "createdAt": "2024-01-01T00:00:00Z",
+      "lastModifiedBy": "USER1_GEN",
       "lastModifiedAt": "2024-01-01T00:00:00Z"
     },
     {
@@ -26,10 +29,13 @@
           "lastName": "ONE",
           "status": "APPLICATION_MADE",
           "prisonId": "MDI",
+          "modifiedBy": "USER1_GEN",
           "modifiedAt": "2024-01-01T00:00:00Z"
         }
       ],
+      "createdBy": "USER1_GEN",
       "createdAt": "2024-01-01T00:00:00Z",
+      "lastModifiedBy": "USER1_GEN",
       "lastModifiedAt": "2024-01-01T00:00:00Z"
     },
     {
@@ -42,10 +48,13 @@
           "lastName": "ONE",
           "status": "UNSUCCESSFUL_AT_INTERVIEW",
           "prisonId": "MDI",
+          "modifiedBy": "USER1_GEN",
           "modifiedAt": "2024-01-01T00:00:00Z"
         }
       ],
+      "createdBy": "USER1_GEN",
       "createdAt": "2024-01-01T00:00:00Z",
+      "lastModifiedBy": "USER1_GEN",
       "lastModifiedAt": "2024-01-01T00:00:00Z"
     }
   ],
@@ -62,6 +71,7 @@
       "jobTitle": "Apprentice plasterer",
       "employerName": "ABC Construction",
       "prisonNumber": "GC12HDK",
+      "createdBy": "USER1_GEN",
       "createdAt": "2024-01-01T00:00:00Z"
     }
   ]

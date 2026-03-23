@@ -7,20 +7,24 @@
             <tr><td>Job Title</td><td>{{ optionalValue jobTitle }}</td></tr>
             <tr><td>Employer Name</td><td>{{ optionalValue employerName }}</td></tr>
             <tr><td>Created at</td><td>{{ optionalValue (formatDate createdAt) }}</td></tr>
+            <tr><td>Created by</td><td>{{ getUserLastName createdBy }}</td></tr>
             <tr><td>Last modified at</td><td>{{ optionalValue (formatDate lastModifiedAt) }}</td></tr>
+            <tr><td>Last modified by</td><td>{{ getUserLastName lastModifiedBy }}</td></tr>
         </table>
         <h4>Histories</h4>
         {{#histories}}
             <table class="data-table">
                 <tr>
-                    <td class="data-column-35">Status</td>
-                    <td class="data-column-30">Prison name</td>
-                    <td class="data-column-35">Modified at</td>
+                    <td class="data-column-30">Status</td>
+                    <td class="data-column-20">Prison name</td>
+                    <td class="data-column-30">Modified at</td>
+                    <td class="data-column-20">Modified by</td>
                 </tr>
                 <tr>
                     <td>{{ optionalValue status }}</td>
                     <td>{{ getPrisonName prisonId }}</td>
                     <td>{{ optionalValue (formatDate modifiedAt)}}</td>
+                    <td>{{ getUserLastName modifiedBy }}</td>
                 </tr>
             </table>
         {{/histories}}
@@ -55,14 +59,16 @@
     {{#archivedJobs}}
         <table class="data-table">
             <tr>
-                <td class="data-column-35">Job title</td>
-                <td class="data-column-30">Employer name</td>
-                <td class="data-column-35">Created at</td>
+                <td class="data-column-30">Job title</td>
+                <td class="data-column-20">Employer name</td>
+                <td class="data-column-30">Created at</td>
+                <td class="data-column-20">Created by</td>
             </tr>
             <tr>
                 <td>{{ optionalValue jobTitle }}</td>
                 <td>{{ optionalValue employerName }}</td>
                 <td>{{ optionalValue (formatDate createdAt)}}</td>
+                <td>{{ getUserLastName createdBy }}</td>
             </tr>
         </table>
     {{/archivedJobs}}

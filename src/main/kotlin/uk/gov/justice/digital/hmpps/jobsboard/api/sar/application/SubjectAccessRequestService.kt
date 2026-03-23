@@ -42,24 +42,30 @@ class SubjectAccessRequestService(
             lastName = lastName,
             status = status,
             prisonId = prisonId,
+            modifiedBy = lastModifiedBy!!,
             modifiedAt = lastModifiedAt.toString(),
           )
         }
       }
-      val includeOptionalFields = histories.isEmpty()
+      val includeOptionalFields = histories.isEmpty
 
-      ApplicationDTO(
-        jobTitle = application.job.title,
-        employerName = application.job.employer.name,
-        prisonNumber = application.prisonNumber,
-        firstName = if (includeOptionalFields) application.firstName else null,
-        histories = histories.toList(),
-        lastName = if (includeOptionalFields) application.lastName else null,
-        status = if (includeOptionalFields) application.status else null,
-        prisonId = if (includeOptionalFields) application.prisonId else null,
-        createdAt = application.createdAt?.toString(),
-        lastModifiedAt = application.lastModifiedAt?.toString(),
-      )
+      application.run {
+        ApplicationDTO(
+          jobTitle = job.title,
+          employerName = job.employer.name,
+          prisonNumber = prisonNumber,
+          firstName = firstName.takeIf { includeOptionalFields },
+          histories = histories.toList(),
+          lastName = lastName.takeIf { includeOptionalFields },
+          status = status.takeIf { includeOptionalFields },
+          additionalInformation = additionalInformation,
+          prisonId = prisonId.takeIf { includeOptionalFields },
+          createdBy = createdBy!!,
+          createdAt = createdAt!!.toString(),
+          lastModifiedBy = lastModifiedBy!!,
+          lastModifiedAt = lastModifiedAt!!.toString(),
+        )
+      }
     }.toList().let { CompletableFuture.completedFuture(it) }
   }
 
@@ -77,7 +83,7 @@ class SubjectAccessRequestService(
     when {
       endTime != null -> archivedRepository.findByIdPrisonNumberAndCreatedAtLessThanEqualOrderByCreatedAtDesc(sarFilter.prn, endTime)
       else -> archivedRepository.findByIdPrisonNumberOrderByCreatedAtDesc(sarFilter.prn)
-    }.map { it.run { ArchivedDTO(job.title, job.employer.name, sarFilter.prn, createdAt.toString()) } }
+    }.map { it.run { ArchivedDTO(job.title, job.employer.name, sarFilter.prn, createdBy, createdAt.toString()) } }
       .toList().let { CompletableFuture.completedFuture(it) }
   }
 

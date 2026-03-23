@@ -17,12 +17,18 @@ data class ApplicationDTO(
   val lastName: String?,
   @param:Schema(description = "The status of the job application", example = "SELECTED_FOR_INTERVIEW")
   val status: String?,
+  @param:Schema(description = "Additional information of the job application")
+  val additionalInformation: String?,
   @param:Schema(description = "The identifier of the prison where the job application was made")
   val prisonId: String?,
   @param:Schema(description = "A list of applications made in the past")
   val histories: List<HistoriesDTO>,
+  @param:Schema(description = "The user who created this job application", example = "USER1_GEN")
+  val createdBy: String,
   @param:Schema(description = "The initial time the job application was made", example = "2024-11-15T18:45:29.916505Z")
-  val createdAt: String?,
+  val createdAt: String,
+  @param:Schema(description = "The user who last modified this job application", example = "USER2_GEN")
+  val lastModifiedBy: String,
   @param:Schema(description = "The last time the job application was modified", example = "2024-11-25T09:45:29.916505Z")
-  val lastModifiedAt: String?,
+  val lastModifiedAt: String,
 )
