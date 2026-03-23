@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -43,6 +45,7 @@ class JobsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RO')")
   @GetMapping("/{id}")
+  @Tag(name = "Jobs")
   fun retrieve(@PathVariable id: String): ResponseEntity<GetJobResponse> {
     val job: Job = jobRetriever.retrieve(id)
     return ResponseEntity.ok().body(GetJobResponse.from(job))
@@ -50,6 +53,7 @@ class JobsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RO')")
   @GetMapping("")
+  @Tag(name = "Jobs")
   @Operation(
     summary = "Retrieve jobs",
     responses = [
@@ -133,6 +137,32 @@ class JobsGet(
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/matching-candidate")
+  @Tags(Tag(name = "Popular"), Tag(name = "Matching"))
+  @Operation(
+    summary = "Match candidate with jobs",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "The failure status is set when the request is invalid. An error response will be provided.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Incorrect permissions to access this endpoint",
+        useReturnTypeSchema = true,
+        content = [Content()],
+      ),
+    ],
+  )
   fun retrieveAll(
     @RequestParam(required = true)
     prisonNumber: String,
@@ -169,6 +199,7 @@ class JobsGet(
 
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or  hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/{id}/matching-candidate")
+  @Tag(name = "Matching")
   @Operation(
     summary = "Retrieve Job details, while matching candidate",
     responses = [
@@ -214,6 +245,7 @@ class JobsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/matching-candidate/closing-soon")
+  @Tag(name = "Matching")
   @Operation(
     summary = "Retrieve jobs closing soon, matching the given prisoner",
     responses = [
@@ -254,6 +286,7 @@ class JobsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/expressed-interest/closing-soon")
+  @Tag(name = "Matching")
   @Operation(
     summary = "Retrieve jobs of interest closing soon, for the given prisoner",
     responses = [
@@ -288,6 +321,7 @@ class JobsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/expressed-interest")
+  @Tag(name = "Matching")
   @Operation(
     summary = "Retrieve jobs of interest, for the given prisoner",
     responses = [
@@ -367,6 +401,7 @@ class JobsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/archived")
+  @Tag(name = "Matching")
   @Operation(
     summary = "Retrieve archived jobs, for the given prisoner",
     responses = [

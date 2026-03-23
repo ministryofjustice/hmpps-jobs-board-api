@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -24,6 +25,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.application.Employer
 @Validated
 @RestController
 @RequestMapping("/employers", produces = [APPLICATION_JSON_VALUE])
+@Tag(name = "Employers")
 class EmployersPut(
   private val employerCreator: EmployerCreator,
 ) {

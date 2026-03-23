@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs
 
 import io.swagger.v3.oas.annotations.Hidden
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -17,6 +18,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.ExpressionOfI
 @Validated
 @RestController
 @RequestMapping("/jobs/{jobId}/expressions-of-interest", produces = [APPLICATION_JSON_VALUE])
+@Tag(name = "EOI")
 class ExpressionsOfInterestDelete(
   private val expressionOfInterestDeleter: ExpressionOfInterestDeleter,
 ) {

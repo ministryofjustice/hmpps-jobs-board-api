@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -24,21 +25,23 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 @Validated
 @RestController
 @RequestMapping("/applications", produces = [APPLICATION_JSON_VALUE])
+@Tag(name = "Applications")
 class ApplicationsPut(
   private val applicationCreator: ApplicationCreator,
 ) {
   @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @PutMapping("/{id}")
+  @Tag(name = "Popular")
   @Operation(
     summary = "Create or Update an Application to a job for the prisoner",
     responses = [
       ApiResponse(
-        responseCode = "200",
+        responseCode = "201",
         description = "The success status is set as the creation request has been processed correctly.",
         content = [Content()],
       ),
       ApiResponse(
-        responseCode = "201",
+        responseCode = "200",
         description = "The success status is set as the update request has been processed correctly.",
         content = [Content()],
       ),

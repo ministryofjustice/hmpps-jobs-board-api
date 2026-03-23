@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -25,6 +26,7 @@ import java.time.LocalDate
 @Validated
 @RestController
 @RequestMapping("/dashboard", produces = [APPLICATION_JSON_VALUE])
+@Tag(name = "Dashboard")
 class DashboardGet(
   val applicationMetricsRetriever: ApplicationMetricsRetriever,
 ) {

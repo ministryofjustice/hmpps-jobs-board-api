@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -31,6 +32,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.config.ErrorResponse
 @Validated
 @RestController
 @RequestMapping("/applications", produces = [APPLICATION_JSON_VALUE])
+@Tag(name = "Applications")
 class ApplicationsGet(
   private val applicationRetriever: ApplicationRetriever,
   private val applicationByPrisonerRetriever: ApplicationByPrisonerRetriever,
@@ -160,6 +162,7 @@ class ApplicationsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("")
+  @Tag(name = "Popular")
   @Operation(
     summary = "Retrieve applications of the given prison",
     responses = [
