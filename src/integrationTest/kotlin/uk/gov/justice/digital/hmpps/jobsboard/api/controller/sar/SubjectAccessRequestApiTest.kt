@@ -108,14 +108,23 @@ class SubjectAccessRequestApiTest {
     override fun getWebTestClientInstance(): WebTestClient = webTestClient
 
     override fun setupTestData() {
-      val applications = applicationsFromPrisonMDI
+      val timeTicking: () -> Unit = { sarCurrentTime = sarCurrentTime.plusSeconds(60L) }
+      val applications = applicationsFromPrisonMDI.reversed()
 
       // 1) `Applications`: application, histories
-      givenApplicationsAreCreated(*applications.toTypedArray())
+      applications.forEach {
+        givenApplicationsAreCreated(it)
+        timeTicking()
+      }
       // 2) `Expressions of interest`
-      applications.first().apply { assertAddExpressionOfInterest(job.id.id, sarPrisonNumber) }
-      // 3) `Archived jobs`
-      applications.last().apply { assertAddArchived(job.id.id, sarPrisonNumber) }
+      applications.last().apply { assertAddExpressionOfInterest(job.id.id, sarPrisonNumber) }
+      // 3) `Archived jobs` (
+      applications.first().apply { assertAddArchived(job.id.id, sarPrisonNumber) }
+      timeTicking()
+
+      // 4) Update last application: set additionalInformation
+      applications.last().copy(additionalInformation = "More about this job application: ...")
+        .also { assertUpdateApplicationIsOk(it) }
     }
 
     override fun getPrn(): String? = sarPrisonNumber

@@ -9,6 +9,8 @@ data class HistoriesDTO(
   val lastName: String?,
   @field:Schema(description = "The status of the job application", example = "SELECTED_FOR_INTERVIEW")
   val status: String,
+  @field:Schema(description = "Additional information of the job application")
+  val additionalInformation: String?,
   @field:Schema(description = "The identifier of the prison where the job application was made", example = "MDI")
   val prisonId: String,
   @field:Schema(description = "The user who modified this job application", example = "USER2_GEN")
