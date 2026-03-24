@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -28,6 +30,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.employers.domain.Employer
 @Validated
 @RestController
 @RequestMapping("/employers", produces = [APPLICATION_JSON_VALUE])
+@Tag(name = "Employers")
 class EmployersGet(
   private val employerRetriever: EmployerRetriever,
 ) {
@@ -63,6 +66,11 @@ class EmployersGet(
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+      SecurityRequirement("view-employers-role"),
+    ],
   )
   fun retrieve(
     @PathVariable id: String,
@@ -91,6 +99,11 @@ class EmployersGet(
         description = "Incorrect permissions to access this endpoint",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
+    ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+      SecurityRequirement("view-employers-role"),
     ],
   )
   fun retrieveAll(
