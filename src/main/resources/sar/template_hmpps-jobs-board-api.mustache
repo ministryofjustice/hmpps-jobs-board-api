@@ -15,14 +15,16 @@
         {{#histories}}
             <table class="data-table">
                 <tr>
-                    <td class="data-column-30">Status</td>
+                    <td class="data-column-25">Status</td>
                     <td class="data-column-20">Prison name</td>
-                    <td class="data-column-30">Modified at</td>
-                    <td class="data-column-20">Modified by</td>
+                    <td class="data-column-15">Additional information</td>
+                    <td class="data-column-25">Modified at</td>
+                    <td class="data-column-15">Modified by</td>
                 </tr>
                 <tr>
                     <td>{{ optionalValue status }}</td>
                     <td>{{ getPrisonName prisonId }}</td>
+                    <td>{{ optionalValue additionalInformation }}</td>
                     <td>{{ optionalValue (formatDate modifiedAt)}}</td>
                     <td>{{ getUserLastName modifiedBy }}</td>
                 </tr>

@@ -32,12 +32,14 @@ class PrisonSubjectAccessRequestServiceTest {
     val createdAt = "2023-03-06T00:00:00Z"
     val createdBy = "USER1_GEN"
     val lastModifiedBy = "USER2_GEN"
+    val additionalInformation = "More about this job application: ..."
 
     val histories = listOf(
       HistoriesDTO(
         firstName = "Some",
         lastName = "One",
         status = "SELECTED_FOR_INTERVIEW",
+        additionalInformation = additionalInformation,
         prisonId = "MOI",
         modifiedBy = lastModifiedBy,
         modifiedAt = "2024-11-25T09:45:29.916505Z",
@@ -46,6 +48,7 @@ class PrisonSubjectAccessRequestServiceTest {
         firstName = "Another",
         lastName = "Two",
         status = "OFFER_ACCEPTED",
+        additionalInformation = additionalInformation,
         prisonId = "HML",
         modifiedBy = lastModifiedBy,
         modifiedAt = "2024-12-01T10:30:15.123456Z",
@@ -60,7 +63,7 @@ class PrisonSubjectAccessRequestServiceTest {
         null,
         null,
         null,
-        additionalInformation = "More about this job application: ...",
+        additionalInformation = additionalInformation,
         null,
         histories = histories,
         createdBy = createdBy,

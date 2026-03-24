@@ -9,15 +9,25 @@
           "firstName": "SOME",
           "lastName": "ONE",
           "status": "APPLICATION_MADE",
+          "additionalInformation": "More about this job application: ...",
           "prisonId": "MDI",
           "modifiedBy": "USER1_GEN",
-          "modifiedAt": "2024-01-01T00:00:00Z"
+          "modifiedAt": "2024-01-01T00:04:00Z"
+        },
+        {
+          "firstName": "SOME",
+          "lastName": "ONE",
+          "status": "APPLICATION_MADE",
+          "additionalInformation": null,
+          "prisonId": "MDI",
+          "modifiedBy": "USER1_GEN",
+          "modifiedAt": "2024-01-01T00:02:00Z"
         }
       ],
       "createdBy": "USER1_GEN",
-      "createdAt": "2024-01-01T00:00:00Z",
+      "createdAt": "2024-01-01T00:02:00Z",
       "lastModifiedBy": "USER1_GEN",
-      "lastModifiedAt": "2024-01-01T00:00:00Z"
+      "lastModifiedAt": "2024-01-01T00:04:00Z"
     },
     {
       "jobTitle": "Warehouse handler",
@@ -28,15 +38,16 @@
           "firstName": "SOME",
           "lastName": "ONE",
           "status": "APPLICATION_MADE",
+          "additionalInformation": null,
           "prisonId": "MDI",
           "modifiedBy": "USER1_GEN",
-          "modifiedAt": "2024-01-01T00:00:00Z"
+          "modifiedAt": "2024-01-01T00:01:00Z"
         }
       ],
       "createdBy": "USER1_GEN",
-      "createdAt": "2024-01-01T00:00:00Z",
+      "createdAt": "2024-01-01T00:01:00Z",
       "lastModifiedBy": "USER1_GEN",
-      "lastModifiedAt": "2024-01-01T00:00:00Z"
+      "lastModifiedAt": "2024-01-01T00:01:00Z"
     },
     {
       "jobTitle": "Apprentice plasterer",
@@ -47,6 +58,7 @@
           "firstName": "SOME",
           "lastName": "ONE",
           "status": "UNSUCCESSFUL_AT_INTERVIEW",
+          "additionalInformation": null,
           "prisonId": "MDI",
           "modifiedBy": "USER1_GEN",
           "modifiedAt": "2024-01-01T00:00:00Z"
@@ -63,7 +75,7 @@
       "jobTitle": "Forklift operator",
       "employerName": "Amazon",
       "prisonNumber": "GC12HDK",
-      "createdAt": "2024-01-01T00:00:00Z"
+      "createdAt": "2024-01-01T00:03:00Z"
     }
   ],
   "archivedJobs": [
@@ -72,7 +84,7 @@
       "employerName": "ABC Construction",
       "prisonNumber": "GC12HDK",
       "createdBy": "USER1_GEN",
-      "createdAt": "2024-01-01T00:00:00Z"
+      "createdAt": "2024-01-01T00:03:00Z"
     }
   ]
 }
