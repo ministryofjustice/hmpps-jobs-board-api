@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.sar.application
 
+import org.springframework.data.history.Revision
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.ApplicationHistoryRetriever
+import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
@@ -35,19 +37,21 @@ class SubjectAccessRequestService(
       endTime != null -> applicationRepository.findByPrisonNumberAndCreatedAtLessThanEqualOrderByCreatedAtDesc(sarFilter.prn, endTime)
       else -> applicationRepository.findByPrisonNumberOrderByCreatedAtDesc(sarFilter.prn)
     }.map { application ->
-      val histories = applicationHistoryRetriever.retrieveAllApplicationHistories(application.id.id).map {
+      val sortComparator = compareByDescending<Revision<Long, Application>>({ it.revisionNumber.get() }).thenByDescending { it.entity.lastModifiedAt }
+      val histories = applicationHistoryRetriever.retrieveAllApplicationHistories(application.id.id).sortedWith(sortComparator).map {
         it.entity.run {
           HistoriesDTO(
             firstName = firstName,
             lastName = lastName,
             status = status,
+            additionalInformation = additionalInformation,
             prisonId = prisonId,
             modifiedBy = lastModifiedBy!!,
             modifiedAt = lastModifiedAt.toString(),
           )
         }
       }
-      val includeOptionalFields = histories.isEmpty
+      val includeOptionalFields = histories.isEmpty()
 
       application.run {
         ApplicationDTO(
@@ -58,7 +62,7 @@ class SubjectAccessRequestService(
           histories = histories.toList(),
           lastName = lastName.takeIf { includeOptionalFields },
           status = status.takeIf { includeOptionalFields },
-          additionalInformation = additionalInformation,
+          additionalInformation = additionalInformation.takeIf { includeOptionalFields },
           prisonId = prisonId.takeIf { includeOptionalFields },
           createdBy = createdBy!!,
           createdAt = createdAt!!.toString(),
