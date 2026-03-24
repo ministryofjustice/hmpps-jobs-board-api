@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.data.domain.Page
@@ -46,6 +47,35 @@ class JobsGet(
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RO')")
   @GetMapping("/{id}")
   @Tag(name = "Jobs")
+  @Operation(
+    summary = "Retrieve a job",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "The success status is set as the request has been processed correctly.",
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "The failure status is set when the job is not found.",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Error: Unauthorised. The error status is set as the required authorisation was not provided.",
+        content = [Content()],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
+        content = [Content()],
+      ),
+    ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+      SecurityRequirement("view-jobs-role"),
+    ],
+  )
   fun retrieve(@PathVariable id: String): ResponseEntity<GetJobResponse> {
     val job: Job = jobRetriever.retrieve(id)
     return ResponseEntity.ok().body(GetJobResponse.from(job))
@@ -77,6 +107,11 @@ class JobsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+      SecurityRequirement("view-jobs-role"),
+    ],
   )
   fun retrieveAll(
     @RequestParam(required = false)
@@ -91,7 +126,6 @@ class JobsGet(
     @RequestParam(defaultValue = "jobTitle", required = false)
     @Parameter(
       description = "Sorting by (job title / date added)",
-      example = "jobTitle",
       examples = [
         ExampleObject(
           name = "jobTitle",
@@ -109,7 +143,6 @@ class JobsGet(
     @RequestParam(defaultValue = "asc", required = false)
     @Parameter(
       description = "Sorting order (ascending/descending)",
-      example = "desc",
       examples = [
         ExampleObject(name = "asc", value = "asc", description = "ascending order"),
         ExampleObject(name = "desc", value = "desc", description = "descending order"),
@@ -161,6 +194,10 @@ class JobsGet(
         useReturnTypeSchema = true,
         content = [Content()],
       ),
+    ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
     ],
   )
   fun retrieveAll(
@@ -224,6 +261,10 @@ class JobsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieve(
     @PathVariable
@@ -269,6 +310,10 @@ class JobsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieveClosingJobs(
     @RequestParam(required = true)
@@ -310,6 +355,10 @@ class JobsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieveClosingJobsOfInterest(
     @RequestParam(required = true)
@@ -345,6 +394,10 @@ class JobsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieveJobsOfInterest(
     @RequestParam(required = true)
@@ -356,7 +409,6 @@ class JobsGet(
     @RequestParam(defaultValue = "closingDate")
     @Parameter(
       description = "Defines the attribute used to sort the Job list",
-      example = "closingDate",
       examples = [
         ExampleObject(
           name = "jobAndEmployer",
@@ -379,7 +431,6 @@ class JobsGet(
     @RequestParam(defaultValue = "asc")
     @Parameter(
       description = "Defines the sorting order",
-      example = "asc",
       examples = [
         ExampleObject(name = "asc", value = "asc", description = "ascending order"),
         ExampleObject(name = "desc", value = "desc", description = "descending order"),
@@ -425,6 +476,10 @@ class JobsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieveArchivedJobs(
     @RequestParam(required = true)
@@ -436,7 +491,6 @@ class JobsGet(
     @RequestParam(defaultValue = "closingDate")
     @Parameter(
       description = "Defines the attribute used to sort the Job list",
-      example = "closingDate",
       examples = [
         ExampleObject(
           name = "jobAndEmployer",
@@ -459,7 +513,6 @@ class JobsGet(
     @RequestParam(defaultValue = "asc")
     @Parameter(
       description = "Defines the sorting order",
-      example = "asc",
       examples = [
         ExampleObject(name = "asc", value = "asc", description = "ascending order"),
         ExampleObject(name = "desc", value = "desc", description = "descending order"),

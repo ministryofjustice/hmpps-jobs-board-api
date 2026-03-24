@@ -52,7 +52,8 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
         .addSecuritySchemes("edit-jobs-board-role", SecurityScheme().addBearerJwtRequirement("ROLE_EDUCATION_WORK_PLAN_EDIT"))
         .addSecuritySchemes("view-employers-role", SecurityScheme().addBearerJwtRequirement("ROLE_JOBS_BOARD__EMPLOYERS__RO"))
         .addSecuritySchemes("view-jobs-role", SecurityScheme().addBearerJwtRequirement("ROLE_JOBS_BOARD__JOBS__RO"))
-        .addSecuritySchemes("edit-jobs-eoi-role", SecurityScheme().addBearerJwtRequirement("ROLE_JOBS_BOARD__JOBS__EOI__RW")),
+        .addSecuritySchemes("edit-jobs-eoi-role", SecurityScheme().addBearerJwtRequirement("ROLE_JOBS_BOARD__JOBS__EOI__RW"))
+        .addSecuritySchemes("sar-role", SecurityScheme().addBearerJwtRequirement("ROLE_SAR_DATA_ACCESS")),
 
     )
     .addSecurityItem(
@@ -61,7 +62,8 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
         .addList("edit-jobs-board-role", listOf("read", "write"))
         .addList("view-employers-role", listOf("read"))
         .addList("view-jobs-role", listOf("read"))
-        .addList("edit-jobs-eoi-role", listOf("read", "write")),
+        .addList("edit-jobs-eoi-role", listOf("read", "write"))
+        .addList("sar-role", listOf("read")),
     )
 
   @Bean
@@ -83,6 +85,11 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
         it.example = null
       }
     }
+    // Add security requirements to SAR endpoints
+    listOf(
+      "/subject-access-request",
+      "/subject-access-request/template",
+    ).forEach { openApi.paths[it]!!.get!!.security = listOf(SecurityRequirement().addList("sar-role", listOf("read"))) }
   }
 }
 

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -55,6 +56,10 @@ class DashboardGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieveMetricsSummary(
     @RequestParam(required = true)
@@ -103,6 +108,10 @@ class DashboardGet(
         description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
         content = [Content()],
       ),
+    ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
     ],
   )
   fun retrieveMetricsTotalApplications(
@@ -159,6 +168,10 @@ class DashboardGet(
         description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
         content = [Content()],
       ),
+    ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
     ],
   )
   fun retrieveMetricsLatestApplications(

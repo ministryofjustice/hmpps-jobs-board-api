@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
@@ -80,6 +81,9 @@ class EmployersPut(
         responseCode = "403",
         description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
       ),
+    ],
+    security = [
+      SecurityRequirement("edit-jobs-board-role"),
     ],
   )
   fun createOrUpdate(

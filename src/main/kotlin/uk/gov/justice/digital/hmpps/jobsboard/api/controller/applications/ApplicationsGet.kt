@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -63,6 +64,10 @@ class ApplicationsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieveOpenApplications(
     @RequestParam(required = true)
@@ -103,6 +108,10 @@ class ApplicationsGet(
         description = "Error: Access Denied. The error status is set as the required system role(s) was/were not found.",
         content = [Content()],
       ),
+    ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
     ],
   )
   fun retrieveClosedApplications(
@@ -145,6 +154,10 @@ class ApplicationsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieveApplicationHistories(
     @RequestParam(required = true)
@@ -186,6 +199,10 @@ class ApplicationsGet(
         content = [Content()],
       ),
     ],
+    security = [
+      SecurityRequirement("view-jobs-board-role"),
+      SecurityRequirement("edit-jobs-board-role"),
+    ],
   )
   fun retrieveApplicationsByPrisonId(
     @RequestParam(required = true)
@@ -200,7 +217,6 @@ class ApplicationsGet(
     @RequestParam(required = false)
     @Parameter(
       description = "Application Status",
-      example = "APPLICATION_MADE",
       examples = [
         ExampleObject(name = "APPLICATION_MADE", description = "Application has been made"),
         ExampleObject(name = "APPLICATION_UNSUCCESSFUL", description = "Application is unsuccessful"),
@@ -214,7 +230,6 @@ class ApplicationsGet(
     @RequestParam(defaultValue = "prisonerName", required = false)
     @Parameter(
       description = "Sorting by (prisoner name / job title and employer name)",
-      example = "jobAndEmployer",
       examples = [
         ExampleObject(
           name = "prisonerName",
@@ -232,7 +247,6 @@ class ApplicationsGet(
     @RequestParam(defaultValue = "asc", required = false)
     @Parameter(
       description = "Sorting order (ascending/descending)",
-      example = "desc",
       examples = [
         ExampleObject(name = "asc", value = "asc", description = "ascending order"),
         ExampleObject(name = "desc", value = "desc", description = "descending order"),
