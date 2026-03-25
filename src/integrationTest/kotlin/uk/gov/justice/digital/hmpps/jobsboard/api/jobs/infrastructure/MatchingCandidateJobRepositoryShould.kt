@@ -600,6 +600,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     postcode = postcode,
     isNational = isNational,
     closingDate = closingDate,
+    offenceExclusions = offenceExclusions,
     hasExpressedInterest = hasExpressedInterest,
     createdAt = createdAt,
     distance = distance,

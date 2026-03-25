@@ -26,6 +26,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.sector,
       j.postcode,
       j.closingDate,
+      j.offenceExclusions,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
       CASE WHEN pos1.xCoordinate IS NULL OR pos1.yCoordinate IS NULL
@@ -225,6 +226,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.sector,
       j.postcode,
       j.closingDate,
+      j.offenceExclusions,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
       $CALC_DISTANCE_EXPRESSION,
@@ -257,6 +259,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
       j.sector,
       j.postcode,
       j.closingDate,
+      j.offenceExclusions,
       CASE WHEN eoi.createdAt IS NOT NULL THEN true ELSE false END,
       j.createdAt,
       $CALC_DISTANCE_EXPRESSION,
