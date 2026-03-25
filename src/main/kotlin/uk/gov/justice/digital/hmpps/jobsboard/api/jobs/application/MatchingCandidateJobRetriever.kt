@@ -55,7 +55,7 @@ class MatchingCandidateJobRetriever(
     if (!offenceExclusions.isNullOrEmpty()) {
       val candidateExclusions = offenceExclusions.map { it.uppercase().trim() }.toSet()
 
-      val filteredContent : List<GetMatchingCandidateJobsResponse> = matchingJobs.content.filter { job ->
+      val filteredContent: List<GetMatchingCandidateJobsResponse> = matchingJobs.content.filter { job ->
         val jobExclusions = job.offenceExclusions
           ?.split(",")
           ?.map { it.uppercase().trim() }

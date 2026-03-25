@@ -709,7 +709,9 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       requestParams.append("&offenceExclusions=DRIVING")
       assertGetMatchingCandidateJobsIsOK(
         parameters = requestParams.toString(),
-        expectedResponse = expectedResponseListOf(10,0,
+        expectedResponse = expectedResponseListOf(
+          10,
+          0,
           builder().from(tescoWarehouseHandler)
             .withDistanceInMiles(null)
             .buildCandidateMatchingListItemResponseBody(),

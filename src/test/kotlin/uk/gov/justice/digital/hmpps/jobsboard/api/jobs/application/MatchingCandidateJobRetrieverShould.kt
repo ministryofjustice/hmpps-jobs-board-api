@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
-import java.time.Instant
-import java.time.LocalDate
-import java.util.stream.Stream
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,6 +18,9 @@ import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
+import java.time.Instant
+import java.time.LocalDate
+import java.util.stream.Stream
 
 @ExtendWith(MockitoExtension::class)
 class MatchingCandidateJobRetrieverShould : TestBase() {
@@ -107,27 +107,27 @@ class MatchingCandidateJobRetrieverShould : TestBase() {
     val job = createJobResponse(id = "1", exclusions = jobExclusions)
 
     whenever(
-        matchingCandidateJobsRepository.findAll(
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-        ),
+      matchingCandidateJobsRepository.findAll(
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+      ),
     ).thenReturn(PageImpl(listOf(job)))
 
     // When
     val result = matchingCandidateJobRetriever.retrieveAllJobs(
-        prisonNumber = prisonNumber,
-        sectors = null,
-        releaseArea = null,
-        searchRadius = null,
-        pageable = pageable,
-        offenceExclusions = candidateExclusions,
-        employerId = null,
+      prisonNumber = prisonNumber,
+      sectors = null,
+      releaseArea = null,
+      searchRadius = null,
+      pageable = pageable,
+      offenceExclusions = candidateExclusions,
+      employerId = null,
     )
 
     // Then
@@ -146,16 +146,16 @@ class MatchingCandidateJobRetrieverShould : TestBase() {
     val dbPage = PageImpl(listOf(job))
 
     whenever(
-        matchingCandidateJobsRepository.findAll(
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-        ),
+      matchingCandidateJobsRepository.findAll(
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+      ),
     )
       .thenReturn(dbPage)
 
@@ -173,14 +173,14 @@ class MatchingCandidateJobRetrieverShould : TestBase() {
     // Then
     assertThat(result.content).hasSize(1)
     verify(matchingCandidateJobsRepository).findAll(
-        anyOrNull(),
-        anyOrNull(),
-        anyOrNull(),
-        anyOrNull(),
-        anyOrNull(),
-        anyOrNull(),
-        anyOrNull(),
-        anyOrNull(),
+      anyOrNull(),
+      anyOrNull(),
+      anyOrNull(),
+      anyOrNull(),
+      anyOrNull(),
+      anyOrNull(),
+      anyOrNull(),
+      anyOrNull(),
     )
   }
 
@@ -201,28 +201,28 @@ class MatchingCandidateJobRetrieverShould : TestBase() {
     val dbPage = PageImpl(jobsFromDb, pageRequest, jobsFromDb.size.toLong())
 
     whenever(
-        matchingCandidateJobsRepository.findAll(
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-            anyOrNull(),
-        ),
+      matchingCandidateJobsRepository.findAll(
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+        anyOrNull(),
+      ),
     ).thenReturn(dbPage)
 
     // When
     val result = matchingCandidateJobRetriever.retrieveAllJobs(
-        prisonNumber = prisonNumber,
-        sectors = null,
-        releaseArea = null,
-        searchRadius = null,
-        pageable = pageRequest,
-        isNationalJob = false,
-        employerId = null,
-        offenceExclusions = candidateExclusions,
+      prisonNumber = prisonNumber,
+      sectors = null,
+      releaseArea = null,
+      searchRadius = null,
+      pageable = pageRequest,
+      isNationalJob = false,
+      employerId = null,
+      offenceExclusions = candidateExclusions,
     )
 
     // Then
@@ -240,7 +240,7 @@ class MatchingCandidateJobRetrieverShould : TestBase() {
 
     @JvmStatic
     fun exclusionPagingMetaDataTestProvider(): Stream<Arguments> = Stream.of(
-        // (Candidate Exclusions, Job Exclusions in DB, Expected IDs to remain)
+      // (Candidate Exclusions, Job Exclusions in DB, Expected IDs to remain)
 
       // Scenario: Multiple candidate exclusions vs multiple job exclusions
       Arguments.of(
@@ -249,40 +249,40 @@ class MatchingCandidateJobRetrieverShould : TestBase() {
         listOf("2"),
       ),
       // Scenario: One match, one safe
-        Arguments.of(
-            listOf("ARSON"),
-            listOf("ARSON", "NONE"),
-            listOf("2"),
-        ),
-        // Scenario: Case insensitivity and trimming
-        Arguments.of(
-            listOf(" arson "),
-            listOf("ARSON", " murder ", "CLEAN"),
-            listOf("2", "3"),
-        ),
-        // Scenario: Empty candidate exclusions (should return everything)
-        Arguments.of(
-            emptyList<String>(),
-            listOf("ARSON", "MURDER"),
-            listOf("1", "2"),
-        ),
+      Arguments.of(
+        listOf("ARSON"),
+        listOf("ARSON", "NONE"),
+        listOf("2"),
+      ),
+      // Scenario: Case insensitivity and trimming
+      Arguments.of(
+        listOf(" arson "),
+        listOf("ARSON", " murder ", "CLEAN"),
+        listOf("2", "3"),
+      ),
+      // Scenario: Empty candidate exclusions (should return everything)
+      Arguments.of(
+        emptyList<String>(),
+        listOf("ARSON", "MURDER"),
+        listOf("1", "2"),
+      ),
     )
 
     @JvmStatic
     fun exclusionTestProvider(): Stream<Arguments> = Stream.of(
-        // candidateExclusions, jobExclusions, shouldBeFiltered
-        Arguments.of(listOf("arson"), "ARSON", true),
-        Arguments.of(listOf("arson"), " ARSON", true),
-        Arguments.of(listOf("arson"), "ARSON ", true),
-        Arguments.of(listOf(" arson "), "  ARSON  ", true),
-        Arguments.of(listOf("arson "), "  ARSON  ", true),
-        Arguments.of(listOf(" arson"), "  ARSON  ", true),
-        Arguments.of(listOf("ARSON"), "MURDER, ARSON, THEFT", true),
-        Arguments.of(listOf("MURDER"), "ARSON", false),
-        Arguments.of(listOf("DRIVING"), "DRIVING_OFFENCE", false),
-        Arguments.of(listOf("SEXUAL"), "NONE", false),
-        Arguments.of(listOf("arson", "murder"), "MURDER", true),
-        Arguments.of(listOf("ARSON"), "arson,murder", true),
+      // candidateExclusions, jobExclusions, shouldBeFiltered
+      Arguments.of(listOf("arson"), "ARSON", true),
+      Arguments.of(listOf("arson"), " ARSON", true),
+      Arguments.of(listOf("arson"), "ARSON ", true),
+      Arguments.of(listOf(" arson "), "  ARSON  ", true),
+      Arguments.of(listOf("arson "), "  ARSON  ", true),
+      Arguments.of(listOf(" arson"), "  ARSON  ", true),
+      Arguments.of(listOf("ARSON"), "MURDER, ARSON, THEFT", true),
+      Arguments.of(listOf("MURDER"), "ARSON", false),
+      Arguments.of(listOf("DRIVING"), "DRIVING_OFFENCE", false),
+      Arguments.of(listOf("SEXUAL"), "NONE", false),
+      Arguments.of(listOf("arson", "murder"), "MURDER", true),
+      Arguments.of(listOf("ARSON"), "arson,murder", true),
     )
   }
 
