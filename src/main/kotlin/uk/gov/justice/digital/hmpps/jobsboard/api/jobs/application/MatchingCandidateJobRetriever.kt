@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application
 
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -28,6 +29,7 @@ class MatchingCandidateJobRetriever(
     pageable: Pageable,
     isNationalJob: Boolean? = false,
     employerId: String?,
+    offenceExclusions: List<String>?,
   ): Page<GetMatchingCandidateJobsResponse> {
     releaseArea?.let { postcodeLocationService.save(it) }
     var maybeRevisedSearchRadiusInput = searchRadius
@@ -38,7 +40,34 @@ class MatchingCandidateJobRetriever(
       maybeRevisedReleaseAreaInput = null
     }
 
-    return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, maybeRevisedReleaseAreaInput, maybeRevisedSearchRadiusInput, today, isNationalJob, employerId, pageable)
+    val matchingJobs = matchingCandidateJobsRepository.findAll(
+      prisonNumber,
+      sectors,
+      maybeRevisedReleaseAreaInput,
+      maybeRevisedSearchRadiusInput,
+      today,
+      isNationalJob,
+      employerId,
+      pageable,
+    )
+
+    // Apply filtering if offenceExclusions is provided
+    if (!offenceExclusions.isNullOrEmpty()) {
+      val candidateExclusions = offenceExclusions.map { it.uppercase().trim() }.toSet()
+
+      val filteredContent = matchingJobs.content.filter { job ->
+        val jobExclusions = job.offenceExclusions
+          ?.split(",")
+          ?.map { it.uppercase().trim() }
+          ?.toSet() ?: emptySet()
+
+        jobExclusions.none { it in candidateExclusions }
+      }
+
+      return PageImpl(filteredContent, pageable, matchingJobs.totalElements)
+    }
+
+    return matchingJobs
   }
 
   fun retrieveClosingJobs(prisonNumber: String, sectors: List<String>?, size: Int): List<GetJobsClosingSoonResponse> = PageRequest.of(0, size).let { limitedBySize ->

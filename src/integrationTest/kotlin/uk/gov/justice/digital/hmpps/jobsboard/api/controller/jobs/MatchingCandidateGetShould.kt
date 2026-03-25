@@ -696,4 +696,31 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
       )
     }
   }
+
+  @Nested
+  @DisplayName("Given request has offenceExclusion parameters")
+  inner class GivenRequestHasOffenceExclusionParameters {
+
+    @BeforeEach
+    fun beforeEach() = givenRegionalAndNationalJobsAreCreated()
+
+    @Test
+    fun `returns filtered out jobs with matching offence exclusion`() {
+      requestParams.append("&offenceExclusions=DRIVING")
+      assertGetMatchingCandidateJobsIsOK(
+        parameters = requestParams.toString(),
+        expectedResponse = expectedResponseListOf(10,0,
+          builder().from(tescoWarehouseHandler)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(abcConstructionApprentice)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+          builder().from(asdaWarehouseHandlerNonGeoCoded)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+        ),
+      )
+    }
+  }
 }
