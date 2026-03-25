@@ -55,7 +55,7 @@ class MatchingCandidateJobRetriever(
     if (!offenceExclusions.isNullOrEmpty()) {
       val candidateExclusions = offenceExclusions.map { it.uppercase().trim() }.toSet()
 
-      val filteredContent = matchingJobs.content.filter { job ->
+      val filteredContent : List<GetMatchingCandidateJobsResponse> = matchingJobs.content.filter { job ->
         val jobExclusions = job.offenceExclusions
           ?.split(",")
           ?.map { it.uppercase().trim() }
@@ -64,7 +64,7 @@ class MatchingCandidateJobRetriever(
         jobExclusions.none { it in candidateExclusions }
       }
 
-      return PageImpl(filteredContent, pageable, matchingJobs.totalElements)
+      return PageImpl(filteredContent, pageable, filteredContent.size.toLong())
     }
 
     return matchingJobs
