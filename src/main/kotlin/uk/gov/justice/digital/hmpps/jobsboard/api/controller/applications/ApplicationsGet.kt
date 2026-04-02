@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort.Direction.DESC
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -38,6 +39,7 @@ class ApplicationsGet(
 ) {
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/open")
+  @Transactional
   @Operation(
     summary = "Retrieve open applications of the given prisoner",
     responses = [
@@ -79,6 +81,7 @@ class ApplicationsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("/closed")
+  @Transactional
   @Operation(
     summary = "Retrieve closed applications of the given prisoner",
     responses = [
@@ -160,6 +163,7 @@ class ApplicationsGet(
 
   @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
   @GetMapping("")
+  @Transactional
   @Operation(
     summary = "Retrieve applications of the given prison",
     responses = [

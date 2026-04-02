@@ -1,29 +1,29 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.0.4"
-  kotlin("plugin.spring") version "2.3.10"
-  kotlin("plugin.jpa") version "2.3.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.1.2"
+  kotlin("plugin.spring") version "2.3.20"
+  kotlin("plugin.jpa") version "2.3.20"
   id("jvm-test-suite")
   id("jacoco")
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.0.1")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.0.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.1.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.3.0")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.data:spring-data-envers")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
 
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.0.1")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.1.1")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.1.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.1.3")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.mockk:mockk:1.14.5")
-  testImplementation("io.github.hakky54:logcaptor:2.12.0")
+  testImplementation("io.mockk:mockk:1.14.9")
+  testImplementation("io.github.hakky54:logcaptor:2.12.6")
 
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -40,17 +40,15 @@ testing {
       useJUnitJupiter()
       dependencies {
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
-        implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.0.1")
-        implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.1.1")
+        implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.1.0")
+        implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.1.3")
         implementation("org.springframework.boot:spring-boot-starter-test")
-        implementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
+        implementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
         implementation("org.wiremock:wiremock-standalone:3.13.2")
-        runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-        implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
         implementation("org.flywaydb:flyway-core")
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
         implementation("com.h2database:h2")
-        implementation("io.mockk:mockk:1.14.5")
+        implementation("io.mockk:mockk:1.14.9")
         implementation("org.springframework.boot:spring-boot-testcontainers")
         implementation("org.testcontainers:testcontainers-postgresql")
         implementation("org.testcontainers:testcontainers-junit-jupiter")

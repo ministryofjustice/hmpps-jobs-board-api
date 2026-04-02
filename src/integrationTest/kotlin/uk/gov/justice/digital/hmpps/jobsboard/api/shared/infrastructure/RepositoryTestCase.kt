@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure
 
 import jakarta.persistence.EntityManager
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.whenever
@@ -48,7 +49,16 @@ abstract class RepositoryTestCase {
   @Autowired
   protected lateinit var postcodesRepository: PostcodesRepository
 
+  @Autowired
+  protected lateinit var repositoryCleaner: RepositoryCleaner
+
   private final val defaultCreationTime: Instant = TestPrototypes.defaultCreationTime
+
+  @BeforeAll
+  internal fun beforeAll() {
+    // clean DB states from committed rows
+    repositoryCleaner.truncateJobsAndEmployers()
+  }
 
   @BeforeEach
   fun setUp() {
