@@ -16,8 +16,11 @@ import java.util.*
 
 @TestConfiguration
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider", auditorAwareRef = "auditorProvider")
-@Profile("test-containers | test-containers-flyway")
-@ComponentScan("uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure")
+@Profile("test-containers", "test-containers-flyway")
+@ComponentScan(
+  "uk.gov.justice.digital.hmpps.jobsboard.api.applications.infrastructure",
+  "uk.gov.justice.digital.hmpps.jobsboard.api.shared.infrastructure",
+)
 class TestJpaConfig {
   @Primary
   @Bean

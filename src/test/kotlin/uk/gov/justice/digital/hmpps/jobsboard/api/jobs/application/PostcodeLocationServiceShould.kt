@@ -41,14 +41,15 @@ class PostcodeLocationServiceShould {
   inner class GivenPostcodeNotExisting {
     @Test
     fun `save a postcode with coordinates`() {
+      val postcode = amazonForkliftOperator.postcode!!
       whenever(uuidGenerator.generate())
         .thenReturn(postcodeId)
-      whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode!!))
+      whenever(osPlacesAPIClient.getAddressesFor(postcode))
         .thenReturn(expectedLocation)
 
-      postcodeLocationService.save(amazonForkliftOperator.postcode)
+      postcodeLocationService.save(postcode)
 
-      verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
+      verify(osPlacesAPIClient).getAddressesFor(postcode)
       verify(postcodesRepository).save(expectedPostcode)
     }
   }
@@ -56,16 +57,17 @@ class PostcodeLocationServiceShould {
   @Nested
   @DisplayName("Given a postcode exists")
   inner class GivenPostcodeExisting {
+    private val postcode = amazonForkliftOperator.postcode!!
 
     @Nested
     @DisplayName("And the stored coordinates are not null")
     inner class AndStoredCoordinatesAreNotNull {
       @Test
       fun `not save a postcode with coordinates`() {
-        whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+        whenever(postcodesRepository.findByCode(postcode))
           .thenReturn(expectedPostcode)
 
-        postcodeLocationService.save(amazonForkliftOperator.postcode)
+        postcodeLocationService.save(postcode)
 
         verify(osPlacesAPIClient, never()).getAddressesFor(any())
         verify(postcodesRepository, never()).save(any())
@@ -77,14 +79,14 @@ class PostcodeLocationServiceShould {
     inner class AndStoredCoordinatesAreNull {
       @Test
       fun `Update postcode with fresh coordinates`() {
-        whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+        whenever(postcodesRepository.findByCode(postcode))
           .thenReturn(expectedPostcodeWithNullCoordinates)
-        whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
+        whenever(osPlacesAPIClient.getAddressesFor(postcode))
           .thenReturn(expectedLocation)
 
-        postcodeLocationService.save(amazonForkliftOperator.postcode)
+        postcodeLocationService.save(postcode)
 
-        verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
+        verify(osPlacesAPIClient).getAddressesFor(postcode)
         verify(postcodesRepository).save(expectedPostcode)
       }
     }
@@ -93,12 +95,14 @@ class PostcodeLocationServiceShould {
   @Nested
   @DisplayName("Is Geocoded postcode")
   inner class IsGeocodedPostcode {
+    private val postcode = amazonForkliftOperator.postcode!!
+
     @Test
     fun `geocoded postcode with coordinates exists`() {
-      whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+      whenever(postcodesRepository.findByCode(postcode))
         .thenReturn(expectedPostcode)
 
-      val actual = postcodeLocationService.isGeoCoded(amazonForkliftOperator.postcode)
+      val actual = postcodeLocationService.isGeoCoded(postcode)
 
       assertThat(actual).isTrue
 
@@ -107,10 +111,10 @@ class PostcodeLocationServiceShould {
 
     @Test
     fun `postcode with null coordinates exists`() {
-      whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+      whenever(postcodesRepository.findByCode(postcode))
         .thenReturn(expectedPostcodeWithNullCoordinates)
 
-      val actual = postcodeLocationService.isGeoCoded(amazonForkliftOperator.postcode)
+      val actual = postcodeLocationService.isGeoCoded(postcode)
 
       assertThat(actual).isFalse
 
@@ -119,30 +123,30 @@ class PostcodeLocationServiceShould {
 
     @Test
     fun `postcode does not exist and geocoded postcode returned`() {
-      whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+      whenever(postcodesRepository.findByCode(postcode))
         .thenReturn(null)
-      whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
+      whenever(osPlacesAPIClient.getAddressesFor(postcode))
         .thenReturn(expectedLocation)
 
-      val actual = postcodeLocationService.isGeoCoded(amazonForkliftOperator.postcode)
+      val actual = postcodeLocationService.isGeoCoded(postcode)
 
       assertThat(actual).isTrue
 
-      verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
+      verify(osPlacesAPIClient).getAddressesFor(postcode)
     }
 
     @Test
     fun `postcode does not exist and geocoded postcode not returned`() {
-      whenever(postcodesRepository.findByCode(amazonForkliftOperator.postcode!!))
+      whenever(postcodesRepository.findByCode(postcode))
         .thenReturn(null)
-      whenever(osPlacesAPIClient.getAddressesFor(amazonForkliftOperator.postcode))
+      whenever(osPlacesAPIClient.getAddressesFor(postcode))
         .thenReturn(expectedLocation)
 
-      val actual = postcodeLocationService.isGeoCoded(amazonForkliftOperator.postcode)
+      val actual = postcodeLocationService.isGeoCoded(postcode)
 
       assertThat(actual).isTrue
 
-      verify(osPlacesAPIClient).getAddressesFor(amazonForkliftOperator.postcode)
+      verify(osPlacesAPIClient).getAddressesFor(postcode)
     }
   }
 

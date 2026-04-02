@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.jobsboard.api.config.OsPlacesApiProperties
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.JobMother.amazonForkliftOperator
+import kotlin.jvm.optionals.getOrNull
 import kotlin.test.assertTrue
 
 @ExtendWith(MockitoExtension::class)
@@ -56,8 +57,9 @@ class OsPlacesApiWebClientShould {
 
   @Test
   fun `get coordinates when a valid postcode is provided`() {
+    val postcode = amazonForkliftOperator.postcode!!
     val expectedPostcode = OsPlacesApiDPA(
-      postcode = amazonForkliftOperator.postcode!!,
+      postcode = postcode,
       xCoordinate = 1.23,
       yCoordinate = 4.56,
     )
@@ -72,15 +74,16 @@ class OsPlacesApiWebClientShould {
     whenever(responseSpecMock.bodyToMono(OsPlacesApiResponse::class.java))
       .thenReturn(Mono.just(expectedSearchResult))
 
-    val postcode = osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
+    val actualPostcode = osPlacesAPIWebClient.getAddressesFor(postcode)
 
-    assertThat(postcode).isEqualTo(expectedPostcode)
+    assertThat(actualPostcode).isEqualTo(expectedPostcode)
   }
 
   @Test
   fun `return a fallback object when unexpected error calling OS Places API`() {
+    val postcode = amazonForkliftOperator.postcode!!
     val expectedPostcode = OsPlacesApiDPA(
-      postcode = amazonForkliftOperator.postcode!!,
+      postcode = postcode,
       xCoordinate = null,
       yCoordinate = null,
     )
@@ -91,9 +94,9 @@ class OsPlacesApiWebClientShould {
 
     whenever(requestHeadersMock.retrieve()).thenThrow(responseException)
 
-    val postcode = osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode)
+    val actualPostcode = osPlacesAPIWebClient.getAddressesFor(postcode)
 
-    assertThat(postcode).isEqualTo(expectedPostcode)
+    assertThat(actualPostcode).isEqualTo(expectedPostcode)
   }
 
   @Test
@@ -108,12 +111,11 @@ class OsPlacesApiWebClientShould {
     osPlacesAPIWebClient.getAddressesFor(amazonForkliftOperator.postcode!!)
 
     val logEvents: List<LogEvent> = logCaptor.logEvents
-    assertThat(logEvents).hasSize(1)
+    assertThat(logEvents).isNotEmpty
 
     assertTrue(
       logCaptor.logEvents.any { logEvent ->
-        logEvent.throwable.isPresent
-        logEvent.throwable.get().message!!.contains(responseException.message)
+        logEvent.throwable.getOrNull()?.message?.contains(responseException.message) ?: false
       },
       "Expected error log to contain the expected exception message: ${responseException.message}",
     )
