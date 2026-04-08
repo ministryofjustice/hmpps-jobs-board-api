@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.controller.jobs.JobsTestCase
 
 const val APPLICATIONS_ENDPOINT = "/applications"
 
-// @Transactional(propagation = Propagation.NOT_SUPPORTED)
 abstract class ApplicationsTestCase : JobsTestCase() {
 
   @Autowired

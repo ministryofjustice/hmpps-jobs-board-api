@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.sar.application
 import org.springframework.data.history.Revision
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.application.ApplicationHistoryRetriever
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.Application
 import uk.gov.justice.digital.hmpps.jobsboard.api.applications.domain.ApplicationRepository
@@ -31,6 +32,7 @@ class SubjectAccessRequestService(
   private val atEndOfDay by lazy { LocalTime.MAX.truncatedTo(ChronoUnit.MICROS) }
 
   @Async
+  @Transactional
   fun fetchApplications(sarFilter: SARFilter): CompletableFuture<List<ApplicationDTO>> {
     val endTime = sarFilter.toDate?.endAt
     return when {
@@ -74,6 +76,7 @@ class SubjectAccessRequestService(
   }
 
   @Async
+  @Transactional
   fun fetchExpressionsOfInterest(sarFilter: SARFilter) = sarFilter.toDate?.endAt.let { endTime ->
     when {
       endTime != null -> expressionOfInterestRepository.findByIdPrisonNumberAndCreatedAtLessThanEqualOrderByCreatedAtDesc(sarFilter.prn, endTime)
@@ -83,6 +86,7 @@ class SubjectAccessRequestService(
   }
 
   @Async
+  @Transactional
   fun fetchArchivedJobs(sarFilter: SARFilter) = sarFilter.toDate?.endAt.let { endTime ->
     when {
       endTime != null -> archivedRepository.findByIdPrisonNumberAndCreatedAtLessThanEqualOrderByCreatedAtDesc(sarFilter.prn, endTime)
