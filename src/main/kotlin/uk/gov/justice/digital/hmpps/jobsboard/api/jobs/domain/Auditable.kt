@@ -22,10 +22,10 @@ abstract class Auditable {
   var lastModifiedBy: String? = null
 
   @CreatedDate
-  @Column(name = "created_at", nullable = false, updatable = false)
+  @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamp")
   var createdAt: Instant? = null
 
   @LastModifiedDate
-  @Column(name = "last_modified_at", nullable = false, updatable = true)
+  @Column(name = "last_modified_at", nullable = false, updatable = true, columnDefinition = "timestamp")
   var lastModifiedAt: Instant? = null
 }
