@@ -30,6 +30,7 @@ class MatchingCandidateJobRetriever(
     pageable: Pageable,
     isNationalJob: Boolean? = false,
     employerId: String?,
+    offenceExclusions: List<String>?,
   ): Page<GetMatchingCandidateJobsResponse> {
     releaseArea?.let { postcodeLocationService.save(it) }
     var maybeRevisedSearchRadiusInput = searchRadius
@@ -40,7 +41,7 @@ class MatchingCandidateJobRetriever(
       maybeRevisedReleaseAreaInput = null
     }
 
-    return matchingCandidateJobsRepository.findAllJobs(prisonNumber, sectors, maybeRevisedReleaseAreaInput, maybeRevisedSearchRadiusInput, today, isNationalJob, employerId, pageable)
+    return matchingCandidateJobsRepository.findAllJobs(prisonNumber, sectors, maybeRevisedReleaseAreaInput, maybeRevisedSearchRadiusInput, today, isNationalJob, employerId, offenceExclusions, pageable)
       .map { it.response() }
   }
 
