@@ -10,10 +10,10 @@ The **Match Jobs and Manage Applications** - Jobs Board API provides backend ser
 * The high level design on Confluence: [Match Jobs & Manage Applications - HLD](https://dsdmoj.atlassian.net/wiki/x/34NiJgE)
 
 ## Team
-This backend service is developed and supported by `Education Skills & Work` team. They can be contacted via `#education-skills-work-employment-dev` on Slack.
+This backend application is developed and supported by `Education Skills and Work` team. They can be contacted via `#education-skills-work-employment-dev` on Slack.
 
 ## Healthiness
-The integration service has a `/health` endpoint which indicates the service is up and running.
+This backend application has a `/health` endpoint which indicates the service is up and running.
 
 # Instructions
 
@@ -41,9 +41,6 @@ _*_ These values can be obtained from k8s secrets on `dev` env.
 
 * Run with the Spring profile `dev` on local
   * Set active profile via this environmental variable `spring.profiles.active=dev` or `SPRING_PROFILES_ACTIVE=dev`
-* Run with the Spring profile `local` group on local
-  * Set active profile to `local`: `spring.profiles.active=local` or `SPRING_PROFILES_ACTIVE=local`
-  * The `local` group will utilise `localstack` for Integration features with message queue (`SQS`) 
 * API Spec:
     * Goto `http://localhost:8080/swagger-ui/index.html` to explore the OpenAPI specifications
 * Checking endpoints
@@ -63,9 +60,9 @@ _*_ These values can be obtained from k8s secrets on `dev` env.
     API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
     PRODUCT_ID=DPS015
     ```
-  * Or use `local` profile group
+  * Or use `dev` profile
     ```dotenv
-    SPRING_PROFILES_ACTIVE=local
+    SPRING_PROFILES_ACTIVE=dev
     OS_PLACES_API_KEY=<API-ACCESS-KEY>
     PRODUCT_ID=DPS015
     ```
@@ -81,8 +78,7 @@ will build the application and run it with a `PostgreSQL` database and `localsta
   ```bash
   docker compose pull && docker compose up --scale hmpps-jobs-board-api=0 -d
   ```
-* will just start docker instance of `PostgreSQL` database and `localstack`. The application should then be started with a `dev` or `local` active profile
+* will just start docker instance of `PostgreSQL` database. The application should then be started with a `dev` active profile
 in Intellij. 
   * supply required env var, e.g.
     * `spring.profiles.active`=`dev`;`os.places.api.key`=`<API-ACCESS-KEY>`
-    * `spring.profiles.active`=`local`;`os.places.api.key`=`<API-ACCESS-KEY>`
