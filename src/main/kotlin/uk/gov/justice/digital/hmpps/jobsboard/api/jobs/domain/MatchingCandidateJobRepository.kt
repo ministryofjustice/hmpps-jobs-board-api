@@ -80,7 +80,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
   /**
    * Find all jobs
    *
-   * notes: This trick will break if `sectors` can contain an empty string ""
+   * notes: This trick will break if `sectors` or `offenceExclusions` can contain an empty string ""
    */
   fun findAllJobs(
     prisonNumber: String,
@@ -90,18 +90,24 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     currentDate: LocalDate,
     isNationalJob: Boolean? = null,
     employerId: String? = null,
+    offenceExclusions: List<String>? = null,
     pageable: Pageable,
   ) = findAllJobs(
     prisonNumber = prisonNumber,
-    sectors = if (sectors.isNullOrEmpty()) listOf("") else sectors,
+    sectors = sectors.nonEmptyList(),
     applySectorsFilter = !sectors.isNullOrEmpty(),
     releaseArea = releaseArea,
     searchRadius = searchRadius,
     currentDate = currentDate,
     isNationalJob = isNationalJob,
     employerId = employerId,
+    offenceExclusions = offenceExclusions.nonEmptyList(),
+    applyOffenceExclusionsFilter = !offenceExclusions.isNullOrEmpty(),
     pageable = pageable,
   )
+
+  // notes: This trick will break if the nullable list can contain an empty string ""
+  private fun List<String>?.nonEmptyList(): List<String> = if (this.isNullOrEmpty()) listOf("") else this
 
   @Query(
     """
@@ -133,6 +139,11 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     )
     AND (j.is_national = :isNationalJob OR :isNationalJob IS NULL)
     AND (e.id = :employerId OR :employerId IS NULL)
+    AND (
+      NOT :applyOffenceExclusionsFilter OR 
+      j.offence_exclusions = 'NONE' OR
+      NOT EXISTS (SELECT 1 FROM unnest(string_to_array(j.offence_exclusions, ',')) oe WHERE oe IN (:offenceExclusions))
+    )
     """,
     nativeQuery = true,
   )
@@ -145,6 +156,8 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("currentDate") currentDate: LocalDate,
     @Param("isNationalJob") isNationalJob: Boolean? = null,
     @Param("employerId") employerId: String? = null,
+    @Param("offenceExclusions") offenceExclusions: List<String> = listOf(""),
+    @Param("applyOffenceExclusionsFilter") applyOffenceExclusionsFilter: Boolean = false,
     pageable: Pageable,
   ): Page<MatchingCandidateJobsDTO>
 

@@ -528,6 +528,27 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       }
 
       @Test
+      fun `retrieve matched jobs, with specific offence exclusions`() {
+        // offenceExclusions: Arson, Driving offences, Murder, Sexual offences, Terrorism
+        // - options: ARSON,DRIVING,MURDER,SEXUAL,TERRORISM
+        // - not options: NONE, OTHER, CASE_BY_CASE
+        // ============================================================
+        // - amazonForkliftOperator:    "NONE,DRIVING,OTHER"
+        // - tescoWarehouseHandler:     "CASE_BY_CASE,OTHER"
+        // - abcConstructionApprentice: "CASE_BY_CASE,OTHER"
+        val offenceExclusions = listOf("DRIVING", "MURDER")
+        val expectedJobs = listOf(tescoWarehouseHandler, abcConstructionApprentice)
+        assertFindAllJobsIsExpected(expectedJobs = expectedJobs, offenceExclusions = offenceExclusions)
+      }
+
+      @Test
+      fun `retrieve specific page of matched jobs, with specific offence exclusions`() {
+        val offenceExclusions = listOf("DRIVING")
+        val expectedJobs = listOf(abcConstructionApprentice)
+        assertFindAllJobsIsExpected(expectedJobs = expectedJobs, offenceExclusions = offenceExclusions, pageable = onPage2)
+      }
+
+      @Test
       fun `retrieve matched jobs closing soon, of specified sectors only`() {
         val sectors = listOf(tescoWarehouseHandler.sector, amazonForkliftOperator.sector, amazonNationalForkliftOperator.sector).map { it.lowercase() }
         val expectedJobs = listOf(amazonForkliftOperator, tescoWarehouseHandler, amazonNationalForkliftOperator)
@@ -625,11 +646,22 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       currentDate: LocalDate = today,
       isNationalJob: Boolean = false,
       employerId: String? = null,
+      offenceExclusions: List<String>? = null,
       pageable: Pageable = defaultPageable,
       expectedSize: Int? = null,
       expectedJobs: List<Job>? = null,
     ) {
-      val results = matchingCandidateJobRepository.findAllJobs(givenPrisonNumber, sectors, location, searchRadius, currentDate, isNationalJob, employerId, pageable)
+      val results = matchingCandidateJobRepository.findAllJobs(
+        prisonNumber = givenPrisonNumber,
+        sectors = sectors,
+        releaseArea = location,
+        searchRadius = searchRadius,
+        currentDate = currentDate,
+        isNationalJob = isNationalJob,
+        employerId = employerId,
+        offenceExclusions = offenceExclusions,
+        pageable = pageable,
+      )
 
       expectedSize?.let {
         assertThat(results).hasSize(expectedSize)

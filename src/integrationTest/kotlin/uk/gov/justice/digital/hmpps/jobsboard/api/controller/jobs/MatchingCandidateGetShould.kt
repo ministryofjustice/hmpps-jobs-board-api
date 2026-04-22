@@ -469,6 +469,43 @@ class MatchingCandidateGetShould : MatchingCandidateTestCase() {
         }
       }
     }
+
+    @Nested
+    @DisplayName("And offence exclusions have been provided")
+    inner class AndOffenceExclusionsHaveBeenProvided {
+      private val offenceExclusions = listOf("DRIVING", "MURDER").joinToString()
+
+      @BeforeEach
+      fun setUp() {
+        requestParams.append("&offenceExclusions=$offenceExclusions")
+      }
+
+      @Test
+      fun `return Jobs list, without jobs of specified offence exclusions`() {
+        // amazonForkliftOperator shall be excluded (DRIVING)
+        val expectedResponse = listOf(
+          abcConstructionApprentice,
+          tescoWarehouseHandler,
+          asdaWarehouseHandlerNonGeoCoded,
+        ).map { builder().from(it).withDistanceInMiles(null).buildCandidateMatchingListItemResponseBody() }
+          .let { expectedResponseListOf(*it.toTypedArray()) }
+
+        assertGetMatchingCandidateJobsIsOK(parameters = requestParams.toString(), expectedResponse = expectedResponse)
+      }
+
+      @Test
+      fun `return National Jobs list, without jobs of specified offence exclusions`() {
+        // amazonNationalForkliftOperator shall be excluded (DRIVING)
+        requestParams.append("&isNationalJob=true")
+        val expectedResponse = expectedResponseListOf(
+          builder().from(abcNationalConstructionApprentice)
+            .withDistanceInMiles(null)
+            .buildCandidateMatchingListItemResponseBody(),
+        )
+
+        assertGetMatchingCandidateJobsIsOK(parameters = requestParams.toString(), expectedResponse = expectedResponse)
+      }
+    }
   }
 
   @Nested
