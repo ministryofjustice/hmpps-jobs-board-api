@@ -80,7 +80,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
   /**
    * Find all jobs
    *
-   * notes: This trick will break if `sectors` cam contain a `DUMMY` value
+   * notes: This trick will break if `sectors` can contain an empty string ""
    */
   fun findAllJobs(
     prisonNumber: String,
@@ -93,7 +93,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     pageable: Pageable,
   ) = findAllJobs(
     prisonNumber = prisonNumber,
-    sectors = if (sectors.isNullOrEmpty()) listOf("DUMMY") else sectors,
+    sectors = if (sectors.isNullOrEmpty()) listOf("") else sectors,
     applySectorsFilter = !sectors.isNullOrEmpty(),
     releaseArea = releaseArea,
     searchRadius = searchRadius,
@@ -138,7 +138,7 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
   )
   fun findAllJobs(
     @Param("prisonNumber") prisonNumber: String,
-    @Param("sectors") sectors: List<String> = listOf("DUMMY"),
+    @Param("sectors") sectors: List<String> = listOf(""),
     @Param("applySectorsFilter") applySectorsFilter: Boolean = false,
     @Param("releaseArea") releaseArea: String? = null,
     @Param("searchRadius") searchRadius: Int? = null,
