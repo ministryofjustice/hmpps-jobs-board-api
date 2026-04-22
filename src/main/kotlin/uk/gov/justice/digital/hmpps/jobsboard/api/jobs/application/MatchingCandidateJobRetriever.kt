@@ -8,9 +8,11 @@ import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.jpa.domain.JpaSort
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.CALC_DISTANCE_EXPRESSION
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.CALC_DISTANCE_EXPRESSION_NATIVE
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.time.TimeProvider
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class MatchingCandidateJobRetriever(
@@ -38,7 +40,8 @@ class MatchingCandidateJobRetriever(
       maybeRevisedReleaseAreaInput = null
     }
 
-    return matchingCandidateJobsRepository.findAll(prisonNumber, sectors, maybeRevisedReleaseAreaInput, maybeRevisedSearchRadiusInput, today, isNationalJob, employerId, pageable)
+    return matchingCandidateJobsRepository.findAllJobs(prisonNumber, sectors, maybeRevisedReleaseAreaInput, maybeRevisedSearchRadiusInput, today, isNationalJob, employerId, pageable)
+      .map { it.response() }
   }
 
   fun retrieveClosingJobs(prisonNumber: String, sectors: List<String>?, size: Int): List<GetJobsClosingSoonResponse> = PageRequest.of(0, size).let { limitedBySize ->
@@ -81,4 +84,21 @@ class MatchingCandidateJobRetriever(
   }
 
   fun sortByDistance(direction: Direction = Direction.ASC): Sort = JpaSort.unsafe(direction, CALC_DISTANCE_EXPRESSION)
+  fun sortByDistanceOfNativeQuery(direction: Direction = Direction.ASC): Sort = JpaSort.unsafe(direction, CALC_DISTANCE_EXPRESSION_NATIVE)
+}
+
+data class MatchingCandidateJobsDTO(
+  val id: String,
+  val jobTitle: String,
+  val employerName: String,
+  val sector: String,
+  val postcode: String? = null,
+  val closingDate: LocalDate? = null,
+  val hasExpressedInterest: Boolean = false,
+  val createdAt: LocalDateTime? = null,
+  val distance: Float?,
+  val isNational: Boolean = false,
+  val numberOfVacancies: Int,
+) {
+  fun response() = GetMatchingCandidateJobsResponse(this)
 }

@@ -10,13 +10,16 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.entity.EntityId
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsClosingSoonResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.MatchingCandidateJobsDTO
 import java.time.LocalDate
 
 const val CALC_DISTANCE_EXPRESSION = "CAST(ROUND(SQRT(POWER(pos2.xCoordinate - pos1.xCoordinate, 2) + POWER(pos2.yCoordinate - pos1.yCoordinate, 2)) / 1609.34, 1) AS FLOAT)"
+const val CALC_DISTANCE_EXPRESSION_NATIVE = "CAST(ROUND(CAST(SQRT(POWER(pos2.x_coordinate - pos1.x_coordinate, 2) + POWER(pos2.y_coordinate - pos1.y_coordinate, 2)) / 1609.34 AS NUMERIC), 1) as REAL)"
 
 @Repository
 interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
 
+  @Deprecated(level = DeprecationLevel.ERROR, message = "This query has been deprecated.", replaceWith = ReplaceWith("findAllJobs(prisonNumber, sectors, releaseArea, searchRadius, currentDate, isNationalJob, employerId, pageable)"))
   @Query(
     """
     SELECT new uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse(
@@ -73,6 +76,77 @@ interface MatchingCandidateJobRepository : JpaRepository<Job, EntityId> {
     @Param("employerId") employerId: String? = null,
     pageable: Pageable,
   ): Page<GetMatchingCandidateJobsResponse>
+
+  /**
+   * Find all jobs
+   *
+   * notes: This trick will break if `sectors` can contain an empty string ""
+   */
+  fun findAllJobs(
+    prisonNumber: String,
+    sectors: List<String>? = null,
+    releaseArea: String? = null,
+    searchRadius: Int? = null,
+    currentDate: LocalDate,
+    isNationalJob: Boolean? = null,
+    employerId: String? = null,
+    pageable: Pageable,
+  ) = findAllJobs(
+    prisonNumber = prisonNumber,
+    sectors = if (sectors.isNullOrEmpty()) listOf("") else sectors,
+    applySectorsFilter = !sectors.isNullOrEmpty(),
+    releaseArea = releaseArea,
+    searchRadius = searchRadius,
+    currentDate = currentDate,
+    isNationalJob = isNationalJob,
+    employerId = employerId,
+    pageable = pageable,
+  )
+
+  @Query(
+    """
+    SELECT 
+      j.id,
+      j.title as jobTitle,
+      e.name as employerName,
+      j.sector,
+      j.postcode,
+      j.closing_date as closingDate,
+      CASE WHEN eoi.created_at IS NOT NULL THEN true ELSE false END as hasExpressedInterest,
+      j.created_at as createdAt,
+      CAST(ROUND(CAST(SQRT(POWER(pos2.x_coordinate - pos1.x_coordinate, 2) + POWER(pos2.y_coordinate - pos1.y_coordinate, 2)) / 1609.34 AS NUMERIC), 1) as REAL) as distance,
+      j.is_national as isNational,
+      j.number_of_vacancies as numberOfVacancies
+    FROM jobs j
+    LEFT JOIN jobs_expressions_of_interest eoi ON eoi.job_id = j.id AND eoi.prison_number = :prisonNumber
+    LEFT JOIN employers e ON j.employer_id = e.id
+    LEFT JOIN jobs_archived a ON a.job_id = j.id AND a.prison_number = :prisonNumber
+    LEFT JOIN postcodes pos1 ON j.postcode = pos1.code
+    LEFT JOIN postcodes pos2 ON pos2.code = :releaseArea
+    WHERE  (j.closing_date >= :currentDate OR j.closing_date IS NULL)
+    AND (NOT :applySectorsFilter OR LOWER(j.sector) IN :sectors)
+    AND a.job_id IS NULL
+    AND (
+      :isNationalJob IS TRUE      
+      OR COALESCE(:searchRadius, 0) <= 0
+      OR (pos1.x_coordinate IS NOT NULL AND pos1.y_coordinate IS NOT NULL AND COALESCE(ROUND(CAST(SQRT(POWER(pos2.x_coordinate - pos1.x_coordinate, 2) + POWER(pos2.y_coordinate - pos1.y_coordinate, 2)) / 1609.34 AS NUMERIC), 1), -1) <= :searchRadius)
+    )
+    AND (j.is_national = :isNationalJob OR :isNationalJob IS NULL)
+    AND (e.id = :employerId OR :employerId IS NULL)
+    """,
+    nativeQuery = true,
+  )
+  fun findAllJobs(
+    @Param("prisonNumber") prisonNumber: String,
+    @Param("sectors") sectors: List<String> = listOf(""),
+    @Param("applySectorsFilter") applySectorsFilter: Boolean = false,
+    @Param("releaseArea") releaseArea: String? = null,
+    @Param("searchRadius") searchRadius: Int? = null,
+    @Param("currentDate") currentDate: LocalDate,
+    @Param("isNationalJob") isNationalJob: Boolean? = null,
+    @Param("employerId") employerId: String? = null,
+    pageable: Pageable,
+  ): Page<MatchingCandidateJobsDTO>
 
   @Query(
     """

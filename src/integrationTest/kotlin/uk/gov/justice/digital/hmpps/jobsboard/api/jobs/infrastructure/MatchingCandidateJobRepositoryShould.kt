@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetJobsClosin
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.GetMatchingCandidateJobsResponse
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ArchivedRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.CALC_DISTANCE_EXPRESSION
+import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.CALC_DISTANCE_EXPRESSION_NATIVE
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.ExpressionOfInterestRepository
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.Job
 import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.domain.MatchingCandidateJobRepository
@@ -43,14 +44,19 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   private val defaultPageable = PageRequest.of(0, 10, defaultSort)
   private val closingSoonPageable = PageRequest.of(0, 5, defaultSort)
   private val paginatedSortByClosingDateAsc = PageRequest.of(0, 20, defaultSort)
-  private val sortByDistanceAndJobTitle =
-    CALC_DISTANCE_EXPRESSION.let { JpaSort.unsafe(Sort.Direction.ASC, it, "title") }
-  private val paginatedSortByDistanceAsc = PageRequest.of(0, 20, sortByDistanceAndJobTitle)
+  private val paginatedSortByDistanceAsc = PageRequest.of(0, 20, CALC_DISTANCE_EXPRESSION.let { JpaSort.unsafe(Sort.Direction.ASC, it, "title") })
+  private val paginatedSortByDistanceAscNative = PageRequest.of(0, 20, CALC_DISTANCE_EXPRESSION_NATIVE.let { JpaSort.unsafe(Sort.Direction.ASC, it, "title") })
   private val today = LocalDate.of(2024, 10, 1)
 
   @Nested
   @DisplayName("Given no job has been created")
   inner class GivenNoJob {
+    @Test
+    fun `retrieve an empty list of matched jobs`() {
+      val results = matchingCandidateJobRepository.findAllJobs(prisonNumber, currentDate = today, pageable = defaultPageable)
+      assertThat(results).isEmpty()
+    }
+
     @Test
     fun `retrieve an empty list of matched jobs closing soon`() {
       val results = matchingCandidateJobRepository.findJobsClosingSoon(prisonNumber, null, today, closingSoonPageable)
@@ -79,7 +85,9 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
   @Nested
   @DisplayName("Given some jobs have been created")
   inner class GivenSomeJobsCreated {
-    private val allJobs = listOf(amazonForkliftOperator, tescoWarehouseHandler, abcConstructionApprentice, abcNationalConstructionApprentice, amazonNationalForkliftOperator)
+    private val jobs = listOf(amazonForkliftOperator, tescoWarehouseHandler, abcConstructionApprentice)
+    private val nationalJobs = listOf(abcNationalConstructionApprentice, amazonNationalForkliftOperator)
+    private val allJobs = jobs + nationalJobs
 
     @BeforeEach
     fun setUp() {
@@ -91,6 +99,22 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       assertFindJobsClosingSoonIsExpected(
         expectedSize = allJobs.size,
         expectedJobs = allJobs,
+      )
+    }
+
+    @Test
+    fun `retrieve matched jobs`() {
+      assertFindAllJobsIsExpected(
+        expectedSize = jobs.size,
+        expectedJobs = jobs,
+      )
+    }
+
+    @Test
+    fun `retrieve matched national jobs`() {
+      assertFindAllJobsIsExpected(
+        expectedJobs = nationalJobs,
+        isNationalJob = true,
       )
     }
 
@@ -459,6 +483,50 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
     @Nested
     @DisplayName("And custom filter or parameter has been specified")
     inner class AndCustomisation {
+      private val onPage2 = PageRequest.of(1, 1, defaultSort)
+
+      @Test
+      fun `retrieve matched jobs sorted by distance`() {
+        val releaseArea = amazonForkliftOperator.postcode
+        val searchRadius = 50
+        // distances: 0 for amazonForkliftOperator, 1.9 for abcConstructionApprentice, 19.1 for tescoWarehouseHandler
+        val expectedJobs = listOf(amazonForkliftOperator, abcConstructionApprentice, tescoWarehouseHandler)
+
+        assertFindAllJobsIsExpected(
+          expectedSize = expectedJobs.size,
+          expectedJobs = expectedJobs,
+          location = releaseArea,
+          searchRadius = searchRadius,
+          pageable = paginatedSortByDistanceAscNative,
+        )
+      }
+
+      @Test
+      fun `retrieve matched jobs sorted by job title`() {
+        val paginatedSortByJobTitle = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "title"))
+        // job titles: Apprentice plasterer (ABC), Forklift operator (Amazon) then Warehouse handler (Tesco)
+        val expectedJobs = listOf(abcConstructionApprentice, amazonForkliftOperator, tescoWarehouseHandler)
+        assertFindAllJobsIsExpected(
+          expectedSize = expectedJobs.size,
+          expectedJobs = expectedJobs,
+          pageable = paginatedSortByJobTitle,
+        )
+      }
+
+      @Test
+      fun `retrieve specific page of matched jobs`() {
+        // verify that pagination "skip" (discard by offsetting) national jobs, and results are properly paginated
+        val expectedJobs = listOf(jobs[1])
+        assertFindAllJobsIsExpected(expectedJobs = expectedJobs, pageable = onPage2)
+      }
+
+      @Test
+      fun `retrieve specific page of matched national jobs`() {
+        // verify that pagination "skip" (discard by offsetting) non-national jobs, and results are properly paginated
+        val expectedJobs = listOf(nationalJobs[1])
+        assertFindAllJobsIsExpected(isNationalJob = true, expectedJobs = expectedJobs, pageable = onPage2)
+      }
+
       @Test
       fun `retrieve matched jobs closing soon, of specified sectors only`() {
         val sectors = listOf(tescoWarehouseHandler.sector, amazonForkliftOperator.sector, amazonNationalForkliftOperator.sector).map { it.lowercase() }
@@ -553,7 +621,7 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       givenPrisonNumber: String = prisonNumber,
       sectors: List<String>? = null,
       location: String? = null,
-      searchRadius: Int = 50,
+      searchRadius: Int? = null,
       currentDate: LocalDate = today,
       isNationalJob: Boolean = false,
       employerId: String? = null,
@@ -561,14 +629,14 @@ class MatchingCandidateJobRepositoryShould : JobRepositoryTestCase() {
       expectedSize: Int? = null,
       expectedJobs: List<Job>? = null,
     ) {
-      val results = matchingCandidateJobRepository.findAll(givenPrisonNumber, sectors, location, searchRadius, currentDate, isNationalJob, employerId, pageable)
+      val results = matchingCandidateJobRepository.findAllJobs(givenPrisonNumber, sectors, location, searchRadius, currentDate, isNationalJob, employerId, pageable)
 
       expectedSize?.let {
         assertThat(results).hasSize(expectedSize)
       }
       expectedJobs?.let {
         val expectedResults = expectedJobs.map { it.listResponse() }
-        assertThat(results.content).usingRecursiveComparison().ignoringFields("createdAt").isEqualTo(expectedResults)
+        assertThat(results.content).usingRecursiveComparison().ignoringFields("createdAt", "distance").isEqualTo(expectedResults)
       }
     }
 
