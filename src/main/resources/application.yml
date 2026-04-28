@@ -112,5 +112,3 @@ hmpps:
     template:
       path: /sar/template_hmpps-jobs-board-api.mustache
       enabled: true
-
-springdoc.swagger-ui.version: 5.32.1
