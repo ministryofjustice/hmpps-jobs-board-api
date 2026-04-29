@@ -29,9 +29,6 @@ spring:
 
   profiles:
     group:
-      local:
-        - "dev"
-        - "localstack"
       test:
         - "stdout"
   jpa:
