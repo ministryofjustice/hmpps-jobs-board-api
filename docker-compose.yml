@@ -32,18 +32,5 @@ services:
       - POSTGRES_PASSWORD=job-board
       - POSTGRES_USER=job-board
       - POSTGRES_DB=job-board
-
-  localstack:
-    image: localstack/localstack:4
-    container_name: job-board-localstack
-    ports:
-      - "4566:4566"             # LocalStack Gateway
-      - "4510-4559:4510-4559"   # external services port range
-    environment:
-      - SERVICES=sqs
-      - DEBUG=${DEBUG:-0}
-    volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
 networks:
   hmpps:
