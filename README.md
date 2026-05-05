@@ -51,24 +51,35 @@ _*_ These values can be obtained from k8s secrets on `dev` env.
 
   * provide API key only
     ```dotenv
-    OS_PLACES_API_KEY=<API-ACCESS-KEY>
     PRODUCT_ID=DPS015
+    OS_PLACES_API_KEY=<API-ACCESS-KEY>
     ```
   * Specify API key and override Auth URL 
     ```dotenv
+    PRODUCT_ID=DPS015
     OS_PLACES_API_KEY=<API-ACCESS-KEY>
     API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
-    PRODUCT_ID=DPS015
     ```
   * Or use `dev` profile
     ```dotenv
     SPRING_PROFILES_ACTIVE=dev
-    OS_PLACES_API_KEY=<API-ACCESS-KEY>
     PRODUCT_ID=DPS015
+    OS_PLACES_API_KEY=<API-ACCESS-KEY>
     ```
 * Run this at CLI
   ```bash
   docker compose pull && docker compose up -d
+  ```
+  e.g.
+  * in `.env.local`
+    ```dotenv
+    SPRING_PROFILES_ACTIVE=dev
+    PRODUCT_ID=DPS015
+    HMPPS_SAR_ADDITIONALACCESSROLE=ROLE_EDUCATION_WORK_PLAN_VIEW
+    OS_PLACES_API_KEY=...
+    ```
+  ```shell
+  docker compose --env-file .env.local up -d
   ```
 
 will build the application and run it with a `PostgreSQL` database and `localstack` within local docker.
@@ -82,3 +93,33 @@ will build the application and run it with a `PostgreSQL` database and `localsta
 in Intellij. 
   * supply required env var, e.g.
     * `spring.profiles.active`=`dev`;`os.places.api.key`=`<API-ACCESS-KEY>`
+
+## Run docker image on local
+
+### Build a local docker image
+1. Build the app jar
+2. Copy jar to project root
+3. Build docker image
+
+```shell
+BUILD_NUMBER=1_0_0 ./gradlew clean assemble && cp ./build/libs/*.jar .
+```
+```shell
+BUILD_NUMBER=1_0_0 docker build --build-arg BUILD_NUMBER=$BUILD_NUMBER . -t "hmpps-jobs-board-api:local"
+```
+### Run a local docker image
+Set these in your env file (with actual OS API key)
+* In `.env.docker` 
+    ```dotenv
+    SPRING_PROFILES_ACTIVE=dev
+    PRODUCT_ID=DPS015
+    HMPPS_SAR_ADDITIONALACCESSROLE=ROLE_EDUCATION_WORK_PLAN_VIEW
+    OS_PLACES_API_KEY=...
+    # `host.docker.internal` (instead of `localhost`) for connecting the image to local DB of host 
+    SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/job-board
+    ```
+
+then run this
+```shell
+docker run --name hmpps-jobs-board-api-app --env-file .env.docker -p 8080:8080 -d "hmpps-jobs-board-api:local"
+```
