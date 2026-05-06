@@ -47,6 +47,8 @@ jobs:
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/gradle_verify.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
     with:
+      gradle-command: 'BUILD_NUMBER=${{ needs.app_version.outputs.version}} ./gradlew assemble check'
+      upload-build-artifacts: ${{ github.ref == 'refs/heads/main' }}
       localstack-services: sqs
       localstack-tag: "4"
       postgres-tag: "16.2"
