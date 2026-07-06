@@ -76,3 +76,6 @@ sonar-project.properties
 /volume/
 
 /.env*
+
+#Jar files for docker build
+/*.jar
