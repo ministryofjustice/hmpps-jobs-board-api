@@ -75,7 +75,10 @@ sonar-project.properties
 # LocalStack
 /volume/
 
-/.env*
+#.env files for local run
+/.env
+/.env.docker
+/.env.docker.local
 
 #Jar files for docker build
 /*.jar

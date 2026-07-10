@@ -1,7 +1,7 @@
 services:
   hmpps-jobs-board-api:
-    build:
-      context: .
+    image: ghcr.io/ministryofjustice/hmpps-jobs-board-api:latest
+    profiles: [ api ]
     networks:
       - hmpps
     container_name: hmpps-jobs-board-api
@@ -18,7 +18,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://job-board-db:5432/job-board
       - API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
       - HMPPS_SAR_ADDITIONALACCESSROLE=ROLE_EDUCATION_WORK_PLAN_VIEW
-      - OS_PLACES_API_KEY=<OVERRIDE_THIS>
+    env_file: .env.docker
 
   job-board-db:
     image: postgres:16.2

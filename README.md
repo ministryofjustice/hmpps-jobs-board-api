@@ -25,7 +25,63 @@ This backend application depends on several services to run.
 | hmpps-auth    | OAuth2 API server for authenticating requests            |                                      | `API_BASE_URL_OAUTH`                                                              |
 | OS Places API | OS Places API for resolving postcodes                    | `https://api.os.uk/search/places/v1` | `OS_PLACES_API_URL`                                                               |
 | Database      | Database server (`postgres` on local, `RDS` on live env) |                                      | `DATABASE_NAME`, `DATABASE_ENDPOINT`, `DATABASE_USERNAME` and `DATABASE_PASSWORD` |
-|
+
+
+### Preparation
+Obtain API client credentials
+- populate those value from kubernetes secrets `hmpps-jobs-board-api`.
+  ```shell
+  kubectl -n hmpps-jobs-board-dev get secret hmpps-jobs-board-api -o json | jq '.data | map_values(@base64d)' 
+  ```
+- fill in the OS API key in these files: `OS_PLACES_API_KEY`
+    - `.env` for running outside docker
+    - `.env.docker` for running in docker
+
+---
+### Running with docker compose
+The easiest way to run the app is to use docker compose to create the service and all dependencies.
+1. Prepare `.env.docker` (from `.env.docker.sample`)
+    ```shell
+    cp .env.docker.sample .env.docker
+    ```
+    - fill in the API key in `.env.docker`
+      see above to obtain these
+2. Then run
+   ```shell
+   docker compose --profile api up
+   ```
+   will run the application (from latest image) and PostgreSQL within a local docker instance.
+3. Check if application is up and running
+    * See `http://localhost:8080/health` to check the app is running.
+    * See `http://localhost:8080/swagger-ui/index.html` to explore the OpenAPI spec document.
+    * See `http://localhost:8080/info` to check the app info
+
+It connects HMPPS Auth and other upstream APIs in `dev` environment. Thus, a set of valid dev API clients are required to run the application.
+
+---
+### Running the application in IntelliJ
+1. Prepare `.env` (from `.env.local.sample`)
+    ```shell
+    cp .env.local.sample .env
+    ```
+    - fill in the API key in `.env`:
+      see above to obtain these
+2. Run this
+    ```shell
+   docker compose up -d 
+    ```
+    * will start dependencies only without the API application
+    * `-d` for detached run
+3. Run `bootRun` with  `.env` file prepared above
+    * either IntelliJ
+        - run `bootRun` with `EnvFile` plugin
+        - add `.env`
+        - enable integrations
+    * or Gradle wrapper
+      ```shell
+      export $(grep -v '^#' .env | xargs)
+      ./gradlew bootRun
+      ```
 
 ### Environment variables
 Defining env var for *local* run
@@ -46,54 +102,6 @@ _*_ These values can be obtained from k8s secrets on `dev` env.
 * Checking endpoints
     * Goto `http://localhost:8080/health` to check the service is up and running
 
-### Running with Docker
-* Define/Override env var.: define a `.env` file with () required env var from above; [Syntax of .env file](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/#env-file-syntax)
-
-  * provide API key only
-    ```dotenv
-    PRODUCT_ID=DPS015
-    OS_PLACES_API_KEY=<API-ACCESS-KEY>
-    ```
-  * Specify API key and override Auth URL 
-    ```dotenv
-    PRODUCT_ID=DPS015
-    OS_PLACES_API_KEY=<API-ACCESS-KEY>
-    API_BASE_URL_OAUTH=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
-    ```
-  * Or use `dev` profile
-    ```dotenv
-    SPRING_PROFILES_ACTIVE=dev
-    PRODUCT_ID=DPS015
-    OS_PLACES_API_KEY=<API-ACCESS-KEY>
-    ```
-* Run this at CLI
-  ```bash
-  docker compose pull && docker compose up -d
-  ```
-  e.g.
-  * in `.env.local`
-    ```dotenv
-    SPRING_PROFILES_ACTIVE=dev
-    PRODUCT_ID=DPS015
-    HMPPS_SAR_ADDITIONALACCESSROLE=ROLE_EDUCATION_WORK_PLAN_VIEW
-    OS_PLACES_API_KEY=...
-    ```
-  ```shell
-  docker compose --env-file .env.local up -d
-  ```
-
-will build the application and run it with a `PostgreSQL` database and `localstack` within local docker.
-
-### Running the application in Intellij
-* Run this at CLI
-  ```bash
-  docker compose pull && docker compose up --scale hmpps-jobs-board-api=0 -d
-  ```
-* will just start docker instance of `PostgreSQL` database. The application should then be started with a `dev` active profile
-in Intellij. 
-  * supply required env var, e.g.
-    * `spring.profiles.active`=`dev`;`os.places.api.key`=`<API-ACCESS-KEY>`
-
 ## Run docker image on local
 
 ### Build a local docker image
@@ -109,17 +117,19 @@ BUILD_NUMBER=1_0_0 docker build --build-arg BUILD_NUMBER=$BUILD_NUMBER . -t "hmp
 ```
 ### Run a local docker image
 Set these in your env file (with actual OS API key)
-* In `.env.docker` 
+* In `.env.docker.local` 
     ```dotenv
     SPRING_PROFILES_ACTIVE=dev
     PRODUCT_ID=DPS015
     HMPPS_SAR_ADDITIONALACCESSROLE=ROLE_EDUCATION_WORK_PLAN_VIEW
-    OS_PLACES_API_KEY=...
     # `host.docker.internal` (instead of `localhost`) for connecting the image to local DB of host 
     SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/job-board
+    # ================================ SECRETS ================================
+    ## get it from secrets: kubectl -n hmpps-jobs-board-dev get secret hmpps-jobs-board-api -o json | jq '.data | map_values(@base64d)'
+    OS_PLACES_API_KEY=
     ```
 
 then run this
 ```shell
-docker run --name hmpps-jobs-board-api-app --env-file .env.docker -p 8080:8080 -d "hmpps-jobs-board-api:local"
+docker run --name hmpps-jobs-board-api-app --env-file .env.docker.local -p 8080:8080 -d "hmpps-jobs-board-api:local"
 ```
