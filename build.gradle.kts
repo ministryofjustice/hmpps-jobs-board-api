@@ -1,16 +1,19 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.5.3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.5.7"
   kotlin("plugin.spring") version "2.4.0"
-  kotlin("plugin.jpa") version "2.3.21"
+  kotlin("plugin.jpa") version "2.4.0"
   id("jvm-test-suite")
   id("jacoco")
 }
 
 ext["postgresql.version"] = "42.7.11"
+ext["jackson-2-bom.version"] = "2.21.5"
+ext["log4j2.version"] = "2.25.5"
+ext["tomcat.version"] = "11.0.24"
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.2.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.3.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.5.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.0")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -22,8 +25,8 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
 
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.2.0")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.4.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.5.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.6.2")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("io.mockk:mockk:1.14.9")
@@ -44,8 +47,8 @@ testing {
       useJUnitJupiter()
       dependencies {
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
-        implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.2.0")
-        implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.4.0")
+        implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.5.0")
+        implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.6.2")
         implementation("org.springframework.boot:spring-boot-starter-test")
         implementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
         implementation("org.wiremock:wiremock-standalone:3.13.2")
