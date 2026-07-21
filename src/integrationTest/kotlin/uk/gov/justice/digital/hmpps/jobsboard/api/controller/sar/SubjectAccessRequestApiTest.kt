@@ -78,7 +78,7 @@ class SubjectAccessRequestApiTest {
       getSarHelper().stubFindLocationNameByNomisIdWith("PROPERTY BOX 1")
       getSarHelper().stubFindLocationNameByDpsIdWith("PROPERTY BOX 2")
       val dataResponse =
-        getSarHelper().requestSarData(getPrn(), getCrn(), getFromDate(), getToDate(), getWebTestClientInstance())
+        getSarHelper().requestSarData(getPrn(), getCrn(), getFromDate(), getToDate(), getWebTestClientInstance(), getContentType())
       val templateResponse = getSarHelper().requestSarTemplate(getWebTestClientInstance())
 
       val renderResult = getSarHelper().renderServiceReport(
