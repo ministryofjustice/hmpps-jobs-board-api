@@ -12,6 +12,7 @@ ext["jackson-bom.version"] = "3.1.5"
 ext["log4j2.version"] = "2.25.5"
 ext["tomcat.version"] = "11.0.24"
 ext["httpcore5.version"] = "5.4.3"
+ext["netty.version"] = "4.2.16.Final"
 
 dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.5.0")
@@ -22,7 +23,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.data:spring-data-envers")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3") {
-    implementation("org.webjars:swagger-ui:5.32.5")
+    implementation("org.webjars:swagger-ui:5.32.11")
   }
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
