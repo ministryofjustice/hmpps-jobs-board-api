@@ -21,7 +21,7 @@ import uk.gov.justice.digital.hmpps.jobsboard.api.jobs.application.JobCreator
 class JobsPut(
   private val jobCreator: JobCreator,
 ) {
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RW')")
   @PutMapping("/{id}")
   fun createOrUpdate(
     @PathVariable
