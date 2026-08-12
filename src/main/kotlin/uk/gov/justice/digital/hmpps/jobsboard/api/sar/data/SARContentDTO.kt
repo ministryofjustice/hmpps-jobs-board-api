@@ -2,11 +2,12 @@ package uk.gov.justice.digital.hmpps.jobsboard.api.sar.data
 
 import io.swagger.v3.oas.annotations.media.Schema
 
+@Schema(description = "The content of the subject access request response")
 data class SARContentDTO(
-  @param:Schema(description = "List of applications", example = "[]")
+  @field:Schema(description = "List of applications")
   val applications: List<ApplicationDTO?> = emptyList(),
-  @param:Schema(description = "List of jobs with an expression of interest", example = "[]")
+  @field:Schema(description = "List of jobs with an expression of interest")
   val expressionsOfInterest: List<ExpressionOfInterestDTO> = emptyList(),
-  @param:Schema(description = "List of archived jobs", example = "[]")
+  @field:Schema(description = "List of archived jobs")
   val archivedJobs: List<ArchivedDTO> = emptyList(),
 )
