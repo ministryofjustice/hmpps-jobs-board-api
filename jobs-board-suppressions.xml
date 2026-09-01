@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <suppress>
-        <notes><![CDATA[
-        False positive: CVE-2026-54285 targets the OpenTelemetry Node.js SDK only
-        (CPE scoped to node.js: cpe:2.3:a:opentelemetry:opentelemetry:*:*:*:*:*:node.js:*:*).
-        The Java artifacts (opentelemetry-api, opentelemetry-common, opentelemetry-context) are not affected.
-        ]]></notes>
-        <packageUrl regex="true">^pkg:maven/io\.opentelemetry/.*$</packageUrl>
-        <vulnerabilityName>CVE-2026-54285</vulnerabilityName>
-    </suppress>
 </suppressions>
