@@ -1,22 +1,16 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.5.7"
-  kotlin("plugin.spring") version "2.4.0"
-  kotlin("plugin.jpa") version "2.4.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.6"
+  kotlin("plugin.spring") version "2.4.10"
+  kotlin("plugin.jpa") version "2.4.10"
   id("jvm-test-suite")
   id("jacoco")
 }
 
-ext["postgresql.version"] = "42.7.12"
-ext["jackson-2-bom.version"] = "2.21.5"
-ext["jackson-bom.version"] = "3.1.5"
-ext["log4j2.version"] = "2.25.5"
-ext["tomcat.version"] = "11.0.24"
-ext["httpcore5.version"] = "5.4.3"
-ext["netty.version"] = "4.2.16.Final"
+ext["tomcat.version"] = "11.0.25"
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.5.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.1")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -28,8 +22,8 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
 
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.5.0")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.6.2")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.1")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.8.1")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("io.mockk:mockk:1.14.9")
