@@ -28,7 +28,7 @@ import java.time.LocalDate
 class DashboardGet(
   val applicationMetricsRetriever: ApplicationMetricsRetriever,
 ) {
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__DASHBOARD__RO')")
   @GetMapping("/summary")
   @Operation(
     summary = "Retrieve metrics summary of given prison",
@@ -71,7 +71,7 @@ class DashboardGet(
     return ResponseEntity.ok(response)
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__DASHBOARD__RO')")
   @GetMapping("/applications-stage")
   @Operation(
     summary = "Retrieve metrics Total Applications by application stage, of given prison",
@@ -127,7 +127,7 @@ class DashboardGet(
     return ResponseEntity.ok(response)
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__DASHBOARD__RO')")
   @GetMapping("/applications-status")
   @Operation(
     summary = "Retrieve metrics Latest Applications by application status, of given prison",

@@ -37,7 +37,7 @@ class ApplicationsGet(
   private val applicationByPrisonerRetriever: ApplicationByPrisonerRetriever,
   private val applicationHistoryRetriever: ApplicationHistoryRetriever,
 ) {
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__APPLICATIONS__RW')")
   @GetMapping("/open")
   @Transactional
   @Operation(
@@ -79,7 +79,7 @@ class ApplicationsGet(
     return ResponseEntity.ok(response)
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__APPLICATIONS__RW')")
   @GetMapping("/closed")
   @Transactional
   @Operation(
@@ -121,7 +121,7 @@ class ApplicationsGet(
     return ResponseEntity.ok(response)
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__APPLICATIONS__RW')")
   @GetMapping("/histories")
   @Operation(
     summary = "Retrieve histories of an application for the given prisoner",
@@ -161,7 +161,7 @@ class ApplicationsGet(
     return ResponseEntity.ok(response)
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__APPLICATIONS__RW')")
   @GetMapping("")
   @Transactional
   @Operation(
