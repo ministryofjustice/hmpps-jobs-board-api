@@ -42,14 +42,14 @@ class JobsGet(
   private val matchingCandidateJobDetailsRetriever: MatchingCandidateJobDetailsRetriever,
 ) {
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RO')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RO','ROLE_JOBS_BOARD__JOBS__RW')")
   @GetMapping("/{id}")
   fun retrieve(@PathVariable id: String): ResponseEntity<GetJobResponse> {
     val job: Job = jobRetriever.retrieve(id)
     return ResponseEntity.ok().body(GetJobResponse.from(job))
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RO')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW','ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__RO', 'ROLE_JOBS_BOARD__JOBS__RW')")
   @GetMapping("")
   @Transactional
   @Operation(
@@ -133,7 +133,7 @@ class JobsGet(
     return ResponseEntity.ok(response)
   }
 
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT') or hasRole('ROLE_JOBS_BOARD__JOBS__MATCHING__RO')")
   @GetMapping("/matching-candidate")
   fun retrieveAll(
     @RequestParam(required = true)
@@ -171,7 +171,7 @@ class JobsGet(
     return ResponseEntity.ok(jobList)
   }
 
-  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or  hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasRole('ROLE_EDUCATION_WORK_PLAN_VIEW') or hasRole('ROLE_EDUCATION_WORK_PLAN_EDIT') or hasRole('ROLE_JOBS_BOARD__JOBS__MATCHING__RO')")
   @GetMapping("/{id}/matching-candidate")
   @Operation(
     summary = "Retrieve Job details, while matching candidate",
@@ -216,7 +216,7 @@ class JobsGet(
     }
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT', 'ROLE_JOBS_BOARD__JOBS__MATCHING__RO')")
   @GetMapping("/matching-candidate/closing-soon")
   @Operation(
     summary = "Retrieve jobs closing soon, matching the given prisoner",
@@ -256,7 +256,7 @@ class JobsGet(
     ResponseEntity.ok(it)
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT', 'ROLE_JOBS_BOARD__JOBS__EOI__RW', 'ROLE_JOBS_BOARD__JOBS__EOI__RO')")
   @GetMapping("/expressed-interest/closing-soon")
   @Operation(
     summary = "Retrieve jobs of interest closing soon, for the given prisoner",
@@ -290,7 +290,7 @@ class JobsGet(
     ResponseEntity.ok(it)
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT', 'ROLE_JOBS_BOARD__JOBS__EOI__RO', 'ROLE_JOBS_BOARD__JOBS__EOI__RW')")
   @GetMapping("/expressed-interest")
   @Operation(
     summary = "Retrieve jobs of interest, for the given prisoner",
@@ -369,7 +369,7 @@ class JobsGet(
     }
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT')")
+  @PreAuthorize("hasAnyRole('ROLE_EDUCATION_WORK_PLAN_VIEW', 'ROLE_EDUCATION_WORK_PLAN_EDIT','ROLE_JOBS_BOARD__JOBS__ARCHIVED__RW')")
   @GetMapping("/archived")
   @Operation(
     summary = "Retrieve archived jobs, for the given prisoner",
