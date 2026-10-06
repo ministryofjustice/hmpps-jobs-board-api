@@ -55,6 +55,9 @@ testing {
         implementation("org.testcontainers:testcontainers-localstack")
         implementation("org.awaitility:awaitility-kotlin")
         implementation("org.jetbrains.kotlin:kotlin-test-junit5")
+        implementation("io.swagger.parser.v3:swagger-parser:2.1.39") {
+          exclude(group = "io.swagger.core.v3")
+        }
 
         implementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
         implementation("org.springframework.boot:spring-boot-starter-webmvc-test")
