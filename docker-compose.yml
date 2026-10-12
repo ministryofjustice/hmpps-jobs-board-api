@@ -21,7 +21,7 @@ services:
     env_file: .env.docker
 
   job-board-db:
-    image: postgres:16.2
+    image: postgres:16.15
     container_name: job-board-db
     networks:
       - hmpps
