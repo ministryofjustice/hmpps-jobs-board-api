@@ -1,13 +1,13 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.10"
-  kotlin("plugin.spring") version "2.4.20"
-  kotlin("plugin.jpa") version "2.4.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.13"
+  kotlin("plugin.spring") version "2.4.21"
+  kotlin("plugin.jpa") version "2.4.21"
   id("jvm-test-suite")
   id("jacoco")
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.3")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.1")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
@@ -18,12 +18,12 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
 
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.1")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.8.1")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.3")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.8.5")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("io.mockk:mockk:1.14.9")
-  testImplementation("io.github.hakky54:logcaptor:2.12.6")
+  testImplementation("io.mockk:mockk:1.14.11")
+  testImplementation("io.github.hakky54:logcaptor:2.13.0")
 
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -40,15 +40,15 @@ testing {
       useJUnitJupiter()
       dependencies {
         kotlin.target.compilations { named("integrationTest") { associateWith(getByName("main")) } }
-        implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.1")
-        implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.8.1")
+        implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.3")
+        implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.8.5")
         implementation("org.springframework.boot:spring-boot-starter-test")
-        implementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
+        implementation("org.mockito.kotlin:mockito-kotlin:6.4.0")
         implementation("org.wiremock:wiremock-standalone:3.13.2")
         implementation("org.flywaydb:flyway-core")
         runtimeOnly("org.flywaydb:flyway-database-postgresql")
         implementation("com.h2database:h2")
-        implementation("io.mockk:mockk:1.14.9")
+        implementation("io.mockk:mockk:1.14.11")
         implementation("org.springframework.boot:spring-boot-testcontainers")
         implementation("org.testcontainers:testcontainers-postgresql")
         implementation("org.testcontainers:testcontainers-junit-jupiter")
